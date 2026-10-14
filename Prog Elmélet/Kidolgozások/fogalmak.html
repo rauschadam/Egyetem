@@ -110,8 +110,8 @@ details.concept:not([open]) .cname::after { content: "  · mutasd"; font-family:
 .sg { display: inline-grid; min-width: 200px; border: 1.5px solid var(--ink); background: var(--card); }
 .sg > * + * { border-top: 1.5px solid var(--ink); }
 .st { padding: 6px 14px; text-align: center; }
-.loop > .cond { padding: 6px 14px; text-align: center; border-bottom: 1.5px solid var(--ink); }
-.loop > .body { margin-left: 26px; border-left: 1.5px solid var(--ink); }
+.loop > .cond { padding: 6px 14px; text-align: center; }
+.loop > .body { margin-left: 26px; border-top: 1.5px solid var(--ink); border-left: 1.5px solid var(--ink); }
 .ifm { display: grid; grid-template-columns: repeat(3, minmax(70px, 1fr)); }
 .ifcol + .ifcol { border-left: 1.5px solid var(--ink); }
 .ifc { padding: 6px 10px; text-align: center; border-bottom: 1.5px solid var(--ink); background: linear-gradient(to bottom right, transparent calc(50% - 1px), color-mix(in srgb, var(--ink) 35%, transparent) 50%, transparent calc(50% + 1px)); }

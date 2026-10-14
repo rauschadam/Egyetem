@@ -147,13 +147,16 @@ tr:last-child td { border-bottom: 0; }
 .sg { display: inline-grid; min-width: 210px; border: 1.5px solid var(--ink); background: var(--card); font-size: 0.98rem; }
 .sg > * + * { border-top: 1.5px solid var(--ink); }
 .st { padding: 6px 14px; text-align: center; }
-.loop > .cond { padding: 6px 14px; text-align: center; border-bottom: 1.5px solid var(--ink); }
-.loop > .body { margin-left: 26px; border-left: 1.5px solid var(--ink); display: grid; }
+/* ciklus: the condition and the left strip form one L-shaped area, only the body is framed (top + left) */
+.loop > .cond { padding: 6px 14px; text-align: center; }
+.loop > .body { margin-left: 26px; border-top: 1.5px solid var(--ink); border-left: 1.5px solid var(--ink); display: grid; }
 .loop > .body > * + * { border-top: 1.5px solid var(--ink); }
-.ifh { display: grid; grid-template-columns: 26px 1fr 26px; border-bottom: 1.5px solid var(--ink); }
-.ifh > span { padding: 6px 4px; text-align: center; }
-.ifh::before, .ifh::after { content: ""; background: linear-gradient(to top right, transparent calc(50% - 1px), var(--ink) 50%, transparent calc(50% + 1px)); }
-.ifh::before { order: -1; background: linear-gradient(to bottom left, transparent calc(50% - 1px), var(--ink) 50%, transparent calc(50% + 1px)); }
+/* elágazás: one condition, corner triangles marked T (left = true branch) and F (right = false branch) */
+.ifh { display: grid; grid-template-columns: 30px 1fr 30px; border-bottom: 1.5px solid var(--ink); }
+.ifh > .c { padding: 6px 4px; text-align: center; }
+.ifh > .t, .ifh > .f { display: flex; align-items: flex-end; padding: 0 4px 3px; font-family: var(--f-label); font-size: 0.7rem; font-weight: 500; line-height: 1; }
+.ifh > .t { justify-content: flex-start; background: linear-gradient(to top right, transparent calc(50% - 0.75px), var(--ink) 50%, transparent calc(50% + 0.75px)); }
+.ifh > .f { justify-content: flex-end; background: linear-gradient(to bottom right, transparent calc(50% - 0.75px), var(--ink) 50%, transparent calc(50% + 0.75px)); }
 .ifb { display: grid; grid-template-columns: 1fr 1fr; }
 .ifb > * + * { border-left: 1.5px solid var(--ink); }
 
@@ -341,7 +344,7 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
       <p>Adjuk meg, hogy a mellékelt program milyen végrehajtásokat indít a 4, a 0 és a −5 állapotokból indulva! (\(A = (n : \Z)\))</p>
       <div class="sg">
         <div class="loop"><div class="cond">\(n \neq 0\)</div><div class="body">
-          <div class="if"><div class="ifh"><span>\(n \lt 0\)</span></div><div class="ifb"><div class="st">\(n :\in \N\)</div><div class="st">\(n := n - 1\)</div></div></div>
+          <div class="if"><div class="ifh"><span class="t">T</span><span class="c">\(n \lt 0\)</span><span class="f">F</span></div><div class="ifb"><div class="st">\(n :\in \N\)</div><div class="st">\(n := n - 1\)</div></div></div>
         </div></div>
       </div>
     </div>
@@ -350,7 +353,7 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
         <ul>
           <li>\(4 \to \sq{4, 3, 2, 1, 0}\) (egyetlen végrehajtás).</li>
           <li>\(0 \to \sq{0}\) (a ciklus feltétele hamis, nem lép be).</li>
-          <li>\(-5\)-ből a ciklusmag az igaz ágon \(n :\in \N\)-et hajt végre, ami <em>bármilyen</em> \(k \in \N\)-et választhat. Utána onnan egyesével lefelé számol 0-ig. A végrehajtások: \(\sq{-5, 0}\), és minden \(k \geq 1\)-re \(\sq{-5, k, k-1, \dots, 1, 0}\). Végtelen sok végrehajtás indul, de mindegyik véges.</li>
+          <li>\(-5\)-ből a ciklusmagban az elágazás igaz (T) ága fut le, vagyis \(n :\in \N\), ami <em>bármilyen</em> \(k \in \N\)-et választhat. Utána onnan egyesével lefelé számol 0-ig. A végrehajtások: \(\sq{-5, 0}\), és minden \(k \geq 1\)-re \(\sq{-5, k, k-1, \dots, 1, 0}\). Végtelen sok végrehajtás indul, de mindegyik véges.</li>
         </ul>
       </div>
     </div></details>
