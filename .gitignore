@@ -1,10 +1,11 @@
-# Egyelőre csak a weboldal és a DIMAT II / ANAL II tárgy kerül a repóba.
+# Egyelőre csak a weboldal és a DIMAT II / ANAL II / Prog Elmélet tárgy kerül a repóba.
 # Minden mást kizárunk; új tárgyat egy újabb "!/<mappa>/" sorral lehet felvenni.
 /*
 !/.gitignore
 !/index.html
 !/DIMAT II/
 !/ANAL II/
+!/Prog Elmélet/
 
 # Build-szemét
 bin/

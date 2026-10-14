@@ -1,0 +1,1080 @@
+<!doctype html>
+<html lang="hu" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Programozáselmélet · gyakorlatok kidolgozva</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['\\(', '\\)']],
+      displayMath: [['\\[', '\\]']],
+      macros: {
+        N: '\\mathbb{N}', Z: '\\mathbb{Z}', R: '\\mathbb{R}', LL: '\\mathbb{L}',
+        D: '\\mathcal{D}', fail: '\\mathit{fail}', lf: '\\mathit{lf}',
+        sgn: '\\operatorname{sgn}', prim: '\\operatorname{prim}', perm: '\\operatorname{perm}', sorted: '\\operatorname{sorted}',
+        igaz: '\\mathit{igaz}', hamis: '\\mathit{hamis}', SKIP: '\\mathit{SKIP}', ABORT: '\\mathit{ABORT}',
+        sq: ['\\langle #1 \\rangle', 1]
+      }
+    },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js" async></script>
+<style>
+/* Layout: same exam-paper look as the other prep pages, in the Programozáselmélet violet; each task = statement + folded solution */
+:root {
+  --paper: #f5f7fa;
+  --grid: rgba(107, 70, 193, 0.06);
+  --card: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6574;
+  --rule: #d7dde6;
+  --accent: #6b46c1;
+  --accent-soft: #efe9fb;
+  --mark: #b8352a;
+  --mark-soft: #fbe9e6;
+  --ok: #2c7a4b;
+  --ok-soft: #e3f3e9;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-label: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f141b; --grid: rgba(196, 167, 255, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+    --rule: #2a3442; --accent: #c4a7ff; --accent-soft: #261f3d; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+    --ok: #74d39c; --ok-soft: #173225; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f141b; --grid: rgba(196, 167, 255, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+  --rule: #2a3442; --accent: #c4a7ff; --accent-soft: #261f3d; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+  --ok: #74d39c; --ok-soft: #173225; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background-color: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 1.06rem;
+  line-height: 1.6;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 80px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2rem, 6vw, 3.1rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.65rem; font-weight: 700; letter-spacing: -0.01em; }
+h3 { font-size: 1.1rem; font-weight: 600; }
+p { margin: 0; }
+a { color: var(--accent); }
+.label { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding: 2px 0; margin: 6px 0 !important; min-width: 0; max-width: 100%; }
+
+/* back to subject page */
+.back { justify-self: start; display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px 9px 12px; border: 1.5px solid var(--accent); border-radius: 8px; background: var(--accent-soft); color: var(--ink); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 1.02rem; line-height: 1; white-space: nowrap; transition: background .15s, color .15s; }
+.back .arr { color: var(--accent); font-size: 1.25rem; transition: transform .15s, color .15s; }
+.back:hover, .back:focus-visible { background: var(--accent); color: var(--paper); outline: none; }
+.back:hover .arr, .back:focus-visible .arr { color: var(--paper); transform: translateX(-3px); }
+
+header.hero { display: grid; gap: 14px; padding-block: 0 26px; border-bottom: 2px solid var(--accent); }
+.hero .sub { color: var(--muted); max-width: 62ch; }
+.facts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.fact { display: flex; flex-direction: column; gap: 2px; padding: 8px 14px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; min-width: 120px; }
+.fact b { font-family: var(--f-display); font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+
+nav.bar { position: sticky; top: 0; z-index: 5; background: var(--paper); border-bottom: 1px solid var(--rule); margin-inline: -16px; padding-inline: 16px; }
+nav.bar ul { list-style: none; margin: 0; padding: 10px 0; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin; }
+nav.bar a { display: block; white-space: nowrap; text-decoration: none; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.04em; color: var(--ink); padding: 6px 10px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); }
+nav.bar a:hover, nav.bar a:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+nav.bar a.nav-back { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+
+section { padding-top: 44px; display: grid; gap: 16px; scroll-margin-top: 56px; }
+.section-head { display: grid; gap: 6px; }
+.section-head p { color: var(--muted); max-width: 66ch; }
+.taskgroup { display: grid; gap: 12px; }
+.sub-head { font-family: var(--f-label); font-size: 0.74rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); padding-top: 10px; }
+
+/* tasks */
+.task { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 18px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; min-width: 0; scroll-margin-top: 60px; }
+.task-head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.task-head .no { font-family: var(--f-display); font-weight: 700; font-size: 1.05rem; }
+.task-head .kind { margin-left: auto; font-family: var(--f-label); font-size: 0.72rem; padding: 2px 8px; border-radius: 3px; background: var(--accent-soft); color: var(--accent); white-space: nowrap; }
+.task-head .kind.quiz { background: var(--ok-soft); color: var(--ok); }
+.task-head .kind.pm { background: var(--mark-soft); color: var(--mark); }
+.stmt { display: grid; gap: 8px; max-width: 72ch; min-width: 0; }
+details { border-top: 1px dashed var(--rule); padding-top: 8px; min-width: 0; }
+summary { cursor: pointer; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); list-style: none; display: inline-flex; gap: 8px; align-items: center; padding: 4px 0; }
+summary::-webkit-details-marker { display: none; }
+summary::before { content: "+"; display: inline-grid; place-items: center; width: 18px; height: 18px; border: 1px solid currentColor; border-radius: 3px; font-size: 0.8rem; }
+details[open] > summary::before { content: "−"; }
+summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sol { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; padding-top: 6px; max-width: 76ch; min-width: 0; }
+.sol ol, .sol ul, .stmt ol, .stmt ul { margin: 0; padding-left: 22px; display: grid; gap: 4px; }
+.sol p, .sol li, .stmt p, .stmt li, .tip, .warn, .own, .def { overflow-x: auto; overflow-y: hidden; }
+.ans { display: inline-block; background: var(--ok-soft); color: var(--ok); font-weight: 600; padding: 1px 9px; border-radius: 4px; }
+.warn { background: var(--mark-soft); border-left: 3px solid var(--mark); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 0.95rem; }
+.tip { background: var(--accent-soft); border-left: 3px solid var(--accent); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 0.95rem; }
+.own { border: 1px dashed var(--ok); padding: 8px 12px; border-radius: 4px; font-size: 0.95rem; }
+.own > b:first-child, .tip > b:first-child, .warn > b:first-child { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; display: block; margin-bottom: 2px; }
+.own > b:first-child { color: var(--ok); }
+.def { background: var(--card); border: 1px solid var(--rule); border-left: 3px solid var(--accent); padding: 10px 14px; border-radius: 0 6px 6px 0; display: grid; gap: 6px; font-size: 0.97rem; }
+.def ul { margin: 0; padding-left: 20px; display: grid; gap: 3px; }
+
+.tbl { overflow-x: auto; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--rule); vertical-align: middle; }
+th { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+tr:last-child td { border-bottom: 0; }
+
+/* struktogram (Nassi–Shneiderman) */
+.sgrow { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-start; }
+.sgwrap { display: grid; gap: 4px; justify-items: start; }
+.sgwrap > .label { color: var(--accent); }
+.stmt > .sg { justify-self: start; }
+.sg { display: inline-grid; min-width: 210px; border: 1.5px solid var(--ink); background: var(--card); font-size: 0.98rem; }
+.sg > * + * { border-top: 1.5px solid var(--ink); }
+.st { padding: 6px 14px; text-align: center; }
+.loop > .cond { padding: 6px 14px; text-align: center; border-bottom: 1.5px solid var(--ink); }
+.loop > .body { margin-left: 26px; border-left: 1.5px solid var(--ink); display: grid; }
+.loop > .body > * + * { border-top: 1.5px solid var(--ink); }
+.ifh { display: grid; grid-template-columns: 26px 1fr 26px; border-bottom: 1.5px solid var(--ink); }
+.ifh > span { padding: 6px 4px; text-align: center; }
+.ifh::before, .ifh::after { content: ""; background: linear-gradient(to top right, transparent calc(50% - 1px), var(--ink) 50%, transparent calc(50% + 1px)); }
+.ifh::before { order: -1; background: linear-gradient(to bottom left, transparent calc(50% - 1px), var(--ink) 50%, transparent calc(50% + 1px)); }
+.ifb { display: grid; grid-template-columns: 1fr 1fr; }
+.ifb > * + * { border-left: 1.5px solid var(--ink); }
+
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px; }
+button { font-family: var(--f-label); font-size: 0.78rem; padding: 7px 12px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); color: var(--ink); cursor: pointer; }
+button:hover, button:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+
+footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.88rem; }
+@media (max-width: 520px) { body { font-size: 1rem; } .task { padding: 14px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <a class="back" href="../../index.html#/progelm"><span class="arr" aria-hidden="true">←</span>Vissza: Programozáselmélet</a>
+  <span class="label">Programozáselmélet · gyakorlatok 1–6.</span>
+  <h1>Gyakorlati feladatok kidolgozva</h1>
+  <p class="sub">Az órán megoldott feladatok, úgy ahogy a gyakorlaton megoldottuk (a gyakorlati lapok és az órai jegyzetek alapján). Előbb gondold végig, utána nyisd le a megoldást. Ahol a lapon nem volt megoldás (főleg a kvízeknél), ott a megoldás <b>saját kidolgozás</b>, és ezt jelöltem.</p>
+  <div class="facts">
+    <div class="fact"><span class="label">Gyakorlat</span><b>6</b></div>
+    <div class="fact"><span class="label">Feladat + kvíz</span><b id="cnt">–</b></div>
+    <div class="fact"><span class="label">Plusz-mínusz</span><b id="cntpm">–</b></div>
+  </div>
+</header>
+
+<nav class="bar" aria-label="Fejezetek">
+  <ul>
+    <li><a class="nav-back" href="../../index.html#/progelm" aria-label="Vissza: Programozáselmélet">← PROG ELM</a></li>
+    <li><a href="#gy1">1. gyak</a></li>
+    <li><a href="#gy2">2. gyak</a></li>
+    <li><a href="#gy3">3. gyak</a></li>
+    <li><a href="#gy4">4. gyak</a></li>
+    <li><a href="#gy5">5. gyak</a></li>
+    <li><a href="#gy6">6. gyak</a></li>
+  </ul>
+</nav>
+
+<!-- ======================= 1. GYAKORLAT ======================= -->
+<section id="gy1">
+  <div class="section-head">
+    <span class="label">1. gyakorlat</span>
+    <h2>Állapottér, feladat, program</h2>
+    <p>Célunk olyan módszerek vizsgálata, amelyekkel egy feladathoz garantáltan (matematikai pontossággal igazoltan) helyes program készíthető. Ehhez kell egy matematikai modell a feladat, a program és a megoldás fogalmára.</p>
+  </div>
+  <div class="toolbar"><button type="button" data-toggle="gy1">Összes megoldás kinyitása</button></div>
+  <div class="taskgroup">
+
+  <article class="task">
+    <div class="task-head"><span class="no">1. feladat</span><span class="kind">modellezés</span></div>
+    <div class="stmt"><p>Modellezzük az alábbi feladatot! „Számoljuk ki egy egyenes vonalú egyenletes mozgás sebességét, ha ismert a megtett út hossza és az eltelt idő!”</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p>A feladat <b>adatokból</b> és köztük lévő <b>kapcsolatokból</b> áll. Adat: név, pillanatnyi érték, mértékegység, típus (lehetséges értékek halmaza és a rajtuk végezhető műveletek → típusérték-halmaz). Kapcsolat: reláció.</p>
+      <p><b>a) Input-output alapú szemlélet.</b> Input adat: ismert, adott értékű adat; itt az út és az idő, értékeik valós számok, együtt \(\R \times \R\). Output adat: kiszámolandó adat; itt a sebesség, \(\R\). A feladat egy leképezés, amely inputhoz outputot rendel: \((120.0,\ 2.0) \to 60.0\), \((270.0,\ 1.5) \to 180.0\), …</p>
+      \[F : \R \times \R \to \R, \qquad \D_F = \R_0^+ \times \R^+, \qquad F(x, y) ::= x / y \quad (\forall (x, y) \in \D_F)\]
+      <p><b>b) Állapot alapú szemlélet.</b> Az input-output szemlélettel nem lehet modellezni, mi történjen az input változókkal (őrizzék-e meg az értéküket), és azt sem, ha egy változó egyszerre input és output (pl. helyben rendezés). Természetesebb a program <em>állapotairól</em> beszélni.</p>
+      <p><b>Állapot</b> = az összes (input, output és egyéb) adat egy lehetséges érték-együttese; <b>állapottér</b> = az összes állapot. Itt: út, idő, sebesség valós számhármasok, \(\R \times \R \times \R\). A feladat csak az \(\R_0^+ \times \R^+ \times \R\) kezdőállapotokban értelmezett: \((120.0, 2.0, *) \to (120.0, 2.0, 60.0)\), …</p>
+      <p>A Descartes-szorzat nem elég pontos: több azonos típusú adatnál (\(\R \times \R \times \R\)) nem egyértelmű, melyik komponens melyik adat, és két különböző szorzat (\(\N \times \R\) és \(\R \times \N\)) ugyanazt az állapotteret is jelölheti. Ezért <b>egyedi címkékkel</b> (változókkal) különböztetjük meg az adatokat: \((s : \R,\ t : \R,\ v : \R)\). Egy állapot címkézett értékek halmaza: \(\{s : x,\ t : y,\ v : z\}\), rögzített sorrendnél röviden \((x, y, z)\).</p>
+      \[F : (s:\R,\ t:\R,\ v:\R) \to (s:\R,\ t:\R,\ v:\R), \qquad \D_F = (s:\R_0^+,\ t:\R^+,\ v:\R), \qquad F(x, y, *) ::= (x,\ y,\ x/y)\]
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">1. kvíz</span><span class="kind quiz">kvíz</span></div>
+    <div class="stmt"><p>Mi az állapottere az alábbi feladatnak: „Oszt-e egy adott természetes szám egy másik adott természetes számot?” Adjuk meg a feladat egy lehetséges kezdő- és célállapot-párját is!</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <div class="own"><b>Saját megoldás (a lapon nincs)</b>
+        Két természetes szám input, a válasz logikai érték: \(A = (x : \N,\ y : \N,\ l : \LL)\), ahol \(l\) azt mondja meg, hogy \(x \mid y\) teljesül-e. Kezdő–cél pár például: \((3, 6, *) \to (3, 6, \igaz)\), vagy \((4, 6, *) \to (4, 6, \hamis)\).
+      </div>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">2. feladat</span><span class="kind">modellezés</span></div>
+    <div class="stmt"><p>Modellezzük az alábbi feladatot! „Adjuk meg egy természetes szám egy természetes osztóját!”</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p>\(A = (n : \N,\ d : \N)\), \(\D_F = A\). Például a \((6, *)\) kezdőállapothoz több célállapot is jó: \((6,1)\), \((6,2)\), \((6,3)\), \((6,6)\).</p>
+      <p>A <b>feladat</b> tehát egy nem-determinisztikus leképezés az állapottérből az állapottérbe, azaz egy homogén binér reláció: \(F \subseteq A \times A\).</p>
+      \[F(x, y) = \{ (u, v) \in A \mid u = x \wedge v \mid x \} \quad (\forall (x, y) \in \D_F), \qquad \text{egyszerűbben: } F(x, *) = \{ (u, v) \mid u = x \wedge v \mid x \}\]
+      <div class="tip"><b>Input megőrzése</b>A célállapotnak nem muszáj megőriznie az input kezdőértékét, hacsak a feladat kifejezetten elő nem írja. Ha nem kell megőrizni, a feladat még nem-determinisztikusabb: \(F(x, *) = \{ (*, v) \mid v \mid x \}\).</div>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">2. kvíz</span><span class="kind quiz">kvíz</span></div>
+    <div class="stmt"><p>Modellezzük az alábbi feladatot: „Adott két egész típusú változó. Cseréljük ki az értékeiket!”</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <div class="own"><b>Saját megoldás (a lapon nincs)</b>
+        \(A = (x : \Z,\ y : \Z)\), \(\D_F = A\), és \(F(a, b) = \{ (b, a) \}\) minden \((a, b) \in A\) esetén. Ez determinisztikus feladat; itt az input változók egyben output változók is (ezt az input-output szemlélet nem tudná leírni).
+      </div>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">3. feladat</span><span class="kind">végrehajtások</span></div>
+    <div class="stmt">
+      <p>Adjuk meg az alábbi program néhány végrehajtását! \(A = (n : \N,\ d : \N)\). Hogyan változik a változók értéke a \((6,8)\), \((3,8)\), \((2,8)\), \((1,8)\), \((0,8)\) állapotokból indulva?</p>
+      <div class="sg">
+        <div class="st">\(d :\in \{ n-1,\ n-2 \}\)</div>
+        <div class="loop"><div class="cond">\(d \nmid n\)</div><div class="body"><div class="st">\(d := d - 1\)</div></div></div>
+      </div>
+    </div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p>Az első utasítás nem-determinisztikus, ezért minden állapotból két végrehajtás indul (bal oszlop: \(d = n-1\), jobb: \(d = n-2\)):</p>
+      <div class="tbl"><table>
+        <thead><tr><th>Kiinduló</th><th>\(d := n-1\) ággal</th><th>\(d := n-2\) ággal</th></tr></thead>
+        <tbody>
+          <tr><td>\((6,8)\)</td><td>\(\sq{(6,8), (6,5), (6,4), (6,3)}\)</td><td>\(\sq{(6,8), (6,4), (6,3)}\)</td></tr>
+          <tr><td>\((3,8)\)</td><td>\(\sq{(3,8), (3,2), (3,1)}\)</td><td>\(\sq{(3,8), (3,1)}\)</td></tr>
+          <tr><td>\((2,8)\)</td><td>\(\sq{(2,8), (2,1)}\)</td><td>\(\sq{(2,8), (2,0), \fail}\)</td></tr>
+          <tr><td>\((1,8)\)</td><td>\(\sq{(1,8), (1,0), \fail}\)</td><td>\(\sq{(1,8), \fail}\)</td></tr>
+          <tr><td>\((0,8)\)</td><td colspan="2">\(\sq{(0,8), \fail}\) (mindkét ágon, mert \(-1, -2 \notin \N\))</td></tr>
+        </tbody>
+      </table></div>
+      <p><b>Program</b> = leképezés, amely bármelyik kiinduló állapothoz megadja az abból induló végrehajtásokat, azaz állapotsorozatokat.</p>
+      <p><b>A végrehajtások tulajdonságai:</b></p>
+      <ul>
+        <li>végesek (normálisak vagy hibásak), vagy végtelen hosszúak;</li>
+        <li>minden állapotból indul legalább egy;</li>
+        <li>egy állapotból több végrehajtás is indulhat;</li>
+        <li>az első állapotuk mindig a kiinduló állapot.</li>
+      </ul>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">3. kvíz</span><span class="kind quiz">kvíz</span></div>
+    <div class="stmt">
+      <p>Adjuk meg, hogy a mellékelt program milyen végrehajtásokat indít a 4, a 0 és a −5 állapotokból indulva! (\(A = (n : \Z)\))</p>
+      <div class="sg">
+        <div class="loop"><div class="cond">\(n \neq 0\)</div><div class="body">
+          <div class="if"><div class="ifh"><span>\(n \lt 0\)</span></div><div class="ifb"><div class="st">\(n :\in \N\)</div><div class="st">\(n := n - 1\)</div></div></div>
+        </div></div>
+      </div>
+    </div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <div class="own"><b>Saját megoldás (a lapon nincs)</b>
+        <ul>
+          <li>\(4 \to \sq{4, 3, 2, 1, 0}\) (egyetlen végrehajtás).</li>
+          <li>\(0 \to \sq{0}\) (a ciklus feltétele hamis, nem lép be).</li>
+          <li>\(-5\)-ből a ciklusmag az igaz ágon \(n :\in \N\)-et hajt végre, ami <em>bármilyen</em> \(k \in \N\)-et választhat. Utána onnan egyesével lefelé számol 0-ig. A végrehajtások: \(\sq{-5, 0}\), és minden \(k \geq 1\)-re \(\sq{-5, k, k-1, \dots, 1, 0}\). Végtelen sok végrehajtás indul, de mindegyik véges.</li>
+        </ul>
+      </div>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">4. feladat</span><span class="kind">segédváltozó</span></div>
+    <div class="stmt">
+      <p>Adjuk meg az alábbi program néhány végrehajtását! \(A = (x : \Z,\ y : \Z,\ z : \Z)\). (C++-ban: <code>void swap(int &amp;x, int &amp;y) { int z = x; x = y; y = z; }</code>)</p>
+      <div class="sg"><div class="st">\(z := x\)</div><div class="st">\(x := y\)</div><div class="st">\(y := z\)</div></div>
+    </div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p>Önmagában egy programnak nincsenek input és output változói, csak változói. Csak a megoldandó feladat dönti el, mely változóknak kell kezdőértéket adni és melyeket kell a végén kiolvasni; ezek alkotják a program <b>alap-állapotterét</b>.</p>
+      <p>Legyen megállapodás szerint az alap-állapottér \(A = (x : \Z,\ y : \Z)\), így \(z : \Z\) <b>segédváltozó</b>, amely kezdetben nem létezik, és legkésőbb a program leállásával megszűnik. Az \(\{x : -4,\ y : 8\}\) állapotból:</p>
+      \[\{x{:}-4, y{:}8\} \to \langle \{x{:}-4, y{:}8\},\ \{x{:}-4, y{:}8, z{:}-4\},\ \{x{:}8, y{:}8, z{:}-4\},\ \{x{:}8, y{:}-4, z{:}-4\},\ \{x{:}8, y{:}-4\} \rangle\]
+      <p><b>A végrehajtások további tulajdonságai:</b></p>
+      <ul>
+        <li>állapotaik vagy az alap-állapottérhez, vagy annak segédváltozókkal kiegészített állapotteréhez tartoznak;</li>
+        <li>mindig alap-állapottérbeli állapotból indulnak;</li>
+        <li>ha végesek és nem hibásak, alap-állapottérbeli állapotban állnak meg;</li>
+        <li>a segédváltozók keletkezését és megszűnését nem kell önálló állapotváltozásként feltüntetni.</li>
+      </ul>
+    </div></details>
+  </article>
+
+  </div>
+</section>
+
+<!-- ======================= 2. GYAKORLAT ======================= -->
+<section id="gy2">
+  <div class="section-head">
+    <span class="label">2. gyakorlat</span>
+    <h2>Programfüggvény, megoldás</h2>
+    <p>Az állapottér, a feladat és a program mellé bejön a programfüggvény és a megoldás fogalma.</p>
+  </div>
+  <div class="toolbar"><button type="button" data-toggle="gy2">Összes megoldás kinyitása</button></div>
+  <div class="def">
+    <b>Definíciók a laprol</b>
+    <ul>
+      <li><b>Programfüggvény</b> \(p(S)\): a program mely állapotokból indulva terminál biztosan, és ilyenkor hol áll meg.</li>
+      <li><b>Gyenge programfüggvény</b> \(\tilde p(S)\): a program mely állapotokból indulva <em>állhat</em> le, és hol (a \(\fail\) is lehet „hely”).</li>
+      <li><b>Helyesség</b> (megoldás): a program a feladat kezdőállapotaiból indulva a kezdőállapothoz tartozó valamelyik célállapotban terminál. Formálisan: \(S\) megoldja \(F\)-et, ha <b>1.</b> \(\D_F \subseteq \D_{p(S)}\) és <b>2.</b> \(\forall a \in \D_F : p(S)(a) \subseteq F(a)\).</li>
+      <li><b>Gyenge helyesség</b>: a program a feladat kezdőállapotaiból indulva képes megállni, és ha megáll, akkor ezt a kezdőállapothoz tartozó valamelyik célállapotban teszi.</li>
+    </ul>
+  </div>
+  <div class="taskgroup">
+
+  <article class="task">
+    <div class="task-head"><span class="no">Plusz-mínusz 1.</span><span class="kind pm">plusz-mínusz</span></div>
+    <div class="stmt">
+      <p>Milyen végrehajtásai vannak az alábbi programnak a 14, a 10, a 6, a 0 és a −3 állapotokból indulva? \(A = (x : H)\), \(H = \{ a \in \Z \mid a \geq -5 \}\).</p>
+      <div class="sg"><div class="loop"><div class="cond">\(x \neq 10\)</div><div class="body"><div class="st">\(x := x + \sgn(x)\)</div></div></div></div>
+    </div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p>Emlékeztető: \(\sgn(2) = \sgn(1) = 1\), \(\sgn(0) = 0\), \(\sgn(-1) = -1\).</p>
+      <ul>
+        <li>\(14 \to \sq{14, 15, 16, \dots}\) (végtelen)</li>
+        <li>\(10 \to \sq{10}\)</li>
+        <li>\(6 \to \sq{6, 7, 8, 9, 10}\)</li>
+        <li>\(0 \to \sq{0, 0, 0, 0, \dots}\) (végtelen, mert \(\sgn(0) = 0\))</li>
+        <li>\(-3 \to \sq{-3, -4, -5, \fail}\) (a \(-6 \notin H\))</li>
+      </ul>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">Plusz-mínusz 2.</span><span class="kind pm">plusz-mínusz</span></div>
+    <div class="stmt">
+      <p>Milyen végrehajtásai vannak az alábbi programnak a \((0,0)\), az \((1,1)\), a \((2,2)\) és az \((5,5)\) állapotokból indulva? \(A = (n : \N,\ d : \N)\).</p>
+      <div class="sg"><div class="st">\(d := 2\)</div><div class="loop"><div class="cond">\(d \nmid n\)</div><div class="body"><div class="st">\(d := d + 1\)</div></div></div></div>
+    </div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <ul>
+        <li>\((0,0) \to \sq{(0,0), (0,2)}\) (a \(2 \mid 0\), nem lép a ciklusba)</li>
+        <li>\((1,1) \to \sq{(1,1), (1,2), (1,3), (1,4), \dots}\) (végtelen: 1-nek nincs 1-nél nagyobb osztója)</li>
+        <li>\((2,2) \to \sq{(2,2), (2,2)}\) (az értékadás után ugyanaz az állapot, de az is lépés)</li>
+        <li>\((5,5) \to \sq{(5,5), (5,2), (5,3), (5,4), (5,5)}\)</li>
+      </ul>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">1. feladat</span><span class="kind">programfüggvény</span></div>
+    <div class="stmt"><p>Adjuk meg az előző (plusz-mínusz 1.) \(S\) program programfüggvényeit (\(p(S)\) és \(\tilde p(S)\))! \(A = (x : H)\), \(H = \{ a \in \Z \mid a \geq -5 \}\), \(S\): ciklus \(x \neq 10\) mellett \(x := x + \sgn(x)\).</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      \[p(S) \subseteq A \times A, \qquad \D_{p(S)} = \{1, \dots, 10\}, \qquad p(S)(a) = \{10\} \ \ (a \in \{1, \dots, 10\})\]
+      \[\tilde p(S) \subseteq A \times (A \cup \{\fail\}), \qquad \D_{\tilde p(S)} = \{-5, \dots, -1\} \cup \{1, \dots, 10\}\]
+      \[\tilde p(S)(a) = \begin{cases} \{\fail\}, & a \in [-5..-1] \\ \{10\}, & a \in [1..10] \end{cases}\]
+      <p>A 0 és a 10-nél nagyobb számok egyikben sincsenek benne, mert onnan csak végtelen végrehajtás indul.</p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">1. kvíz</span><span class="kind quiz">kvíz</span></div>
+    <div class="stmt"><p>Adjuk meg az alábbi \(S\) program programfüggvényeit (\(p(S)\) és \(\tilde p(S)\))! \(A = \{1, 2, 3\}\),</p>
+      \[S = \{\ 1 \to \sq{1, 2, 3, 1},\ 1 \to \sq{1, 2},\ \ 2 \to \sq{2, 3},\ 2 \to \sq{2, 2, 2, \dots},\ \ 3 \to \sq{3, 2, 1},\ 3 \to \sq{3, 1, \fail}\ \}\]
+    </div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p>\(\D_{p(S)} = \{1\}\), \(p(S)(1) = \{1, 2\}\). (2-ből van végtelen, 3-ból van hibás végrehajtás.)</p>
+      <p>\(\D_{\tilde p(S)} = \{1, 2, 3\}\), \(\tilde p(S)(1) = \{1, 2\}\), \(\tilde p(S)(2) = \{3\}\), \(\tilde p(S)(3) = \{1, \fail\}\).</p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">2. feladat</span><span class="kind">megoldás</span></div>
+    <div class="stmt"><p>Elemezzük az alábbi programot és feladatot! (Igaz-e, hogy \(S\) program? Mi \(S(2)\)? Mi a programfüggvény és a feladat értelmezési tartománya, képhalmazai? Megoldja-e a program a feladatot? Mi a gyenge programfüggvény?) \(A = \{1, 2, 3, 4, 5\}\),</p>
+      \[S = \left\{ \begin{array}{lll} 1 \to \sq{1, 2, 5, 1} & 1 \to \sq{1, 4, 3, 5, 2} & 1 \to \sq{1, 3, 2, 3, \dots} \\ 2 \to \sq{2, 1} & 2 \to \sq{2, 4} & \\ 3 \to \sq{3, 3, 3, \dots} & & \\ 4 \to \sq{4, 3, 1, 2, 5, 1} & 4 \to \sq{4, 1, 5, 4, 2} & \\ 5 \to \sq{5, 2, 3, 4} & 5 \to \sq{5, 2, \fail} & 5 \to \sq{5, 3, 4} \end{array} \right\}\]
+      \[F = \{ (2,1), (2,4), (4,1), (4,2), (4,5) \}\]
+    </div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <div class="tbl"><table><tbody>
+        <tr><td>Igaz-e, hogy \(S\) program? Mi \(S(2)\)?</td><td>Igen. \(S(2) = \{ \sq{2,1}, \sq{2,4} \}\)</td></tr>
+        <tr><td>\(S\) programfüggvénye</td><td>\(\D_{p(S)} = \{2, 4\}\), \(p(S)(2) = \{1, 4\}\), \(p(S)(4) = \{1, 2\}\), azaz \(p(S) = \{(2,1), (2,4), (4,1), (4,2)\}\); \(p(S)(3) = \emptyset\)</td></tr>
+        <tr><td>Az \(F\) feladat</td><td>\(\D_F = \{2, 4\}\), \(F(2) = \{1, 4\}\), \(F(4) = \{1, 2, 5\}\)</td></tr>
+        <tr><td>Megoldja-e?</td><td>1. \(\{2,4\} = \D_F \subseteq \D_{p(S)} = \{2, 4\}\) ✓ &nbsp; 2. \(\{1,4\} = p(S)(2) \subseteq F(2) = \{1,4\}\) ✓, \(\{1,2\} = p(S)(4) \subseteq F(4) = \{1,2,5\}\) ✓ ⇒ <span class="ans">megoldja</span></td></tr>
+        <tr><td>Gyenge programfüggvény</td><td>\(\D_{\tilde p(S)} = \{1, 2, 4, 5\}\), \(\tilde p(S) = \{(1,1), (1,2), (2,1), (2,4), (4,1), (4,2), (5,4)\}\)</td></tr>
+      </tbody></table></div>
+      <div class="warn"><b>Megjegyzés</b>A gyakorlati lapon \(\D_{\tilde p(S)} = A\) szerepel, de 3-ból csak végtelen végrehajtás indul, ezért \(3 \notin \D_{\tilde p(S)}\) (az órai jegyzetben helyesen \(\{1, 2, 4, 5\}\)). A definíció szerint \(\tilde p(S) \subseteq A \times (A \cup \{\fail\})\), így az 5-ből induló \(\sq{5, 2, \fail}\) miatt az \((5, \fail)\) pár is benne van: \(\tilde p(S)(5) = \{4, \fail\}\).</div>
+      <p>Miért nincs 1 és 5 a \(\D_{p(S)}\)-ben? 1-ből van végtelen végrehajtás, 5-ből van \(\fail\)-re végződő; a programfüggvényhez <em>minden</em> végrehajtásnak normálisan kell terminálnia.</p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">2. kvíz</span><span class="kind quiz">kvíz</span></div>
+    <div class="stmt"><p>Megoldja-e az 1. kvíz \(S\) programja az \(F = \{(1,1), (1,2), (1,3)\}\) feladatot? (\(A = \{1,2,3\}\))</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p><span class="ans">Igen.</span> \(\{1\} = \D_F \subseteq \D_{p(S)} = \{1\}\) és \(\{1, 2\} = p(S)(1) \subseteq F(1) = \{1, 2, 3\}\).</p>
+      <div class="warn"><b>Megjegyzés</b>A lapon \(p(S)(1) = \{1, 3\}\) áll, ez elírás: az 1. kvíz szerint \(p(S)(1) = \{1, 2\}\). A válasz ettől nem változik.</div>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">3. feladat</span><span class="kind">megoldás</span></div>
+    <div class="stmt"><p>Megoldják-e az alábbi programok (igen/nem, indoklással) azt a feladatot, amelyben egy \(n\) összetett természetes számnak keressük egy \(d\) természetes valódi osztóját?</p>
+      \[A = (n : \N,\ d : \N), \qquad \D_F = \{ (x, *) \mid x \text{ összetett} \}, \qquad F(x, *) = \{ (x, v) \mid v \mid x \wedge v \neq 1 \wedge v \neq x \}\]
+      <div class="sgrow">
+        <div class="sgwrap"><span class="label">a)</span><div class="sg"><div class="st">\(d := 2\)</div><div class="loop"><div class="cond">\(d \nmid n\)</div><div class="body"><div class="st">\(d := d + 1\)</div></div></div></div></div>
+        <div class="sgwrap"><span class="label">b)</span><div class="sg"><div class="st">\(d :\in \{ n-1,\ n-2 \}\)</div><div class="loop"><div class="cond">\(d \nmid n\)</div><div class="body"><div class="st">\(d := d - 1\)</div></div></div></div></div>
+      </div>
+    </div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p><b>a)</b> \(\D_{p(S)} = \{ (x, *) \mid x \neq 1 \}\) (1-ből végtelen ciklus), és</p>
+      \[p(S)(x, *) = \{ (x, v) \mid v = \min\{ z \in \N \mid z > 1 \wedge z \mid x \} \}\]
+      <p>(\(v\) az \(x\) legkisebb 1-nél nagyobb osztója, ami valódi osztó, ha \(x\) összetett.) <span class="ans">Megoldja:</span></p>
+      <ol>
+        <li>\(\{ (x, *) \mid x \text{ összetett} \} = \D_F \subseteq \D_{p(S)} = \{ (x, *) \mid x \neq 1 \}\) ✓</li>
+        <li>\(\{ (x, v) \mid v = \min\{z \in \N \mid z > 1 \wedge z \mid x\} \} = p(S)(x, *) \subseteq F(x, *)\) ✓</li>
+      </ol>
+      <p><b>b)</b> \(\D_{p(S)} = \{ (x, *) \mid x \geq 3 \}\) (0-ból, 1-ből és 2-ből van \(\fail\)-re futó végrehajtás), és</p>
+      \[p(S)(x, *) = \{ (x, v) \mid v = \max\{ z \in \N \mid z \lt x \wedge z \mid x \} \}\]
+      <p>(\(v\) az \(x\) legnagyobb \(x\)-nél kisebb osztója, ami valódi osztó, ha \(x\) összetett.) <span class="ans">Megoldja:</span></p>
+      <ol>
+        <li>\(\{ (x, *) \mid x \text{ összetett} \} = \D_F \subseteq \D_{p(S)} = \{ (x, *) \mid x \geq 3 \}\) ✓</li>
+        <li>\(p(S)(x, *) \subseteq F(x, *)\) ✓</li>
+      </ol>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">3. kvíz</span><span class="kind quiz">kvíz</span></div>
+    <div class="stmt"><p>Ha \(S\) program megoldja az \(F\) feladatot, akkor igazak-e a következő állítások?</p>
+      <ol type="a">
+        <li>Ha \(F\) nem determinisztikus, akkor \(S\) sem determinisztikus. (Nem-determinisztikus feladatot csak nem-determinisztikus program oldhat meg?)</li>
+        <li>Ha \(F\) determinisztikus, akkor \(p(S)\) determinisztikus. (Determinisztikus feladatot csak determinisztikus programfüggvényű program oldhat meg?)</li>
+        <li>Ha \(S\) nem determinisztikus, akkor \(p(S)\) nem determinisztikus. (Nem-determinisztikus programnak a programfüggvénye is nem-determinisztikus?)</li>
+      </ol>
+    </div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p><span class="ans">Mindhárom hamis.</span> Ugyanezek az állítások szerepelnek a 3. gyakorlat 1. feladatában (a, e, c pont), ahol órán ellenpéldákkal megoldottuk őket: <a href="#gy3-f1">ugrás oda</a>.</p>
+    </div></details>
+  </article>
+
+  </div>
+</section>
+
+<!-- ======================= 3. GYAKORLAT ======================= -->
+<section id="gy3">
+  <div class="section-head">
+    <span class="label">3. gyakorlat</span>
+    <h2>Megoldás: ellenpéldák és bizonyítások</h2>
+    <p>Megoldás definíciója: \(S\) megoldja \(F\)-et, ha 1. \(\D_F \subseteq \D_{p(S)}\) és 2. \(\forall a \in \D_F : p(S)(a) \subseteq F(a)\). „Igaz-e?” kérdésnél: ha nem, egy ellenpélda kell; ha igen, általános bizonyítás.</p>
+  </div>
+  <div class="toolbar"><button type="button" data-toggle="gy3">Összes megoldás kinyitása</button></div>
+  <div class="taskgroup">
+
+  <article class="task">
+    <div class="task-head"><span class="no">Plusz-mínusz 1.</span><span class="kind pm">plusz-mínusz</span></div>
+    <div class="stmt"><p>Megoldja-e az \(S\) program az \(F\) feladatot? \(A = \{1, 2, 3\}\),</p>
+      \[S = \{\ 1 \to \sq{1, 2, 3, 1},\ \ 2 \to \sq{2, 3},\ 2 \to \sq{2, 2, 2, \dots},\ \ 3 \to \sq{3, 2, 1}\ \}, \qquad F = \{ (1,1), (1,3), (3,1) \}\]
+    </div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <ol>
+        <li>\(\{1, 3\} = \D_F \subseteq \D_{p(S)} = \{1, 3\}\) ✓</li>
+        <li>\(\{1\} = p(S)(1) \subseteq F(1) = \{1, 3\}\) ✓, &nbsp; \(\{1\} = p(S)(3) \subseteq F(3) = \{1\}\) ✓</li>
+      </ol>
+      <p><span class="ans">Megoldja.</span></p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">Plusz-mínusz 2.</span><span class="kind pm">plusz-mínusz</span></div>
+    <div class="stmt"><p>Megoldja-e az \(S\) program az \(F\) feladatot? \(A = \{1, 2, 3\}\),</p>
+      \[S = \{\ 1 \to \sq{1, 2, 3, 1},\ \ 2 \to \sq{2, 3},\ \ 3 \to \sq{3, 2, 1},\ 3 \to \sq{3, 1, \fail}\ \}, \qquad F = \{ (1,1), (1,3), (2,3), (3,1) \}\]
+    </div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <div class="own"><b>Saját megoldás (a lapon és a jegyzetben nincs)</b>
+        \(\D_F = \{1, 2, 3\}\), de a 3-ból van \(\fail\)-re végződő végrehajtás, így \(\D_{p(S)} = \{1, 2\}\). Az 1. feltétel sérül: \(\D_F \not\subseteq \D_{p(S)}\) ⇒ <span class="ans">nem oldja meg.</span>
+      </div>
+    </div></details>
+  </article>
+
+  <article class="task" id="gy3-f1">
+    <div class="task-head"><span class="no">1. feladat</span><span class="kind">igaz-e?</span></div>
+    <div class="stmt"><p>Legyen \(A\) tetszőleges állapottér, \(S\) egy program, \(F\) egy feladat úgy, hogy \(S\) megoldja \(F\)-et. Igazak-e a következők?</p>
+      <ol type="a">
+        <li>Ha \(F\) nem determinisztikus, akkor \(S\) sem az.</li>
+        <li>Ha \(F\) determinisztikus, akkor \(S\) is az.</li>
+        <li>Ha \(S\) nem determinisztikus, akkor \(p(S)\) sem az.</li>
+        <li>Ha \(p(S)\) nem determinisztikus, akkor \(F\) sem az.</li>
+        <li>Ha \(F\) determinisztikus, akkor \(p(S)\) is az.</li>
+        <li>Ha \(F\) nem determinisztikus, akkor \(p(S)\) sem az.</li>
+      </ol>
+    </div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p><span class="ans">Mind a hat hamis.</span> Ellenpéldák (órai jegyzet), mindegyikben \(A = \{1, 2\}\):</p>
+      <ul>
+        <li><b>a)</b> \(F = \{(1,1), (1,2)\}\) (nem determinisztikus), \(S = \{1 \to \sq{1},\ 2 \to \sq{2, \fail}\}\) (determinisztikus), és megoldja: \(\D_F = \{1\} \subseteq \D_{p(S)} = \{1\}\), \(p(S)(1) = \{1\} \subseteq \{1, 2\}\).</li>
+        <li><b>b)</b> \(F = \{(1,1)\}\), \(S = \{1 \to \sq{1},\ 2 \to \sq{2, \fail},\ 2 \to \sq{2}\}\) (nem determinisztikus: 2-ből két végrehajtás), \(p(S) = \{(1,1)\}\); megoldja.</li>
+        <li><b>c)</b> Lásd b): \(S\) nem determinisztikus, de \(p(S) = \{(1,1)\}\) determinisztikus.</li>
+        <li><b>d)</b> \(S = \{1 \to \sq{1},\ 2 \to \sq{2, 1},\ 2 \to \sq{2}\}\), \(p(S) = \{(1,1), (2,1), (2,2)\}\) (nem determinisztikus), \(F = \{(1,1)\}\) (determinisztikus). Megoldja: \(\{1\} = \D_F \subseteq \D_{p(S)} = \{1, 2\}\), \(\{1\} = p(S)(1) \subseteq F(1) = \{1\}\).</li>
+        <li><b>e)</b> Lásd d): \(F\) determinisztikus, \(p(S)\) mégsem.</li>
+        <li><b>f)</b> \(F = \{(1,1), (1,2)\}\), \(S = \{1 \to \sq{1},\ 2 \to \sq{2, \fail},\ 2 \to \sq{2}\}\), \(p(S) = \{(1,1)\}\) (determinisztikus). Megoldja: \(\{1\} = \D_F \subseteq \{1\}\), \(\{1\} \subseteq F(1) = \{1, 2\}\).</li>
+      </ul>
+      <div class="tip"><b>A kulcs</b>A megoldás csak a \(\D_F\)-beli kezdőállapotokra mond valamit. Ami \(\D_F\)-en kívül történik (pl. 2-ből), az lehet nem-determinisztikus vagy hibás is; és \(p(S)(a) \subseteq F(a)\) megengedi, hogy a program „szűkebben” válasszon, mint a feladat.</div>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">1. kvíz</span><span class="kind quiz">kvíz</span></div>
+    <div class="stmt"><p>Legyen \(A = \{1, 2, 3\}\) és \(F = \{(1,1), (1,2), (2,3)\}\). Adjunk meg egy \(S\) programot, ami megoldja az \(F\) feladatot!</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <div class="own"><b>Saját megoldás (a jegyzetben nincs kitöltve)</b>
+        Például \(S = \{1 \to \sq{1},\ 2 \to \sq{2, 3},\ 3 \to \sq{3}\}\). Ellenőrzés: \(\D_F = \{1, 2\} \subseteq \D_{p(S)} = \{1, 2, 3\}\), \(p(S)(1) = \{1\} \subseteq \{1, 2\}\), \(p(S)(2) = \{3\} \subseteq \{3\}\). A 3-ból bármi lehetne (akár \(\sq{3, \fail}\) is), mert \(3 \notin \D_F\); de minden állapotból kell legalább egy végrehajtás, hogy program legyen.
+      </div>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">2. feladat</span><span class="kind">igaz-e?</span></div>
+    <div class="stmt"><p>Legyenek \(S_1\) és \(S_2\) programok az \(A\) állapottér felett úgy, hogy \(S_1 \subseteq S_2\).</p>
+      <ol type="a"><li>Igaz-e, hogy ekkor \(\D_{p(S_1)} \subseteq \D_{p(S_2)}\)?</li><li>Igaz-e, hogy ekkor \(\D_{p(S_2)} \subseteq \D_{p(S_1)}\)?</li></ol>
+    </div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p><b>a)</b> <span class="ans">Nem.</span> Ellenpélda: \(A = \{a\}\), \(S_1 = \{a \to \sq{a}\}\), \(S_2 = \{a \to \sq{a},\ a \to \sq{a, \fail}\}\). Ekkor \(\D_{p(S_1)} = A\), de \(\D_{p(S_2)} = \emptyset\). (Órán: \(A = \{1,2\}\), \(S_1 = \{1 \to \sq{1}, 2 \to \sq{2}\}\), \(S_2\) ugyanez kiegészítve \(\sq{1, \fail}\)-lel és \(\sq{2, \fail}\)-lel; \(\{1,2\} = \D_{p(S_1)} \not\subseteq \D_{p(S_2)} = \emptyset\).)</p>
+      <p><b>b)</b> <span class="ans">Igen.</span> Legyen \(a \in \D_{p(S_2)}\); cél: \(a \in \D_{p(S_1)}\).</p>
+      \[a \in \D_{p(S_2)} \iff S_2(a) \subseteq \overline{A}^{*} \quad /\ \text{programfüggvény def.}\]
+      \[S_1 \subseteq S_2 \Rightarrow S_1(a) \subseteq S_2(a)\ \ (\forall a \in A)\]
+      <p>A kettőből \(S_1(a) \subseteq \overline{A}^{*}\), ami éppen azt jelenti, hogy \(a \in \D_{p(S_1)}\). (Itt \(\overline{A}^{*}\) a véges, \(\fail\) nélküli sorozatok halmaza.)</p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">3. feladat</span><span class="kind">igaz-e?</span></div>
+    <div class="stmt"><p>Legyen \(A\) egy tetszőleges állapottér, ezen \(S\) és \(S'\) egy-egy program, \(F\) és \(F'\) egy-egy feladat úgy, hogy \(S\) megoldja \(F\)-et. Igazak-e a következők?</p>
+      <ol type="a"><li>Ha \(S \subseteq S'\), akkor \(S'\) is megoldja \(F\)-et.</li><li>Ha \(S' \subseteq S\), akkor \(S'\) is megoldja \(F\)-et.</li><li>Ha \(F \subseteq F'\), akkor \(S\) megoldja \(F'\)-t is.</li></ol>
+    </div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p><b>a)</b> <span class="ans">Nem.</span> \(A = \{a\}\), \(F = \{a \to a\}\), \(S = \{a \to \sq{a}\}\), \(S' = \{a \to \sq{a},\ a \to \sq{a, \fail}\}\); \(\D_{p(S')} = \emptyset\), így \(\D_F \not\subseteq \D_{p(S')}\). (Órán végtelen végrehajtással: \(A = \{1\}\), \(F = \{(1,1)\}\), \(S' = \{1 \to \sq{1},\ 1 \to \sq{1, 1, 1, \dots}\}\), \(\{1\} = \D_F \not\subseteq \D_{p(S')} = \emptyset\).)</p>
+      <p><b>b)</b> <span class="ans">Igen.</span></p>
+      <ul>
+        <li>Tény: \(\D_F \subseteq \D_{p(S)}\) és \(\forall a \in \D_F : p(S)(a) \subseteq F(a)\) (mert \(S\) megoldja \(F\)-et).</li>
+        <li>Cél: \(\D_F \subseteq \D_{p(S')}\) és \(\forall a \in \D_F : p(S')(a) \subseteq F(a)\) (a megoldás definíciója).</li>
+        <li>\(\D_F \subseteq \D_{p(S)} \subseteq \D_{p(S')}\), mert \(S' \subseteq S\) miatt a 2. feladat b) része szerint \(\D_{p(S)} \subseteq \D_{p(S')}\).</li>
+        <li>\(\forall a \in \D_F : p(S')(a) \subseteq p(S)(a) \subseteq F(a)\). Az első tartalmazás: legyen \(b \in p(S')(a)\). Ekkor \(\exists \alpha \in S'(a) : \alpha_{|\alpha|} = b\) (programfüggvény def.); \(S' \subseteq S \Rightarrow S'(a) \subseteq S(a)\), tehát \(\exists \alpha \in S(a) : \alpha_{|\alpha|} = b\), azaz \(b \in p(S)(a)\).</li>
+      </ul>
+      <p><b>c)</b> <span class="ans">Nem.</span> \(A = \{a\}\), \(F = \emptyset\), \(F' = \{a \to a\}\), \(S = \{a \to \sq{a, \fail}\}\). Az üres feladatot minden program megoldja, \(F'\)-t viszont \(S\) nem.</p>
+      <p><b>És ha még \(\D_F = \D_{F'}\) is fennáll?</b> Akkor <span class="ans">igen</span>:</p>
+      <ul>
+        <li>Tény: \(\D_F \subseteq \D_{p(S)}\), \(\forall a \in \D_F : p(S)(a) \subseteq F(a)\) (mert \(S\) megoldja \(F\)-et); továbbá \(\D_F = \D_{F'}\) és \(\forall a \in \D_F : F(a) \subseteq F'(a)\) (mert \(F \subseteq F'\)).</li>
+        <li>Cél: \(\D_{F'} \subseteq \D_{p(S)}\): \(\D_{F'} = \D_F \subseteq \D_{p(S)}\) ✓; és \(\forall a \in \D_{F'} : p(S)(a) \subseteq F(a) \subseteq F'(a)\) ✓.</li>
+      </ul>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">2. kvíz</span><span class="kind quiz">kvíz</span></div>
+    <div class="stmt"><p>Ha \(S\) megoldja az \(F\) feladatot és \(F' \subseteq F\), akkor \(S\) megoldja-e \(F'\) feladatot is?</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p><span class="ans">Nem</span> (lap).</p>
+      <div class="own"><b>Saját ellenpélda</b>
+        \(A = \{1, 2\}\), \(F = \{(1,1), (1,2)\}\), \(F' = \{(1,2)\}\), \(S = \{1 \to \sq{1},\ 2 \to \sq{2}\}\). \(S\) megoldja \(F\)-et (\(p(S)(1) = \{1\} \subseteq \{1, 2\}\)), de \(F'\)-t nem, mert \(p(S)(1) = \{1\} \not\subseteq F'(1) = \{2\}\). A szűkebb feladat „szigorúbb” lehet a célállapotokban.
+      </div>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">3. kvíz</span><span class="kind quiz">kvíz</span></div>
+    <div class="stmt"><p>Mely feladatokat oldja meg az \(\ABORT\) program egy adott \(A\) állapottéren? \(\ABORT(a) ::= \{ \sq{a, \fail} \}\)</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <div class="own"><b>Saját megoldás</b>
+        \(\D_{p(\ABORT)} = \emptyset\), így a megoldás 1. feltétele miatt \(\D_F \subseteq \emptyset\), vagyis \(\D_F = \emptyset\): az \(\ABORT\) <span class="ans">csak az üres feladatot (\(F = \emptyset\)) oldja meg.</span>
+      </div>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">4. feladat</span><span class="kind">igaz-e?</span></div>
+    <div class="stmt"><p>Legyenek \(S_1\) és \(S_2\) programok az \(A\) állapottér felett, \(F\) egy feladat úgy, hogy \(S_1\) és \(S_2\) is megoldja \(F\)-et. Megoldja-e \(S_1 \cup S_2\) is az \(F\)-et?</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <div class="own"><b>Saját megoldás (a lapon nincs)</b>
+        <span class="ans">Igen.</span> \(S_1 \cup S_2\) is program (minden állapotból indul végrehajtás). Egy \(a\)-ból \(S_1 \cup S_2\) minden végrehajtása \(S_1\)-é vagy \(S_2\)-é, ezért \(\D_{p(S_1 \cup S_2)} = \D_{p(S_1)} \cap \D_{p(S_2)} \supseteq \D_F\), és \(a \in \D_F\)-re \(p(S_1 \cup S_2)(a) = p(S_1)(a) \cup p(S_2)(a) \subseteq F(a) \cup F(a) = F(a)\).
+      </div>
+    </div></details>
+  </article>
+
+  </div>
+</section>
+
+<!-- ======================= 4. GYAKORLAT ======================= -->
+<section id="gy4">
+  <div class="section-head">
+    <span class="label">4. gyakorlat</span>
+    <h2>Ekvivalencia, logikai függvények, leggyengébb előfeltétel</h2>
+    <p>\([\lf(S, R)] = \{ a \in A \mid a \in \D_{p(S)} \wedge p(S)(a) \subseteq [R] \}\): azok az állapotok, ahonnan \(S\) biztosan terminál, és mindenképp \(R\)-et teljesítő állapotban.</p>
+  </div>
+  <div class="toolbar"><button type="button" data-toggle="gy4">Összes megoldás kinyitása</button></div>
+  <div class="taskgroup">
+
+  <article class="task">
+    <div class="task-head"><span class="no">Plusz-mínusz</span><span class="kind pm">plusz-mínusz</span></div>
+    <div class="stmt"><p>Legyen \(A = [1..5]\), és az \(A\) feletti \(S\) program:</p>
+      \[S = \{ (a, \sq{a}) \} \cup \{ (a, \sq{a, a+1}) \mid a \leq 4 \} \cup \{ (a, \sq{a, a, a, \dots}) \mid a = 3 \}\]
+      <p>(a) Határozza meg \(S(3)\)-at! (b) Hány elemű \(S\)? (c) Határozza meg \(\D_{p(S)}\)-t! (d) Határozza meg \(p(S)(3)\)-at! (e) Hány elemű \(p(S)\)?</p>
+    </div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <ul>
+        <li>(a) \(S(3) = \{ \sq{3},\ \sq{3, 4},\ \sq{3, 3, 3, \dots} \}\) (és pl. \(S(1) = \{ \sq{1}, \sq{1, 2} \}\))</li>
+        <li>(b) \(|S| = 5 + 4 + 1 = 10\)</li>
+        <li>(c) \(\D_{p(S)} = \{1, 2, 4, 5\}\)</li>
+        <li>(d) \(p(S)(3) = \emptyset\)</li>
+        <li>(e) \(p(S) = \{ (1,1), (1,2), (2,2), (2,3), (4,4), (4,5), (5,5) \}\), tehát 7 elemű.</li>
+      </ul>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">1. feladat</span><span class="kind">programfüggvény</span></div>
+    <div class="stmt"><p>Keressük egy pozitív egész szám faktoriálisát. \(A = (n : \Z,\ f : \Z)\). Tekintsük az alábbi programokat! a) Adjuk meg a programfüggvényeiket. b) Ekvivalensek-e ezek a programok?</p>
+      <div class="sgrow">
+        <div class="sgwrap"><span class="label">\(S_1\)</span><div class="sg"><div class="st">\(f := 1\)</div><div class="loop"><div class="cond">\(n > 1\)</div><div class="body"><div class="st">\(f := f \cdot n\)</div><div class="st">\(n := n - 1\)</div></div></div></div></div>
+        <div class="sgwrap"><span class="label">\(S_2\)</span><div class="sg"><div class="st">\(f := 1\)</div><div class="loop"><div class="cond">\(n \neq 1\)</div><div class="body"><div class="st">\(f := f \cdot n\)</div><div class="st">\(n := n - 1\)</div></div></div></div></div>
+        <div class="sgwrap"><span class="label">\(S_3\)</span><div class="sg"><div class="st">\(f := \sgn(n)^{|n+1|}\)</div><div class="loop"><div class="cond">\(|n| \neq 1\)</div><div class="body"><div class="st">\(f := f \cdot n\)</div><div class="st">\(n := n - \sgn(n)\)</div></div></div></div></div>
+      </div>
+    </div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p><b>A feladat</b> többféle felírásban (a harmadikat használjuk):</p>
+      <ul>
+        <li>\(F = \{ ((x, y), (u, v)) \mid x > 0 \wedge v = x! \}\), ahol \((x, y) \sim \{n : x,\ f : y\}\); \(\D_F = \{(x, y) \mid x > 0\}\), \(F((x, y)) = \{(u, v) \mid x > 0 \wedge v = x!\}\)</li>
+        <li>\(F = \{ (a, c) \mid n(a) > 0 \wedge f(c) = n(a)! \}\); \(\D_F = \{a \mid n(a) > 0\}\), \(F(a) = \{c \mid f(c) = n(a)!\}\)</li>
+        <li>\(F = \{ ((x, *), (*, x!)) \mid x > 0 \}\); \(\D_F = \{ (x, *) \mid x > 0 \}\), \(F((x, *)) = \{ (*, x!) \}\)</li>
+      </ul>
+      <p><b>a)</b></p>
+      \[\D_{p(S_1)} = A, \qquad p(S_1)(x, *) = \begin{cases} \{(1, x!)\}, & x > 0 \\ \{(x, 1)\}, & x \leq 0 \end{cases}\]
+      \[\D_{p(S_2)} = \{ (x, *) \mid x > 0 \}, \qquad p(S_2)(x, *) = \{(1, x!)\}\]
+      \[\D_{p(S_3)} = \{ (x, *) \mid x \neq 0 \}, \qquad p(S_3)(x, *) = \begin{cases} \{(1, x!)\}, & x > 0 \\ \{(-1, |x|!)\}, & x \lt 0 \end{cases}\]
+      <p><b>b)</b> <span class="ans">Nem ekvivalensek</span>, mert különböző a programfüggvényük (pl. \(x \leq 0\)-ra \(S_1\) terminál, \(S_2\) nem; \(x \lt 0\)-ra \(S_3\) mást számol, mint \(S_1\)).</p>
+      <div class="tip"><b>Miért nem terminál?</b>\(S_2\) nem pozitív \(n\)-re soha nem éri el az 1-et (végtelen ciklus). \(S_3\)-nál \(n = 0\)-ra \(f := 0^1 = 0\), és \(n := 0 - \sgn(0) = 0\) miatt örökké ott marad.</div>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">1. kvíz</span><span class="kind quiz">kvíz</span></div>
+    <div class="stmt"><p>A fentiek közül melyik program oldja meg a faktoriális feladatot?</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p><span class="ans">Mindegyik.</span> Mindhárom \(\D_{p(S)}\)-je tartalmazza \(\D_F = \{(x, *) \mid x > 0\}\)-t, és pozitív \(x\)-re mindhárom az \((1, x!)\) állapotba visz, ami \(F(x, *) = \{(*, x!)\}\)-ben van.</p>
+    </div></details>
+  </article>
+
+  <div class="def">
+    <b>Halmazelmélet és logika kapcsolata</b>
+    <ul>
+      <li>\(H \subseteq A\) helyett: \(a \in H\), vagy a karakterisztikus függvény \(\chi_H : A \to \LL\), \(\chi_H(a) = \igaz\), ha \(a \in H\), különben \(\hamis\).</li>
+      <li>\(P : A \to \LL\) helyett: igazsághalmaza \([P] = \{ a \in A \mid P(a) = \igaz \}\).</li>
+      <li>\(\overline{H}\) (\(A \setminus H\)) \(\leftrightarrow \neg\chi_H\); &nbsp; \(H \cup G \leftrightarrow \chi_H \vee \chi_G\); &nbsp; \(H \cap G \leftrightarrow \chi_H \wedge \chi_G\); &nbsp; \(H \subseteq G \leftrightarrow \chi_H \to \chi_G\) vagy \(\chi_H \Rightarrow \chi_G\).</li>
+    </ul>
+  </div>
+
+  <article class="task">
+    <div class="task-head"><span class="no">2. feladat</span><span class="kind">logika</span></div>
+    <div class="stmt"><p>Legyen \(A = [1..5]\), valamint \(P, Q : A \to \LL\) úgy, hogy \([P] = \{1, 2\}\) és \([Q] = \{1, 2, 3, 4\}\). a) Igaz-e, hogy \(P \Rightarrow Q\)? b) Mi a \(P \wedge Q\) és a \(P \vee Q\)? c) Mi a \(\neg Q\)?</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <ul>
+        <li>a) \(P \Rightarrow Q \iff [P] \subseteq [Q]\): \(\{1,2\} \subseteq \{1,2,3,4\}\), tehát <span class="ans">igaz</span>.</li>
+        <li>b) \([P \wedge Q] = [P] \cap [Q] = \{1, 2\}\); \([P \vee Q] = [P] \cup [Q] = \{1, 2, 3, 4\}\).</li>
+        <li>c) \([\neg Q] = A \setminus [Q] = \{5\}\).</li>
+      </ul>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">3. feladat</span><span class="kind">lf</span></div>
+    <div class="stmt"><p>Legyen \(A = [1..5]\), \(Q : A \to \LL\), \([Q] = \{1, 2, 3, 4\}\), és \(S\) a plusz-mínusz programja. Határozzuk meg \(\lf(S, Q)\) igazsághalmazát!</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p>\(\D_{p(S)} = \{1, 2, 4, 5\}\), \(p(S) = \{1 \to 1,\ 1 \to 2,\ 2 \to 2,\ 2 \to 3,\ 4 \to 4,\ 4 \to 5,\ 5 \to 5\}\).</p>
+      <p>\([\lf(S, R)] = \{ a \in A \mid a \in \D_{p(S)} \wedge p(S)(a) \subseteq [R] \}\) alapján: 1 ✓ (\(\{1,2\}\)), 2 ✓ (\(\{2,3\}\)), 4 ✗ (\(5 \notin [Q]\)), 5 ✗. Tehát <span class="ans">\([\lf(S, Q)] = \{1, 2\}\)</span>.</p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">2. kvíz</span><span class="kind quiz">kvíz</span></div>
+    <div class="stmt"><p>Döntsük el, hogy a 4 eleme-e \(\lf(S, P)\) igazsághalmazának! (\([P] = \{1, 2\}\), \(S\) mint fent.)</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p><span class="ans">Nem.</span> A program terminál ugyan a 4-ből indulva, de vagy a 4-ben, vagy az 5-ben teszi, azaz \(p(S)(4) = \{4, 5\}\), ami nem része az \(\{1, 2\}\) halmaznak. \([\lf(S, P)] = \{1\}\).</p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">4. feladat</span><span class="kind">lf</span></div>
+    <div class="stmt"><p>Legyen \(R : A \to \LL\) logikai függvény, \(S\) program az \(A\) állapottér felett. Határozzuk meg a következő leggyengébb előfeltételek igazsághalmazait: (a) \(\lf(\SKIP, R)\), (b) \(\lf(\ABORT, R)\), (c) \(\lf(S, \igaz)\).</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <ul>
+        <li>(a) \([\lf(\SKIP, R)] = [R]\), mert \(\SKIP : a \to \sq{a}\).</li>
+        <li>(b) \([\lf(\ABORT, R)] = \emptyset\), mert \(\ABORT : a \to \sq{a, \fail}\), sehonnan nem terminál.</li>
+        <li>(c) \([\lf(S, \igaz)] = \D_{p(S)}\), mert \([\igaz] = A\), így csak a terminálás számít. (\([\hamis] = \emptyset\).)</li>
+      </ul>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">3. kvíz</span><span class="kind quiz">kvíz</span></div>
+    <div class="stmt"><p>Legyen \(S\) program az \(A\) állapottér felett. \(\lf(S, \hamis) = \,?\)</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p>\([\lf(S, \hamis)] = \emptyset\), azaz <span class="ans">\(\lf(S, \hamis) = \hamis\)</span>: \(p(S)(a) \subseteq \emptyset\) csak üres \(p(S)(a)\)-ra teljesülne, de \(a \in \D_{p(S)}\) esetén \(p(S)(a)\) nem üres.</p>
+    </div></details>
+  </article>
+
+  <div class="def">
+    <b>Megjegyzés: logikai függvények rövid jelölése</b>
+    <p>Legyen \(A = (x : \N,\ y : \N)\) és \(R : A \to \LL\), ahol \(\forall a \in A : R(a) = (2 \cdot x(a) + y(a) \geq 5)\) (vagy \(R(\{x{:}m, y{:}n\}) = R((m, n)) = (2m + n \geq 5)\)). Ezt röviden \(R = (2x + y \geq 5)\) alakban írjuk.</p>
+    <p>Ez a lambda-kalkulus szerinti jelölés egyszerűsítése: \(R = \lambda x.\lambda y.(2x + y \geq 5)\). Kiértékelése \(x\) és/vagy \(y\) behelyettesítésével: \(\lambda x.\lambda y.(2x+y \geq 5)\ 8\ 4 = (2x+y \geq 5)^{x, y \leftarrow 8, 4} = (2 \cdot 8 + 4 \geq 5) = \igaz\), illetve \(\lambda x.(2x+y \geq 5)\ (x - y) = (2x+y \geq 5)^{x \leftarrow x - y} = (2(x-y) + y \geq 5) = (2x - y \geq 5)\).</p>
+  </div>
+
+  <article class="task">
+    <div class="task-head"><span class="no">5. feladat</span><span class="kind">lf</span></div>
+    <div class="stmt"><p>Legyen \(i : \N\). \(\lf(i := i + 1,\ 2i \geq 5) = \,?\)</p>
+      <p>(a) Jelölje \(S\) az \(i := i + 1\) értékadást, ahol \(A = (i : \N)\). Adjuk meg \(S\) programfüggvényét. (b) Legyen \(R : \N \to \LL\), \(\forall n \in \N : R(n) = (2n \geq 5)\). \(\lf(S, R) = \,?\)</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p><b>(a)</b> \(\D_{p(S)} = \N = A\), \(\forall n \in \N : p(S)(n) = \{n + 1\}\), vagy \(\forall a \in A : p(S)(a) = \{a + 1\}\).</p>
+      <p><b>(b)</b> \(R\) másként: \(\forall a \in A : R(a) = (2a \geq 5) = (2 \cdot i(a) \geq 5)\), röviden \(R = (2i \geq 5)\).</p>
+      <p><b>i) Halmazokkal:</b></p>
+      \[[\lf(S, R)] = \{ a \in \D_{p(S)} \mid p(S)(a) \subseteq [R] \} = \{ a \in \N \mid a + 1 \in \{ n \in \N \mid 2n \geq 5 \} \} = \{ a \mid 2(a+1) \geq 5 \} = \{ a \mid 2a + 2 \geq 5 \} = \{ a \mid a \geq 3/2 \} = \{ a \mid a \geq 2 \}\]
+      <p>Logikai állításként (\(\lf(S, R) : A \to \LL\)): \(\forall a \in A : \lf(S, R)(a) = (a \geq 2) = (i(a) \geq 2)\), röviden <span class="ans">\(\lf(S, R) = (i \geq 2)\)</span>.</p>
+      <p><b>ii) Másképpen számolva</b> (értékadásra):</p>
+      \[\lf(S, R) = \lf(i := i + 1, R) = i \in \D_{p(S)} \wedge R^{i \leftarrow i+1} = \big(i \in \N \wedge (i + 1 \in \N \wedge 2i \geq 5)^{i \leftarrow i+1}\big) = (\igaz \wedge i \geq 2) = (i \geq 2)\]
+    </div></details>
+  </article>
+
+  </div>
+</section>
+
+<!-- ======================= 5. GYAKORLAT ======================= -->
+<section id="gy5">
+  <div class="section-head">
+    <span class="label">5. gyakorlat</span>
+    <h2>Leggyengébb előfeltétel számolása, specifikáció, paramétertér</h2>
+    <p>Értékadásra: \(\lf(x := E, R) = \big((x, \dots) \in \D_{p(S)}\big) \wedge R^{x \leftarrow E}\). A specifikáció tétele pongyolán: ha \(Q \Rightarrow \lf(S, R)\), akkor \(S\) megoldja a \(Q\) előfeltétellel és \(R\) utófeltétellel specifikált feladatot.</p>
+  </div>
+  <div class="toolbar"><button type="button" data-toggle="gy5">Összes megoldás kinyitása</button></div>
+  <div class="taskgroup">
+
+  <article class="task">
+    <div class="task-head"><span class="no">Plusz-mínusz 1.</span><span class="kind pm">plusz-mínusz</span></div>
+    <div class="stmt"><p>Legyen \(A = \{1, 2, 3, 4, 5\}\), \(P : A \to \LL\), \([P] = \{1, 2\}\), és az \(A\) feletti \(S\) program:</p>
+      \[S = \{\ 1 \to \sq{1},\ 1 \to \sq{1, 3},\ \ 2 \to \sq{2, 1},\ 2 \to \sq{2},\ \ 3 \to \sq{3, 2},\ 3 \to \sq{3, \fail},\ \ 4 \to \sq{4, 1},\ 4 \to \sq{4, 2},\ 4 \to \sq{4, 4, 4, \dots},\ \ 5 \to \sq{5, 1}\ \}\]
+      <p>Határozzuk meg \(\lf(S, P)\) igazsághalmazát.</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p>\(\D_{p(S)} = \{1, 2, 5\}\), \(p(S) = \{1 \to 1,\ 1 \to 3,\ 2 \to 1,\ 2 \to 2,\ 5 \to 1\}\), így <span class="ans">\([\lf(S, P)] = \{2, 5\}\)</span> (1-ből a 3-ban is megállhat).</p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">Plusz-mínusz 2.</span><span class="kind pm">plusz-mínusz</span></div>
+    <div class="stmt"><p>Ugyanez betűkkel: \(A = \{a, b, c, d, e\}\), \([P] = \{a, b\}\),</p>
+      \[S = \{\ a \to \sq{a},\ a \to \sq{a, c},\ \ b \to \sq{b, a},\ b \to \sq{b},\ \ c \to \sq{c, b},\ c \to \sq{c, \fail},\ \ d \to \sq{d, a},\ d \to \sq{d, b},\ d \to \sq{d, d, d, \dots},\ \ e \to \sq{e, a}\ \}\]
+      <p>Határozzuk meg \(\lf(S, P)\) igazsághalmazát.</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p>\(\D_{p(S)} = \{a, b, e\}\), \(p(S) = \{a \to a,\ a \to c,\ b \to a,\ b \to b,\ e \to a\}\), így <span class="ans">\([\lf(S, P)] = \{b, e\}\)</span>.</p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">1. feladat</span><span class="kind">lf értékadásra</span></div>
+    <div class="stmt">
+      <p>(a) Jelölje \(S\) az \(i := i + 1\) értékadást (\(A = (i : \N)\)). Adjuk meg \(S\) programfüggvényét.</p>
+      <p>(b) Legyen \(R : \N \to \LL\) olyan, hogy \(\forall n \in \N : R(n) = (2n \geq 5)\), vagy másképp \([R] = \{ n \in \N \mid 2n \geq 5 \}\).</p>
+      <p>(c) \(\lf(i := i + 1,\ 2i \geq 5) = \,?\) &nbsp; (d) Számoljuk ki egyszerűbben is!</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p><b>(a)</b> \(\D_{p(S)} = \N = A\), \(\forall a \in A : p(S)(a) = \{a + 1\}\).</p>
+      <p><b>(b)</b> \(R\) megadható \(\forall a \in A : R(a) = (2 \cdot i(a) \geq 5)\) alakban, sőt \(R = (2i \geq 5)\) alakban is. Ez az \(R\) lambda-kalkulus szerinti jelölése (\(\lambda i.(2i \geq 5)\)), amelyből elhagytuk a \(\lambda i\)-t, mert egyértelmű, hogy az \(i\) változó helyére lehet értékeket vagy kifejezéseket helyettesíteni:</p>
+      \[\lambda i.(2i \geq 5)\ 3 = (2i \geq 5)^{i \leftarrow 3} = (6 \geq 5) = \igaz, \qquad \lambda i.(2i \geq 5)\ (i+1) = (2i \geq 5)^{i \leftarrow i+1} = (2i \geq 3) = (i \geq 2)\]
+      <p><b>(c)</b></p>
+      \[[\lf(S, R)] = \{ a \in \D_{p(S)} \mid p(S)(a) \subseteq [R] \} = \{ a \in A \mid \{a+1\} \subseteq [R] \} = \{ a \in A \mid a + 1 \in \{ n \in \N \mid 2n \geq 5 \} \} = \{ a \in \N \mid 2(a+1) \geq 5 \} = \{ a \in \N \mid a \geq 2 \}\]
+      <p>Logikai állításként: \(\forall a \in A : \lf(S, R)(a) = (a \geq 2) = (i(a) \geq 2)\), röviden \(\lf(S, R) = (i \geq 2)\).</p>
+      <p><b>(d)</b> \(\lf(S, R) = \lf(i := i + 1, R) = R^{i \leftarrow i+1} = (2i \geq 5)^{i \leftarrow i+1} = \) <span class="ans">\((i \geq 2)\)</span>.</p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">2. feladat</span><span class="kind">lf értékadásra</span></div>
+    <div class="stmt"><p>\(A = (x : \N,\ y : \N)\). \(\lf(x := x - y,\ 2x + y \geq 5) = \,?\)</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p><b>Halmazokkal:</b></p>
+      \[\begin{aligned}[\lf(S, R)] &= \{ a \in \D_{p(S)} \mid p(S)(a) \subseteq [R] \} = \{ a \in A \mid a \in \D_{p(S)} \wedge p(S)(a) \subseteq [R] \} \\ &= \{ a \in A \mid (x(a), y(a)) \in \D_{p(S)} \wedge \{ (x(a) - y(a),\ y(a)) \} \subseteq [R] \} \\ &= \{ a \in A \mid (x(a), y(a)) \in \{ (n, m) \in \N \times \N \mid n \geq m \} \wedge (x(a) - y(a),\ y(a)) \in \{ (n, m) \in \N \times \N \mid 2n + m \geq 5 \} \} \\ &= \{ a \in A \mid x(a) \geq y(a) \wedge 2(x(a) - y(a)) + y(a) \geq 5 \} = \{ a \in A \mid x(a) \geq y(a) \wedge 2x(a) - y(a) \geq 5 \}\end{aligned}\]
+      <p><b>Egyszerűbben:</b></p>
+      \[\lf(x := x - y, R) = (x, y) \in \D_{p(S)} \wedge R^{x \leftarrow x - y} = x \geq y \wedge (2x + y \geq 5)^{x \leftarrow x - y} = \boxed{x \geq y \wedge 2x - y \geq 5}\]
+      <div class="tip"><b>Miért kell az \(x \geq y\)?</b>\(x : \N\), ezért \(x - y\) csak akkor értelmes érték, ha nem negatív; különben az értékadás hibára fut. Ez a \(\D_{p(S)}\) feltétele.</div>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">1. kvíz</span><span class="kind quiz">kvíz</span></div>
+    <div class="stmt"><p>\(A = (x : \Z,\ y : \Z)\). \(\lf(x, y := y, x\ ;\ x \leq -5 \wedge y > 3) = \,?\)</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      \[\lf(x, y := y, x;\ R) = (x, y) \in \D_{p(S)} \wedge R^{x, y \leftarrow y, x} = \igaz \wedge (x \leq -5 \wedge y > 3)^{x, y \leftarrow y, x} = \boxed{y \leq -5 \wedge x > 3}\]
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">+ feladat</span><span class="kind">lf, nem-det. értékadás</span></div>
+    <div class="stmt"><p>Legyen \(A = (x : \N,\ y : \mathrm{set}(\N))\). \(\lf(x :\in y,\ x \leq 7) = \,?\)</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      \[\lf(x :\in y, R) = (x, y) \in \D_{p(S)} \wedge \forall e \in y : R^{x \leftarrow e} = y \neq \emptyset \wedge \forall e \in y : (x \leq 7)^{x \leftarrow e} = y \neq \emptyset \wedge \forall e \in y : e \leq 7 = \boxed{\emptyset \neq y \subseteq \{0..7\}}\]
+      <p>A nem-determinisztikus értékadás bármelyik \(e \in y\)-t választhatja, ezért <em>mindegyikre</em> teljesülnie kell \(R\)-nek; üres halmazból nem lehet választani (hibára fut).</p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">3. feladat</span><span class="kind">specifikáció</span></div>
+    <div class="stmt"><p>„Keressük egy természetes szám egy valódi természetes osztóját.” Állítsuk elő a feladat \(Q\) elő- és \(R\) utófeltételét a paramétertér segítségével! (a) A feladat mint reláció; (b) csoportosítsuk a leképezéseit; (c) paramétertér; (d) \(Q\) és \(R\); (e) \([Q_{\{n_0 : 12\}}] = ?\), \([R_{\{n_0 : 12\}}] = ?\)</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p><b>a)</b> \(A = (n : \N,\ d : \N)\), \(\D_F = \{ (x, *) \mid x \text{ összetett} \}\), \(F((x, *)) = \{ (*, v) \mid v \neq 1 \wedge v \neq x \wedge v \mid x \}\), azaz az alábbi leképezések összessége: \(\forall x \in \N : \{ (x, *) \mid x \text{ összetett} \} \to \{ (*, v) \mid v \neq 1 \wedge v \neq x \wedge v \mid x \}\).</p>
+      <p><b>b)</b> A kezdőállapot input komponensének (\(n\)) értéke (\(x\)) szerint csoportosítunk; egy input adat több leképezést is azonosít (paraméterez) egyszerre:</p>
+      <ul>
+        <li>\(x = 4\): \(\{(4, *)\} \to \{(*, 2)\}\)</li>
+        <li>\(x = 6\): \(\{(6, *)\} \to \{(*, 2), (*, 3)\}\)</li>
+        <li>\(x = 5\): \(\emptyset\)</li>
+      </ul>
+      <p>A specifikáció állapothalmazokhoz állapothalmazokat rendelő leképezésnek láttatja a feladatot: pl. a \((6, *)\) alakú kezdőállapotokhoz a \((*, 2)\) vagy \((*, 3)\) alakúak egyikét rendeli. Minden összetartozó halmazpárt az input adat (\(x\)) kapcsol össze, azaz paraméterez.</p>
+      <p><b>c)</b> Gyűjtsük a lehetséges paramétereket a <b>paramétertérbe</b>, paraméterváltozókkal: \(B = (n_0 : \N)\). A leképezések két lépésre bonthatók:</p>
+      \[\{(4, *)\} \to 4 \to \{(*, 2)\} \quad [Q_4] \to 4 \to [R_4], \qquad \{(6, *)\} \to 6 \to \{(*, 2), (*, 3)\} \quad [Q_6] \to 6 \to [R_6]\]
+      \[\text{általánosan:}\quad \{ (x, *) \mid x \text{ összetett} \} \to x \to \{ (*, v) \mid v \neq 1 \wedge v \neq x \wedge v \mid x \}, \qquad [Q_x] \to x \to [R_x]\]
+      <p><b>d)</b> Egy adott \(x\) paraméterhez tartozó állapothalmazok:</p>
+      <ul>
+        <li>\(Q_x(a) = (n(a) = x \wedge x \text{ összetett})\) (azok az \(a \in A\) állapotok, amelyek az \(x\)-re képződnek)</li>
+        <li>\(R_x(c) = (d(c) \neq 1 \wedge d(c) \neq x \wedge d(c) \mid x)\) (azok a \(c \in A\) állapotok, amelyek az \(x\)-ből képződnek)</li>
+      </ul>
+      <p>Minden \(x\)-hez megadható a \(b \in B\) paraméter, ahol \(b = \{n_0 : x\}\), vagy \(n_0(b) = x\): \(Q_b(a) = (n(a) = n_0(b) \wedge n_0(b) \text{ összetett})\), \(R_b(c) = (d(c) \neq 1 \wedge d(c) \neq n_0(b) \wedge d(c) \mid n_0(b))\). Elhagyva a jelölésből \(a\)-t, \(c\)-t és \(b\)-t (lambda-kifejezéseket kapunk):</p>
+      \[Q = (n = n_0 \wedge n_0 \text{ összetett}), \qquad R = (d \neq 1 \wedge d \neq n_0 \wedge d \mid n_0)\]
+      <p><b>e)</b> <span class="ans">\([Q_{\{n_0:12\}}] = \{(12, *)\}\)</span>, <span class="ans">\([R_{\{n_0:12\}}] = \{(*, 2), (*, 3), (*, 4), (*, 6)\}\)</span></p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">2. kvíz</span><span class="kind quiz">kvíz</span></div>
+    <div class="stmt"><p>Az előző specifikációban: \([Q_{\{n_0:3\}}] = ?\), \([Q_{\{n_0:4\}}] = ?\), \([R_{\{n_0:4\}}] = ?\)</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p>\([Q_{\{n_0:3\}}] = \emptyset\) (a 3 nem összetett), \([Q_{\{n_0:4\}}] = \{(4, *)\}\), \([R_{\{n_0:4\}}] = \{(*, 2)\}\).</p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">4. feladat</span><span class="kind">specifikáció</span></div>
+    <div class="stmt"><p>Elemezzük az \(F\) feladat alábbi specifikációját: \(A = (x : \Z,\ y : \Z,\ z : \Z)\), \(B = (x_0 : \Z,\ y_0 : \Z)\),</p>
+      \[Q = (x = x_0 \wedge y = y_0), \qquad R = \big((z = x_0 \vee z = y_0) \wedge z \geq x_0 \wedge z \geq y_0\big)\]
+      <p>(a) Adjuk meg a \(Q_{\{x_0:6,\ y_0:5\}}\) igazsághalmazát. (b) Adjuk meg az \(R_{\{x_0:6,\ y_0:5\}}\) igazsághalmazát. (c) Fogalmazzuk meg szavakkal a feladatot.</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p>\(Q\) kibontva: \(\forall b \in B : Q_b(a) = (x(a) = x_0(b) \wedge y(a) = y_0(b))\), illetve \(\forall \{x_0 : e,\ y_0 : f\} \in B : Q_{\{e,f\}}(a) = (x(a) = e \wedge y(a) = f)\), így \([Q_{e,f}] = \{(e, f, *)\}\).</p>
+      <p>\(R\) kibontva: \(R_b(a) = \big((z(a) = x_0(b) \vee z(a) = y_0(b)) \wedge z(a) \geq x_0(b) \wedge z(a) \geq y_0(b)\big)\), így \([R_{e,f}] = \{(*, *, \max(e, f))\}\).</p>
+      <ul>
+        <li>(a) <span class="ans">\(\{(6, 5, *)\}\)</span></li>
+        <li>(b) <span class="ans">\(\{(*, *, 6)\}\)</span> (pl. a \((6, 5, 3)\) állapothoz \(F\) a \(\{(*, *, 6)\}\) halmazt rendeli)</li>
+      </ul>
+      <div class="own"><b>(c) Saját megfogalmazás</b>Két adott egész szám (\(x\), \(y\)) közül a nagyobbikat (a maximumukat) kell a \(z\) változóba tenni. Az \(R\) nem írja elő, hogy \(x\) és \(y\) megőrizze az értékét.</div>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">3. kvíz</span><span class="kind quiz">kvíz</span></div>
+    <div class="stmt"><p>Adott az \(F\) feladat specifikációja: \(A = (n : \N,\ p : \N)\), \(B = (n_0 : \N)\), \(Q = (n = n_0)\),</p>
+      \[R = \big(Q \wedge \prim(p) \wedge \forall i \in \N^+ : \prim(i) \to |n - i| \geq |n - p|\big)\]
+      <p>Mit rendel \(F\) az állapottér \(\{n : 9,\ p : 5\}\) és \(\{n : 10,\ p : 1\}\) elemeihez? Fogalmazzuk meg szavakkal a feladatot.</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p>\((9, 5) \to \{(9, 7), (9, 11)\}\) (a 7 és a 11 is 2 távolságra van), \((10, 1) \to \{(10, 11)\}\).</p>
+      <p><span class="ans">Meg kell keresnünk egy adott természetes számhoz legközelebb eső egyik prímszámot.</span></p>
+    </div></details>
+  </article>
+
+  <div class="sub-head">Kiegészítő feladatok egy régebbi órai jegyzetből (5. gyakorlat)</div>
+
+  <div class="def">
+    <b>Paramétertér és a specifikáció tétele (régi órai jegyzet)</b>
+    <p><b>Paramétertér:</b> legyen \(F \subseteq A \times A\) feladat. \(F\)-nek \(B\) egy paramétertere, ha \(\exists F_1 \subseteq A \times B\) és \(\exists F_2 \subseteq B \times A\), hogy \(F = F_2 \circ F_1\). (Példa: \(A = \{1, 2, 3\}\), \(B = \{a, b\}\), \(F_1 = \{(1, a), (1, b), (2, b)\}\), \(F_2 = \{(a, 1), (b, 2)\}\).)</p>
+    <p><b>Tétel (specifikáció tétele):</b> legyen \(F \subseteq A \times A\) feladat, \(B\) az \(F\) egy paramétertere (\(F = F_2 \circ F_1\)), és \(b \in B\) tetszőleges paraméter, amihez \([Q_b] ::= F_1^{(-1)}(b)\) és \([R_b] ::= F_2(b)\). Ekkor ha \(\forall b \in B : Q_b \Rightarrow \lf(S, R_b)\), akkor az \(S\) program megoldja az \(F\) feladatot.</p>
+  </div>
+
+  <article class="task">
+    <div class="task-head"><span class="no">R1. feladat</span><span class="kind">specifikáció tétele</span></div>
+    <div class="stmt"><p>Legyen \(A = [1..4]\), \(S \subseteq A \times (A \cup \{\fail\})^{**}\) a következő program:</p>
+      \[S = \{\ 1 \to \sq{1, 2, 4, 1},\ 1 \to \sq{1, 3, 2},\ 2 \to \sq{2, 3},\ 3 \to \sq{3, 2},\ 3 \to \sq{3, 4},\ 4 \to \sq{4, 1, 3}\ \}\]
+      <p>Legyen \(B = \{x, y, z\}\) az \(F \subseteq A \times A\) feladat egy paramétertere, \(F_1 = \{(1, x), (2, y), (2, z), (3, z), (4, y)\}\), \(F_2 = \{(x, 1), (x, 2), (y, 3), (z, 2), (z, 4)\}\). (a) Adjuk meg az \(F\) feladatot elemeinek felsorolásával. (b) Mit mond a specifikáció tétele az \(S\) programról és az \(F\) feladatról?</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p><b>(a)</b> \(F = F_2 \circ F_1 = \{(1,1), (1,2), (2,3), (2,2), (2,4), (3,2), (3,4), (4,3)\}\).</p>
+      <p><b>(b)</b> \(\D_{p(S)} = A = \{1,2,3,4\}\), \(p(S)(1) = \{1, 2\}\), \(p(S)(2) = \{3\}\), \(p(S)(3) = \{2, 4\}\), \(p(S)(4) = \{3\}\). \([Q_b] = F_1^{(-1)}(b)\), \([R_b] = F_2(b)\); kell: \(\forall b \in B : [Q_b] \subseteq [\lf(S, R_b)]\).</p>
+      <ul>
+        <li>\(b = x\): \([Q_x] = \{1\}\), \([R_x] = \{1, 2\}\), \([\lf(S, R_x)] = \{1\}\); \(\{1\} \subseteq \{1\}\) ✓</li>
+        <li>\(b = y\): \([Q_y] = \{2, 4\}\), \([R_y] = \{3\}\), \([\lf(S, R_y)] = \{2, 4\}\); \(\{2, 4\} \subseteq \{2, 4\}\) ✓</li>
+        <li>\(b = z\): \([Q_z] = \{2, 3\}\), \([R_z] = \{2, 4\}\), \([\lf(S, R_z)] = \{3\}\); \(\{2, 3\} \not\subseteq \{3\}\) ✗</li>
+      </ul>
+      <p>Tehát a tétel alapján <span class="ans">nem tudjuk megmondani</span>, hogy az \(S\) program megoldja-e az \(F\) feladatot.</p>
+      <div class="own"><b>Saját kiegészítés</b>A tétel csak <em>elégséges</em> feltétel. Közvetlenül ellenőrizve \(S\) valójában megoldja \(F\)-et: \(\D_F = A \subseteq \D_{p(S)}\), és \(p(S)(1) = \{1,2\} \subseteq F(1)\), \(p(S)(2) = \{3\} \subseteq F(2) = \{2,3,4\}\), \(p(S)(3) = \{2,4\} \subseteq F(3)\), \(p(S)(4) = \{3\} \subseteq F(4)\). A tétel azért „bukik” el, mert a 2-es állapot két paraméterhez (\(y\), \(z\)) is tartozik, és \(R_z\) külön-külön túl szigorú rá.</div>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">R2. feladat</span><span class="kind">specifikáció</span></div>
+    <div class="stmt"><p>Adott az \(F\) feladat specifikációja: \(A = (x : \Z,\ y : \Z,\ z : \Z)\), \(B = (x' : \Z,\ y' : \Z)\), \(Q = (x = x' \wedge y = y' \wedge x' > 5)\), \(R = (Q \wedge x > y \to z = x)\).</p>
+      <p>(a) Adjuk meg a \(Q_{\{x':4,\ y':2\}}\) igazsághalmazát. (b) Mit rendel \(F\) az állapottér \(\{x{:}4, y{:}2, z{:}1\}\), \(\{x{:}8, y{:}5, z{:}7\}\), \(\{x{:}9, y{:}3, z{:}10\}\) és \(\{x{:}6, y{:}9, z{:}4\}\) elemeihez?</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p><b>(a)</b> \([Q_{\{x':4, y':2\}}] = \emptyset\) (mert \(x' > 5\) nem teljesül). Néhány további: \([Q_{\{x':6, y':2\}}] = \{(6, 2, *)\}\), \([R_{\{x':6, y':2\}}] = \{(6, 2, 6)\}\), \([R_{\{x':6, y':10\}}] = \{(6, 10, *)\}\).</p>
+      <p><b>(b)</b> \((4, 2, 1) \to \emptyset\), \((8, 5, 7) \to (8, 5, 8)\), \((9, 3, 10) \to (9, 3, 9)\), \((6, 9, 4) \to (6, 9, *)\) (mert \(x > y\) hamis, így \(z\) bármi lehet).</p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">R3. feladat</span><span class="kind">specifikáció</span></div>
+    <div class="stmt"><p>Adott az \(F\) feladat specifikációja: \(A = (x : \N,\ d : \N)\), \(B = (x' : \N)\), \(Q = (x = x' \wedge x > 0)\), \(R = (Q \wedge 10^{d-1} \leq x \lt 10^d)\).</p>
+      <p>(a) \([Q_{\{x':6854\}}] = ?\) (b) \([R_{\{x':6854\}}] = ?\) (c) Mit rendel \(F\) a \(\{x{:}6854, d{:}2\}\) és \(\{x{:}7267363, d{:}123\}\) elemekhez? (e) Fogalmazzuk meg saját szavainkkal a feladatot. (f) Írjuk fel \(F\)-et halmazként.</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <ul>
+        <li>(a) \(\{(6854, *)\}\) &nbsp; (b) \(\{(6854, 4)\}\)</li>
+        <li>(c) \((6854, 2) \to \{(6854, 4)\}\), \((7267363, 123) \to \{(7267363, 7)\}\)</li>
+        <li>(e) <em>(saját)</em> Határozzuk meg egy pozitív egész szám (tízes számrendszerbeli) számjegyeinek számát.</li>
+        <li>(f) \(F(a, *) = \{ (a, b) \mid a > 0 \wedge 10^{b-1} \leq a \lt 10^b \}\)</li>
+      </ul>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">R5. feladat</span><span class="kind">specifikáció</span></div>
+    <div class="stmt"><p>Adott az \(F\) feladat specifikációja: \(A = (x : \N,\ y : \N,\ z : \N)\), \(B = (x' : \N,\ y' : \N)\), \(Q = (x = x' \wedge y = y' \wedge x \leq y + 1)\), \(R = \big(Q \wedge \prim(z) \wedge \min(|x - z|, |y - z|) \lt 3\big)\).</p>
+      <p>(a) Mit rendel \(F\) az állapottér \(\{x{:}10, y{:}19, z{:}13\}\) és \(\{x{:}26, y{:}34, z{:}31\}\) elemeihez? (b) Fogalmazzuk meg saját szavainkkal a feladatot.</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p><b>(a)</b> \((10, 19, 13) \to \{(10, 19, 11), (10, 19, 17), (10, 19, 19)\}\); \((26, 34, 31) \to \emptyset\) (24–28 és 32–36 között nincs prím).</p>
+      <div class="own"><b>(b) Saját megfogalmazás</b>Adott két természetes szám (\(x \leq y + 1\)); keressünk olyan prímet, amely legalább az egyikükhöz 3-nál közelebb van (\(x\) és \(y\) maradjon változatlan).</div>
+      <p class="label">A régi jegyzet 4. feladata megegyezik a fenti 4. feladattal, a 6. pedig a 3. kvízzel.</p>
+    </div></details>
+  </article>
+
+  </div>
+</section>
+
+<!-- ======================= 6. GYAKORLAT ======================= -->
+<section id="gy6">
+  <div class="section-head">
+    <span class="label">6. gyakorlat</span>
+    <h2>Specifikáció felírása</h2>
+    <p>A paramétertér egy olyan nem üres \(B\) halmaz, amelyre \(F = F_2 \circ F_1\), ahol \(F_1 \subseteq A \times B\) és \(F_2 \subseteq B \times A\). Az esetek döntő többségében a paramétertér az állapottér bemenő adatkomponenseinek altere; ilyenkor \(F_1 : A \to B\) egy vetítés.</p>
+  </div>
+  <div class="toolbar"><button type="button" data-toggle="gy6">Összes megoldás kinyitása</button></div>
+  <div class="taskgroup">
+
+  <article class="task">
+    <div class="task-head"><span class="no">Plusz-mínusz 1.</span><span class="kind pm">plusz-mínusz</span></div>
+    <div class="stmt"><p>\(A = (x : \Z,\ y : \Z,\ z : \Z)\), \(B = (x' : \Z,\ y' : \Z)\), \(Q = (x = x' \wedge y = y')\), \(R = (z = x' \cdot y')\). \([Q_{\{x':-3,\ y':5\}}] = ?\), \([R_{\{x':-3,\ y':5\}}] = ?\)</p></div>
+    <details><summary>Megoldás</summary><div class="sol"><p>\([Q_{\{x':-3, y':5\}}] = \{(-3, 5, *)\}\), \([R_{\{x':-3, y':5\}}] = \{(*, *, -15)\}\).</p></div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">Plusz-mínusz 2.</span><span class="kind pm">plusz-mínusz</span></div>
+    <div class="stmt"><p>\(A = (x : \R,\ n : \N,\ y : \R)\), \(B = (x' : \R,\ n' : \N)\), \(Q = (x = x' \wedge n = n')\), \(R = (y = x'^{\,n'})\). \([Q_{\{x':-3,\ n':0\}}] = ?\), \([R_{\{x':-3,\ n':0\}}] = ?\)</p></div>
+    <details><summary>Megoldás</summary><div class="sol"><p>\([Q_{\{x':-3, n':0\}}] = \{(-3, 0, *)\}\), \([R_{\{x':-3, n':0\}}] = \{(*, *, 1)\}\), mert \((-3)^0 = 1\).</p></div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">1. feladat</span><span class="kind">specifikáció</span></div>
+    <div class="stmt"><p>Határozzuk meg egy adott pozitív egész számjegyeinek számát. (Írjuk fel a specifikációt, és vezessük le \(Q\)-t és \(R\)-t a paramétertérből!)</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      \[A = (n : \Z,\ d : \Z), \quad B = (n' : \Z), \quad Q = (n = n' \wedge n' > 0)\]
+      \[R = (10^{d-1} \leq n' \lt 10^d) = (d = \lfloor \lg(n') + 1 \rfloor) = (d = \mathrm{SELECT}_{d = 1, 2, \dots}(n' \lt 10^d))\]
+      <p><b>Levezetés a paramétertérből.</b> Ha a feladat \(A = (n : \Z,\ d : \Z)\), \(\D_F = \{ (x, *) \mid x > 0 \}\), \(F((x, *)) = \{ (*, v) \mid 10^{v-1} \leq x \lt 10^v \}\), akkor</p>
+      <ul>
+        <li>\(B = (n' : \N)\)</li>
+        <li>\(\D_{F_1} = \{ (x, *) \mid x > 0 \}\), \(F_1((x, *)) = x\)</li>
+        <li>\(\D_{F_2} = \{ x \mid x > 0 \}\), \(F_2(x) = \{ (*, v) \mid 10^{v-1} \leq x \lt 10^v \}\)</li>
+      </ul>
+      <p>Az elő- és utófeltétel az \(F = F_2 \circ F_1\) kapcsolat alapján: \(\forall b \in B\) (\(b = \{n' : x\}\), vagy \(n'(b) = x\)):</p>
+      \[[Q_b] = F_1^{(-1)}(b) = \{ a \mid n(a) = n'(b) \wedge n'(b) > 0 \} \ \Rightarrow\ Q = (n = n' \wedge n' > 0)\]
+      \[[R_b] = F_2(b) = \{ a \mid 10^{d(a)-1} \leq n'(b) \lt 10^{d(a)} \} \ \Rightarrow\ R = (10^{d-1} \leq n' \lt 10^d)\]
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">2. feladat</span><span class="kind">specifikáció</span></div>
+    <div class="stmt"><p>Hol veszi fel az \([m..n]\) intervallumban az \(f : \Z \to \Z\) függvény az utolsó pozitív értékét?</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p><b>1. változat</b> (az \(f\) is az állapottér része):</p>
+      \[A = (m : \Z,\ n : \Z,\ f : \Z \to \Z,\ l : \LL,\ ind : \Z), \quad B = (m' : \Z,\ n' : \Z,\ f' : \Z \to \Z), \quad Q = (m = m' \wedge n = n' \wedge f = f')\]
+      \[R = \big(l = (\exists i \in [m'..n'] : f'(i) > 0) \wedge l \to (f'(ind) > 0 \wedge \forall i \in [ind+1..n'] : f'(i) \leq 0)\big)\]
+      <p><b>2. változat</b> (\(f\) rögzített függvény, nem állapotkomponens):</p>
+      \[A = (m : \Z,\ n : \Z,\ l : \LL,\ ind : \Z), \quad B = (m' : \Z,\ n' : \Z), \quad Q = (m = m' \wedge n = n')\]
+      \[R = \big(Q \wedge l = (\exists i \in [m..n] : f(i) > 0) \wedge l \to (f(ind) > 0 \wedge \forall i \in [ind+1..n] : f(i) \leq 0)\big)\]
+      <div class="tip"><b>Az \(l\) szerepe</b>Lehet, hogy nincs pozitív érték; ezt az \(l\) logikai változó jelzi, és csak ha \(l\) igaz, akkor kell \(ind\)-nek értelmes helynek lennie.</div>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">1. kvíz</span><span class="kind quiz">kvíz</span></div>
+    <div class="stmt"><p>Határozzuk meg az \(f : \Z \to \Z\) függvény maximumát az \([m..n]\) intervallum felett.</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      \[A = (m : \Z,\ n : \Z,\ l : \LL,\ max : \Z), \quad B = (m' : \Z,\ n' : \Z), \quad Q = (m = m' \wedge n = n' \wedge m' \leq n')\]
+      \[R = \big(max = \mathrm{MAX}_{i = m'..n'}\{ f(i) \}\big) = \big(\exists ind \in [m'..n'] : max = f(ind) \wedge \forall i \in [m'..n'] : f(i) \leq max\big)\]
+      <div class="warn"><b>Megjegyzés</b>A lapon \(B = (m : \Z,\ n : \Z)\) szerepel; a paraméterváltozók helyesen \(m'\) és \(n'\). Az \(l\) változó itt nem kell (az \(m' \leq n'\) előfeltétel miatt mindig van maximum).</div>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">3. feladat</span><span class="kind">specifikáció tömbre</span></div>
+    <div class="stmt"><p>Adott az \(x\) egész számokat tartalmazó tömb. Módosítsuk a tömb elemeit úgy, hogy minden eleme a tömb első \(i\) darab eredeti elemének összege legyen.</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      \[A = (x : \Z^n), \quad B = (x' : \Z^n), \quad Q = (x = x')\]
+      \[R = \Big(\forall i \in [1..n] : x[i] = \sum_{k=1}^{i} x'[k]\Big) = \big(x[1] = x'[1] \wedge \forall i \in [2..n] : x[i] = x[i-1] + x'[i]\big)\]
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">4. feladat</span><span class="kind">specifikáció tömbre</span></div>
+    <div class="stmt"><p>Rendezzük növekvő sorba egy egész számokat tartalmazó tömb elemeit.</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      \[A = (x : \Z^n), \quad B = (x' : \Z^n), \quad Q = (x = x'), \quad R = \big(x \in \perm(x') \wedge \sorted(x)\big)\]
+      \[\perm(x) = \{ s \in \Z^n \mid \exists \varphi : [1..n] \to [1..n] \text{ bijekció} : \forall i \in [1..n] : s[i] = x[\varphi(i)] \}, \qquad \sorted(x) = \forall i \in [2..n] : x[i-1] \leq x[i]\]
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">2. kvíz</span><span class="kind quiz">kvíz</span></div>
+    <div class="stmt"><p>Növeljük meg 1-gyel az \(x\) egész számokat tartalmazó tömb páros elemeit.</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      \[A = (x : \Z^n), \quad B = (x' : \Z^n), \quad Q = (x = x')\]
+      \[R = \big(\forall i \in [1..n] : (x'[i] \text{ páros} \to x[i] = x'[i] + 1) \wedge (\forall i \in [1..n] : (x'[i] \text{ páratlan} \to x[i] = x'[i]))\big)\]
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">6. feladat</span><span class="kind">specifikáció</span></div>
+    <div class="stmt"><p>Adjunk meg egy 10000-nél nagyobb prímszámot.</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      \[A = (p : \Z), \quad B = \{\sigma\} \ \ (\text{nullatér: egyetlen eleme az origó}), \quad Q = (\igaz), \quad R = (\prim(p) \wedge p > 10000)\]
+      <p>Ha a feladat \(\D_F = A\), \(F(a) = \{ n \mid \prim(n) \wedge n > 10000 \}\), akkor \(B = \{\sigma\}\), \(\D_{F_1} = A\), \(F_1(a) = \{\sigma\}\), \(\D_{F_2} = B\), \(F_2(\sigma) = \{ n \mid \prim(n) \wedge n > 10000 \}\).</p>
+      <p>Az elő- és utófeltétel \(\forall b \in B\), azaz egyedül \(\sigma\)-ra: \([Q_\sigma] = F_1^{(-1)}(\sigma) = A\), tehát \(Q_\sigma = \igaz\); \([R_\sigma] = F_2(\sigma) = \{ n \mid \prim(n) \wedge n > 10000 \}\), tehát \(R_\sigma = (\prim(p) \wedge p > 10000)\).</p>
+      <div class="tip"><b>Nincs input</b>Ha a feladatnak nincs bemenő adata, a paramétertér egyelemű (nullatér), és az előfeltétel egyszerűen \(\igaz\).</div>
+    </div></details>
+  </article>
+
+  </div>
+</section>
+
+<footer>Források: <a href="../Gyakorlat/1.gyakorlat.pdf" target="_blank" rel="noopener">1.</a>, <a href="../Gyakorlat/2.gyakorlat.pdf" target="_blank" rel="noopener">2.</a>, <a href="../Gyakorlat/3.gyakorlat.pdf" target="_blank" rel="noopener">3.</a>, <a href="../Gyakorlat/4.gyakorlat.pdf" target="_blank" rel="noopener">4.</a>, <a href="../Gyakorlat/5.gyakorlat.pdf" target="_blank" rel="noopener">5.</a>, <a href="../Gyakorlat/6.gyakorlat.pdf" target="_blank" rel="noopener">6.</a> gyakorlati lap és az órai jegyzetek (Gyakorlat mappa). A „saját” jelölésű megoldások nem az óráról származnak.</footer>
+</div>
+
+<script>
+(function () {
+  var all = document.querySelectorAll('.task');
+  document.getElementById('cnt').textContent = Array.prototype.filter.call(all, function (t) { return !t.querySelector('.kind.pm'); }).length;
+  document.getElementById('cntpm').textContent = document.querySelectorAll('.task .kind.pm').length;
+  document.querySelectorAll('button[data-toggle]').forEach(function (btn) {
+    var sec = document.getElementById(btn.dataset.toggle);
+    btn.addEventListener('click', function () {
+      var list = sec.querySelectorAll('details');
+      var open = Array.prototype.some.call(list, function (d) { return !d.open; });
+      list.forEach(function (d) { d.open = open; });
+      btn.textContent = open ? 'Összes megoldás becsukása' : 'Összes megoldás kinyitása';
+    });
+  });
+})();
+</script>
+</body>
+</html>

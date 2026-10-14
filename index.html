@@ -23,6 +23,9 @@
   --anal: #b4500b;
   --anal-soft: #fcefe4;
   --anal-grid: rgba(180, 80, 11, 0.06);
+  --pe: #6b46c1;
+  --pe-soft: #efe9fb;
+  --pe-grid: rgba(107, 70, 193, 0.06);
   --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
   --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
   --f-label: "IBM Plex Mono", ui-monospace, Consolas, monospace;
@@ -31,14 +34,14 @@
   :root:not([data-theme="light"]) {
     --paper: #0f141b; --grid: rgba(143, 168, 255, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
     --rule: #2a3442; --accent: #93abff; --accent-soft: #1d2846;
-    --dimat: #93abff; --dimat-soft: #1d2846; --anal: #f2a25e; --anal-soft: #33241a; --anal-grid: rgba(242, 162, 94, 0.05);
+    --dimat: #93abff; --dimat-soft: #1d2846; --anal: #f2a25e; --anal-soft: #33241a; --anal-grid: rgba(242, 162, 94, 0.05); --pe: #c4a7ff; --pe-soft: #261f3d; --pe-grid: rgba(196, 167, 255, 0.05);
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --paper: #0f141b; --grid: rgba(143, 168, 255, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
   --rule: #2a3442; --accent: #93abff; --accent-soft: #1d2846;
-  --dimat: #93abff; --dimat-soft: #1d2846; --anal: #f2a25e; --anal-soft: #33241a; --anal-grid: rgba(242, 162, 94, 0.05);
+  --dimat: #93abff; --dimat-soft: #1d2846; --anal: #f2a25e; --anal-soft: #33241a; --anal-grid: rgba(242, 162, 94, 0.05); --pe: #c4a7ff; --pe-soft: #261f3d; --pe-grid: rgba(196, 167, 255, 0.05);
   color-scheme: dark;
 }
 
@@ -90,7 +93,9 @@ header.hero { display: grid; gap: 12px; padding-block: 6px 24px; border-bottom: 
 .t-anal  { --hue: var(--anal);  --hue-soft: var(--anal-soft); --accent: var(--anal); --accent-soft: var(--anal-soft); }
 /* the whole subject page takes the subject colour, incl. the squared paper tint */
 body.t-anal { --grid: var(--anal-grid); }
-.hero.t-dimat, .hero.t-anal { border-bottom-color: var(--hue); }
+.t-pe    { --hue: var(--pe);    --hue-soft: var(--pe-soft); --accent: var(--pe); --accent-soft: var(--pe-soft); }
+body.t-pe { --grid: var(--pe-grid); }
+.hero.t-dimat, .hero.t-anal, .hero.t-pe { border-bottom-color: var(--hue); }
 .hero .label.code { color: var(--hue); }
 
 /* home: subject cards */
@@ -245,6 +250,66 @@ a.item:hover .open, a.item:focus-visible .open { color: var(--hue); }
           items: [
             { kind: 'pdf', icon: 'VIZSGA', title: 'Vizsgakérdések', desc: 'Definíciók és tételek a vizsgára, A és B szakirány', href: 'ANAL II/vizsgakerdesek.pdf' },
             { kind: 'pdf', icon: 'RÖPZH', title: 'RöpZH kérdések', desc: 'Gyakorlatonkénti elméleti kérdések', href: 'ANAL II/An2_rop_kerdesek.pdf' }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'progelm', theme: 't-pe', code: 'PROG ELM', name: 'Programozáselmélet',
+      groups: [
+        {
+          title: 'Kidolgozások',
+          items: [
+            { kind: 'html', featured: true, icon: 'GYAK', title: 'Gyakorlati feladatok kidolgozva', desc: 'Az 1–6. gyakorlat órán megoldott feladatai struktogramokkal, lenyitható megoldással; a kvízekhez saját megoldás.', href: 'Prog Elmélet/Kidolgozások/gyakorlatok.html', tags: ['6 gyakorlat', 'kvízek is'] },
+            { kind: 'html', featured: true, icon: 'FOGALOM', title: 'Fogalomtár', desc: 'Az előadás-kivonatok összes definíciója, tétele és jelölése, kereshetően, kikérdezés móddal.', href: 'Prog Elmélet/Kidolgozások/fogalmak.html', tags: ['8 előadás', '90 fogalom'] }
+          ]
+        },
+        {
+          title: 'Előadás-kivonatok', note: 'Borsi Zsolt kivonatai PDF-ben, új fülön nyílnak.',
+          items: [
+              { kind: 'pdf', n: '0', title: 'Matematikai alapok', desc: 'Halmazok, intervallum, reláció, értelmezési tartomány, függvény', href: 'Prog Elmélet/Előadás kivonatok/Programozaselmelet_-_0_matematikai_alapok.pdf' },
+              { kind: 'pdf', n: '1', title: 'Programozási alapfogalmak', desc: 'Állapot, állapottér, változó, altér, feladat, sorozatok, program, SKIP, ABORT', href: 'Prog Elmélet/Előadás kivonatok/Programozaselmelet_-_1_programozasi_alapfogalmak (1).pdf' },
+              { kind: 'pdf', n: '2', title: 'A megoldás fogalma', desc: 'Programfüggvény, megoldás, gyenge programfüggvény, parciális helyesség', href: 'Prog Elmélet/Előadás kivonatok/Programozaselmelet_-_2_megoldas.pdf' },
+              { kind: 'pdf', n: '3', title: 'A leggyengébb előfeltétel', desc: 'IGAZ, HAMIS, igazsághalmaz, következik reláció, lf és tulajdonságai', href: 'Prog Elmélet/Előadás kivonatok/Programozaselmelet_-_3_leggyengebb_elofeltetel.pdf' },
+              { kind: 'pdf', n: '4', title: 'Specifikáció', desc: 'Paramétertér, reláció inverze, a specifikáció tétele', href: 'Prog Elmélet/Előadás kivonatok/Programozaselmelet_-_4_specifikacio.pdf' },
+              { kind: 'pdf', n: '7', title: 'Programkonstrukciók', desc: 'Szekvencia, elágazás, ciklus és programfüggvényeik', href: 'Prog Elmélet/Előadás kivonatok/Programozaselmelet_-_7_programkonstrukciok.pdf' },
+              { kind: 'pdf', n: '8', title: 'Levezetési szabályok', desc: 'Szekvencia, elágazás, ciklus levezetési szabálya, invariáns, terminálófüggvény', href: 'Prog Elmélet/Előadás kivonatok/Programozaselmelet_-_8_levezetesi_szabalyok.pdf' },
+              { kind: 'pdf', n: '9', title: 'Párhuzamos programok', desc: 'Atomi és várakoztató utasítás, párhuzamos blokk, interferencia-mentesség, holtpont', href: 'Prog Elmélet/Előadás kivonatok/Programozaselmelet_-_9_parhuzamos_programok.pdf' }
+          ]
+        },
+        {
+          title: 'Gyakorlatok',
+          sections: [
+            { title: 'Gyakorlati lapok', items: [
+              { kind: 'pdf', n: '1', title: '1. gyakorlat', desc: 'Állapottér, feladat, program', href: 'Prog Elmélet/Gyakorlat/1.gyakorlat.pdf' },
+              { kind: 'pdf', n: '2', title: '2. gyakorlat', desc: 'Programfüggvény, megoldás', href: 'Prog Elmélet/Gyakorlat/2.gyakorlat.pdf' },
+              { kind: 'pdf', n: '3', title: '3. gyakorlat', desc: 'Megoldás: ellenpéldák, bizonyítások', href: 'Prog Elmélet/Gyakorlat/3.gyakorlat.pdf' },
+              { kind: 'pdf', n: '4', title: '4. gyakorlat', desc: 'Ekvivalencia, logika, leggyengébb előfeltétel', href: 'Prog Elmélet/Gyakorlat/4.gyakorlat.pdf' },
+              { kind: 'pdf', n: '5', title: '5. gyakorlat', desc: 'lf számolása, specifikáció, paramétertér', href: 'Prog Elmélet/Gyakorlat/5.gyakorlat.pdf' },
+              { kind: 'pdf', n: '6', title: '6. gyakorlat', desc: 'Specifikáció felírása', href: 'Prog Elmélet/Gyakorlat/6.gyakorlat.pdf' }
+            ]},
+            { title: 'Órai jegyzetek', items: [
+              { kind: 'pdf', n: '2', title: '2. gyakorlat órai jegyzete', desc: 'Kézírásos OneNote-jegyzet', href: 'Prog Elmélet/Gyakorlat/2.gyakorlat_orai_jegyzet.pdf' },
+              { kind: 'pdf', n: '3', title: '3. gyakorlat órai jegyzete', desc: 'Kézírásos OneNote-jegyzet', href: 'Prog Elmélet/Gyakorlat/3.gyakorlat_orai_jegyzet.pdf' },
+              { kind: 'pdf', n: '4', title: '4. gyakorlat órai jegyzete', desc: 'Kézírásos OneNote-jegyzet', href: 'Prog Elmélet/Gyakorlat/4.gyakorlat_orai_jegyzet.pdf' },
+              { kind: 'pdf', n: '5', title: '5. gyakorlat régi órai jegyzete', desc: 'Kézírásos OneNote-jegyzet, részben más feladatokkal', href: 'Prog Elmélet/Gyakorlat/5.gyakorlat_regi_orai_jegyzet.pdf' }
+            ]}
+          ]
+        },
+        {
+          title: 'Feladatsorok',
+          items: [
+            { kind: 'pdf', n: '1', title: '1. alkalom', desc: 'Gyakorlatokra javasolt feladatok', href: 'Prog Elmélet/Feladatsorok/orai_feladatok_1.pdf' },
+            { kind: 'pdf', n: '2', title: '2. alkalom', desc: 'Gyakorlatokra javasolt feladatok', href: 'Prog Elmélet/Feladatsorok/orai_feladatok_2.pdf' },
+            { kind: 'pdf', n: '3', title: '3. alkalom', desc: 'Gyakorlatokra javasolt feladatok', href: 'Prog Elmélet/Feladatsorok/orai_feladatok_3.pdf' },
+            { kind: 'pdf', n: '4', title: '4. alkalom', desc: 'Gyakorlatokra javasolt feladatok', href: 'Prog Elmélet/Feladatsorok/orai_feladatok_4.pdf' },
+            { kind: 'pdf', n: '5', title: '5. alkalom', desc: 'Gyakorlatokra javasolt feladatok', href: 'Prog Elmélet/Feladatsorok/orai_feladatok_5.pdf' },
+            { kind: 'pdf', n: '6', title: '6. alkalom', desc: 'Gyakorlatokra javasolt feladatok', href: 'Prog Elmélet/Feladatsorok/orai_feladatok_6.pdf' },
+            { kind: 'pdf', n: '8', title: '8. alkalom', desc: 'Gyakorlatokra javasolt feladatok', href: 'Prog Elmélet/Feladatsorok/orai_feladatok_8.pdf' },
+            { kind: 'pdf', n: '9', title: '9. alkalom', desc: 'Gyakorlatokra javasolt feladatok', href: 'Prog Elmélet/Feladatsorok/orai_feladatok_9.pdf' },
+            { kind: 'pdf', n: '10', title: '10. alkalom', desc: 'Gyakorlatokra javasolt feladatok', href: 'Prog Elmélet/Feladatsorok/orai_feladatok_10.pdf' },
+            { kind: 'pdf', n: '11', title: '11. alkalom', desc: 'Gyakorlatokra javasolt feladatok', href: 'Prog Elmélet/Feladatsorok/orai_feladatok_11.pdf' },
+            { kind: 'pdf', n: '12', title: '12. alkalom', desc: 'Gyakorlatokra javasolt feladatok', href: 'Prog Elmélet/Feladatsorok/orai_feladatok_12.pdf' }
           ]
         }
       ]

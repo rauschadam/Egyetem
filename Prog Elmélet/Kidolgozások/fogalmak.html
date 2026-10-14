@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="hu" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Programozáselmélet · fogalomtár</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']], packages: { '[+]': ['ams'] } },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js" async></script>
+<style>
+/* Layout: glossary of the lecture summaries, one card per concept, grouped by lecture; same look as the practice page */
+:root {
+  --paper: #f5f7fa; --grid: rgba(107, 70, 193, 0.06); --card: #ffffff; --ink: #1b2430; --muted: #5a6574; --rule: #d7dde6;
+  --accent: #6b46c1; --accent-soft: #efe9fb; --mark: #b8352a; --mark-soft: #fbe9e6; --ok: #2c7a4b; --ok-soft: #e3f3e9;
+  --warm: #9a5b00; --warm-soft: #fbf0dc; --blue: #2346a8; --blue-soft: #e6ecfb;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-label: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f141b; --grid: rgba(196, 167, 255, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5; --rule: #2a3442;
+    --accent: #c4a7ff; --accent-soft: #261f3d; --mark: #ff8b7b; --mark-soft: #3a1f1c; --ok: #74d39c; --ok-soft: #173225;
+    --warm: #f2c46d; --warm-soft: #33291a; --blue: #93abff; --blue-soft: #1d2846; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f141b; --grid: rgba(196, 167, 255, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5; --rule: #2a3442;
+  --accent: #c4a7ff; --accent-soft: #261f3d; --mark: #ff8b7b; --mark-soft: #3a1f1c; --ok: #74d39c; --ok-soft: #173225;
+  --warm: #f2c46d; --warm-soft: #33291a; --blue: #93abff; --blue-soft: #1d2846; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; background-color: var(--paper); background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 22px 22px; color: var(--ink); font-family: var(--f-body); font-size: 1.06rem; line-height: 1.6; }
+.wrap { max-width: 900px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 80px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2rem, 6vw, 3.1rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.65rem; font-weight: 700; letter-spacing: -0.01em; }
+p { margin: 0; }
+a { color: var(--accent); }
+.label { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding: 2px 0; margin: 6px 0 !important; min-width: 0; max-width: 100%; }
+
+.back { justify-self: start; display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px 9px 12px; border: 1.5px solid var(--accent); border-radius: 8px; background: var(--accent-soft); color: var(--ink); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 1.02rem; line-height: 1; white-space: nowrap; transition: background .15s, color .15s; }
+.back .arr { color: var(--accent); font-size: 1.25rem; transition: transform .15s, color .15s; }
+.back:hover, .back:focus-visible { background: var(--accent); color: var(--paper); outline: none; }
+.back:hover .arr, .back:focus-visible .arr { color: var(--paper); transform: translateX(-3px); }
+header.hero { display: grid; gap: 14px; padding-block: 0 26px; border-bottom: 2px solid var(--accent); }
+.hero .sub { color: var(--muted); max-width: 64ch; }
+.facts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.fact { display: flex; flex-direction: column; gap: 2px; padding: 8px 14px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; min-width: 120px; }
+.fact b { font-family: var(--f-display); font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+
+nav.bar { position: sticky; top: 0; z-index: 5; background: var(--paper); border-bottom: 1px solid var(--rule); margin-inline: -16px; padding-inline: 16px; }
+nav.bar ul { list-style: none; margin: 0; padding: 10px 0; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin; }
+nav.bar li[hidden] { display: none; }
+nav.bar a { display: block; white-space: nowrap; text-decoration: none; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.04em; color: var(--ink); padding: 6px 10px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); }
+nav.bar a:hover, nav.bar a:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+nav.bar a.nav-back { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+
+.tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 18px; }
+.tools input { flex: 1 1 240px; min-width: 0; font: inherit; font-size: 0.98rem; padding: 8px 12px; border: 1px solid var(--rule); border-radius: 6px; background: var(--card); color: var(--ink); }
+.tools input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+button { font-family: var(--f-label); font-size: 0.78rem; padding: 8px 12px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); color: var(--ink); cursor: pointer; }
+button:hover, button:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+button[aria-pressed="true"] { background: var(--accent); color: var(--paper); border-color: var(--accent); }
+.hint { font-size: 0.88rem; color: var(--muted); }
+
+section.lect { padding-top: 40px; display: grid; gap: 14px; scroll-margin-top: 56px; }
+section.lect[hidden] { display: none; }
+.section-head { display: grid; gap: 6px; }
+.concepts { display: grid; gap: 10px; }
+
+details.concept { background: var(--card); border: 1px solid var(--rule); border-left: 3px solid var(--tc, var(--accent)); border-radius: 0 6px 6px 0; padding: 10px 16px; min-width: 0; scroll-margin-top: 60px; }
+details.concept[hidden] { display: none; }
+.concept.def { --tc: var(--accent); --tcs: var(--accent-soft); }
+.concept.thm { --tc: var(--ok); --tcs: var(--ok-soft); }
+.concept.not { --tc: var(--blue); --tcs: var(--blue-soft); }
+.concept.ex  { --tc: var(--warm); --tcs: var(--warm-soft); }
+.concept.rem { --tc: var(--muted); --tcs: transparent; }
+summary { cursor: pointer; list-style: none; display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; padding: 2px 0; }
+summary::-webkit-details-marker { display: none; }
+summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ctype { font-family: var(--f-label); font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 7px; border-radius: 3px; color: var(--tc); background: var(--tcs); border: 1px solid color-mix(in srgb, var(--tc) 40%, transparent); white-space: nowrap; }
+.cname { font-family: var(--f-display); font-weight: 600; font-size: 1.08rem; }
+details.concept:not([open]) .cname::after { content: "  · mutasd"; font-family: var(--f-label); font-size: 0.7rem; font-weight: 400; color: var(--muted); }
+.cbody { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; padding-top: 8px; min-width: 0; }
+.cbody p, .cbody li { overflow-x: auto; overflow-y: hidden; }
+.cbody ol, .cbody ul { margin: 0; padding-left: 22px; display: grid; gap: 4px; }
+.cbody .mb { overflow-x: auto; }
+.cbody pre { margin: 0; padding: 10px 14px; background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; font-family: var(--f-label); font-size: 0.85rem; line-height: 1.5; overflow-x: auto; }
+
+/* struktogram */
+.sgwrap { display: grid; gap: 4px; justify-items: start; }
+.sgwrap > .label { color: var(--accent); }
+.sg { display: inline-grid; min-width: 200px; border: 1.5px solid var(--ink); background: var(--card); }
+.sg > * + * { border-top: 1.5px solid var(--ink); }
+.st { padding: 6px 14px; text-align: center; }
+.loop > .cond { padding: 6px 14px; text-align: center; border-bottom: 1.5px solid var(--ink); }
+.loop > .body { margin-left: 26px; border-left: 1.5px solid var(--ink); }
+.ifm { display: grid; grid-template-columns: repeat(3, minmax(70px, 1fr)); }
+.ifcol + .ifcol { border-left: 1.5px solid var(--ink); }
+.ifc { padding: 6px 10px; text-align: center; border-bottom: 1.5px solid var(--ink); background: linear-gradient(to bottom right, transparent calc(50% - 1px), color-mix(in srgb, var(--ink) 35%, transparent) 50%, transparent calc(50% + 1px)); }
+.empty { color: var(--muted); padding-top: 24px; }
+footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.88rem; }
+@media (max-width: 520px) { body { font-size: 1rem; } details.concept { padding: 10px 12px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="hero">
+  <a class="back" href="../../index.html#/progelm"><span class="arr" aria-hidden="true">←</span>Vissza: Programozáselmélet</a>
+  <span class="label">Programozáselmélet · előadás-kivonatok</span>
+  <h1>Fogalomtár</h1>
+  <p class="sub">Az előadás-kivonatok összes definíciója, tétele, jelölése és példája előadásonként. Kikérdezés módban csak a fogalmak neve látszik: próbáld felidézni, aztán kattints rá.</p>
+  <div class="facts">
+    <div class="fact"><span class="label">Előadás</span><b>8</b></div>
+    <div class="fact"><span class="label">Fogalom</span><b>90</b></div>
+    <div class="fact"><span class="label">Definíció</span><b>38</b></div>
+  </div>
+</header>
+
+<nav class="bar" aria-label="Előadások">
+  <ul>
+    <li><a class="nav-back" href="../../index.html#/progelm" aria-label="Vissza: Programozáselmélet">← PROG ELM</a></li>
+    <li><a href="#ea0">0. Alapok</a></li><li><a href="#ea1">1. Alapfogalmak</a></li><li><a href="#ea2">2. Megoldás</a></li><li><a href="#ea3">3. lf</a></li><li><a href="#ea4">4. Specifikáció</a></li><li><a href="#ea7">7. Konstrukciók</a></li><li><a href="#ea8">8. Levezetés</a></li><li><a href="#ea9">9. Párhuzamos</a></li>
+  </ul>
+</nav>
+
+<div class="tools">
+  <input id="q" type="search" placeholder="Keresés a fogalmak nevében (pl. leggyengébb, holtpont)…" aria-label="Keresés">
+  <button type="button" id="quiz" aria-pressed="false">Kikérdezés mód</button>
+  <button type="button" id="openall">Mind kinyitása</button>
+</div>
+
+<section id="ea0" class="lect"><div class="section-head"><span class="label">0. előadás · <a href="../Előadás kivonatok/Programozaselmelet_-_0_matematikai_alapok.pdf" target="_blank" rel="noopener">kivonat PDF ↗</a></span><h2>Matematikai alapok</h2></div><div class="concepts"><details class="concept not" id="ea0-nevezetes-halmazok" data-name="Nevezetes halmazok Jelölés" open><summary><span class="ctype">Jelölés</span><span class="cname">Nevezetes halmazok</span></summary><div class="cbody"><p>\(\mathbb{N}\) – a természetes számok halmaza, a nullát is beleértve; \(\mathbb{N}^+\) – a pozitív egész számok halmaza; \(\mathbb{Z}\) – az egész számok halmaza; \(\mathbb{L}\) – a logikai értékek kételemű halmaza; \(\emptyset\) – az üreshalmaz.</p>
+<p>A halmazokat gyakran az elemeik felsorolásával (például \(\mathbb{L} \mathrel{::=} \{\mathit{igaz}, \mathit{hamis}\}\)) vagy egy tulajdonság megfogalmazásával (például a 100-nál nem nagyobb, 5-tel osztható egészek: \(\{x \in \mathbb{Z} \mid x \leqslant 100 \land 5 \mid x\}\)) adjuk meg.</p></div></details>
+<details class="concept def" id="ea0-intervallum" data-name="Intervallum Definíció" open><summary><span class="ctype">Definíció</span><span class="cname">Intervallum</span></summary><div class="cbody"><p>Az \([a..b] \mathrel{::=} \{x \in \mathbb{Z} \mid a \leqslant x \land x \leqslant b\}\) halmazt (ahol \(a\) és \(b\) egész számok) intervallumnak nevezzük. Ez üres, ha \(a \gt b\).</p></div></details>
+<details class="concept not" id="ea0-szamossag" data-name="Számosság Jelölés" open><summary><span class="ctype">Jelölés</span><span class="cname">Számosság</span></summary><div class="cbody"><p>Egy \(H\) halmaz számosságát \(|H|\) jelöli. Azt, hogy egy \(H\) halmaz véges, így is írhatjuk: \(|H| \lt \infty\).</p></div></details>
+<details class="concept def" id="ea0-descartes-szorzat" data-name="Descartes-szorzat Definíció" open><summary><span class="ctype">Definíció</span><span class="cname">Descartes-szorzat</span></summary><div class="cbody"><p>Legyenek \(A\) és \(B\) tetszőleges nemüres halmazok. Ekkor az \(A \times B\) halmaz az \(A\) és \(B\) Descartes-szorzata:</p>
+<div class="mb">\[ A \times B \mathrel{::=} \{(a, b) \mid a \in A \land b \in B\} \]</div>
+<p>\(A \times B\) elemei tehát olyan rendezett párok, ahol a pár első komponense \(A\)-ból, a második \(B\)-ből van.</p></div></details>
+<details class="concept def" id="ea0-relacio" data-name="Reláció Definíció" open><summary><span class="ctype">Definíció</span><span class="cname">Reláció</span></summary><div class="cbody"><p>Legyenek \(A\) és \(B\) tetszőleges nemüres halmazok. Ekkor az \(A \times B\) halmaz minden \(R\) részhalmazát (tehát az üreshalmazt is) relációnak nevezzük. Ha \((x, y) \in R\), akkor azt mondjuk, hogy az \(R\) reláció \(x\)-hez hozzárendeli \(y\)-t.</p></div></details>
+<details class="concept def" id="ea0-ertelmezesi-tartomany-ertekkeszlet-kep" data-name="Értelmezési tartomány, értékkészlet, kép Definíció" open><summary><span class="ctype">Definíció</span><span class="cname">Értelmezési tartomány, értékkészlet, kép</span></summary><div class="cbody"><p>Legyenek \(A\) és \(B\) tetszőleges nemüres halmazok és \(R \subseteq A \times B\) tetszőleges reláció. Az \(R\) reláció értelmezési tartománya:</p>
+<div class="mb">\[ \mathcal{D}_R \mathrel{::=} \{a \in A \mid \exists b \in B : (a, b) \in R\} \]</div>
+<p>a reláció értékkészlete:</p>
+<div class="mb">\[ \mathcal{R}_R \mathrel{::=} \{b \in B \mid \exists a \in A : (a, b) \in R\} \]</div>
+<p>a reláció értéke egy \(a\) helyen, vagy másképpen az \(a\) pont \(R\) reláció szerinti képe:</p>
+<div class="mb">\[ R(a) \mathrel{::=} \{b \in B \mid (a, b) \in R\} \]</div>
+<p>Az \(R \subseteq A \times B\) relációt felfoghatjuk egy leképezésnek, megfeleltetésnek is az \(A\) és a \(B\) halmaz elemei között.</p></div></details>
+<details class="concept def" id="ea0-fuggveny-determinisztikus-relacio" data-name="Függvény (determinisztikus reláció) Definíció" open><summary><span class="ctype">Definíció</span><span class="cname">Függvény (determinisztikus reláció)</span></summary><div class="cbody"><p>Legyenek \(A\) és \(B\) tetszőleges nemüres halmazok és \(R \subseteq A \times B\) tetszőleges reláció. Azt mondjuk, hogy az \(R\) reláció determinisztikus, ha</p>
+<div class="mb">\[ \forall a \in A : |R(a)| \leqslant 1 \]</div>
+<p>A determinisztikus relációkat másképpen függvényeknek hívjuk. Az \(R \subseteq A \times B\) függvénynek mint speciális relációnak külön jelölést vezetünk be: \(R \in A \to B\).</p></div></details>
+<details class="concept not" id="ea0-mindenhol-ertelmezett-fuggveny" data-name="Mindenhol értelmezett függvény Jelölés" open><summary><span class="ctype">Jelölés</span><span class="cname">Mindenhol értelmezett függvény</span></summary><div class="cbody"><p>Ha az \(f \in A \to B\) függvényre még az is teljesül, hogy értelmezési tartománya megegyezik az \(A\) halmazzal, vagyis ha</p>
+<div class="mb">\[ \forall a \in A : |f(a)| = 1 \]</div>
+<p>akkor a következő jelölést alkalmazzuk: \(f : A \to B\).</p></div></details>
+<details class="concept rem" id="ea0-parcialis-fuggveny" data-name="Parciális függvény Megjegyzés" open><summary><span class="ctype">Megjegyzés</span><span class="cname">Parciális függvény</span></summary><div class="cbody"><p>Az olyan \(f \in A \to B\) függvényeket, amelyek nem rendelnek minden \(A\)-beli elemhez egy \(B\)-beli elemet (vagyis nincsenek mindenhol értelmezve az \(A\) felett), parciális függvényeknek nevezzük.</p></div></details>
+<details class="concept rem" id="ea0-egyelemu-kep-irasa" data-name="Egyelemű kép írása Megjegyzés" open><summary><span class="ctype">Megjegyzés</span><span class="cname">Egyelemű kép írása</span></summary><div class="cbody"><p>Legyen \(f : A \to B\) függvény és \(a \in A\), továbbá \(f(a) = \{b\}\), ahol \(b \in B\) az \(a\)-hoz rendelt egyetlen elem. Ebben az esetben az \(f(a)\) képet sokszor nem a \(\{b\}\) egyelemű képhalmazként, hanem egyszerűen csak mint \(b\) írjuk.</p></div></details></div></section>
+<section id="ea1" class="lect"><div class="section-head"><span class="label">1. előadás · <a href="../Előadás kivonatok/Programozaselmelet_-_1_programozasi_alapfogalmak%20(1).pdf" target="_blank" rel="noopener">kivonat PDF ↗</a></span><h2>Programozási alapfogalmak</h2></div><div class="concepts"><details class="concept def" id="ea1-allapot" data-name="Állapot Definíció" open><summary><span class="ctype">Definíció</span><span class="cname">Állapot</span></summary><div class="cbody"><p>A feladat adatokról szól, a program is adatokkal dolgozik; egy adat típusérték-halmaza az adat lehetséges értékeiből áll. Legyenek \(A_1, \dots, A_n\) (ahol \(n \in \mathbb{N}^+\)) típusérték-halmazok és \(v_1, \dots, v_n\) a halmazokat azonosító egyedi címkék (változók). Az ezekből képzett, címkézett értékeknek egy \(\{v_1{:}a_1, \dots, v_n{:}a_n\}\) halmazát (ahol \(\forall i \in [1..n] : a_i \in A_i\)) állapotnak nevezzük.</p>
+<p>Egykomponensű állapottér esetén \(\{v_1{:}a_1\}\) helyett írhatunk \(a_1\)-et is.</p></div></details>
+<details class="concept def" id="ea1-allapotter" data-name="Állapottér Definíció" open><summary><span class="ctype">Definíció</span><span class="cname">Állapottér</span></summary><div class="cbody"><p>Legyenek \(A_1, \dots, A_n\) (ahol \(n \in \mathbb{N}^+\)) típusérték-halmazok és \(v_1, \dots, v_n\) a halmazokat azonosító egyedi címkék (változók). Az ezekből képzett összes lehetséges \(\{v_1{:}a_1, \dots, v_n{:}a_n\}\) állapot (ahol \(\forall i \in [1..n] : a_i \in A_i\)) halmazát állapottérnek nevezzük, és \((v_1{:}A_1, \dots, v_n{:}A_n)\)-nel jelöljük:</p>
+<div class="mb">\[ (v_1{:}A_1, \dots, v_n{:}A_n) \mathrel{::=} \big\{ \{v_1{:}a_1, \dots, v_n{:}a_n\} \mid \forall i \in [1..n] : a_i \in A_i \big\} \]</div></div></details>
+<details class="concept def" id="ea1-valtozo" data-name="Változó Definíció" open><summary><span class="ctype">Definíció</span><span class="cname">Változó</span></summary><div class="cbody"><p>Az \(A = (v_1{:}A_1, \dots, v_n{:}A_n)\) állapottér címkéire (változóira) úgy tekintünk, mint \(v_i : A \to A_i\) függvényekre, ahol \(v_i(a) = a_i\) egy \(a = \{v_1{:}a_1, \dots, v_n{:}a_n\}\) állapot esetén.</p></div></details>
+<details class="concept def" id="ea1-alter" data-name="Altér Definíció" open><summary><span class="ctype">Definíció</span><span class="cname">Altér</span></summary><div class="cbody"><p>Legyenek \(A = (v_1{:}A_1, \dots, v_n{:}A_n)\) és \(B = (u_1{:}B_1, \dots, u_m{:}B_m)\) állapotterek (\(n, m \in \mathbb{N}^+\) és \(m \leqslant n\)). Azt mondjuk, hogy az \(A\) állapottérnek altere a \(B\) állapottér (\(B \leq A\)), ha van olyan \(\varphi : [1..m] \to [1..n]\) injekció, amelyre \(\forall i \in [1..m] : B_i = A_{\varphi(i)}\).</p></div></details>
+<details class="concept def" id="ea1-feladat" data-name="Feladat Definíció" open><summary><span class="ctype">Definíció</span><span class="cname">Feladat</span></summary><div class="cbody"><p>Legyen \(A\) tetszőleges állapottér. Feladatnak nevezünk egy \(F \subseteq A \times A\) relációt.</p>
+<p>A definíció természetes módon adódik abból, hogy a feladatot egy leképezésnek tekintjük az állapottéren, és az állapottér minden pontjára megmondjuk, hova kell belőle eljutni, ha egyáltalán el kell jutni belőle valahova.</p></div></details>
+<details class="concept not" id="ea1-sorozatok" data-name="Sorozatok Jelölés" open><summary><span class="ctype">Jelölés</span><span class="cname">Sorozatok</span></summary><div class="cbody"><p>Ha \(H\) tetszőleges halmaz, akkor \(H^{**}\) jelöli az olyan (akár véges, akár végtelen) sorozatok halmazát, amelyek elemei mind a \(H\) halmazból valók. A \(H\)-beli véges sorozatok halmazát \(H^{*}\)-gal, a végtelen sorozatok halmazát \(H^{\infty}\)-nel jelöljük. Tehát \(H^{**} = H^{*} \cup H^{\infty}\). Egy \(\alpha \in H^{*}\) sorozat hosszát \(|\alpha|\) jelöli; végtelen sorozat esetén legyen \(|\alpha| = \infty\).</p></div></details>
+<details class="concept def" id="ea1-program" data-name="Program Definíció" open><summary><span class="ctype">Definíció</span><span class="cname">Program</span></summary><div class="cbody"><p>Legyen \(A\) az úgynevezett alap-állapottér (\(\text{fail} \notin A\)). Jelölje \(\overline{A}\) azon véges komponensű állapotterek unióját, amelyeknek altere az \(A\) alap-állapottér: \(\overline{A} = \bigcup_{A \leq B} B\). Az \(A\) feletti programnak hívjuk az \(S \subseteq A \times (\overline{A} \cup \{\text{fail}\})^{**}\) relációt, ha</p>
+<ol><li>\(\mathcal{D}_S = A\)</li><li>\(\forall a \in A : \forall \alpha \in S(a) : |\alpha| \geq 1\) és \(\alpha_1 = a\)</li><li>\(\forall \alpha \in \mathcal{R}_S : (\forall i \in \mathbb{N}^+ : i \lt |\alpha| \to \alpha_i \neq \text{fail})\)</li><li>\(\forall \alpha \in \mathcal{R}_S : (|\alpha| \lt \infty \to \alpha_{|\alpha|} \in A \cup \{\text{fail}\})\)</li></ol></div></details>
+<details class="concept def" id="ea1-elemi-program" data-name="Elemi program Definíció" open><summary><span class="ctype">Definíció</span><span class="cname">Elemi program</span></summary><div class="cbody"><p>Legyen \(A\) tetszőleges állapottér. Az \(S \subseteq A \times (\overline{A} \cup \{\text{fail}\})^{**}\) programot elemi programnak nevezzük, ha</p>
+<div class="mb">\[ \forall a \in A : S(a) \subseteq \{ \langle a \rangle, \langle a, \text{fail} \rangle, \langle a, a, a, \cdots \rangle, \langle a, b \rangle \mid b \in A \} \]</div>
+<p>A definíció szerint minden programhoz található vele ekvivalens elemi program: csak a sorozatok közbülső elemeit kell elhagyni, így lényegében (egy adott szinten) minden program elemi. Az elemi programok közül kiválasztunk néhány speciális tulajdonsággal rendelkezőt.</p></div></details>
+<details class="concept def" id="ea1-skip" data-name="SKIP Definíció" open><summary><span class="ctype">Definíció</span><span class="cname">SKIP</span></summary><div class="cbody"><p>Legyen \(A\) tetszőleges állapottér. \(\mathit{SKIP}\) jelöli azt a programot, amelyre</p>
+<div class="mb">\[ \forall a \in A : \mathit{SKIP}(a) = \{ \langle a \rangle \} \]</div>
+<p>A \(\mathit{SKIP}\) az állapottér minden \(a\) állapotához egyetlen sorozatot, az \(\langle a \rangle\) sorozatot rendeli. Így \(a\)-ból indulva a \(\mathit{SKIP}\) garantáltan \(a\)-ba jut, és csak oda.</p></div></details>
+<details class="concept def" id="ea1-abort" data-name="ABORT Definíció" open><summary><span class="ctype">Definíció</span><span class="cname">ABORT</span></summary><div class="cbody"><p>Legyen \(A\) tetszőleges állapottér. \(\mathit{ABORT}\) jelöli azt a programot, amelyre</p>
+<div class="mb">\[ \forall a \in A : \mathit{ABORT}(a) = \{ \langle a, \text{fail} \rangle \} \]</div>
+<p>Az \(\mathit{ABORT}\) az állapottér minden \(a\) állapotához egyetlen sorozatot, az \(\langle a, \text{fail} \rangle\) sorozatot rendeli. Így \(a\)-ból indulva az \(\mathit{ABORT}\) programnak nincs más végrehajtása, mint a \(\text{fail}\) állapotban végződő végrehajtás.</p>
+<p>A harmadik speciális elemi program az értékadás, amellyel az állapottér egyes komponenseinek (változóinak) értéke megváltoztatható. (A kivonat itt véget ér.)</p></div></details></div></section>
+<section id="ea2" class="lect"><div class="section-head"><span class="label">2. előadás · <a href="../Előadás kivonatok/Programozaselmelet_-_2_megoldas.pdf" target="_blank" rel="noopener">kivonat PDF ↗</a></span><h2>Megoldás</h2></div><div class="concepts"><details class="concept def" id="ea2-programfuggveny" data-name="Programfüggvény Definíció" open><summary><span class="ctype">Definíció</span><span class="cname">Programfüggvény</span></summary><div class="cbody"><p>A \(p(S) \subseteq A \times A\) reláció az \(S \subseteq A \times (\overline{A} \cup \{\text{fail}\})^{**}\) program <em>programfüggvénye</em>, ha</p>
+<ol><li>\(\mathcal{D}_{p(S)} = \{a \in A \mid S(a) \subseteq \overline{A}^{*}\}\)</li><li>\(\forall a \in \mathcal{D}_{p(S)} : p(S)(a) = \{b \in A \mid \exists \alpha \in S(a) : b = \alpha_{|\alpha|}\}\)</li></ol></div></details>
+<details class="concept def" id="ea2-megoldas" data-name="Megoldás Definíció" open><summary><span class="ctype">Definíció</span><span class="cname">Megoldás</span></summary><div class="cbody"><p>Azt mondjuk, hogy az \(S\) program megoldja az \(F\) feladatot (más szavakkal: az \(S\) program teljesen helyes az \(F\) feladatra nézve), ha</p>
+<ol><li>\(\mathcal{D}_F \subseteq \mathcal{D}_{p(S)}\)</li><li>\(\forall a \in \mathcal{D}_F : p(S)(a) \subseteq F(a)\)</li></ol></div></details>
+<details class="concept def" id="ea2-gyenge-programfuggveny" data-name="Gyenge programfüggvény Definíció" open><summary><span class="ctype">Definíció</span><span class="cname">Gyenge programfüggvény</span></summary><div class="cbody"><p>(A „3. Parciális helyesség” szakaszban.) A \(\tilde{p}(S) \subseteq A \times (A \cup \{\text{fail}\})\) reláció az \(S \subseteq A \times (\overline{A} \cup \{\text{fail}\})^{**}\) program gyenge programfüggvénye, ha</p>
+<ol><li>\(\mathcal{D}_{\tilde{p}(S)} = \{a \in A \mid S(a) \cap (\overline{A} \cup \{\text{fail}\})^{*} \neq \emptyset\}\)</li><li>\(\forall a \in \mathcal{D}_{\tilde{p}(S)} : \tilde{p}(S)(a) = \{b \in A \cup \{\text{fail}\} \mid \exists \alpha \in S(a) \cap (\overline{A} \cup \{\text{fail}\})^{*} : b = \alpha_{|\alpha|}\}\)</li></ol></div></details>
+<details class="concept def" id="ea2-parcialis-helyesseg" data-name="Parciális helyesség Definíció" open><summary><span class="ctype">Definíció</span><span class="cname">Parciális helyesség</span></summary><div class="cbody"><p>Azt mondjuk, hogy az \(S\) program parciálisan helyes az \(F\) feladatra nézve, ha</p>
+<ol><li>\(\forall a \in \mathcal{D}_F : \tilde{p}(S)(a) \subseteq F(a)\)</li></ol></div></details></div></section>
+<section id="ea3" class="lect"><div class="section-head"><span class="label">3. előadás · <a href="../Előadás kivonatok/Programozaselmelet_-_3_leggyengebb_elofeltetel.pdf" target="_blank" rel="noopener">kivonat PDF ↗</a></span><h2>Leggyengébb előfeltétel</h2></div><div class="concepts"><details class="concept def" id="ea3-hamis-logikai-fuggveny" data-name="HAMIS logikai függvény Definíció" open><summary><span class="ctype">Definíció</span><span class="cname">HAMIS logikai függvény</span></summary><div class="cbody"><p>(„1. Nevezetes logikai függvények” szakasz.) Legyen \(A\) tetszőleges halmaz. \(\mathit{HAMIS}\) jelöli azt a logikai függvényt, melyre</p>
+<div class="mb">\[ \forall a \in A : \mathit{HAMIS}(a) = \{\mathit{hamis}\} \]</div></div></details>
+<details class="concept def" id="ea3-igaz-logikai-fuggveny" data-name="IGAZ logikai függvény Definíció" open><summary><span class="ctype">Definíció</span><span class="cname">IGAZ logikai függvény</span></summary><div class="cbody"><p>Legyen \(A\) tetszőleges halmaz. \(\mathit{IGAZ}\) jelöli azt a logikai függvényt, melyre</p>
+<div class="mb">\[ \forall a \in A : \mathit{IGAZ}(a) = \{\mathit{igaz}\} \]</div></div></details>
+<details class="concept rem" id="ea3-a-hamis-es-igaz-jelentese" data-name="A HAMIS és IGAZ jelentése Megjegyzés" open><summary><span class="ctype">Megjegyzés</span><span class="cname">A HAMIS és IGAZ jelentése</span></summary><div class="cbody"><p>Azaz a \(\mathit{HAMIS}\) logikai függvény egy adott \(A\) halmaz minden eleméhez a \(\mathit{hamis}\), az \(\mathit{IGAZ}\) az \(\mathit{igaz}\) értéket rendeli.</p></div></details>
+<details class="concept not" id="ea3-igazsaghalmaz" data-name="Igazsághalmaz Jelölés" open><summary><span class="ctype">Jelölés</span><span class="cname">Igazsághalmaz</span></summary><div class="cbody"><p>Legyen \(R \in A \to \mathbb{L}\) logikai függvény. Ekkor \([R]\) jelöli az olyan állapottérbeli pontok halmazát, ahol \(R\) igaz. Azaz</p>
+<div class="mb">\[ [R] = \{a \in A \mid R(a) = \{\mathit{igaz}\}\} \]</div>
+<p>Az \([R]\) halmazt az \(R\) logikai függvény <em>igazsághalmazának</em> nevezzük.</p>
+<p>(A forrásban a jelölés felül-sarkos zárójel: \(\lceil R \rceil\).)</p></div></details>
+<details class="concept rem" id="ea3-parcialis-logikai-fuggveny-igazsaghalmaza" data-name="Parciális logikai függvény igazsághalmaza Megjegyzés" open><summary><span class="ctype">Megjegyzés</span><span class="cname">Parciális logikai függvény igazsághalmaza</span></summary><div class="cbody"><p>Ne felejtsük el, hogy \(R \in A \to \mathbb{L}\) nem feltétlenül értelmezett az \(A\) minden pontjában. Amennyiben \(R : A \to \mathbb{L}\), akkor már viszont igaz, hogy egy \(a \in A\) pontban ha \(R\) nem igaz, akkor hamis.</p></div></details>
+<details class="concept def" id="ea3-a-kovetkezik-relacio" data-name="A „következik” reláció Definíció" open><summary><span class="ctype">Definíció</span><span class="cname">A „következik” reláció</span></summary><div class="cbody"><p>Legyenek \(Q, R \in A \to \mathbb{L}\) tetszőleges logikai függvények. Amennyiben \([Q] \subseteq [R]\) teljesül, akkor azt mondjuk, hogy \(Q\) maga után vonja \(R\)-t (vagy másképp: \(Q\)-ból következik \(R\)), és a következőképpen jelöljük: \(Q \Rightarrow R\).</p></div></details>
+<details class="concept rem" id="ea3-a-kovetkezik-relacio-jelentese" data-name="A következik reláció jelentése Megjegyzés" open><summary><span class="ctype">Megjegyzés</span><span class="cname">A következik reláció jelentése</span></summary><div class="cbody"><p>Vegyük észre, hogy ha \(Q \Rightarrow R\), akkor ez azt jelenti, hogy minden olyan \(a \in A\) pontra, amire \(Q\) igaz, arra igaz \(R\) is.</p></div></details>
+<details class="concept ex" id="ea3-kovetkezik-relacio-veges-halmazon" data-name="Következik reláció véges halmazon Példa" open><summary><span class="ctype">Példa</span><span class="cname">Következik reláció véges halmazon</span></summary><div class="cbody"><p>Legyen \(A = \{1, 2, 3, 4\}\) és \(Q, R \in A \to \mathbb{L}\) logikai függvények úgy, hogy \([Q] = \{1, 3, 4\}\) és \([R] = \{1, 3\}\). Ebben az esetben \(Q \Rightarrow R\) nem teljesül (mert a 4-re igaz \(Q\), de \(R\) nem), de \(R \Rightarrow Q\) igen.</p></div></details>
+<details class="concept ex" id="ea3-kovetkezik-relacio-allapotteren" data-name="Következik reláció állapottéren Példa" open><summary><span class="ctype">Példa</span><span class="cname">Következik reláció állapottéren</span></summary><div class="cbody"><p>Legyen \(A = (a{:}\mathbb{N}, h{:}\mathbb{N})\) és \(Q, R \in A \to \mathbb{L}\) logikai függvények úgy, hogy \(Q = (a = 10)\) és \(R = (h = a^3)\). Ugyan van olyan \(A\)-beli pont (az \(A\) halmaz most speciálisan egy állapottér, tehát elemei állapotok), amihez \(Q\) és \(R\) is igazat rendel, méghozzá az \(\{a{:}10, h{:}1000\}\) állapot, de az nem igaz, hogy \(Q \Rightarrow R\), hiszen például \(\{a{:}10, h{:}82\} \in [Q]\), de az \(\{a{:}10, h{:}82\}\) elemhez \(R\) hamisat rendel.</p></div></details>
+<details class="concept def" id="ea3-leggyengebb-elofeltetel" data-name="Leggyengébb előfeltétel Definíció" open><summary><span class="ctype">Definíció</span><span class="cname">Leggyengébb előfeltétel</span></summary><div class="cbody"><p>Legyen \(S \subseteq A \times (\overline{A} \cup \{\text{fail}\})^{**}\) program, \(R \in A \to \mathbb{L}\) logikai függvény. Ekkor az \(S\) program \(R\) utófeltételhez tartozó leggyengébb előfeltétele az az \(\mathit{lf}(S,R) : A \to \mathbb{L}\) függvény, amelyre</p>
+<div class="mb">\[ [\mathit{lf}(S,R)] = \{a \in A \mid a \in \mathcal{D}_{p(S)} \land p(S)(a) \subseteq [R]\} \]</div>
+<p>A leggyengébb előfeltétel tehát pontosan azokban a pontokban igaz, ahonnan kiindulva az \(S\) program biztosan hibátlanul terminál, és az összes lehetséges végállapotban igaz \(R\).</p></div></details>
+<details class="concept thm" id="ea3-az-lf-tulajdonsagai" data-name="Az lf tulajdonságai Tétel" open><summary><span class="ctype">Tétel</span><span class="cname">Az lf tulajdonságai</span></summary><div class="cbody"><p>Legyen \(S \subseteq A \times (\overline{A} \cup \{\text{fail}\})^{**}\) program, \(Q, R \in A \to \mathbb{L}\) logikai függvények. Ekkor</p>
+<ol><li>\(\mathit{lf}(S, \mathit{HAMIS}) = \mathit{HAMIS}\)</li><li>ha \(Q \Rightarrow R\), akkor \(\mathit{lf}(S,Q) \Rightarrow \mathit{lf}(S,R)\)</li><li>\(\mathit{lf}(S,Q) \land \mathit{lf}(S,R) = \mathit{lf}(S, Q \land R)\)</li><li>\(\mathit{lf}(S,Q) \lor \mathit{lf}(S,R) \Rightarrow \mathit{lf}(S, Q \lor R)\)</li></ol></div></details>
+<details class="concept ex" id="ea3-az-x-x-5-ertekadas-leggyengebb-elofeltetele" data-name="Az x := x − 5 értékadás leggyengébb előfeltétele Példa" open><summary><span class="ctype">Példa</span><span class="cname">Az x := x − 5 értékadás leggyengébb előfeltétele</span></summary><div class="cbody"><p>Legyen \(A = (x{:}\mathbb{N})\). \(R : A \to \mathbb{L}\) logikai függvény adott, \(R = (x \lt 10)\). Számoljuk ki az \(x := x - 5\) értékadásnak az \(R\) utófeltételhez tartozó leggyengébb előfeltételét.</p>
+<p>Először megvizsgáljuk, hogyan viselkedik az \(x := x - 5\) program az állapottér néhány pontjában: az \(\{x{:}8\}\) ponthoz az \(\langle \{x{:}8\}, \{x{:}3\} \rangle\) sorozatot, míg az \(\{x{:}2\}\) állapothoz az \(\langle \{x{:}2\}, \text{fail} \rangle\) sorozatot rendeli. A program programfüggvénye olyan \(\{x{:}a_1\}\) állapotokban van értelmezve, ahol \(a_1 \geqslant 5\); innen indulva a program garantáltan olyan pontban terminál, ahol \(x\) értéke \(a_1 - 5\). Egyéb állapotból indulva a program a \(\text{fail}\) állapotban terminál.</p>
+<p>Felhasználva a leggyengébb előfeltétel definícióját, és az \(x := x - 5\) értékadást \(S\)-sel jelölve, felírhatjuk:</p>
+<div class="mb">\[
+\begin{aligned}
+[\mathit{lf}(S,R)] &amp;= \{a \in A \mid a \in \mathcal{D}_{p(S)} \land p(S)(a) \subseteq [R]\} = \\
+&amp;= \{a \in A \mid x(a) \geqslant 5 \land \{x(a) - 5\} \subseteq [R]\} = \\
+&amp;= \{a \in A \mid x(a) \geqslant 5 \land x(a) - 5 \in [R]\} = \\
+&amp;= \{a \in A \mid x(a) \geqslant 5 \land x(a) - 5 \lt 10\}
+\end{aligned}
+\]</div>
+<p>Azaz azt kaptuk, hogy az \(\mathit{lf}(S,R)\) pontosan akkor igaz, ha \((5 \leqslant x \lt 15)\). Ne felejtsük el, hogy az \(A\) állapottéren az egyetlen változónk neve \(x\), és most számoltuk ki azon állapotok halmazát, ahol a leggyengébb előfeltétel igaz.</p></div></details>
+<details class="concept rem" id="ea3-miert-leggyengebb-az-elofeltetel" data-name="Miért „leggyengébb” az előfeltétel Megjegyzés" open><summary><span class="ctype">Megjegyzés</span><span class="cname">Miért „leggyengébb” az előfeltétel</span></summary><div class="cbody"><p>A leggyengébb előfeltétel fogalma nagyon fontos, ugyanakkor nagyon egyszerű. Vegyük észre, hogy az előbbi példában azt számoltuk ki, hogy az \(x\) értéke 15-nél kisebb kell legyen, hogy az \(x := x - 5\) értékadást végrehajtva olyan pontban termináljunk, ahol \(x\) értéke 10-nél kisebb. Továbbá az \(x\) értéke legalább 5 kell legyen, hogy az \(x := x - 5\) értékadás hibátlanul működjön (ne felejtsük: az \(x\) típusa természetes szám).</p>
+<p>Természetesen igaz az is, hogy \(x \in [8..12] \Rightarrow \mathit{lf}(x := x - 5,\ x \lt 10)\), azaz hogy ha az \(x\)-hez tartozó érték a \([8..12]\) halmazból van, akkor az \(x := x - 5\) biztos, hogy hibátlanul terminál, méghozzá olyan állapotban, ahol \(x \lt 10\) teljesül. Mindez azért van, mert az \(x \in [8..12]\) feltétel szigorúbb, mint az a leggyengébb előfeltétel, amit előbb kiszámoltunk.</p>
+<p>(A forrásban ennél a képletnél a zárójelezés elírt: \(x \in [8..12]) \Rightarrow \mathit{lf}(x := x - 5, x \lt 10\); itt javítva szerepel.)</p>
+<p>Általánosan: ha valamely \(P\) logikai függvényre teljesül, hogy \(P \Rightarrow \mathit{lf}(S,R)\) (azaz \(P\) szigorúbb, mint az \(\mathit{lf}(S,R)\) feltétel), akkor a \(P\) tulajdonságú pontokból indulva az \(S\) program biztos, hogy helyesen terminál, és a végpontokban igaz \(R\). A leggyengébb előfeltételt ezért hívják „leggyengébb előfeltételnek”.</p></div></details></div></section>
+<section id="ea4" class="lect"><div class="section-head"><span class="label">4. előadás · <a href="../Előadás kivonatok/Programozaselmelet_-_4_specifikacio.pdf" target="_blank" rel="noopener">kivonat PDF ↗</a></span><h2>Specifikáció</h2></div><div class="concepts"><details class="concept def" id="ea4-parameterter" data-name="Paramétertér Definíció" open><summary><span class="ctype">Definíció</span><span class="cname">Paramétertér</span></summary><div class="cbody"><p>Azt mondjuk, hogy a \(B\) halmaz az \(F \subseteq A \times A\) feladat egy paramétertere, ha léteznek olyan \(F_1 \subseteq A \times B\) és \(F_2 \subseteq B \times A\) relációk, melyekre \(F = F_2 \circ F_1\).</p></div></details>
+<details class="concept rem" id="ea4-parameterter-letezese" data-name="Paramétertér létezése Megjegyzés" open><summary><span class="ctype">Megjegyzés</span><span class="cname">Paramétertér létezése</span></summary><div class="cbody"><p>Bármely \(F \subseteq A \times A\) feladatnak létezik paramétertere. Hiszen legyen \(B = A\), és válasszuk az \(F_1 \subseteq A \times B\) és \(F_2 \subseteq B \times A\) relációkat úgy, hogy \(F_1 = \mathit{id}\) (azaz a minden \(A\)-beli elemhez önmagát rendelő reláció) és \(F_2 = F\). Ekkor nyilvánvalóan teljesül, hogy \(F \circ \mathit{id} = F\).</p></div></details>
+<details class="concept def" id="ea4-relacio-inverze" data-name="Reláció inverze Definíció" open><summary><span class="ctype">Definíció</span><span class="cname">Reláció inverze</span></summary><div class="cbody"><p>Legyenek \(A\) és \(B\) tetszőleges nemüres halmazok és \(R \subseteq A \times B\) tetszőleges reláció. Az \(R\) reláció inverze:</p>
+<div class="mb">\[ R^{(-1)} \mathrel{::=} \{(b,a) \in B \times A \mid (a,b) \in R\} \]</div>
+<p>azaz olyan \(B\)-ről \(A\)-ra képező reláció, ami pontosan akkor tartalmaz egy \((b,a) \in B \times A\) párt, ha \((a,b) \in R\).</p></div></details>
+<details class="concept thm" id="ea4-specifikacio-tetele" data-name="Specifikáció tétele Tétel" open><summary><span class="ctype">Tétel</span><span class="cname">Specifikáció tétele</span></summary><div class="cbody"><p>Legyen \(F \subseteq A \times A\) feladat, \(B\) az \(F\) egy paramétertere (azaz léteznek olyan \(F_1 \subseteq A \times B\) és \(F_2 \subseteq B \times A\) relációk úgy, hogy \(F = F_2 \circ F_1\)). Legyen \(b \in B\) tetszőleges paraméter, amihez definiáljuk a \(Q_b : A \to \mathbb{L}\) és \(R_b : A \to \mathbb{L}\) logikai függvényeket az igazsághalmazaik megadásával:</p>
+<div class="mb">\[ [Q_b] \mathrel{::=} F_1^{(-1)}(b) \]</div>
+<div class="mb">\[ [R_b] \mathrel{::=} F_2(b) \]</div>
+<p>Ekkor ha \(\forall b \in B : Q_b \Rightarrow \mathit{lf}(S, R_b)\), akkor az \(S\) program megoldja az \(F\) feladatot.</p></div></details>
+<details class="concept rem" id="ea4-q-b-es-r-b-igazsaghalmaza-kifejtve" data-name="Q_b és R_b igazsághalmaza kifejtve Megjegyzés" open><summary><span class="ctype">Megjegyzés</span><span class="cname">Q_b és R_b igazsághalmaza kifejtve</span></summary><div class="cbody"><p>\([Q_b] = \{a \in A \mid (a,b) \in F_1\}\), azaz \(Q_b\) igazsághalmazában olyan \(a \in A\) állapotok vannak, melyekhez az \(F_1\) reláció hozzárendeli a \(b \in B\) paramétert.</p>
+<p>\([R_b] = \{a \in A \mid (b,a) \in F_2\}\), azaz \(R_b\) igazsághalmazában olyan \(a \in A\) állapotok vannak, melyeket az \(F_2\) reláció a \(b \in B\) paraméterhez rendel.</p></div></details>
+<details class="concept ex" id="ea4-oszto-keresese-a-feladat-specifikalasa" data-name="Osztó keresése: a feladat specifikálása Példa" open><summary><span class="ctype">Példa</span><span class="cname">Osztó keresése: a feladat specifikálása</span></summary><div class="cbody"><p>(„2. Feladat specifikációja” szakasz.) Tekintsük azt a feladatot, amikor egy adott pozitív egész egy osztóját kell megadnunk. A feladat állapottere \(A = (n{:}\mathbb{N}^+, d{:}\mathbb{N}^+)\). Ezt a feladatot le tudjuk formálisan írni, mint olyan \((u,v) \in A \times A\) párok halmaza, ahol \(u\) és \(v\) állapotok \(n\) változó szerinti értékei megegyeznek, és \(v\) célállapot \(d\) változóhoz tartozó értéke osztója az \(u\) kiindulási állapot \(n\) változóhoz tartozó értékének:</p>
+<div class="mb">\[ \{(u,v) \in A \times A \mid n(u) = n(v) \land d(v) \mid n(u)\} \]</div>
+<p>Felhasználva a specifikáció tételének jelöléseit, írjuk fel más módon – de formálisan – a feladat specifikációját. Azt vesszük észre, hogy minden \(a \in A\) állapothoz, melyekre \(n(a)\) megegyezik, a feladat ugyanazt rendeli; nem függ a kiindulási állapot \(d\) változó szerinti értékétől. Írjuk fel az \(F\) feladatot az \(F_1\) és \(F_2\) relációk kompozíciójaként úgy, hogy azokhoz az állapotokhoz, melyeknek \(F\) szerinti képe azonos, \(F_1\) ugyanazt a paramétert rendelje. Mivel ezek az állapotok megegyeznek az \(n\) változóhoz tartozó értékükben, célszerű hozzájuk ugyanezt a (címkézett) értéket rendelni, \(F_1\) reláció szerint. Azaz a feladat egy paramétertere legyen a pozitív egész számok halmaza, ahol az értékre az \(n'\) változó segítségével (egy komponens lévén nem lenne szükség változóra, de általános esetben kell) hivatkozhatunk: \(B = (n'{:}\mathbb{N}^+)\).</p>
+<p>Azt, hogy \(F_1\) pontosan akkor rendel egy \(a \in A\) állapothoz egy \(b \in B\) értéket, a specifikáció tételében szereplő \(Q_b\) logikai függvénnyel adhatjuk meg. Legyen \(b \in B\) tetszőleges, ekkor</p>
+<p>\(\forall a \in A : Q_b(a) = (n(a) = n'(b))\).</p>
+<p>Természetesen úgy kapjuk meg az \(F\) feladatot az \(F_1\) és \(F_2\) relációk kompozíciójaként, ha \(F_2\) a \(b \in B\) paraméterhez olyan állapottérbeli \(a\) pontot rendel, melynek \(d\) változóhoz tartozó értéke osztója a kiindulási állapot \(n\) változóhoz tartozó értékének. Épp ezért tetszőleges \(b \in B\) esetén legyen \(R_b\) olyan logikai függvény, melyre</p>
+<p>\(\forall a \in A : R_b(a) = (n(a) = n'(b) \land d(a) \mid n(a))\).</p>
+<p>Vegyük észre, hogy az \(n(a) = n'(b)\) kikötésre szükségünk van; anélkül csak annyit mondanánk, hogy a célállapotban a \(d\) változóhoz tartozó érték osztója kell legyen az \(n\) változóhoz tartozó aktuális értéknek, nem fogalmaznánk meg szorosabb kapcsolatot a kiindulási állapot és a célállapot között. A feladat specifikációja tehát:</p>
+<div class="mb">\[
+\begin{aligned}
+&amp;A = (n{:}\mathbb{N}^+, d{:}\mathbb{N}^+) \\
+&amp;B = (n'{:}\mathbb{N}^+) \\
+&amp;\forall b \in B : Q_b(a) = (n(a) = n'(b)) \quad \text{(ahol } a \in A \text{ tetszőleges állapot)} \\
+&amp;\forall b \in B : R_b(a) = (n(a) = n'(b) \land d(a) \mid n(a)) \quad \text{(ahol } a \in A \text{ tetszőleges állapot)}
+\end{aligned}
+\]</div></div></details>
+<details class="concept def" id="ea4-a-feladat-specifikacioja" data-name="A feladat specifikációja Definíció" open><summary><span class="ctype">Definíció</span><span class="cname">A feladat specifikációja</span></summary><div class="cbody"><p>A továbbiakban a feladatnak ezen leírását (tehát ami tartalmazza a feladat állapotterét és a feladat egy paraméterterének megadását; minden \(b \in B\) paraméterre a hozzá tartozó \(Q_b\) és \(R_b\) logikai függvények definícióját) a feladat <em>specifikációjának</em> nevezzük.</p></div></details>
+<details class="concept not" id="ea4-roviditett-specifikacio-jeloles" data-name="Rövidített specifikáció-jelölés Jelölés" open><summary><span class="ctype">Jelölés</span><span class="cname">Rövidített specifikáció-jelölés</span></summary><div class="cbody"><p>Mivel \(d\) az \(A\) állapottérről \(\mathbb{N}\)-re képező függvény (azaz argumentumába egy \(a \in A\) elemet írhatunk), hasonlóan \(Q_b\) egy \(b \in B\) paraméterhez definiált, \(a \in A\) állapotokhoz logikai értéket rendelő függvény; az egyértelmű jelöléseket elhagyva a következőket kapjuk:</p>
+<div class="mb">\[
+\begin{aligned}
+&amp;A = (n{:}\mathbb{N}^+, d{:}\mathbb{N}^+) \\
+&amp;B = (n'{:}\mathbb{N}^+) \\
+&amp;Q = (n = n') \\
+&amp;R = (Q \land d \mid n)
+\end{aligned}
+\]</div></div></details></div></section>
+<section id="ea7" class="lect"><div class="section-head"><span class="label">7. előadás · <a href="../Előadás kivonatok/Programozaselmelet_-_7_programkonstrukciok.pdf" target="_blank" rel="noopener">kivonat PDF ↗</a></span><h2>Programkonstrukciók</h2></div><div class="concepts"><details class="concept rem" id="ea7-bevezetes" data-name="Bevezetés Megjegyzés" open><summary><span class="ctype">Megjegyzés</span><span class="cname">Bevezetés</span></summary><div class="cbody"><p>Ebben a fejezetben azzal foglalkozunk, hogy lehet meglévő programokból új programokat készíteni. Háromféle konstrukciót engedünk meg: szekvencia, elágazás és ciklus. Ezek definícióit úgy adjuk meg, hogy a velük képzett relációk illeszkedjenek a korábban bevezetett program fogalmához. A programkonstrukciókat struktogrammal ábrázoljuk.</p></div></details>
+<details class="concept rem" id="ea7-szekvencia-szemleletes-leiras-csatlakozasi-pont" data-name="Szekvencia – szemléletes leírás, csatlakozási pont Megjegyzés" open><summary><span class="ctype">Megjegyzés</span><span class="cname">Szekvencia – szemléletes leírás, csatlakozási pont</span></summary><div class="cbody"><p>Szekvencia esetében két programot egymás után végzünk el. Amennyiben az első program végrehajtása adott állapotból indulva nem véges vagy hibásan terminál, a második program nem tudja folytatni a végrehajtást a végpontból; az első program által generált végrehajtás egy lehetséges végrehajtása lesz a szekvenciának is.</p>
+<p>Nevezzük <b>csatlakozási pontnak</b> azt az állapotot egy végrehajtási sorozatban, ahol az egyik program terminál és a másik program ugyaninnen indul el. Nem szeretnénk, ha például az \(x := x + 1\) és \(x := x + 2\) programok szekvenciája (ahol \(x\) egész típusú) az állapottér \(\{x{:}5\}\) eleméhez az \(\langle \{x{:}5\}, \{x{:}6\}, \{x{:}6\}, \{x{:}8\} \rangle\) sorozatot rendelné. Ezért az egymás után véges sokszor ismétlődő csatlakozási pontokból egyet hagyjunk el.</p></div></details>
+<details class="concept not" id="ea7-sorozat-utolso-eleme-tau-alpha" data-name="Sorozat utolsó eleme: \(\tau(\alpha)\) Jelölés" open><summary><span class="ctype">Jelölés</span><span class="cname">Sorozat utolsó eleme: \(\tau(\alpha)\)</span></summary><div class="cbody"><p>Véges hosszú \(\alpha\) sorozat utolsó elemét jelölje \(\tau(\alpha)\). Tehát ha \(\alpha\) véges, \(\tau(\alpha) = \alpha_{|\alpha|}\).</p></div></details>
+<details class="concept not" id="ea7-sorozatok-osszefuzese-csatlakozasi-pont-elhagyasaval-alpha-otimes-beta-otimes-n-otimes-infty" data-name="Sorozatok összefűzése csatlakozási pont elhagyásával: \(\alpha \otimes \beta\), \(\otimes_n\), \(\otimes_\infty\) Jelölés" open><summary><span class="ctype">Jelölés</span><span class="cname">Sorozatok összefűzése csatlakozási pont elhagyásával: \(\alpha \otimes \beta\), \(\otimes_n\), \(\otimes_\infty\)</span></summary><div class="cbody"><p>Legyen \(A\) tetszőleges állapottér. \(\alpha \in \overline{A}^{*}\) és \(\beta \in (\overline{A} \cup \{\text{fail}\})^{**}\) úgy, hogy \(\alpha\) és \(\beta\) nem üres sorozatok, továbbá \(\tau(\alpha) = \beta_1\). Ekkor \(\alpha \otimes \beta\) jelölje az \(\alpha\) és \(\beta\) sorozatok összefűzésében \(\beta\) első elemének elhagyásával kapott sorozatot.</p>
+<p>Általánosítsuk a jelölést \(n \in \mathbb{N}^+\) darab vagy akár végtelen sok sorozat esetére. A sorozatok összefűzése (konkatenációja) után az egymás után véges sokszor ismétlődő csatlakozási pontokból egyet hagyjunk el.</p></div></details>
+<details class="concept ex" id="ea7-pelda-az-osszefuzesre" data-name="Példa az összefűzésre Példa" open><summary><span class="ctype">Példa</span><span class="cname">Példa az összefűzésre</span></summary><div class="cbody"><p>Legyen \(A = \{1, 2, 3, 4\}\). Ekkor</p>
+<div class="mb">\[\otimes_4(\langle 1,2,3,1 \rangle, \langle 1,2,3,1 \rangle, \langle 1,2,3,1 \rangle, \langle 1,2,3,1 \rangle) = \langle 1,2,3,1,2,3,1,2,3,1,2,3,1 \rangle\]</div>
+<div class="mb">\[\otimes_4(\langle 1 \rangle, \langle 1 \rangle, \langle 1 \rangle, \langle 1,2,3,1 \rangle) = \langle 1,1,1,2,3,1 \rangle\]</div>
+<div class="mb">\[\otimes_\infty(\langle 1 \rangle, \langle 1 \rangle, \langle 1 \rangle, \langle 1 \rangle, \ldots) = \langle 1,1,\ldots \rangle\]</div>
+<div class="mb">\[\otimes_\infty(\langle 1,2,3,1 \rangle, \langle 1,2,3,1 \rangle, \langle 1,4 \rangle, \langle 4 \rangle, \langle 4 \rangle, \langle 4 \rangle, \ldots) = \langle 1,2,3,1,2,3,1,4,4,4,\ldots \rangle\]</div></div></details>
+<details class="concept def" id="ea7-szekvencia" data-name="Szekvencia Definíció" open><summary><span class="ctype">Definíció</span><span class="cname">Szekvencia</span></summary><div class="cbody"><p>Legyen \(A\) közös alap-állapottere az \(S_1\) és \(S_2\) programoknak. Az \((S_1;S_2)\) relációt az \(S_1\) és \(S_2\) programok szekvenciájának nevezzük, ha</p>
+<div class="mb">\[\begin{aligned}(S_1;S_2)(a) = {} &amp; \{\alpha \in \overline{A}^{\infty} \mid \alpha \in S_1(a)\} \cup {}\\ &amp; \{\alpha \in (\overline{A} \cup \{\text{fail}\})^{*} \mid \alpha \in S_1(a) \wedge \alpha_{|\alpha|} = \text{fail}\} \cup {}\\ &amp; \{\gamma \in (\overline{A} \cup \{\text{fail}\})^{**} \mid \gamma = \alpha \otimes \beta \wedge \alpha \in S_1(a) \wedge |\alpha| \lt \infty \wedge \alpha_{|\alpha|} \neq \text{fail} \wedge \beta \in S_2(\alpha_{|\alpha|})\}\end{aligned}\]</div></div></details>
+<details class="concept not" id="ea7-a-szekvencia-struktogramja" data-name="A szekvencia struktogramja Jelölés" open><summary><span class="ctype">Jelölés</span><span class="cname">A szekvencia struktogramja</span></summary><div class="cbody"><div class="sgwrap"><span class="label">\((S_1;S_2)\)</span><div class="sg"><div class="st">\(S_1\)</div><div class="st">\(S_2\)</div></div></div></div></details>
+<details class="concept thm" id="ea7-a-szekvencia-program" data-name="A szekvencia program Tétel" open><summary><span class="ctype">Tétel</span><span class="cname">A szekvencia program</span></summary><div class="cbody"><p>Legyen \(A\) közös alap-állapottere az \(S_1\) és \(S_2\) programoknak. Az \((S_1;S_2)\) szekvencia program.</p></div></details>
+<details class="concept thm" id="ea7-a-szekvencia-programfuggvenye" data-name="A szekvencia programfüggvénye Tétel" open><summary><span class="ctype">Tétel</span><span class="cname">A szekvencia programfüggvénye</span></summary><div class="cbody"><p>Legyen \(A\) közös alap-állapottere az \(S_1\) és \(S_2\) programoknak és jelölje \(S\) az \((S_1;S_2)\) szekvenciát. Ekkor</p>
+<div class="mb">\[p(S) = p(S_2) \odot p(S_1)\]</div></div></details>
+<details class="concept def" id="ea7-elagazas" data-name="Elágazás Definíció" open><summary><span class="ctype">Definíció</span><span class="cname">Elágazás</span></summary><div class="cbody"><p>Legyen \(A\) közös alap-állapottere az \(S_1, \ldots S_n\) programoknak. Legyenek továbbá \(\pi_1, \ldots \pi_n \in A \to \mathbb{L}\) logikai függvények. Ekkor az \(\text{IF} \subseteq A \times (\overline{A} \cup \{\text{fail}\})^{**}\) relációt az \(S_i\) programokból képzett \(\pi_i\) feltételek által meghatározott elágazásnak nevezzük és \((\pi_1{:}S_1, \ldots \pi_n{:}S_n)\)-nel jelöljük, ha</p>
+<div class="mb">\[\forall a \in A : \text{IF}(a) = \omega_0(a) \cup \bigcup_{i=1}^{n} \omega_i(a)\]</div>
+<p>ahol \(\forall i \in [1..n]\):</p>
+<div class="mb">\[\omega_i(a) = \begin{cases} S_i(a), &amp; \text{ha } a \in \mathcal{D}_{\pi_i} \wedge \pi_i(a)\\ \emptyset, &amp; \text{ha } a \in \mathcal{D}_{\pi_i} \wedge \neg\pi_i(a)\\ \{\langle a, \text{fail} \rangle\}, &amp; \text{ha } a \notin \mathcal{D}_{\pi_i} \end{cases}\]</div>
+<p>és</p>
+<div class="mb">\[\omega_0(a) = \begin{cases} \{\langle a, \text{fail} \rangle\}, &amp; \text{ha } \forall i \in [1..n] : (a \in \mathcal{D}_{\pi_i} \wedge \neg\pi_i(a))\\ \emptyset, &amp; \text{különben} \end{cases}\]</div></div></details>
+<details class="concept not" id="ea7-az-elagazas-struktogramja" data-name="Az elágazás struktogramja Jelölés" open><summary><span class="ctype">Jelölés</span><span class="cname">Az elágazás struktogramja</span></summary><div class="cbody"><div class="sgwrap"><span class="label">IF</span><div class="sg"><div class="ifm"><div class="ifcol"><div class="ifc">\(\pi_1\)</div><div class="st">\(S_1\)</div></div><div class="ifcol"><div class="ifc">⋯</div><div class="st">⋯</div></div><div class="ifcol"><div class="ifc">\(\pi_n\)</div><div class="st">\(S_n\)</div></div></div></div></div></div></details>
+<details class="concept not" id="ea7-az-elagazas-iffi-alakja" data-name="Az elágazás if–fi alakja Jelölés" open><summary><span class="ctype">Jelölés</span><span class="cname">Az elágazás if–fi alakja</span></summary><div class="cbody"><p>Az elágazást szokás még a következő módon is leírni:</p>
+<pre>if
+   π1 → S1 □
+   ...
+   πn−1 → Sn−1 □
+   πn → Sn
+fi</pre>
+<p>(TeX: \(\textbf{if}\ \pi_1 \to S_1 \ \square \ \ldots \ \square\ \pi_{n-1} \to S_{n-1}\ \square\ \pi_n \to S_n\ \textbf{fi}\))</p></div></details>
+<details class="concept thm" id="ea7-az-elagazas-program" data-name="Az elágazás program Tétel" open><summary><span class="ctype">Tétel</span><span class="cname">Az elágazás program</span></summary><div class="cbody"><p>Legyen \(A\) közös alap-állapottere az \(S_1, \ldots S_n\) programoknak. Legyenek továbbá \(\pi_1, \ldots \pi_n \in A \to \mathbb{L}\) logikai függvények. Az \(\text{IF} = (\pi_1{:}S_1, \ldots \pi_n{:}S_n)\) elágazás program.</p></div></details>
+<details class="concept thm" id="ea7-az-elagazas-programfuggvenye" data-name="Az elágazás programfüggvénye Tétel" open><summary><span class="ctype">Tétel</span><span class="cname">Az elágazás programfüggvénye</span></summary><div class="cbody"><p>Legyen \(A\) közös alap-állapottere az \(S_1, \ldots S_n\) programoknak. Legyenek továbbá \(\pi_1, \ldots \pi_n \in A \to \mathbb{L}\) logikai függvények. \(\text{IF} = (\pi_1{:}S_1, \ldots \pi_n{:}S_n)\). Ekkor</p>
+<div class="mb">\[\mathcal{D}_{p(\text{IF})} = \{a \in A \mid a \in \bigcap_{i=1}^{n} \mathcal{D}_{\pi_i} \wedge a \in \bigcup_{i=1}^{n} [\pi_i] \wedge \forall i \in [1..n] : a \in [\pi_i] \Rightarrow a \in \mathcal{D}_{p(S_i)}\}\]</div>
+<p>és</p>
+<div class="mb">\[\forall a \in \mathcal{D}_{p(\text{IF})} : p(\text{IF})(a) = \bigcup_{i=1}^{n} p(S_i)|_{[\pi_i]}\]</div>
+<p>(A forrásban az igazsághalmaz jelölése \(\lceil \pi_i \rceil\).)</p></div></details>
+<details class="concept def" id="ea7-ciklus" data-name="Ciklus Definíció" open><summary><span class="ctype">Definíció</span><span class="cname">Ciklus</span></summary><div class="cbody"><p>Legyen \(\pi \in A \to \mathbb{L}\) feltétel és \(S_0 \subseteq A \times (\overline{A} \cup \{\text{fail}\})^{**}\) program. A \(\text{DO} \subseteq A \times (\overline{A} \cup \{\text{fail}\})^{**}\) relációt az \(S_0\) programból \(\pi\) feltétellel képzett ciklusnak nevezzük és \((\pi, S_0)\)-lal jelöljük, ha \(\forall a \in A\):</p>
+<div class="mb">\[\text{DO}(a) = \begin{cases} (S_0;\text{DO})(a) &amp; \text{ha } a \in \mathcal{D}_\pi \wedge \pi(a)\\ \{\langle a \rangle\} &amp; \text{ha } a \in \mathcal{D}_\pi \wedge \neg\pi(a)\\ \{\langle a, \text{fail} \rangle\} &amp; \text{ha } a \notin \mathcal{D}_\pi \end{cases}\]</div></div></details>
+<details class="concept not" id="ea7-a-ciklus-struktogramja" data-name="A ciklus struktogramja Jelölés" open><summary><span class="ctype">Jelölés</span><span class="cname">A ciklus struktogramja</span></summary><div class="cbody"><div class="sgwrap"><span class="label">DO</span><div class="sg"><div class="loop"><div class="cond">\(\pi\)</div><div class="body"><div class="st">\(S_0\)</div></div></div></div></div></div></details>
+<details class="concept not" id="ea7-a-ciklus-whiledood-alakja" data-name="A ciklus while–do–od alakja Jelölés" open><summary><span class="ctype">Jelölés</span><span class="cname">A ciklus while–do–od alakja</span></summary><div class="cbody"><p>A szakirodalomban a következő mód is elterjedt a ciklus leírására:</p>
+<pre>while π do
+   S0
+od</pre></div></details>
+<details class="concept def" id="ea7-ciklus-masodik-explicit-definicio" data-name="Ciklus – második (explicit) definíció Definíció" open><summary><span class="ctype">Definíció</span><span class="cname">Ciklus – második (explicit) definíció</span></summary><div class="cbody"><p>A szekvenciához és az elágazáshoz hasonló módon is definiálhatjuk a ciklust. \(\forall a \in A\):</p>
+<div class="mb">\[\text{DO}(a) = \begin{cases} \{\langle a, \text{fail} \rangle\}, &amp; \text{ha } a \notin \mathcal{D}_\pi\\ \{\langle a \rangle\}, &amp; \text{ha } a \in \mathcal{D}_\pi \wedge \neg\pi(a)\\ \begin{aligned} &amp; \{\alpha \in (\overline{A} \cup \{\text{fail}\})^{**} \mid \exists \alpha^1, \ldots, \alpha^n \in (\overline{A} \cup \{\text{fail}\})^{**} : \alpha = \otimes_n(\alpha^1, \ldots, \alpha^n) \wedge {}\\ &amp; \alpha^1 \in S_0(a) \wedge \forall i \in [1..n-1] : (\alpha^i \in \overline{A}^{*} \wedge \tau(\alpha^i) \in [\pi] \wedge \alpha^{i+1} \in S_0(\tau(\alpha^i))) \wedge {}\\ &amp; ((\alpha^n \in \overline{A}^{\infty} \vee (\alpha^n \in (\overline{A} \cup \{\text{fail}\})^{*} \wedge \tau(\alpha^i) = \text{fail}) \vee {}\\ &amp; (\alpha^n \in \overline{A}^{*} \wedge \tau(\alpha^i) \in \mathcal{D}_\pi \wedge \tau(\alpha^i) \notin [\pi])\}\\ &amp; \cup\\ &amp; \{\alpha \in \overline{A}^{\infty} \mid \exists \alpha^1, \alpha^2, \ldots \in \overline{A}^{*} : \alpha = \otimes_\infty(\alpha^1, \alpha^2, \ldots) \wedge \alpha^1 \in S_0(a) \wedge \forall i \in \mathbb{N}^+ :\\ &amp; (\alpha^i \in \overline{A}^{*} \wedge \tau(\alpha^i) \in [\pi] \wedge \alpha^{i+1} \in S_0(\tau(\alpha^i)))\}\\ &amp; \cup\\ &amp; \{\alpha \in (\overline{A} \cup \{\text{fail}\})^{*} \mid \exists \alpha^1, \ldots, \alpha^n \in (\overline{A} \cup \{\text{fail}\})^{**} : \alpha = \otimes_n(\alpha^1, \ldots, \alpha^n) \wedge {}\\ &amp; \alpha^1 \in S_0(a) \wedge \forall i \in [1..n-2] : (\alpha^i \in \overline{A}^{*} \wedge \tau(\alpha^i) \in [\pi] \wedge \alpha^{i+1} \in S_0(\tau(\alpha^i)))\\ &amp; \wedge (\alpha^{n-1} \in \overline{A}^{*} \wedge \tau(\alpha^{n-1}) \notin \mathcal{D}_\pi \wedge \alpha^n = \langle \tau(\alpha^{n-1}), \text{fail} \rangle)\}, \end{aligned} &amp; \text{ha } a \in \mathcal{D}_\pi \wedge \pi(a) \end{cases}\]</div>
+<p>(A forrásban az utolsó ciklusmag-futásra vonatkozó feltételekben \(\tau(\alpha^i)\) áll, értelemszerűen \(\tau(\alpha^n)\)-re gondolva; az igazsághalmaz jelölése a forrásban \(\lceil \pi \rceil\).)</p></div></details>
+<details class="concept rem" id="ea7-a-masodik-ciklusdefinicio-magyarazata" data-name="A második ciklusdefiníció magyarázata Megjegyzés" open><summary><span class="ctype">Megjegyzés</span><span class="cname">A második ciklusdefiníció magyarázata</span></summary><div class="cbody"><p>Első ránézésre a definíció kissé bonyolultnak tűnik. Amennyiben sorra vesszük, hogy az állapottér egy \(a\) pontjához milyen sorozatokat rendelhet a ciklus, már nem is fogjuk bonyolultnak találni a definíciót!</p>
+<ul><li>Ha \(a\) állapotban a ciklusfeltétel nem kiértékelhető, akkor a ciklus hibásan terminál.</li><li>Ha \(a\) állapotban a ciklusfeltétel kiértékelhető, de nem teljesül \(a\)-ra, akkor a ciklus semmit nem csinál, végrehajtása befejeződik az \(a\) állapotban.</li><li>A ciklusmagot véges sokszor elvégezzük egymás után, úgy, hogy a ciklusmag utolsó végrehajtásához tartozó sorozat<ul><li>végtelen; vagy</li><li>véges és a \(\text{fail}\) állapotban végződik; vagy</li><li>véges és utolsó elemében kiértékelhető a \(\pi\) feltétel, de az \(\mathit{hamis}\).</li></ul></li><li>A ciklusmagot végtelen sokszor elvégezzük egymás után, mert egy végrehajtás után mindig olyan állapotba jutunk, ahol a ciklusfeltétel teljesül.</li><li>Az utolsó lehetőség az, hogy a ciklusmagot azért véges sokszor (de legalább egyszer) végezzük el egymás után, mert utoljára egy olyan állapotba jutunk, ahol a ciklusfeltétel nem kiértékelhető.</li></ul></div></details></div></section>
+<section id="ea8" class="lect"><div class="section-head"><span class="label">8. előadás · <a href="../Előadás kivonatok/Programozaselmelet_-_8_levezetesi_szabalyok.pdf" target="_blank" rel="noopener">kivonat PDF ↗</a></span><h2>Levezetési szabályok</h2></div><div class="concepts"><details class="concept thm" id="ea8-a-szekvencia-levezetesi-szabalya" data-name="A szekvencia levezetési szabálya Tétel" open><summary><span class="ctype">Tétel</span><span class="cname">A szekvencia levezetési szabálya</span></summary><div class="cbody"><p>Legyen \(A\) közös alap-állapotterű \(S_1\) és \(S_2\) programok szekvenciája \(S = (S_1;S_2)\). Legyenek \(Q, Q'\) és \(R\) logikai függvények \(A\)-n. Ha</p>
+<ol><li>\(Q \Rightarrow \mathit{lf}(S_1, Q')\) és</li><li>\(Q' \Rightarrow \mathit{lf}(S_2, R)\)</li></ol>
+<p>akkor \(Q \Rightarrow \mathit{lf}(S, R)\).</p></div></details>
+<details class="concept thm" id="ea8-az-elagazas-levezetesi-szabalya" data-name="Az elágazás levezetési szabálya Tétel" open><summary><span class="ctype">Tétel</span><span class="cname">Az elágazás levezetési szabálya</span></summary><div class="cbody"><p>Legyen \(\text{IF} = (\pi_1{:}S_1, \ldots \pi_n{:}S_n)\) a közös \(A\) alap-állapotterű \(S_i\) programokból képzett, \(A\) feletti \(\pi_i\) logikai függvényekkel meghatározott elágazás. Legyenek továbbá \(Q\) és \(R\) logikai függvények \(A\)-n. Ha</p>
+<ol><li>\(Q \Rightarrow \bigwedge_{i=1}^{n} (\pi_i \vee \neg\pi_i)\) és</li><li>\(Q \Rightarrow \bigvee_{i=1}^{n} \pi_i\) és</li><li>\(\forall i \in [1..n] : Q \wedge \pi_i \Rightarrow \mathit{lf}(S_i, R)\)</li></ol>
+<p>akkor \(Q \Rightarrow \mathit{lf}(\text{IF}, R)\).</p></div></details>
+<details class="concept thm" id="ea8-a-ciklus-levezetesi-szabalya" data-name="A ciklus levezetési szabálya Tétel" open><summary><span class="ctype">Tétel</span><span class="cname">A ciklus levezetési szabálya</span></summary><div class="cbody"><p>Legyen \(\text{DO} = (\pi, S_0)\) az \(A\) alap-állapottér feletti \(S_0\) programból és a \(\pi \in A \to \mathbb{L}\) feltétellel képzett ciklus. Továbbá legyenek \(P\), \(Q\) és \(R\) logikai függvények \(A\)-n és \(t : A \to \mathbb{Z}\) függvény adottak. Ha</p>
+<ol><li>\(Q \Rightarrow P\) és</li><li>\(P \wedge \neg\pi \Rightarrow R\) és</li><li>\(P \Rightarrow \pi \vee \neg\pi\) és</li><li>\(P \wedge \pi \Rightarrow t \gt 0\) és</li><li>\(P \wedge \pi \Rightarrow \mathit{lf}(S_0, P)\)</li><li>\(P \wedge \pi \wedge t = t_0 \Rightarrow \mathit{lf}(S_0, t \lt t_0)\) bármely \(t_0\) egész számra</li></ol>
+<p>akkor \(Q \Rightarrow \mathit{lf}(\text{DO}, R)\).</p></div></details>
+<details class="concept def" id="ea8-invarians-tulajdonsag-terminalofuggveny" data-name="Invariáns tulajdonság, terminálófüggvény Definíció" open><summary><span class="ctype">Definíció</span><span class="cname">Invariáns tulajdonság, terminálófüggvény</span></summary><div class="cbody"><p>A levezetési szabályban szereplő \(P\) állítást a ciklus <b>invariáns tulajdonságának</b>, a \(t\) függvényt <b>terminálófüggvénynek</b> nevezzük.</p></div></details>
+<details class="concept rem" id="ea8-az-5-es-6-pont-osszevonasa" data-name="Az 5. és 6. pont összevonása Megjegyzés" open><summary><span class="ctype">Megjegyzés</span><span class="cname">Az 5. és 6. pont összevonása</span></summary><div class="cbody"><p>Az utolsó két pont összevonható:</p>
+<p>5–6. \(P \wedge \pi \wedge t = t_0 \Rightarrow \mathit{lf}(S_0, P \wedge t \lt t_0)\) bármely \(t_0\) egész számra.</p></div></details></div></section>
+<section id="ea9" class="lect"><div class="section-head"><span class="label">9. előadás · <a href="../Előadás kivonatok/Programozaselmelet_-_9_parhuzamos_programok.pdf" target="_blank" rel="noopener">kivonat PDF ↗</a></span><h2>Párhuzamos programok</h2></div><div class="concepts"><details class="concept rem" id="ea9-bevezetes" data-name="Bevezetés Megjegyzés" open><summary><span class="ctype">Megjegyzés</span><span class="cname">Bevezetés</span></summary><div class="cbody"><p>Továbbra is szekvenciális programokkal foglalkozunk, de bevezetünk három új programkonstrukciót. Ezek definícióját úgy adjuk meg, hogy a velük képzett relációk megfeleljenek a program korábban kimondott definíciójának. Azaz a három új programkonstrukció segítségével további programokat tudunk előállítani. Mivel célunk továbbra is az, hogy belássuk programok helyességét (tehát hogy igazoljuk, hogy adott program megold egy adott feladatot), az új programkonstrukcióknak is megadjuk a levezetési szabályait.</p></div></details>
+<details class="concept rem" id="ea9-multiprogramozasi-modell" data-name="Multiprogramozási modell Megjegyzés" open><summary><span class="ctype">Megjegyzés</span><span class="cname">Multiprogramozási modell</span></summary><div class="cbody"><p>Három új programkonstrukció egyike a párhuzamos blokk, ami lehetővé teszi párhuzamosan végrehajtott programok reprezentálását. Egy párhuzamos program végrehajtása alatt a párhuzamos blokkot alkotó programok elemi utasításainak valamilyen ütemezés szerinti sorbarendezését és egy processzoron (magon) való egymás utáni végrehajtását értjük. A multiprogramozási modellben az elemi programok végrehajtása (így az értékadás is) atomi módon történik, mint ahogy a logikai feltételek kiértékelése sem szakítható meg.</p></div></details>
+<details class="concept not" id="ea9-uj-programkonstrukciok-attekintes" data-name="Új programkonstrukciók (áttekintés) Jelölés" open><summary><span class="ctype">Jelölés</span><span class="cname">Új programkonstrukciók (áttekintés)</span></summary><div class="cbody"><ul><li><b>Atomi utasítás:</b> \([S]\)</li></ul>
+<p>Megszakítás nélkül hajtjuk végre. \(S\) nem tartalmazhat ciklust vagy várakoztató utasítást.</p>
+<ul><li><b>Várakoztató utasítás:</b> \(\textbf{await}\ B\ \textbf{then}\ S\ \textbf{ta}\)</li></ul>
+<p>Amennyiben a \(\beta\) őrfeltétel igaz, az \(S\) program atomi utasításként a \(\beta\) kiértékelésével egyszerre hajtódik végre. \(S\) nem tartalmazhat ciklust vagy várakoztató utasítást. Ha \(\beta\) kiértékelhető, de hamis, az utasítást tartalmazó folyamat blokkolttá válik; a végrehajtás nem tud továbblépni a várakoztató utasításon, amíg egy másik folyamat nem „segít” és változtatja meg az állapotot úgy, hogy \(\beta\) teljesüljön.</p>
+<ul><li><b>Párhuzamos blokk:</b> \(\textbf{parbegin}\ S_1 \parallel \ldots \parallel S_n\ \textbf{parend}\)</li></ul>
+<p>Befejeződik, ha minden komponensprogramja terminál. Végrehajtása valamely ágnak kiválasztását és az ott lévő komponens első utasításának, illetve a kapott maradék programnak egymás utáni végrehajtását jelenti.</p></div></details>
+<details class="concept def" id="ea9-atomi-utasitas" data-name="Atomi utasítás Definíció" open><summary><span class="ctype">Definíció</span><span class="cname">Atomi utasítás</span></summary><div class="cbody"><p>Legyen \(A\) tetszőleges állapottér, \(S\) program az \(A\) állapottér felett.</p>
+<div class="mb">\[\forall a \in A : [S](a) = S(a)\]</div></div></details>
+<details class="concept def" id="ea9-varakoztato-utasitas" data-name="Várakoztató utasítás Definíció" open><summary><span class="ctype">Definíció</span><span class="cname">Várakoztató utasítás</span></summary><div class="cbody"><p>Legyen \(A\) közös állapottere az \(S\) programnak és a \(\beta\) logikai függvénynek (őrfeltételnek).</p>
+<div class="mb">\[\forall a \in A : (\textbf{await}\ \beta\ \textbf{then}\ S\ \textbf{ta})(a) = \begin{cases} [S](a) &amp; \text{, ha } a \in \mathcal{D}_\beta \wedge \beta(a)\\ (\textbf{skip}; \textbf{await}\ \beta\ \textbf{then}\ S\ \textbf{ta})(a) &amp; \text{, ha } a \in \mathcal{D}_\beta \wedge \neg\beta(a)\\ \{\langle a, \text{fail} \rangle\} &amp; \text{, ha } a \notin \mathcal{D}_\beta \end{cases}\]</div></div></details>
+<details class="concept rem" id="ea9-a-parhuzamos-blokk-vegrehajtasa-szemleletesen" data-name="A párhuzamos blokk végrehajtása (szemléletesen) Megjegyzés" open><summary><span class="ctype">Megjegyzés</span><span class="cname">A párhuzamos blokk végrehajtása (szemléletesen)</span></summary><div class="cbody"><p>Amikor az \(n\) komponensből álló párhuzamos blokkot végrehajtjuk, akkor egy adott állapotból indulva bármely \(S_i\) komponenssel (\(i \in [1..n]\)) megkezdődhet a párhuzamos program végrehajtása. Amennyiben az \(S_i\) programot atomiként kell végrehajtani (mert vagy elemi program, vagy a \([\ ]\) atomi művelet programkonstrukcióval nem megszakíthatóvá lett téve), akkor annak végrehajtása után a \(\textbf{parbegin}\ S_1 \parallel \ldots \parallel S_{i-1} \parallel S_{i+1} \parallel \ldots \parallel S_n\ \textbf{parend}\) párhuzamos blokkot kell elvégezni.</p>
+<p>Amennyiben \(S_i\) végrehajtása megszakítható, akkor \(S_i\) program felbontható egy \(u\) atomi utasításra és egy \(T\) programra. Vagyis \(S_i\) felfogható az \(u;T\) szekvenciaként, ahol \(u\) az \(S_i\) első (nem megszakítható) utasítása, \(T\) pedig az \(S_i\) maradék része. Ekkor a párhuzamos blokk egy végrehajtását kapjuk az \(u\) utasítás, majd azt követően a \(\textbf{parbegin}\ S_1 \parallel \ldots \parallel S_{i-1} \parallel T \parallel S_{i+1} \parallel \ldots \parallel S_n\ \textbf{parend}\) párhuzamos blokkot elvégezve.</p>
+<p>Mivel a párhuzamos blokk végrehajtását bármely komponenst kiválasztva elkezdhetjük, a párhuzamos programok szükségképpen nem-determinisztikusak. Az összes végrehajtási sorozatot megkapjuk a párhuzamos blokk elvégzését az elsőként az \(S_i\) komponens aktiválásával kapott végrehajtási sorozatok összességeként.</p></div></details>
+<details class="concept def" id="ea9-parhuzamos-blokk" data-name="Párhuzamos blokk Definíció" open><summary><span class="ctype">Definíció</span><span class="cname">Párhuzamos blokk</span></summary><div class="cbody"><p>Legyen \(A\) közös alap-állapottere az \(S_1 \ldots S_n\) programoknak.</p>
+<div class="mb">\[\forall a \in A : (\textbf{parbegin}\ S_1 \parallel \cdots \parallel S_i \parallel \cdots \parallel S_n\ \textbf{parend})(a) = \bigcup_{i=1}^{n} B_i(a)\]</div>
+<p>ahol</p>
+<div class="mb">\[B_i(a) = \begin{cases} (S_i; \textbf{parbegin}\ S_1 \parallel \cdots \parallel S_{i-1} \parallel S_{i+1} \parallel \cdots \parallel S_n\ \textbf{parend})(a)\\ \qquad \text{ha } S_i \text{ nem megszakítható az } a \text{ állapotból indulva}\\ (u_i; \textbf{parbegin}\ S_1 \parallel \cdots \parallel S_{i-1} \parallel T_i \parallel S_{i+1} \parallel \cdots \parallel S_n\ \textbf{parend})(a)\\ \qquad \text{ha } S_i(a) = (u_i;T_i)(a) \text{ ahol } u_i \text{ nem megszakítható az } a \text{ állapotból indulva} \end{cases}\]</div>
+<p>Lásd a fejezet végén lévő kiegészítés részt, hogy mit értünk a különböző programszerkezetek első utasításaként egy adott \(a\) állapotból indulva.</p></div></details>
+<details class="concept thm" id="ea9-atomi-muvelet-levezetesi-szabalya" data-name="Atomi művelet levezetési szabálya Tétel" open><summary><span class="ctype">Tétel</span><span class="cname">Atomi művelet levezetési szabálya</span></summary><div class="cbody"><p>Ha \(Q \Rightarrow \mathit{lf}(S, R)\), akkor \(Q \Rightarrow \mathit{lf}([S], R)\).</p></div></details>
+<details class="concept thm" id="ea9-varakozo-utasitas-levezetesi-szabalya" data-name="Várakozó utasítás levezetési szabálya Tétel" open><summary><span class="ctype">Tétel</span><span class="cname">Várakozó utasítás levezetési szabálya</span></summary><div class="cbody"><p>Ha</p>
+<ol><li>\(Q \Rightarrow \beta \vee \neg\beta\)</li><li>\(Q \wedge \beta \Rightarrow \mathit{lf}(S, R)\)</li></ol>
+<p>akkor \(Q \Rightarrow \mathit{lf}(\textbf{await}\ \beta\ \textbf{then}\ S\ \textbf{ta}, R)\).</p></div></details>
+<details class="concept thm" id="ea9-parhuzamos-blokk-levezetesi-szabalya" data-name="Párhuzamos blokk levezetési szabálya Tétel" open><summary><span class="ctype">Tétel</span><span class="cname">Párhuzamos blokk levezetési szabálya</span></summary><div class="cbody"><p>Legyenek \(Q, Q_1, \ldots Q_n\) és \(R, R_1, \ldots R_n\) logikai függvények. Ha</p>
+<ol><li>\(Q \Rightarrow Q_1 \wedge \cdots \wedge Q_n\) és</li><li>\(R_1 \wedge \cdots \wedge R_n \Rightarrow R\) és</li><li>\(\forall i \in [1..n] : Q_i \Rightarrow \mathit{lf}(S_i, R_i)\) és</li><li>a \(Q_1 \Rightarrow \mathit{lf}(S_1, R_1), \ldots, Q_n \Rightarrow \mathit{lf}(S_n, R_n)\) teljes helyességi formulák interferencia-mentesek és</li><li>a párhuzamos blokk holtpontmentes</li></ol>
+<p>akkor \(Q \Rightarrow \mathit{lf}(\textbf{parbegin}\ S_1 \parallel \ldots \parallel S_n\ \textbf{parend}, R)\).</p></div></details>
+<details class="concept rem" id="ea9-a-parhuzamos-blokk-levezetesi-szabalyanak-szemleletes-jelentese" data-name="A párhuzamos blokk levezetési szabályának szemléletes jelentése Megjegyzés" open><summary><span class="ctype">Megjegyzés</span><span class="cname">A párhuzamos blokk levezetési szabályának szemléletes jelentése</span></summary><div class="cbody"><p>A párhuzamos blokk levezetési szabályának első három feltétele szemléletesen azt fejezi ki, hogy</p>
+<ul><li>ha \(Q\) előfeltétel teljesül, akkor a párhuzamos blokk bármely \(S_i\) komponensprogramjának végrehajtása elkezdhető, mert teljesül a \(Q_i\) előfeltétele (ezt nevezhetjük „belépési feltételnek”).</li><li>amikor a párhuzamos blokk terminál (az összes \(S_i\) komponens befejeződött, elérte utófeltételét), akkor jó helyen terminált: ott, ahol \(R\) utófeltétel igaz (ezt nevezhetjük „kilépési feltételnek”).</li><li>minden \(S_i\) komponens önmagában teljesen helyes a \(Q_i\) előfeltételével és \(R_i\) utófeltételével adott feladatra nézve.</li></ul></div></details>
+<details class="concept rem" id="ea9-interferencia-mentesseg-motivacio-kritikus-utasitas" data-name="Interferencia-mentesség – motiváció, kritikus utasítás Megjegyzés" open><summary><span class="ctype">Megjegyzés</span><span class="cname">Interferencia-mentesség – motiváció, kritikus utasítás</span></summary><div class="cbody"><p>Ezzel a fogalommal azt akarjuk kifejezni, hogy ha valamit már beláttunk az \(S_i\) komponens esetén, az a bizonyítás nem veszti érvényét egy \(S_i\) komponenssel párhuzamosan végrehajtott \(S_j\) komponensben lévő \(u\) utasítás elvégzésével. Például ne legyen az, hogy miután már beláttuk, hogy \(S_i\) egy ciklusának magjában a termináló függvény értéke csökken, a bizonyításunkat tönkreteszi \(u\) végrehajtása azáltal, hogy meg tudja növelni az adott ciklus termináló függvényének értékét. Különben érvényét vesztené az a bizonyításunk, melyben beláttuk, hogy a ciklus terminál.</p>
+<p>Mivel értéket megváltoztatni, és így egy logikai állítást hamissá tenni csak az értékadás tud, így \(u\) utasításként azon utasításokat kell figyelembe venni, amik vagy értékadások, vagy atomi módon végrehajtott programként értékadást tartalmaznak. Nevezzük őket <b>kritikus utasításnak</b>!</p></div></details>
+<details class="concept not" id="ea9-teljes-helyessegi-formula" data-name="Teljes helyességi formula Jelölés" open><summary><span class="ctype">Jelölés</span><span class="cname">Teljes helyességi formula</span></summary><div class="cbody"><p>Ha valamilyen \(S\) program és \(Q, R\) logikai függvények esetén teljesül, hogy \(Q \Rightarrow \mathit{lf}(S, R)\), akkor nevezzük a \(Q \Rightarrow \mathit{lf}(S, R)\) alakot az \(S\) egy teljes helyességi formulájának! Mivel az interferencia-mentesség igazolásához azt akarjuk megmutatni, hogy egy bizonyítás nem veszti érvényét, \(S\) program helyett egy hozzá tartozó \(Q \Rightarrow \mathit{lf}(S, R)\) teljes helyességi formulát veszünk figyelembe (tehát azt, amellyel bizonyítottuk, hogy \(S\) program a \(Q\) feltételnek eleget tevő állapotokból indulva biztos, hogy helyesen terminál, és a végállapotokban teljesül \(R\)).</p></div></details>
+<details class="concept def" id="ea9-interferencia-mentes-teljes-helyessegi-formulak" data-name="Interferencia-mentes teljes helyességi formulák Definíció" open><summary><span class="ctype">Definíció</span><span class="cname">Interferencia-mentes teljes helyességi formulák</span></summary><div class="cbody"><p>A \(Q_1 \Rightarrow \mathit{lf}(S_1, R_1), \ldots, Q_n \Rightarrow \mathit{lf}(S_n, R_n)\) teljes helyességi formulák interferencia-mentesek, ha bármely \(i\) és \(j\) esetén (\(i, j \in [1..n]\) és \(i \neq j\)) az \(S_i\) komponens egyik kritikus utasítása sem interferál a \(Q_j \Rightarrow \mathit{lf}(S_j, R_j)\) teljes helyességi formulával.</p></div></details>
+<details class="concept def" id="ea9-kritikus-utasitas-nem-interferal-egy-teljes-helyessegi-formulaval" data-name="Kritikus utasítás nem interferál egy teljes helyességi formulával Definíció" open><summary><span class="ctype">Definíció</span><span class="cname">Kritikus utasítás nem interferál egy teljes helyességi formulával</span></summary><div class="cbody"><p>Azt mondjuk, hogy az \(S_i\) komponens \(u\) kritikus utasítása (aminek előfeltételét jelölje \(\mathit{pre}_u\)) nem interferál a \(Q_j \Rightarrow \mathit{lf}(S_j, R_j)\) teljes helyességi formulával, ha</p>
+<ul><li>\(\mathit{pre}_u \wedge R_j \Rightarrow \mathit{lf}(u, R_j)\)</li></ul>
+<p>Azaz \(u\) végrehajtása nem rontja el \(S_j\) utófeltételét: ha \(R_j\) igaz volt a végrehajtás előtt, akkor utána is igaz lesz.</p>
+<ul><li>\(\mathit{pre}_u \wedge \mathit{pre}_s \Rightarrow \mathit{lf}(u, \mathit{pre}_s)\) bármely \(S_j\)-beli \(s\) utasítás (aminek előfeltételét jelölje \(\mathit{pre}_s\)) esetén</li></ul>
+<p>Azaz \(u\) végrehajtása igaznak tartja meg \(S_j\) bármely \(s\) utasításának előfeltételét: ha \(s\) elvégezhető volt \(u\) végrehajtása előtt, akkor utána is az lesz.</p>
+<ul><li>\(\mathit{pre}_u \wedge t = t_0 \Rightarrow \mathit{lf}(u, t \leq t_0)\), \(\forall t_0 \in \mathbb{Z}\) esetén, ahol \(t\) egy \(S_j\)-beli ciklus termináló függvénye</li></ul>
+<p>Azaz \(u\) végrehajtása \(S_j\) bármely ciklusának \(t\) terminálófüggvényének értékét nem növeli meg.</p></div></details>
+<details class="concept ex" id="ea9-holtpont-pelda" data-name="Holtpont – példa Példa" open><summary><span class="ctype">Példa</span><span class="cname">Holtpont – példa</span></summary><div class="cbody"><p>Legyen \(A = (a{:}\mathbb{Z}, b{:}\mathbb{Z})\) és tekintsük az \(A\) alap-állapottér feletti következő programot:</p>
+<pre>a:=0; b:=0;
+parbegin
+   while IGAZ do
+      α0: a:=a+1;
+      α1: await b ≠ 0 then
+             α2: a:=a+3
+          ta;
+   od
+‖
+   while IGAZ do
+      β0: a:=2*a;
+      β1: await a ≠ 1 then
+             β2: b:=b+1
+          ta;
+   od
+parend</pre>
+<p>Ez a program az állapottér bármely állapotából indulva, sorrendben a \(\beta_0\), majd \(\alpha_0\) címkével jelzett utasításokat végrehajtva, az \(\{a{:}1, b{:}0\}\) állapotba kerülve holtpontba jut.</p></div></details>
+<details class="concept def" id="ea9-holtpont" data-name="Holtpont Definíció" open><summary><span class="ctype">Definíció</span><span class="cname">Holtpont</span></summary><div class="cbody"><ul><li>Egy várakoztató utasítás egy adott állapotban <b>blokkolt</b>, ha az őrfeltétele hamis az állapotban.</li><li>Egy szekvenciális program <b>blokkolt</b>, ha egy általa közvetlenül tartalmazott várakoztató utasítás blokkolt.</li><li>Egy párhuzamos blokk <b>holtpontban van</b>, ha minden még be nem fejeződött komponense blokkolttá vált.</li></ul></div></details>
+<details class="concept rem" id="ea9-a-holtpontmentesseg-elegseges-feltetele-a-vizsgalt-programsema" data-name="A holtpontmentesség elégséges feltétele – a vizsgált programséma Megjegyzés" open><summary><span class="ctype">Megjegyzés</span><span class="cname">A holtpontmentesség elégséges feltétele – a vizsgált programséma</span></summary><div class="cbody"><p>Elégséges feltételt szeretnénk arra adni, hogy a programunk garantáltan nem juthat holtpontba, nincs olyan végrehajtása, amely során holtponthelyzet állna fent. Hangsúlyozzuk, hogy egy általános párhuzamos program alatt olyan programot értünk, ami az eddig megengedett programkonstrukciókból épül fel (nagy valószínűséggel szekvencia), de tartalmazza az új programkonstrukciók valamelyikét is.</p>
+<p>Tekintsünk egy ilyen programot. A holtpontmentesség szempontjából számunkra a várakoztató utasítások és a párhuzamos blokkok az érdekesek. Tegyük fel, hogy az általános programunkban \(m\) olyan várakoztató utasítás szerepel, ami nincs egy párhuzamos blokkon belül, a párhuzamos blokkok száma pedig legyen \(n\).</p>
+<p>A \(k\)-adik párhuzamos blokkot jelöljük így (tehát \(n_k\) komponense van a \(k\)-adik párhuzamos blokknak):</p>
+<p>\(T_k : \textbf{parbegin}\ S^k_1 \parallel \ldots \parallel S^k_{n_k}\ \textbf{parend}\), ahol a komponensek akár újabb várakoztató utasításokat tartalmazhatnak.</p>
+<pre>S:
+   ⋮
+A1 : await β1 then S1 ta;
+   ⋮
+Ai : await βi then Si ta;
+   ⋮
+T1 : parbegin S^1_1 ‖ ... ‖ S^1_{n1} parend
+   ⋮
+Aj : await βj then Sj ta;
+   ⋮
+Tn : parbegin S^n_1 ‖ ... ‖ S^n_{nn} parend
+   ⋮
+Am : await βm then Sm ta;
+   ⋮</pre>
+<p>Sorra vesszük a lehetséges holtpont helyzeteket:</p>
+<ul><li>Az \(S\) szekvenciális folyamat blokkolt, ha valamely (nem párhuzamos blokkon belüli) várakoztató utasításánál várakozunk. Ezt úgy írjuk le, hogy az \(A_j\) (\(j \in [1..m]\)) várakoztató utasítást készek vagyunk elvégezni (a \(\mathit{pre}(A_j)\) előfeltétele teljesül), de a \(\beta_j\) őrfeltétel \(\mathit{hamis}\).</li><li>A szekvenciális \(S\) program valamely párhuzamos blokkja blokkolt. Tegyük fel, hogy a \(T_k\) párhuzamos blokkról van szó. Azaz \(T_k\) minden \(S^k_i\) (\(i \in [1..n_k]\)) komponensprogramja terminált vagy blokkolt, de legalább az egyik blokkolt.</li></ul></div></details>
+<details class="concept def" id="ea9-d-s-es-d1-t-k" data-name="\(D(S)\) és \(D1(T_k)\) Definíció" open><summary><span class="ctype">Definíció</span><span class="cname">\(D(S)\) és \(D1(T_k)\)</span></summary><div class="cbody"><p>Definiáljuk \(D(S)\)-et és \(D1(T_k)\)-et a következőképpen (a \(D1\) alkalmazásakor tudjuk, hogy az argumentuma egy párhuzamos blokk):</p>
+<ul><li>\[D(S) = \left[\bigvee_{j=1}^{m} (\mathit{pre}(A_j) \wedge \neg\beta_j)\right] \vee \left[\bigvee_{k=1}^{n} D1(T_k)\right]\]</li></ul>
+<p>A formula azt fejezi ki, hogy van benne (de nem párhuzamos blokkon belüli, hanem közvetlenül a „főprogramban”) blokkolt várakoztató utasítás, vagy valamely párhuzamos blokkja blokkolt.</p>
+<ul><li>\[D1(T_k) = \left[\bigwedge_{j=1}^{n_k} (\mathit{post}(S^k_i) \vee D(S^k_i))\right] \wedge \left[\bigvee_{i=1}^{n_k} D(S^k_i)\right]\]</li></ul>
+<p>A \(T_k\) párhuzamos blokk blokkolt, ha minden \(S^k_i\) komponense blokkolt vagy véget ért, miközben van legalább egy komponense, ami blokkolt.</p>
+<p>(A forrásban az első nagy konjunkció indexe \(j\), a tagban \(i\) szerepel.)</p></div></details>
+<details class="concept thm" id="ea9-a-holtpontmentesseg-elegseges-feltetele" data-name="A holtpontmentesség elégséges feltétele Tétel" open><summary><span class="ctype">Tétel</span><span class="cname">A holtpontmentesség elégséges feltétele</span></summary><div class="cbody"><p>Amennyiben \(D(S)\) azonosan \(\mathit{HAMIS}\), nem lehet az \(S\) programnak olyan végrehajtása, hogy holtpont előfordulhatna; \(S\) holtpontmentes.</p></div></details>
+<details class="concept def" id="ea9-kiegeszites-s-program-felbontasa-elso-utasitasra-es-az-azt-koveto-maradek-programra" data-name="Kiegészítés: \(S\) program felbontása első utasításra és az azt követő maradék programra Definíció" open><summary><span class="ctype">Definíció</span><span class="cname">Kiegészítés: \(S\) program felbontása első utasításra és az azt követő maradék programra</span></summary><div class="cbody"><p>Itt megadjuk, hogy írható fel egy \(a\) kezdőállapotot tekintve az \(S\) program (ahol \(S\) nem elemi program és nem is atomiként végrehajtható) az \(u;T\) szekvenciaként, ahol \(u\) az \(S\) nem megszakítható első utasítása, \(T\) pedig a maradék program.</p>
+<ul><li>Ha \(S = \textbf{await}\ \beta\ \textbf{then}\ S_0\ \textbf{ta}\) és \(a \in \mathcal{D}_\beta \wedge \neg\beta(a)\), akkor \(u\) a \(\text{SKIP}\) program, míg \(T\) az \(\textbf{await}\ \beta\ \textbf{then}\ S_0\ \textbf{ta}\) várakoztató utasítás.</li><li>Ha \(S = (S_1;S_2)\) és \(S_1\) végrehajtása nem megszakítható \(a\)-ból indulva, akkor \(u\) az \(S_1\) és \(T\) az \(S_2\).</li><li>Ha \(S = (S_1;S_2)\) és \(S_1\) végrehajtása megszakítható \(a\)-ból indulva, akkor \(u\) az \(S_1\) első (atomi módon végrehajtható) utasítása, míg \(T\) a \((T_1;S_2)\) szekvencia (ahol \(T_1\) az \(S_1\) maradék része).</li><li>Ha \(S = \textbf{if}\ \pi_1 \to S_1\ \square \ldots \square\ \pi_n \to S_n\ \textbf{fi}\) és van olyan \(\pi_i\) feltétel, ami nem értelmezett \(a\) állapotban, vagy mindegyik feltétel hamis \(a\)-ban (\(\exists i \in [1..n] : a \notin \mathcal{D}_{\pi_i} \vee \forall i \in [1..n] : a \in \mathcal{D}_{\pi_i} \wedge \neg\pi_i(a)\)), akkor \(u\) az \(\text{ABORT}\) program és \(T\) szintén az \(\text{ABORT}\).</li><li>Ha \(S = \textbf{if}\ \pi_1 \to S_1\ \square \ldots \square\ \pi_n \to S_n\ \textbf{fi}\) és az \(a\) állapotban mindegyik feltétel értelmezett és legalább egy közülük teljesül (\(\forall i \in [1..n] : a \in \mathcal{D}_{\pi_i} \wedge \exists i \in [1..n] : \pi_i(a)\)), akkor \(u\) a \(\text{SKIP}\) program, míg \(T\) az \(S_i\) (feltéve, hogy azt a végrehajtást nézzük, ami az \(a\) állapotból indulva az \(i\)-edik ág kiválasztásával történik).</li><li>Ha \(S = \textbf{while}\ \pi\ \textbf{do}\ S_0\ \textbf{od}\) és az \(a\) állapotban a ciklusfeltétel nem értelmezett (\(a \notin \mathcal{D}_\pi\)), akkor \(u\) és \(T\) is az \(\text{ABORT}\) program.</li><li>Ha \(S = \textbf{while}\ \pi\ \textbf{do}\ S_0\ \textbf{od}\) és \(a\) állapotban a ciklusfeltétel hamis (\(a \in \mathcal{D}_\pi \wedge \neg\pi(a)\)), akkor \(u\) és \(T\) is az \(\text{ABORT}\) program. (Így szerepel a forrásban.)</li><li>Ha \(S = \textbf{while}\ \pi\ \textbf{do}\ S_0\ \textbf{od}\) és a ciklusfeltétel teljesül az \(a\) állapotban (\(a \in \mathcal{D}_\pi \wedge \pi(a)\)), akkor \(u\) a \(\text{SKIP}\) program és \(T\) az \((S_0; \textbf{while}\ \pi\ \textbf{do}\ S_0\ \textbf{od})\) szekvencia.</li><li>Ha \(S = \textbf{parbegin}\ S_1 \parallel \cdots \parallel S_i \parallel \cdots \parallel S_n\ \textbf{parend}\) és az \(a\) állapotból indulva nem megszakíthatóan végrehajtható \(S_i\) elvégzésével kezdjük meg a párhuzamos blokk végrehajtását, akkor \(u\) az \(S_i\) és \(T\) a \(\textbf{parbegin}\ S_1 \parallel \cdots \parallel S_{i-1} \parallel S_{i+1} \parallel \cdots \parallel S_n\ \textbf{parend}\) párhuzamos blokk.</li><li>Ha \(S = \textbf{parbegin}\ S_1 \parallel \cdots \parallel S_i \parallel \cdots \parallel S_n\ \textbf{parend}\) és az \(a\) állapotból indulva a megszakítható \(S_i\) elvégzésével kezdjük meg a párhuzamos blokk végrehajtását, akkor \(u\) az \(S_i\) első (atomi módon végrehajtható) utasítása, és \(T\) a \(\textbf{parbegin}\ S_1 \parallel \ldots \parallel S_{i-1} \parallel T_i \parallel S_{i+1} \parallel \cdots \parallel S_n\ \textbf{parend}\) párhuzamos blokk, ahol \(T_i\) az \(S_i\) maradék programja.</li></ul></div></details></div></section>
+<p class="empty" id="empty" hidden>Nincs találat.</p>
+
+<footer>Forrás: Borsi Zsolt előadás-kivonatai (Előadás kivonatok mappa). A kivonatokban az igazsághalmaz jele ⌈R⌉, itt [R]. Ahol a kivonatban elírás gyanúja volt, azt szögletes zárójeles megjegyzés jelzi.</footer>
+</div>
+<script>
+(function () {
+  var cards = Array.prototype.slice.call(document.querySelectorAll('details.concept'));
+  var quiz = document.getElementById('quiz');
+  function fold(s) { return s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); }
+  quiz.addEventListener('click', function () {
+    var on = quiz.getAttribute('aria-pressed') !== 'true';
+    quiz.setAttribute('aria-pressed', String(on));
+    cards.forEach(function (d) { d.open = !on; });
+  });
+  document.getElementById('openall').addEventListener('click', function () {
+    quiz.setAttribute('aria-pressed', 'false');
+    cards.forEach(function (d) { d.open = true; });
+  });
+  var q = document.getElementById('q');
+  q.addEventListener('input', function () {
+    var v = fold(q.value.trim()), any = false;
+    cards.forEach(function (d) { d.hidden = v !== '' && fold(d.dataset.name).indexOf(v) === -1; });
+    document.querySelectorAll('section.lect').forEach(function (s) {
+      var vis = !!s.querySelector('details.concept:not([hidden])');
+      s.hidden = !vis; if (vis) any = true;
+      var chip = document.querySelector('nav.bar a[href="#' + s.id + '"]');
+      if (chip) chip.parentElement.hidden = !vis;
+    });
+    document.getElementById('empty').hidden = any;
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === '/' && document.activeElement !== q) { e.preventDefault(); q.focus(); }
+  });
+})();
+</script>
+</body>
+</html>
