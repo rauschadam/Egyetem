@@ -1,0 +1,350 @@
+<meta charset="utf-8">
+<script>document.documentElement.setAttribute("data-theme", "dark");</script>
+<title>Taylor-sor mértani sorból</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,400;7..72,600;7..72,700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js" async></script>
+<style>
+  /* Layout: one reading column of worked steps, an interactive plot to check the result at the end */
+  :root {
+    --bg: #f5f7fa;
+    --surface: #ffffff;
+    --fg: #1c2330;
+    --muted: #5b6577;
+    --line: #d8dee8;
+    --accent: #1f4fa3;      /* f(x) — the function */
+    --accent-soft: #e4ecfa;
+    --poly: #c2570c;        /* T_n — the Taylor polynomial */
+    --poly-soft: #fdf0e6;
+    --region: rgba(31, 79, 163, 0.07);
+    --ok: #217a4a;
+    --bad: #b42318;
+    --font-display: "Literata", Georgia, "Times New Roman", serif;
+    --font-body: "Literata", Georgia, "Times New Roman", serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #11151c; --surface: #181e28; --fg: #e3e8f0; --muted: #98a3b5; --line: #2b3442;
+      --accent: #7fa8f0; --accent-soft: #1d2a42; --poly: #f2a25e; --poly-soft: #33241a;
+      --region: rgba(127, 168, 240, 0.09); --ok: #5cc98d; --bad: #f2786b;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #11151c; --surface: #181e28; --fg: #e3e8f0; --muted: #98a3b5; --line: #2b3442;
+    --accent: #7fa8f0; --accent-soft: #1d2a42; --poly: #f2a25e; --poly-soft: #33241a;
+    --region: rgba(127, 168, 240, 0.09); --ok: #5cc98d; --bad: #f2786b;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg); color: var(--fg);
+    font-family: var(--font-body); font-size: 16.5px; line-height: 1.6;
+    padding-inline: 16px; padding-block: 32px 64px;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px; }
+  h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; line-height: 1.25; margin: 0; }
+  h1 { font-size: 1.9rem; font-weight: 700; }
+  h2 { font-size: 1.3rem; font-weight: 600; }
+  h3 { font-size: 1rem; font-weight: 600; }
+  p { margin: 0; }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  header { display: flex; flex-direction: column; gap: 8px; }
+  header p { color: var(--muted); max-width: 62ch; }
+
+  .key {
+    background: var(--accent-soft); border-radius: 10px; padding: 18px 20px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .key ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 6px; }
+
+  section.task {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+    padding: 22px 22px 20px; display: flex; flex-direction: column; gap: 16px; min-width: 0;
+  }
+  .task-head { display: flex; flex-direction: column; gap: 4px; }
+  .steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+  .steps li { display: grid; grid-template-columns: 2.2rem 1fr; gap: 10px; align-items: start; }
+  .steps li > div { min-width: 0; overflow-x: auto; }
+  .num {
+    font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted);
+    border: 1px solid var(--line); border-radius: 50%; width: 1.9rem; height: 1.9rem;
+    display: grid; place-items: center; margin-top: 2px;
+  }
+  .result {
+    border-left: 3px solid var(--poly); background: var(--poly-soft);
+    padding: 12px 16px; border-radius: 0 8px 8px 0; overflow-x: auto;
+  }
+  .result .eyebrow { color: var(--poly); }
+  .note { color: var(--muted); font-size: 0.95rem; }
+
+  .table-wrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
+  th, td { padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: left; white-space: nowrap; }
+  th { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+
+  .lab { display: flex; flex-direction: column; gap: 14px; }
+  .controls { display: flex; flex-wrap: wrap; gap: 14px 24px; align-items: center; }
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .seg button {
+    font: inherit; font-size: 0.95rem; background: transparent; color: var(--fg);
+    border: 0; padding: 7px 14px; cursor: pointer;
+  }
+  .seg button + button { border-left: 1px solid var(--line); }
+  .seg button[aria-pressed="true"] { background: var(--accent); color: var(--surface); }
+  .seg button:focus-visible, input[type=range]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .slider { display: flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 0.85rem; }
+  .slider input { width: 160px; accent-color: var(--poly); }
+  .slider output { min-width: 3.5em; }
+  canvas { width: 100%; height: 340px; display: block; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 0.9rem; color: var(--muted); }
+  .legend span::before { content: ""; display: inline-block; width: 18px; height: 3px; vertical-align: middle; margin-right: 6px; border-radius: 2px; background: var(--c); }
+  .legend .reg::before { height: 10px; background: var(--region); border: 1px solid var(--line); }
+  .readout {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px;
+    font-family: var(--font-mono); font-size: 0.9rem; font-variant-numeric: tabular-nums;
+  }
+  .readout div { border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; background: var(--surface); }
+  .readout b { display: block; font-weight: 500; font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+  .good { color: var(--ok); } .bad { color: var(--bad); }
+
+  /* back to subject page */
+  .back { align-self: flex-start; display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px 9px 12px; border: 1.5px solid var(--poly); border-radius: 8px; background: var(--poly-soft); color: var(--fg); text-decoration: none; font-family: var(--font-display); font-weight: 700; font-size: 1.02rem; line-height: 1; white-space: nowrap; transition: background .15s, color .15s; }
+  .back .arr { color: var(--poly); font-size: 1.25rem; transition: transform .15s, color .15s; }
+  .back:hover, .back:focus-visible { background: var(--poly); color: var(--surface); outline: none; }
+  .back:hover .arr, .back:focus-visible .arr { color: var(--surface); transform: translateX(-3px); }
+  @media (max-width: 520px) { h1 { font-size: 1.55rem; } section.task { padding: 18px 16px; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <a class="back" href="../../index.html#/anal2"><span class="arr" aria-hidden="true">←</span>Vissza: Analízis II.</a>
+    <span class="eyebrow">Analízis II · 5. előadás · Taylor-sorok</span>
+    <h1>Taylor-sor mértani sorból</h1>
+    <p>Két feladat: \(\dfrac{1}{1+x}\) és \(\dfrac{1}{1+x^2}\) Taylor-sora \(a=0\) körül, \(|x|&lt;1\) esetén. Deriválás helyett a mértani sort használjuk.</p>
+  </header>
+
+  <div class="key">
+    <h2>Az ötlet két lépésben</h2>
+    <ul>
+      <li><strong>Mértani sor:</strong> \(\displaystyle \frac{1}{1-q}=\sum_{n=0}^{\infty} q^n\), ha \(|q|&lt;1\).</li>
+      <li><strong>Egyértelműség:</strong> minden konvergens hatványsor az összegfüggvényének a Taylor-sora, mert \(\alpha_n=\dfrac{f^{(n)}(a)}{n!}\). Ha tehát \(f\)-et hatványsorként felírtuk, az <em>szükségképpen</em> \(f\) Taylor-sora.</li>
+    </ul>
+    <p class="note">A teendő tehát: a nevezőt \(1-q\) alakra hozzuk, és ellenőrizzük, hogy \(|q|&lt;1\).</p>
+  </div>
+
+  <section class="task">
+    <div class="task-head">
+      <span class="eyebrow">1. feladat</span>
+      <h2>\(f(x)=\dfrac{1}{1+x},\quad |x|&lt;1\)</h2>
+    </div>
+    <ol class="steps">
+      <li><span class="num">1</span><div>Átírjuk \(1-q\) alakra: \(\;1+x = 1-(-x)\), tehát \(q=-x\).</div></li>
+      <li><span class="num">2</span><div>Feltétel: \(|q|=|-x|=|x|&lt;1\). ✓</div></li>
+      <li><span class="num">3</span><div>$$\frac{1}{1+x}=\frac{1}{1-(-x)}=\sum_{n=0}^{\infty}(-x)^n=\sum_{n=0}^{\infty}(-1)^n x^n$$</div></li>
+    </ol>
+    <div class="result">
+      <span class="eyebrow">Eredmény</span>
+      $$T_0 f(x)=\sum_{n=0}^{\infty}(-1)^n x^n = 1-x+x^2-x^3+x^4-\dots\qquad(|x|&lt;1)$$
+    </div>
+    <div>
+      <h3>Ellenőrzés a definícióval</h3>
+      $$f^{(n)}(x)=(-1)^n\, n!\,(1+x)^{-(n+1)}\;\Longrightarrow\;\frac{f^{(n)}(0)}{n!}=(-1)^n \;✓$$
+    </div>
+  </section>
+
+  <section class="task">
+    <div class="task-head">
+      <span class="eyebrow">2. feladat</span>
+      <h2>\(f(x)=\dfrac{1}{1+x^2},\quad |x|&lt;1\)</h2>
+    </div>
+    <ol class="steps">
+      <li><span class="num">1</span><div>Átírjuk \(1-q\) alakra: \(\;1+x^2 = 1-(-x^2)\), tehát \(q=-x^2\).</div></li>
+      <li><span class="num">2</span><div>Feltétel: \(|q|=x^2&lt;1 \iff |x|&lt;1\). ✓</div></li>
+      <li><span class="num">3</span><div>$$\frac{1}{1+x^2}=\frac{1}{1-(-x^2)}=\sum_{n=0}^{\infty}(-x^2)^n=\sum_{n=0}^{\infty}(-1)^n x^{2n}$$</div></li>
+    </ol>
+    <div class="result">
+      <span class="eyebrow">Eredmény</span>
+      $$T_0 f(x)=\sum_{n=0}^{\infty}(-1)^n x^{2n} = 1-x^2+x^4-x^6+\dots\qquad(|x|&lt;1)$$
+    </div>
+    <p class="note">Csak páros kitevők vannak, mert \(f\) páros függvény. Az együtthatókból: \(f^{(2n)}(0)=(-1)^n(2n)!\), a páratlan rendű deriváltak 0-ban nullák. Ezt deriválással kiszámolni sokkal hosszabb lenne.</p>
+  </section>
+
+  <section class="task">
+    <div class="task-head">
+      <span class="eyebrow">Egymás mellett</span>
+      <h2>Az első néhány együttható</h2>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Függvény</th><th>\(x^0\)</th><th>\(x^1\)</th><th>\(x^2\)</th><th>\(x^3\)</th><th>\(x^4\)</th><th>\(x^5\)</th><th>\(x^6\)</th></tr></thead>
+        <tbody>
+          <tr><td>\(\frac{1}{1+x}\)</td><td>1</td><td>−1</td><td>1</td><td>−1</td><td>1</td><td>−1</td><td>1</td></tr>
+          <tr><td>\(\frac{1}{1+x^2}\)</td><td>1</td><td>0</td><td>−1</td><td>0</td><td>1</td><td>0</td><td>−1</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="task lab" aria-labelledby="lab-title">
+    <div class="task-head">
+      <span class="eyebrow">Kipróbálható</span>
+      <h2 id="lab-title">Hol közelít a Taylor-polinom?</h2>
+      <p class="note">A \(|x|&lt;1\) sávban a \(T_n\) polinom \(n\) növelésével rásimul \(f\)-re, azon kívül szétszáll. Ez a konvergenciasugár, \(R=1\).</p>
+    </div>
+    <div class="controls">
+      <div class="seg" role="group" aria-label="Függvény">
+        <button type="button" id="fn1" aria-pressed="true">1/(1+x)</button>
+        <button type="button" id="fn2" aria-pressed="false">1/(1+x²)</button>
+      </div>
+      <label class="slider" for="nSlider">n = <input type="range" id="nSlider" min="0" max="20" value="4"><output id="nOut">4</output></label>
+      <label class="slider" for="xSlider">x = <input type="range" id="xSlider" min="-1.5" max="1.5" step="0.05" value="0.5"><output id="xOut">0.50</output></label>
+    </div>
+    <canvas id="plot" role="img" aria-label="Az f függvény és a T_n Taylor-polinom grafikonja"></canvas>
+    <div class="legend">
+      <span style="--c: var(--accent)">\(f(x)\)</span>
+      <span style="--c: var(--poly)">\(T_n f(x)\)</span>
+      <span class="reg">konvergenciatartomány \(|x|&lt;1\)</span>
+    </div>
+    <div class="readout">
+      <div><b>f(x)</b><span id="rF">–</span></div>
+      <div><b>Tₙ(x)</b><span id="rT">–</span></div>
+      <div><b>Hiba |f − Tₙ|</b><span id="rE">–</span></div>
+    </div>
+  </section>
+
+  <section class="task">
+    <div class="task-head">
+      <span class="eyebrow">Bónusz</span>
+      <h2>\(\operatorname{arc\,tg} x\) Taylor-sora</h2>
+    </div>
+    <p>Mivel \((\operatorname{arc\,tg} x)'=\dfrac{1}{1+x^2}\), a 2. feladat sorát tagonként integráljuk \(0\)-tól \(x\)-ig:</p>
+    <div class="result">
+      $$\operatorname{arc\,tg} x=\sum_{n=0}^{\infty}\frac{(-1)^n x^{2n+1}}{2n+1}=x-\frac{x^3}{3}+\frac{x^5}{5}-\dots\qquad(|x|&lt;1)$$
+    </div>
+  </section>
+</div>
+
+<script>
+(function () {
+  const fns = {
+    1: { f: x => 1 / (1 + x) },
+    2: { f: x => 1 / (1 + x * x) }
+  };
+  // T_n: partial sum up to the n-th term of the series
+  function T(which, n, x) {
+    let s = 0;
+    for (let k = 0; k <= n; k++) s += which === 1 ? Math.pow(-x, k) : Math.pow(-x * x, k);
+    return s;
+  }
+  let which = 1;
+  const canvas = document.getElementById('plot');
+  const ctx = canvas.getContext('2d');
+  const nS = document.getElementById('nSlider'), xS = document.getElementById('xSlider');
+  const nO = document.getElementById('nOut'), xO = document.getElementById('xOut');
+  const X0 = -1.6, X1 = 1.6, Y0 = -1.5, Y1 = 3;
+
+  function css(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+  function fmt(v) {
+    if (!isFinite(v)) return '∞';
+    if (Math.abs(v) >= 1e5) return v.toExponential(2);
+    return v.toFixed(4);
+  }
+
+  function draw() {
+    const dpr = window.devicePixelRatio || 1;
+    const w = canvas.clientWidth, h = canvas.clientHeight;
+    canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const px = x => (x - X0) / (X1 - X0) * w;
+    const py = y => h - (y - Y0) / (Y1 - Y0) * h;
+    const fg = css('--fg'), muted = css('--muted'), line = css('--line');
+    ctx.clearRect(0, 0, w, h);
+
+    // convergence region |x| < 1
+    ctx.fillStyle = css('--region');
+    ctx.fillRect(px(-1), 0, px(1) - px(-1), h);
+
+    // grid
+    ctx.strokeStyle = line; ctx.lineWidth = 1;
+    ctx.font = '11px "IBM Plex Mono", monospace'; ctx.fillStyle = muted;
+    for (let gx = -1.5; gx <= 1.5001; gx += 0.5) {
+      ctx.beginPath(); ctx.moveTo(px(gx), 0); ctx.lineTo(px(gx), h); ctx.stroke();
+      if (Math.abs(gx) > 1e-9) ctx.fillText(gx.toFixed(1), px(gx) + 3, py(0) + 13);
+    }
+    for (let gy = -1; gy <= 3; gy += 1) {
+      ctx.beginPath(); ctx.moveTo(0, py(gy)); ctx.lineTo(w, py(gy)); ctx.stroke();
+      if (gy !== 0) ctx.fillText(String(gy), px(0) + 4, py(gy) - 4);
+    }
+    // axes
+    ctx.strokeStyle = muted; ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.moveTo(0, py(0)); ctx.lineTo(w, py(0)); ctx.moveTo(px(0), 0); ctx.lineTo(px(0), h); ctx.stroke();
+    // boundary lines x = ±1
+    ctx.setLineDash([4, 4]); ctx.strokeStyle = css('--accent');
+    [-1, 1].forEach(b => { ctx.beginPath(); ctx.moveTo(px(b), 0); ctx.lineTo(px(b), h); ctx.stroke(); });
+    ctx.setLineDash([]);
+
+    function curve(g, color, width) {
+      ctx.strokeStyle = color; ctx.lineWidth = width; ctx.beginPath();
+      let pen = false;
+      const steps = Math.max(400, w * 2);
+      for (let i = 0; i <= steps; i++) {
+        const x = X0 + (X1 - X0) * i / steps;
+        const y = g(x);
+        if (!isFinite(y) || y > Y1 + 5 || y < Y0 - 5) { pen = false; continue; }
+        if (pen) ctx.lineTo(px(x), py(y)); else { ctx.moveTo(px(x), py(y)); pen = true; }
+      }
+      ctx.stroke();
+    }
+    const n = +nS.value, xv = +xS.value;
+    const f = fns[which].f;
+    curve(f, css('--accent'), 2.4);
+    curve(x => T(which, n, x), css('--poly'), 2.4);
+
+    // marker at chosen x
+    ctx.strokeStyle = fg; ctx.lineWidth = 1; ctx.setLineDash([2, 3]);
+    ctx.beginPath(); ctx.moveTo(px(xv), 0); ctx.lineTo(px(xv), h); ctx.stroke(); ctx.setLineDash([]);
+    [[f(xv), css('--accent')], [T(which, n, xv), css('--poly')]].forEach(([y, c]) => {
+      if (isFinite(y) && y <= Y1 && y >= Y0) {
+        ctx.fillStyle = c; ctx.beginPath(); ctx.arc(px(xv), py(y), 4.5, 0, Math.PI * 2); ctx.fill();
+      }
+    });
+
+    // readout
+    const fv = f(xv), tv = T(which, n, xv), err = Math.abs(fv - tv);
+    document.getElementById('rF').textContent = fmt(fv);
+    document.getElementById('rT').textContent = fmt(tv);
+    const rE = document.getElementById('rE');
+    rE.textContent = fmt(err);
+    rE.className = Math.abs(xv) < 1 ? 'good' : 'bad';
+  }
+
+  function setFn(k) {
+    which = k;
+    document.getElementById('fn1').setAttribute('aria-pressed', String(k === 1));
+    document.getElementById('fn2').setAttribute('aria-pressed', String(k === 2));
+    draw();
+  }
+  document.getElementById('fn1').addEventListener('click', () => setFn(1));
+  document.getElementById('fn2').addEventListener('click', () => setFn(2));
+  nS.addEventListener('input', () => { nO.textContent = nS.value; draw(); });
+  xS.addEventListener('input', () => { xO.textContent = (+xS.value).toFixed(2); draw(); });
+  window.addEventListener('resize', draw);
+  const mq = window.matchMedia('(prefers-color-scheme: dark)');
+  if (mq.addEventListener) mq.addEventListener('change', draw);
+  new MutationObserver(draw).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
+  draw();
+})();
+</script>

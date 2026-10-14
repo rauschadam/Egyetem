@@ -1,0 +1,19 @@
+# Egyelőre csak a weboldal és a DIMAT II / ANAL II tárgy kerül a repóba.
+# Minden mást kizárunk; új tárgyat egy újabb "!/<mappa>/" sorral lehet felvenni.
+/*
+!/.gitignore
+!/index.html
+!/DIMAT II/
+!/ANAL II/
+
+# Build-szemét
+bin/
+obj/
+.vs/
+TestResults/
+*.exe
+*.dll
+*.pdb
+
+# Archívumok
+*.zip

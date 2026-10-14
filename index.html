@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="hu" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Egyetemi tárgyaim</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+/* Layout: same squared exam paper as the ZH prep pages; home = subject cards, subject = grouped list of materials */
+:root {
+  --paper: #f5f7fa;
+  --grid: rgba(35, 70, 168, 0.06);
+  --card: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6574;
+  --rule: #d7dde6;
+  --accent: #2346a8;
+  --accent-soft: #e6ecfb;
+  --dimat: #2346a8;
+  --dimat-soft: #e6ecfb;
+  --anal: #b4500b;
+  --anal-soft: #fcefe4;
+  --anal-grid: rgba(180, 80, 11, 0.06);
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-label: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f141b; --grid: rgba(143, 168, 255, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+    --rule: #2a3442; --accent: #93abff; --accent-soft: #1d2846;
+    --dimat: #93abff; --dimat-soft: #1d2846; --anal: #f2a25e; --anal-soft: #33241a; --anal-grid: rgba(242, 162, 94, 0.05);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f141b; --grid: rgba(143, 168, 255, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+  --rule: #2a3442; --accent: #93abff; --accent-soft: #1d2846;
+  --dimat: #93abff; --dimat-soft: #1d2846; --anal: #f2a25e; --anal-soft: #33241a; --anal-grid: rgba(242, 162, 94, 0.05);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background-color: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 1.06rem;
+  line-height: 1.6;
+}
+.wrap { max-width: 900px; margin: 0 auto; padding-inline: 16px; padding-block: 22px 80px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2rem, 6vw, 3.1rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.45rem; font-weight: 700; letter-spacing: -0.01em; }
+h3 { font-size: 1.08rem; font-weight: 600; }
+p { margin: 0; }
+a { color: var(--accent); }
+.label { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+
+/* back button (top of subject page) */
+.back { justify-self: start; display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px 9px 12px; border: 1.5px solid var(--hue, var(--accent)); border-radius: 8px; background: var(--hue-soft, var(--accent-soft)); color: var(--ink); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 1.02rem; line-height: 1; white-space: nowrap; transition: background .15s, color .15s; }
+.back .arr { color: var(--hue, var(--accent)); font-size: 1.25rem; transition: transform .15s, color .15s; }
+.back:hover, .back:focus-visible { background: var(--hue, var(--accent)); color: var(--paper); outline: none; }
+.back:hover .arr, .back:focus-visible .arr { color: var(--paper); transform: translateX(-3px); }
+
+/* sticky section bar: jump between the groups of a subject, way home always one click away */
+nav.bar { position: sticky; top: 0; z-index: 5; background: var(--paper); border-bottom: 1px solid var(--rule); margin-inline: -16px; padding-inline: 16px; }
+nav.bar ul { list-style: none; margin: 0; padding: 10px 0; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin; }
+nav.bar li[hidden] { display: none; }
+nav.bar a { display: block; white-space: nowrap; text-decoration: none; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.04em; color: var(--ink); padding: 6px 10px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); }
+nav.bar a:hover, nav.bar a:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+nav.bar a.nav-back { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+
+/* hero */
+header.hero { display: grid; gap: 12px; padding-block: 6px 24px; border-bottom: 2px solid var(--ink); }
+.hero .sub { color: var(--muted); max-width: 64ch; }
+.facts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.fact { display: flex; flex-direction: column; gap: 2px; padding: 8px 14px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; min-width: 110px; }
+.fact b { font-family: var(--f-display); font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+
+/* subject theming */
+.t-dimat { --hue: var(--dimat); --hue-soft: var(--dimat-soft); --accent: var(--dimat); --accent-soft: var(--dimat-soft); }
+.t-anal  { --hue: var(--anal);  --hue-soft: var(--anal-soft); --accent: var(--anal); --accent-soft: var(--anal-soft); }
+/* the whole subject page takes the subject colour, incl. the squared paper tint */
+body.t-anal { --grid: var(--anal-grid); }
+.hero.t-dimat, .hero.t-anal { border-bottom-color: var(--hue); }
+.hero .label.code { color: var(--hue); }
+
+/* home: subject cards */
+.subjects { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; margin-top: 28px; }
+a.subject { position: relative; display: grid; gap: 10px; align-content: start; padding: 20px 20px 18px 24px; background: var(--card); border: 1px solid var(--rule); border-radius: 8px; color: var(--ink); text-decoration: none; overflow: hidden; transition: border-color .15s, transform .15s; min-width: 0; }
+a.subject::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 5px; background: var(--hue); }
+a.subject:hover, a.subject:focus-visible { border-color: var(--hue); outline: none; transform: translateY(-2px); }
+.subject .code { font-family: var(--f-label); font-size: 0.75rem; letter-spacing: 0.08em; color: var(--hue); }
+.subject h2 { font-size: 1.6rem; }
+.subject p { color: var(--muted); font-size: 0.97rem; }
+.subject .stats { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.chip { font-family: var(--f-label); font-size: 0.72rem; padding: 3px 8px; border-radius: 3px; background: var(--hue-soft, var(--accent-soft)); color: var(--hue, var(--accent)); white-space: nowrap; }
+.subject .go { font-family: var(--f-label); font-size: 0.78rem; color: var(--hue); margin-top: 2px; }
+
+
+/* subject page */
+.tools { display: flex; gap: 10px; align-items: center; margin-top: 22px; }
+.tools input { flex: 1; min-width: 0; font: inherit; font-size: 0.98rem; padding: 9px 12px; border: 1px solid var(--rule); border-radius: 6px; background: var(--card); color: var(--ink); }
+.tools input:focus-visible { outline: 2px solid var(--hue); outline-offset: 1px; }
+.tools kbd { font-family: var(--f-label); font-size: 0.72rem; color: var(--muted); border: 1px solid var(--rule); border-radius: 3px; padding: 1px 6px; }
+
+section.group { padding-top: 34px; display: grid; gap: 12px; scroll-margin-top: 54px; }
+.group-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.group-head .count { font-family: var(--f-label); font-size: 0.75rem; color: var(--muted); }
+.group-note { color: var(--muted); font-size: 0.95rem; max-width: 64ch; }
+.sub-head { font-family: var(--f-label); font-size: 0.74rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--hue); margin-top: 8px; }
+
+.items { display: grid; gap: 8px; }
+.item { display: grid; grid-template-columns: 3rem 1fr auto; gap: 14px; align-items: center; padding: 12px 16px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; color: var(--ink); text-decoration: none; min-width: 0; transition: border-color .15s; }
+a.item:hover, a.item:focus-visible { border-color: var(--hue); outline: none; }
+a.item:hover .open, a.item:focus-visible .open { color: var(--hue); }
+.item .n { font-family: var(--f-display); font-weight: 700; font-size: 1.5rem; color: var(--hue); text-align: center; font-variant-numeric: tabular-nums; line-height: 1; }
+.item .n.icon { font-family: var(--f-label); font-size: 0.7rem; font-weight: 500; letter-spacing: 0.06em; border: 1px solid var(--rule); border-radius: 4px; padding: 6px 0; }
+.item .body { display: grid; gap: 2px; min-width: 0; }
+.item .t { font-weight: 600; }
+.item .d { color: var(--muted); font-size: 0.92rem; }
+.item .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.item .open { font-family: var(--f-label); font-size: 0.74rem; color: var(--muted); white-space: nowrap; }
+.item.featured { border-color: var(--hue); background: linear-gradient(90deg, var(--hue-soft), var(--card) 70%); padding-block: 16px; }
+.item.featured .t { font-family: var(--f-display); font-size: 1.2rem; }
+.item.soon { border-style: dashed; background: transparent; color: var(--muted); }
+.item.soon .n { color: var(--muted); }
+.item[hidden], .group[hidden], .sub-head[hidden] { display: none; }
+.empty { color: var(--muted); padding-top: 28px; }
+
+
+@media (max-width: 520px) {
+  body { font-size: 1rem; }
+  .subjects { grid-template-columns: 1fr; }
+  .item { grid-template-columns: 2.4rem 1fr; gap: 10px; padding: 12px; }
+  .item .open { grid-column: 2; }
+  .tools kbd { display: none; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <main id="view"></main>
+</div>
+
+<script>
+(function () {
+  // Paths are relative to this file (Egyetem/index.html).
+  // kind: 'prep' = ZH felkészítő (html, featured), 'html' = kidolgozás, 'pdf' = new tab, 'soon' = placeholder
+  var SUBJECTS = [
+    {
+      id: 'dimat2', theme: 't-dimat', code: 'DIMAT II', name: 'Diszkrét matematika II.',
+      groups: [
+        {
+          title: 'Felkészítők',
+          items: [
+            { kind: 'prep', n: '1', title: '1. ZH felkészítő', desc: 'Tématérkép, képletlap, a minta ZH megoldva, az 1–4. feladatsor kidolgozva, 2 gyakorló ZH órával és pontszámolóval.', href: 'DIMAT II/felkeszites/zh1_felkeszito.html', tags: ['60 perc', '30 pont', 'min. 12 pont'] },
+            { kind: 'soon', n: '2', title: '2. ZH felkészítő', desc: 'Később készül el.' }
+          ]
+        },
+        {
+          title: 'Gyakorlati feladatsorok',
+          items: [
+            { kind: 'pdf', n: '1', title: '1. feladatsor', desc: 'Maradékos osztás, számrendszerek, komplex hatványok · 09.07–11.', href: 'DIMAT II/dm2gy01.pdf', tags: ['1. ZH'] },
+            { kind: 'pdf', n: '2', title: '2. feladatsor', desc: 'Euklideszi algoritmus, lnko-bizonyítások · 09.14–18.', href: 'DIMAT II/dm2gy02.pdf', tags: ['1. ZH'] },
+            { kind: 'pdf', n: '3', title: '3. feladatsor', desc: 'Lineáris diofantikus egyenletek, kongruenciák · 09.21–25.', href: 'DIMAT II/dm2gy03.pdf', tags: ['1. ZH'] },
+            { kind: 'pdf', n: '4', title: '4. feladatsor', desc: 'Kongruenciarendszerek, Euler–Fermat-tétel · 09.28–10.02.', href: 'DIMAT II/dm2gy04.pdf', tags: ['1. ZH'] },
+            { kind: 'pdf', n: '5', title: '5. feladatsor', desc: 'Zp műveletei, inverz, polinomok · 10.05–09.', href: 'DIMAT II/dm2gy05.pdf' }
+          ]
+        },
+        {
+          title: 'Egyéb anyagok',
+          items: [
+            { kind: 'pdf', icon: 'ZH', title: '1. ZH minta', desc: 'Minta zárthelyi, 2026.10.07.', href: 'DIMAT II/zh1_minta.pdf' },
+            { kind: 'pdf', icon: 'JEGYZ', title: 'Tétel bizonyítások jegyzet', desc: 'Mérai László – Diszkrét matematika 2', href: 'DIMAT II/dm2_jegyzet_SzE.pdf' }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'anal2', theme: 't-anal', code: 'ANAL II', name: 'Analízis II.',
+      groups: [
+        {
+          title: 'Kidolgozások',
+          items: [
+            { kind: 'html', featured: true, n: '5', title: '5. gyakorlat kidolgozva', desc: 'Inverz trigonometrikus függvények és teljes függvényvizsgálat: 4 órai és 4 házi feladat, lenyitható megoldással, részletes magyarázattal és grafikonokkal.', href: 'ANAL II/Kidolgozások/05_gyakorlat_kidolgozas.html', tags: ['4 órai', '4 házi', '6 grafikon'] },
+            { kind: 'html', icon: 'KIDOLG', title: 'Taylor-sor mértani sorból', desc: '5. előadás · 1/(1+x) és 1/(1+x²) Taylor-sora, interaktív ábrával', href: 'ANAL II/Kidolgozások/taylor_mertani_sor.html' }
+          ]
+        },
+        {
+          title: 'Előadások', note: 'Az előadásdiák PDF-ben, új fülön nyílnak.',
+          sections: [
+            { title: 'Differenciálszámítás', items: [
+              { kind: 'pdf', n: '1', title: 'Differenciálszámítás 1.', desc: 'Pontbeli derivált, folytonosság és derivált, lineáris közelítés, érintő, deriválási szabályok, elemi függvények deriváltjai', href: 'ANAL II/Előadás anyagok/01_ea_An_II_A_B.pdf' },
+              { kind: 'pdf', n: '2', title: 'Differenciálszámítás 2.', desc: 'Egyoldali és magasabb rendű deriváltak, lokális szélsőérték (elsőrendű feltétel), középértéktételek, monotonitás', href: 'ANAL II/Előadás anyagok/02_ea_An_II_A_B.pdf' },
+              { kind: 'pdf', n: '3', title: 'Differenciálszámítás 3.', desc: 'Lokális és abszolút szélsőértékek, konvex és konkáv függvények', href: 'ANAL II/Előadás anyagok/03_ea_An_II_A_B.pdf' },
+              { kind: 'pdf', n: '4', title: 'Differenciálszámítás 4.', desc: "Aszimptoták, L'Hospital-szabályok, teljes függvényvizsgálat, elemi függvények", href: 'ANAL II/Előadás anyagok/04_ea_An_II_A_B.pdf' },
+              { kind: 'pdf', n: '5', title: 'Taylor-polinomok és Taylor-sorok', desc: 'Differenciálszámítás 5. · függvények közelítése polinomokkal, hatványsorok', href: 'ANAL II/Előadás anyagok/05_ea_An_II_A_B.pdf', tags: ['van kidolgozás'] }
+            ]},
+            { title: 'Integrálszámítás', items: [
+              { kind: 'pdf', n: '6', title: 'Határozatlan integrál', desc: 'Primitív függvény, alapintegrálok, linearitás, első és második helyettesítési szabály, parciális integrálás', href: 'ANAL II/Előadás anyagok/06_ea_An_II_A_B.pdf' },
+              { kind: 'pdf', n: '7', title: 'A határozott integrál 1.', desc: 'Motiváció, értelmezés, az integrálhatóság ekvivalens átfogalmazásai', href: 'ANAL II/Előadás anyagok/07_ea_An_II_A_B.pdf' },
+              { kind: 'pdf', n: '8', title: 'A határozott integrál 2.', desc: 'Riemann-függvény, műveletek integrálható függvényekkel, egyenlőtlenségek', href: 'ANAL II/Előadás anyagok/08_ea_An_II_A_B.pdf' },
+              { kind: 'pdf', n: '9', title: 'A határozott integrál 3.', desc: 'Monoton és folytonos függvények integrálhatósága, egyenletes folytonosság', href: 'ANAL II/Előadás anyagok/09_ea_An_II_A_B.pdf' },
+              { kind: 'pdf', n: '10', title: 'A határozott integrál 4.', desc: 'Newton–Leibniz-tétel, integrálfüggvény, parciális és helyettesítéses integrálás, síkidom területe', href: 'ANAL II/Előadás anyagok/10_ea_An_II_A_B.pdf' },
+              { kind: 'pdf', n: '11', title: 'A határozott integrál 5.', desc: 'Ívhossz, forgástest térfogata és felszíne, további alkalmazások', href: 'ANAL II/Előadás anyagok/11_ea_An_II_A_B.pdf' },
+              { kind: 'pdf', n: '12', title: 'Improprius integrál', desc: 'Értelmezés, alaptételek, integrálkritérium végtelen sorokra', href: 'ANAL II/Előadás anyagok/12_ea_An_II_A_B.pdf' }
+            ]},
+            { title: 'Egyenletek közelítő megoldása', items: [
+              { kind: 'pdf', n: '13', title: 'A Banach-féle fixponttétel', desc: 'Egyenletek közelítő megoldása iterációval', href: 'ANAL II/Előadás anyagok/13_ea_An_II_A_B.pdf' }
+            ]}
+          ]
+        },
+        {
+          title: 'Gyakorlatok', note: 'A gyakorlati anyagok PDF-ben (órai feladatok megoldással), új fülön nyílnak.',
+          sections: [
+            { title: 'Gyakorlatonként', items: [
+              { kind: 'pdf', n: '1', title: '1. gyakorlat', desc: 'Függvény határértéke', href: 'ANAL II/Gyakorlat anyagok/01_Gy_An_II_A_B.pdf' },
+              { kind: 'pdf', n: '2', title: '2. gyakorlat', desc: 'Differenciálszámítás 1.', href: 'ANAL II/Gyakorlat anyagok/02_Gy_An_II_A_B.pdf' },
+              { kind: 'pdf', n: '3', title: '3. gyakorlat', desc: 'Differenciálszámítás 2.', href: 'ANAL II/Gyakorlat anyagok/03_Gy_An_II_A_B.pdf' },
+              { kind: 'pdf', n: '4', title: '4. gyakorlat', desc: 'Differenciálszámítás 3.', href: 'ANAL II/Gyakorlat anyagok/04_Gy_An_II_A_B.pdf' },
+              { kind: 'pdf', n: '5', title: '5. gyakorlat', desc: 'Differenciálszámítás 4. · inverz trig. függvények, teljes függvényvizsgálat', href: 'ANAL II/Gyakorlat anyagok/05_Gy_An_II_A_B.pdf', tags: ['van kidolgozás'] },
+              { kind: 'pdf', n: '6', title: '6. gyakorlat', desc: 'Differenciálszámítás 5.', href: 'ANAL II/Gyakorlat anyagok/06_Gy_An_II_A_B.pdf' },
+              { kind: 'pdf', n: '7', title: '7. gyakorlat', desc: 'Primitív függvény, határozatlan integrál 1.', href: 'ANAL II/Gyakorlat anyagok/07_Gy_An_II_A_B.pdf' },
+              { kind: 'pdf', n: '8', title: '8. gyakorlat', desc: 'Primitív függvény, határozatlan integrál 2.', href: 'ANAL II/Gyakorlat anyagok/08_Gy_An_II_A_B.pdf' },
+              { kind: 'pdf', n: '9', title: '9. gyakorlat', desc: 'Primitív függvény, határozatlan integrál 3.', href: 'ANAL II/Gyakorlat anyagok/09_Gy_An_II_A_B.pdf' },
+              { kind: 'pdf', n: '10', title: '10. gyakorlat', desc: 'Primitív függvény, határozatlan integrál 4.', href: 'ANAL II/Gyakorlat anyagok/10_Gy_An_II_A_B.pdf' },
+              { kind: 'pdf', n: '11–12', title: '11–12. gyakorlat', desc: 'A határozott integrál és alkalmazásai', href: 'ANAL II/Gyakorlat anyagok/11_12_Gy_An_II_A_B.pdf' }
+            ]},
+            { title: 'Összevont anyag', items: [
+              { kind: 'pdf', icon: 'ÖSSZES', title: 'Analízis II. gyakorlatok', desc: 'Az összes gyakorlat feladatai egy fájlban, házi, gyakorló és további feladatokkal', href: 'ANAL II/Gyakorlat anyagok/An_II_A_B_Gyak.pdf' }
+            ]}
+          ]
+        },
+        {
+          title: 'Kérdéssorok',
+          items: [
+            { kind: 'pdf', icon: 'VIZSGA', title: 'Vizsgakérdések', desc: 'Definíciók és tételek a vizsgára, A és B szakirány', href: 'ANAL II/vizsgakerdesek.pdf' },
+            { kind: 'pdf', icon: 'RÖPZH', title: 'RöpZH kérdések', desc: 'Gyakorlatonkénti elméleti kérdések', href: 'ANAL II/An2_rop_kerdesek.pdf' }
+          ]
+        }
+      ]
+    }
+  ];
+
+  var view = document.getElementById('view');
+  var current = null; // id of the subject currently rendered
+
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function fold(s) { return s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); }
+
+  function allItems(s) {
+    var out = [];
+    s.groups.forEach(function (g) {
+      (g.items || []).forEach(function (it) { out.push(it); });
+      (g.sections || []).forEach(function (sec) { sec.items.forEach(function (it) { out.push(it); }); });
+    });
+    return out;
+  }
+  function countKinds(s) {
+    var c = { prep: 0, pdf: 0, html: 0 };
+    allItems(s).forEach(function (it) { if (it.kind in c) c[it.kind]++; });
+    return c;
+  }
+  function stats(s) {
+    var c = countKinds(s), parts = [];
+    if (c.prep) parts.push(c.prep + ' felkészítő');
+    if (c.html) parts.push(c.html + ' kidolgozás');
+    if (c.pdf) parts.push(c.pdf + ' PDF');
+    return parts;
+  }
+
+  function renderHome() {
+    var cards = SUBJECTS.map(function (s) {
+      return '<a class="subject ' + s.theme + '" href="#/' + s.id + '">' +
+        '<span class="code">' + esc(s.code) + '</span>' +
+        '<h2>' + esc(s.name) + '</h2>' +
+        '<div class="stats">' + stats(s).map(function (x) { return '<span class="chip">' + x + '</span>'; }).join('') + '</div>' +
+        '<span class="go">Megnyitás →</span>' +
+      '</a>';
+    }).join('');
+    view.innerHTML =
+      '<header class="hero">' +
+        '<span class="label">Programtervező informatikus BSc · 2026/27 ősz</span>' +
+        '<h1>Tárgyaim</h1>' +
+        '<p class="sub">Egy helyen a felkészítők, kidolgozások és órai anyagok. Válassz tárgyat.</p>' +
+      '</header>' +
+      '<div class="subjects">' + cards + '</div>';
+    document.title = 'Egyetemi tárgyaim';
+  }
+
+  function renderItem(it) {
+    var mark = it.icon ? '<span class="n icon">' + esc(it.icon) + '</span>' : '<span class="n">' + esc(it.n || '') + '</span>';
+    var tags = (it.tags || []).map(function (t) { return '<span class="chip">' + esc(t) + '</span>'; }).join('');
+    var body = '<span class="body"><span class="t">' + esc(it.title) + '</span>' +
+      (it.desc ? '<span class="d">' + esc(it.desc) + '</span>' : '') +
+      (tags ? '<span class="tags">' + tags + '</span>' : '') + '</span>';
+    var search = esc(fold(it.title + ' ' + (it.desc || '') + ' ' + (it.tags || []).join(' ')));
+    if (it.kind === 'soon') {
+      return '<div class="item soon" data-search="' + search + '">' + mark + body + '<span class="open">hamarosan</span></div>';
+    }
+    var isPdf = it.kind === 'pdf';
+    var cls = 'item' + (it.kind === 'prep' || it.featured ? ' featured' : '');
+    return '<a class="' + cls + '" data-search="' + search + '" href="' + esc(encodeURI(it.href)) + '"' +
+      (isPdf ? ' target="_blank" rel="noopener"' : '') + '>' +
+      mark + body + '<span class="open">' + (isPdf ? 'PDF ↗' : 'Megnyitás →') + '</span></a>';
+  }
+
+  function renderSubject(s) {
+    var c = countKinds(s);
+    var facts = [];
+    if (c.prep) facts.push(['Felkészítő', c.prep]);
+    if (c.html) facts.push(['Kidolgozás', c.html]);
+    facts.push(['PDF', c.pdf]);
+    var groups = s.groups.map(function (g) {
+      var inner = '';
+      if (g.items) inner += '<div class="items">' + g.items.map(renderItem).join('') + '</div>';
+      (g.sections || []).forEach(function (sec) {
+        inner += '<div class="sub-head">' + esc(sec.title) + '</div><div class="items">' + sec.items.map(renderItem).join('') + '</div>';
+      });
+      var n = (g.items || []).length + (g.sections || []).reduce(function (a, sec) { return a + sec.items.length; }, 0);
+      return '<section class="group ' + s.theme + '" id="' + slug(g.title) + '">' +
+        '<div class="group-head"><h2>' + esc(g.title) + '</h2><span class="count">' + n + ' db</span></div>' +
+        (g.note ? '<p class="group-note">' + esc(g.note) + '</p>' : '') + inner + '</section>';
+    }).join('');
+    var nav = '<li><a class="nav-back" href="#/" aria-label="Vissza a tárgyakhoz">← Tárgyak</a></li>' +
+      s.groups.map(function (g) { return '<li data-for="' + slug(g.title) + '"><a href="#/' + s.id + '/' + slug(g.title) + '">' + esc(g.title) + '</a></li>'; }).join('');
+    view.innerHTML =
+      '<header class="hero ' + s.theme + '">' +
+        '<a class="back" href="#/"><span class="arr" aria-hidden="true">←</span>Vissza a tárgyakhoz</a>' +
+        '<span class="label code">' + esc(s.code) + '</span>' +
+        '<h1>' + esc(s.name) + '</h1>' +
+        '<div class="facts">' + facts.map(function (f) { return '<div class="fact"><span class="label">' + f[0] + '</span><b>' + f[1] + '</b></div>'; }).join('') + '</div>' +
+      '</header>' +
+      '<nav class="bar" aria-label="Fejezetek"><ul>' + nav + '</ul></nav>' +
+      '<div class="tools ' + s.theme + '"><input id="filter" type="search" placeholder="Keresés az anyagok között (pl. L\'Hospital, kongruencia)…" aria-label="Keresés"><kbd>/</kbd></div>' +
+      groups +
+      '<p class="empty" id="empty" hidden>Nincs találat.</p>';
+    document.title = s.name + ' · Egyetemi tárgyaim';
+    bindFilter();
+  }
+
+  function bindFilter() {
+    var input = document.getElementById('filter');
+    input.addEventListener('input', function () {
+      var q = fold(input.value.trim()), any = false;
+      view.querySelectorAll('.item').forEach(function (el) {
+        el.hidden = q !== '' && el.dataset.search.indexOf(q) === -1;
+      });
+      view.querySelectorAll('.sub-head').forEach(function (h) {
+        var list = h.nextElementSibling;
+        h.hidden = !list.querySelector('.item:not([hidden])');
+      });
+      view.querySelectorAll('section.group').forEach(function (g) {
+        var vis = !!g.querySelector('.item:not([hidden])');
+        g.hidden = !vis; if (vis) any = true;
+        var chip = view.querySelector('nav.bar li[data-for="' + g.id + '"]');
+        if (chip) chip.hidden = !vis;
+      });
+      document.getElementById('empty').hidden = any;
+    });
+  }
+
+  function slug(t) { return fold(t).replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
+
+  function route() {
+    var parts = location.hash.replace(/^#\/?/, '').split('/');
+    var s = SUBJECTS.filter(function (x) { return x.id === parts[0]; })[0];
+    var target = s && parts[1] ? document.getElementById(parts[1]) : null;
+    if (s && current === s.id && target) { target.scrollIntoView({ block: 'start' }); return; }
+    document.body.className = s ? s.theme : '';
+    current = s ? s.id : null;
+    if (s) renderSubject(s); else renderHome();
+    target = s && parts[1] ? document.getElementById(parts[1]) : null;
+    if (target) target.scrollIntoView({ block: 'start' }); else window.scrollTo(0, 0);
+  }
+
+  document.addEventListener('keydown', function (e) {
+    var input = document.getElementById('filter');
+    if (!input) return;
+    if (e.key === '/' && document.activeElement !== input) { e.preventDefault(); input.focus(); }
+    else if (e.key === 'Escape') {
+      if (document.activeElement === input && input.value) { input.value = ''; input.dispatchEvent(new Event('input')); }
+      else location.hash = '#/';
+    }
+  });
+
+  // clicking the chip of the section already in the hash fires no hashchange, so scroll by hand
+  view.addEventListener('click', function (e) {
+    var a = e.target.closest('nav.bar a');
+    if (a && a.getAttribute('href') === location.hash) { e.preventDefault(); route(); }
+  });
+
+  window.addEventListener('hashchange', route);
+  route();
+})();
+</script>
+</body>
+</html>

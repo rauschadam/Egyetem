@@ -1,0 +1,1354 @@
+<meta charset="utf-8">
+<script>document.documentElement.setAttribute("data-theme", "dark");</script>
+<title>DIMAT II 1. Zh felkészítő</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=STIX+Two+Text:ital,wght@0,400;0,600;1,400&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+/* Layout: one reading column on squared exam paper; sticky section bar; solutions fold open like a turned page */
+:root {
+  --paper: #f5f7fa;
+  --grid: rgba(35, 70, 168, 0.06);
+  --card: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6574;
+  --rule: #d7dde6;
+  --accent: #2346a8;
+  --accent-soft: #e6ecfb;
+  --mark: #b8352a;
+  --mark-soft: #fbe9e6;
+  --ok: #2c7a4b;
+  --ok-soft: #e3f3e9;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-math: "STIX Two Text", "Cambria Math", "Times New Roman", serif;
+  --f-label: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f141b; --grid: rgba(143, 168, 255, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+    --rule: #2a3442; --accent: #93abff; --accent-soft: #1d2846; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+    --ok: #74d39c; --ok-soft: #173225; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f141b; --grid: rgba(143, 168, 255, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+  --rule: #2a3442; --accent: #93abff; --accent-soft: #1d2846; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+  --ok: #74d39c; --ok-soft: #173225; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background-color: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 1.06rem;
+  line-height: 1.6;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 80px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2rem, 6vw, 3.1rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.65rem; font-weight: 700; letter-spacing: -0.01em; }
+h3 { font-size: 1.15rem; font-weight: 600; }
+p { margin: 0; }
+a { color: var(--accent); }
+.label { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+
+/* math */
+.m { font-family: var(--f-math); font-size: 1.04em; white-space: nowrap; }
+.m i { font-style: italic; }
+.mb { font-family: var(--f-math); font-size: 1.08em; display: block; padding: 6px 0 6px 14px; border-left: 2px solid var(--rule); margin: 8px 0; overflow-x: auto; }
+.mb i, .m i { font-style: italic; }
+sup, sub { line-height: 0; }
+
+/* header */
+header.hero { display: grid; gap: 14px; padding-block: 10px 26px; border-bottom: 2px solid var(--ink); }
+.hero .sub { color: var(--muted); max-width: 62ch; }
+.facts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.fact { display: flex; flex-direction: column; gap: 2px; padding: 8px 14px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; min-width: 120px; }
+.fact b { font-family: var(--f-display); font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+
+nav.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--paper); border-bottom: 1px solid var(--rule); margin-inline: -18px; padding-inline: 18px; }
+nav.bar ul { list-style: none; margin: 0; padding: 10px 0; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin; }
+nav.bar a { display: block; white-space: nowrap; text-decoration: none; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.04em; color: var(--ink); padding: 6px 10px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); }
+nav.bar a:hover, nav.bar a:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+
+section { padding-top: 44px; display: grid; gap: 18px; scroll-margin-top: 56px; }
+.section-head { display: grid; gap: 6px; }
+.section-head p { color: var(--muted); max-width: 64ch; }
+
+/* topic map table */
+.tbl { overflow-x: auto; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+tr:last-child td { border-bottom: 0; }
+td.num, th.num { font-variant-numeric: tabular-nums; text-align: right; }
+.pri { display: inline-block; font-family: var(--f-label); font-size: 0.7rem; padding: 2px 7px; border-radius: 3px; white-space: nowrap; }
+.pri.hi { background: var(--mark-soft); color: var(--mark); }
+.pri.mid { background: var(--accent-soft); color: var(--accent); }
+.pri.lo { background: var(--ok-soft); color: var(--ok); }
+
+/* cheat sheet */
+.sheet { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; }
+.rule-card { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 14px 16px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.rule-card h3 { font-size: 1rem; }
+.rule-card p, .rule-card li { font-size: 0.95rem; }
+.rule-card ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+
+/* exercises */
+.task { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 18px; display: grid; gap: 10px; min-width: 0; }
+.task-head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.task-head .no { font-family: var(--f-display); font-weight: 700; font-size: 1.05rem; }
+.task-head .src { font-family: var(--f-label); font-size: 0.72rem; color: var(--muted); }
+.task-head .pts { margin-left: auto; font-family: var(--f-label); font-size: 0.75rem; color: var(--accent); }
+.stmt { max-width: 70ch; }
+details { border-top: 1px dashed var(--rule); padding-top: 8px; }
+summary { cursor: pointer; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); list-style: none; display: inline-flex; gap: 8px; align-items: center; padding: 4px 0; }
+summary::-webkit-details-marker { display: none; }
+summary::before { content: "+"; display: inline-grid; place-items: center; width: 18px; height: 18px; border: 1px solid currentColor; border-radius: 3px; font-size: 0.8rem; }
+details[open] > summary::before { content: "−"; }
+summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sol { display: grid; gap: 8px; padding-top: 6px; max-width: 72ch; }
+.sol ol, .sol ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.ans { display: inline-block; background: var(--ok-soft); color: var(--ok); font-weight: 600; padding: 2px 9px; border-radius: 4px; }
+.warn { background: var(--mark-soft); border-left: 3px solid var(--mark); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 0.95rem; }
+.tip { background: var(--accent-soft); border-left: 3px solid var(--accent); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 0.95rem; }
+.sheetgroup { display: grid; gap: 12px; }
+.sheetgroup > h3 { padding-top: 10px; display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.sheetgroup > h3 .label { font-weight: 400; }
+
+/* euclid tables */
+.eu { overflow-x: auto; }
+.eu table { width: auto; font-family: var(--f-math); font-size: 1rem; background: transparent; }
+.eu td, .eu th { padding: 3px 12px; text-align: right; font-variant-numeric: tabular-nums; }
+
+/* cayley tables */
+.cay { display: flex; flex-wrap: wrap; gap: 14px; }
+.cay table { width: auto; font-family: var(--f-math); border: 1px solid var(--rule); }
+.cay td, .cay th { padding: 2px 9px; text-align: center; border: 1px solid var(--rule); }
+.cay th { font-family: var(--f-math); font-size: 0.95rem; text-transform: none; letter-spacing: 0; color: var(--ink); background: var(--accent-soft); }
+
+/* practice exam */
+.exam { display: grid; gap: 12px; }
+.exam-bar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 12px 16px; }
+.clock { font-family: var(--f-display); font-size: 2rem; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
+.clock.low { color: var(--mark); }
+.btns { display: flex; gap: 8px; flex-wrap: wrap; }
+button { font-family: var(--f-label); font-size: 0.8rem; padding: 7px 12px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); color: var(--ink); cursor: pointer; }
+button.primary { background: var(--accent); color: var(--card); border-color: var(--accent); }
+button:hover { border-color: var(--accent); }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.score { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; font-size: 0.95rem; }
+.score label { display: inline-flex; gap: 6px; align-items: center; font-family: var(--f-label); font-size: 0.75rem; color: var(--muted); }
+.score input { width: 3.4em; font-family: var(--f-math); font-size: 1rem; padding: 3px 5px; border: 1px solid var(--rule); border-radius: 4px; background: var(--paper); color: var(--ink); }
+.verdict { font-family: var(--f-label); font-size: 0.8rem; padding: 4px 10px; border-radius: 4px; }
+.verdict.pass { background: var(--ok-soft); color: var(--ok); }
+.verdict.fail { background: var(--mark-soft); color: var(--mark); }
+
+.mistakes { display: grid; gap: 10px; counter-reset: none; }
+.mistake { display: grid; grid-template-columns: auto 1fr; gap: 12px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 12px 14px; }
+.mistake .x { font-family: var(--f-display); font-weight: 700; color: var(--mark); font-size: 1.2rem; line-height: 1.3; }
+
+.plan { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
+.day { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 12px 14px; display: grid; gap: 6px; align-content: start; }
+.day ul { margin: 0; padding-left: 18px; font-size: 0.95rem; display: grid; gap: 3px; }
+
+footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.88rem; }
+
+
+/* back to subject page */
+.back { justify-self: start; display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px 9px 12px; border: 1.5px solid var(--accent); border-radius: 8px; background: var(--accent-soft); color: var(--ink); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 1.02rem; line-height: 1; white-space: nowrap; transition: background .15s, color .15s; }
+.back .arr { color: var(--accent); font-size: 1.25rem; transition: transform .15s, color .15s; }
+.back:hover, .back:focus-visible { background: var(--accent); color: var(--paper); outline: none; }
+.back:hover .arr, .back:focus-visible .arr { color: var(--paper); transform: translateX(-3px); }
+nav.bar a.nav-back { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+
+@media (max-width: 520px) {
+  body { font-size: 1rem; }
+  .task { padding: 14px; }
+  .task-head .pts { margin-left: 0; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+html { scroll-behavior: smooth; }
+</style>
+
+<div class="wrap">
+<header class="hero">
+  <a class="back" href="../../index.html#/dimat2"><span class="arr" aria-hidden="true">←</span>Vissza: Diszkrét matematika II.</a>
+  <span class="label">Diszkrét matematika II. · 1. zárthelyi</span>
+  <h1>Felkészítő az 1. Zh-ra</h1>
+  <p class="sub">A minta Zh mind a négy feladata szó szerint a gyakorlati feladatsorokból jött (2/5, 3/4, 4/3, 4/5). Ezért itt minden feladatsor összes feladata ki van dolgozva, és van két új, mintával azonos szerkezetű gyakorló Zh is, órával.</p>
+  <div class="facts">
+    <div class="fact"><span class="label">Idő</span><b>60 perc</b></div>
+    <div class="fact"><span class="label">Max pont</span><b>30</b></div>
+    <div class="fact"><span class="label">Minimum</span><b>12 pont</b></div>
+    <div class="fact"><span class="label">Feladat</span><b>4 db · 7–8 p</b></div>
+  </div>
+</header>
+
+<nav class="bar" aria-label="Fejezetek">
+  <ul>
+    <li><a class="nav-back" href="../../index.html#/dimat2" aria-label="Vissza: Diszkrét matematika II.">← DIMAT II</a></li>
+    <li><a href="#terkep">Témák</a></li>
+    <li><a href="#keplet">Képletlap</a></li>
+    <li><a href="#minta">Minta Zh megoldva</a></li>
+    <li><a href="#sorok">Feladatsorok</a></li>
+    <li><a href="#gyakorlo">Gyakorló Zh-k</a></li>
+    <li><a href="#hibak">Gyakori hibák</a></li>
+  </ul>
+</nav>
+
+<!-- ================= TÉMATÉRKÉP ================= -->
+<section id="terkep">
+  <div class="section-head">
+    <span class="label">Mi lesz a Zh-ban</span>
+    <h2>Tématérkép</h2>
+    <p>Az előadásjegyzet október 7-i állapota az Euler–Fermat-tétellel zárul, a minta Zh is a 2–4. feladatsorból válogat. Az 5. feladatsor (polinomok) nem anyaga az 1. Zh-nak, ezért kimaradt.</p>
+  </div>
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Típus</th><th>Feladatsor</th><th>Minta Zh</th><th>Prioritás</th></tr></thead>
+      <tbody>
+        <tr><td>Lnko-bizonyítás (Fibonacci, <span class="m">(<i>a</i>,<i>b</i>)=(<i>a</i>−<i>b</i>,<i>b</i>)</span>)</td><td>2/4, 2/5</td><td>1. feladat · 8 p</td><td><span class="pri hi">kötelező</span></td></tr>
+        <tr><td>Lineáris diofantikus egyenlet, szöveges is</td><td>3/1–4, 3/6</td><td>2. feladat · 7 p</td><td><span class="pri hi">kötelező</span></td></tr>
+        <tr><td>Lineáris kongruencia, kongruenciarendszer, megoldások száma</td><td>2/2, 3/5, 4/1–3</td><td>3. feladat · 7 p</td><td><span class="pri hi">kötelező</span></td></tr>
+        <tr><td>Euler–Fermat, utolsó jegyek, oszthatóság</td><td>3/7, 4/4–6</td><td>4. feladat · 8 p</td><td><span class="pri hi">kötelező</span></td></tr>
+        <tr><td>Euklideszi és bővített euklideszi algoritmus</td><td>2/1, 3/1–2</td><td>mindenhol eszköz</td><td><span class="pri mid">rutin kell</span></td></tr>
+        <tr><td>Komplex hatványok, egységgyökök</td><td>1/1, 2/3, 3/8</td><td>–</td><td><span class="pri mid">valószínű</span></td></tr>
+        <tr><td>Maradékos osztás, számrendszerek, Fibonacci-felírás</td><td>1/2–6</td><td>–</td><td><span class="pri mid">valószínű</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ================= KÉPLETLAP ================= -->
+<section id="keplet">
+  <div class="section-head">
+    <span class="label">Egy oldalon</span>
+    <h2>Képletlap</h2>
+    <p>Amit fejből kell tudni. A jegyzet tételszámai zárójelben.</p>
+  </div>
+  <div class="sheet">
+    <div class="rule-card">
+      <span class="label">1.1–1.2. tétel</span>
+      <h3>Maradékos osztás, számrendszer</h3>
+      <p><span class="m"><i>a</i> = <i>bq</i> + <i>r</i>, 0 ≤ <i>r</i> &lt; |<i>b</i>|</span>, egyértelmű.</p>
+      <p>Hatványoknál: ha <span class="m"><i>z</i><sup><i>k</i></sup> = 1</span> és <span class="m"><i>n</i> = <i>kq</i> + <i>r</i></span>, akkor <span class="m"><i>z</i><sup><i>n</i></sup> = <i>z</i><sup><i>r</i></sup></span>.</p>
+      <p>Számrendszer: ismételt osztás <span class="m"><i>g</i></span>-vel, a maradékok alulról felfelé. Utolsó <span class="m"><i>k</i></span> jegy = maradék mod <span class="m"><i>g</i><sup><i>k</i></sup></span>.</p>
+    </div>
+    <div class="rule-card">
+      <span class="label">1.3–1.5. tétel</span>
+      <h3>Legnagyobb közös osztó</h3>
+      <ul>
+        <li><span class="m">(<i>a</i>,<i>b</i>) = (<i>a</i> − <i>b</i>, <i>b</i>) = (<i>a</i> − <i>kb</i>, <i>b</i>)</span>: a közös osztók halmaza ugyanaz.</li>
+        <li><span class="m">(<i>ca</i>,<i>cb</i>) = <i>c</i>(<i>a</i>,<i>b</i>)</span>, ha <span class="m"><i>c</i> ≥ 0</span>.</li>
+        <li>Ha <span class="m">(<i>d</i>,<i>b</i>) = 1</span>, akkor <span class="m">(<i>da</i>,<i>b</i>) = (<i>a</i>,<i>b</i>)</span>.</li>
+        <li><span class="m">[<i>a</i>,<i>b</i>] = |<i>ab</i>| / (<i>a</i>,<i>b</i>)</span></li>
+        <li><span class="m">(2<sup><i>a</i></sup>−1, 2<sup><i>b</i></sup>−1) = 2<sup>(<i>a</i>,<i>b</i>)</sup>−1</span></li>
+      </ul>
+    </div>
+    <div class="rule-card">
+      <span class="label">1.6. tétel</span>
+      <h3>Bővített euklideszi algoritmus</h3>
+      <p><span class="m"><i>r</i><sub>−1</sub> = <i>a</i>, <i>r</i><sub>0</sub> = <i>b</i></span>, majd <span class="m"><i>r<sub>i</sub></i> = <i>r</i><sub><i>i</i>−2</sub> − <i>q<sub>i</sub></i><i>r</i><sub><i>i</i>−1</sub></span>, és ugyanígy</p>
+      <p class="mb"><i>x<sub>i</sub></i> = <i>x</i><sub><i>i</i>−2</sub> − <i>q<sub>i</sub></i><i>x</i><sub><i>i</i>−1</sub>,&nbsp;&nbsp; <i>y<sub>i</sub></i> = <i>y</i><sub><i>i</i>−2</sub> − <i>q<sub>i</sub></i><i>y</i><sub><i>i</i>−1</sub></p>
+      <p>Kezdősorok: <span class="m">(<i>a</i>, 1, 0)</span> és <span class="m">(<i>b</i>, 0, 1)</span>. Az utolsó nem nulla sor adja <span class="m"><i>ax</i> + <i>by</i> = (<i>a</i>,<i>b</i>)</span>-t.</p>
+    </div>
+    <div class="rule-card">
+      <span class="label">1.7. tétel</span>
+      <h3><span class="m"><i>ax</i> + <i>by</i> = <i>c</i></span></h3>
+      <p>Megoldható ⇔ <span class="m"><i>d</i> = (<i>a</i>,<i>b</i>) | <i>c</i></span>. Egy megoldás: a Bézout-alak <span class="m"><i>c</i>/<i>d</i></span>-szerese. Összes:</p>
+      <p class="mb"><i>x</i> = <i>x</i><sub>0</sub> + (<i>b</i>/<i>d</i>)·<i>t</i>,&nbsp;&nbsp; <i>y</i> = <i>y</i><sub>0</sub> − (<i>a</i>/<i>d</i>)·<i>t</i>,&nbsp;&nbsp; <i>t</i> ∈ ℤ</p>
+      <p>Gyorsabb út: oszd le <span class="m"><i>d</i></span>-vel, majd vedd mod <span class="m"><i>b</i></span> (vagy mod <span class="m"><i>a</i></span>).</p>
+    </div>
+    <div class="rule-card">
+      <span class="label">1.11–1.12. tétel</span>
+      <h3>Lineáris kongruencia</h3>
+      <p><span class="m"><i>ax</i> ≡ <i>b</i> mod <i>m</i></span> megoldható ⇔ <span class="m"><i>d</i> = (<i>a</i>,<i>m</i>) | <i>b</i></span>. Ekkor pontosan <span class="m"><i>d</i></span> inkongruens megoldás van mod <span class="m"><i>m</i></span>, lépésköz <span class="m"><i>m</i>/<i>d</i></span>.</p>
+      <p>Egyszerűsítés: <span class="m"><i>ab</i> ≡ <i>ac</i> mod <i>m</i> ⇔ <i>b</i> ≡ <i>c</i> mod <i>m</i>/(<i>a</i>,<i>m</i>)</span>. A modulust is osztani kell.</p>
+    </div>
+    <div class="rule-card">
+      <span class="label">1.13. tétel</span>
+      <h3>Kínai maradéktétel</h3>
+      <p>Páronként relatív prím modulusoknál pontosan egy megoldás mod <span class="m"><i>n</i><sub>1</sub>⋯<i>n<sub>k</sub></i></span>.</p>
+      <p>Behelyettesítéssel: <span class="m"><i>x</i> = <i>c</i><sub>1</sub> + <i>n</i><sub>1</sub><i>k</i></span>, ezt írd be a második kongruenciába, oldd meg <span class="m"><i>k</i></span>-ra.</p>
+      <p>Nem relatív prím modulusok: előbb minden egyenletet hozz <span class="m"><i>x</i> ≡ … mod …</span> alakra, bontsd prímhatványokra, nézd meg, összeférnek-e. A megoldás modulusa az <span class="m">lkkt</span>.</p>
+    </div>
+    <div class="rule-card">
+      <span class="label">1.14–1.16. tétel</span>
+      <h3>Euler–Fermat</h3>
+      <p class="mb">φ(<i>n</i>) = <i>n</i> · ∏ (1 − 1/<i>p</i>),&nbsp;&nbsp; (<i>a</i>,<i>n</i>) = 1 ⇒ <i>a</i><sup>φ(<i>n</i>)</sup> ≡ 1 mod <i>n</i></p>
+      <p>Kitevő-redukció: <span class="m"><i>a<sup>k</sup></i> ≡ <i>a</i><sup><i>k</i> mod φ(<i>n</i>)</sup></span>. Ha találsz kisebb <span class="m"><i>e</i></span>-t, amire <span class="m"><i>a<sup>e</sup></i> ≡ 1</span> (pl. <span class="m">7<sup>4</sup> ≡ 1 mod 100</span>), azzal gyorsabb.</p>
+      <p>φ(100) = 40, φ(1000) = 400, φ(125) = 100, φ(9) = 6, φ(13) = 12.</p>
+    </div>
+    <div class="rule-card">
+      <span class="label">1. és 3. feladatsor</span>
+      <h3>Komplex egységgyökök</h3>
+      <p><span class="m"><i>z</i> = cos φ + <i>i</i> sin φ ⇒ <i>z<sup>n</sup></i> = cos <i>n</i>φ + <i>i</i> sin <i>n</i>φ</span>.</p>
+      <p><span class="m"><i>z<sup>n</sup></i> = 1</span> ⇔ <span class="m"><i>z</i></span> rendje osztja <span class="m"><i>n</i></span>-et. <span class="m"><i>i</i></span>: rend 4; <span class="m">(1+<i>i</i>)/√2</span>: rend 8; <span class="m">½ + (√3/2)<i>i</i></span>: rend 6.</p>
+      <p><span class="m"><i>z</i><sup><i>ax</i></sup> = <i>w</i></span> típus: szögekre írd át, kongruencia lesz a rend szerint.</p>
+    </div>
+  </div>
+
+  <article class="task" id="lnko-biz">
+    <div class="task-head"><span class="no">Bizonyítások</span><span class="src">a „Legnagyobb közös osztó” kártya öt azonossága</span></div>
+    <div class="sol">
+      <p><b>Amire építünk.</b> A jegyzet 1.3. definíciója: <span class="m"><i>d</i> = (<i>a</i>, <i>b</i>)</span>, ha <span class="m"><i>d</i> ≥ 0</span>, <span class="m"><i>d</i> | <i>a</i></span>, <span class="m"><i>d</i> | <i>b</i></span>, és <b>minden</b> közös osztó osztja <span class="m"><i>d</i></span>-t. Ezen kívül két eszköz kell:</p>
+      <ul>
+        <li><b>(K)</b> Ha <span class="m"><i>x</i>, <i>y</i> ≥ 0</span>, <span class="m"><i>x</i> | <i>y</i></span> és <span class="m"><i>y</i> | <i>x</i></span>, akkor <span class="m"><i>x</i> = <i>y</i></span>. Az egyenlőségeket mindig így bizonyítjuk: a két oldal osztja egymást.</li>
+        <li><b>(B)</b> Bézout (1.6. tétel): van olyan <span class="m"><i>u</i>, <i>v</i> ∈ ℤ</span>, hogy <span class="m"><i>au</i> + <i>bv</i> = (<i>a</i>, <i>b</i>)</span>.</li>
+      </ul>
+    </div>
+
+    <details><summary>1. (a, b) = (a − kb, b)</summary><div class="sol">
+      <p><b>Állítás:</b> minden <span class="m"><i>k</i> ∈ ℤ</span>-re <span class="m">(<i>a</i>, <i>b</i>) = (<i>a</i> − <i>kb</i>, <i>b</i>)</span>.</p>
+      <p><b>Bizonyítás.</b> Megmutatjuk, hogy a két számpár közös osztói ugyanazok.</p>
+      <ul>
+        <li>Ha <span class="m"><i>t</i> | <i>a</i></span> és <span class="m"><i>t</i> | <i>b</i></span>, akkor <span class="m"><i>t</i> | <i>kb</i></span>, így <span class="m"><i>t</i> | <i>a</i> − <i>kb</i></span>.</li>
+        <li>Ha <span class="m"><i>t</i> | <i>a</i> − <i>kb</i></span> és <span class="m"><i>t</i> | <i>b</i></span>, akkor <span class="m"><i>t</i> | (<i>a</i> − <i>kb</i>) + <i>kb</i> = <i>a</i></span>.</li>
+      </ul>
+      <p>Legyen <span class="m"><i>d</i> = (<i>a</i>, <i>b</i>)</span>. Ez közös osztója <span class="m"><i>a</i> − <i>kb</i></span>-nek és <span class="m"><i>b</i></span>-nek, és az ő minden közös osztójuk egyben <span class="m"><i>a</i></span> és <span class="m"><i>b</i></span> közös osztója, tehát osztja <span class="m"><i>d</i></span>-t. Így <span class="m"><i>d</i></span> teljesíti a definíciót <span class="m">(<i>a</i> − <i>kb</i>, <i>b</i>)</span>-re is. ∎</p>
+      <p><span class="m"><i>k</i> = 1</span> az <span class="m">(<i>a</i>, <i>b</i>) = (<i>a</i> − <i>b</i>, <i>b</i>)</span> eset. Ez az euklideszi algoritmus alapja: <span class="m"><i>k</i> = <i>q</i></span> választással <span class="m"><i>a</i> − <i>qb</i></span> épp a maradék.</p>
+    </div></details>
+
+    <details><summary>2. (ca, cb) = c(a, b), ha c ≥ 0</summary><div class="sol">
+      <p><b>Bizonyítás.</b> Legyen <span class="m"><i>d</i> = (<i>a</i>, <i>b</i>)</span> és <span class="m"><i>D</i> = (<i>ca</i>, <i>cb</i>)</span>. Belátjuk, hogy <span class="m"><i>cd</i></span> és <span class="m"><i>D</i></span> osztják egymást.</p>
+      <ul>
+        <li><b><span class="m"><i>cd</i> | <i>D</i></span>:</b> <span class="m"><i>d</i> | <i>a</i></span>-ból <span class="m"><i>cd</i> | <i>ca</i></span>, és ugyanígy <span class="m"><i>cd</i> | <i>cb</i></span>. Tehát <span class="m"><i>cd</i></span> közös osztó, így a definíció szerint osztja <span class="m"><i>D</i></span>-t.</li>
+        <li><b><span class="m"><i>D</i> | <i>cd</i></span>:</b> (B) szerint <span class="m"><i>d</i> = <i>au</i> + <i>bv</i></span>. Szorozva <span class="m"><i>c</i></span>-vel: <span class="m"><i>cd</i> = (<i>ca</i>)<i>u</i> + (<i>cb</i>)<i>v</i></span>. A <span class="m"><i>D</i></span> mindkét tagot osztja, tehát az összeget is.</li>
+      </ul>
+      <p>Mindkettő nemnegatív, így (K) szerint <span class="m"><i>D</i> = <i>cd</i></span>. ∎</p>
+      <p><b>Fontos következmény:</b> ha <span class="m"><i>g</i> = (<i>a</i>, <i>b</i>) &gt; 0</span> és <span class="m"><i>a</i> = <i>ga</i>′</span>, <span class="m"><i>b</i> = <i>gb</i>′</span>, akkor <span class="m"><i>g</i> = (<i>ga</i>′, <i>gb</i>′) = <i>g</i>(<i>a</i>′, <i>b</i>′)</span>, tehát <span class="m">(<i>a</i>′, <i>b</i>′) = 1</span>. Az lnko-val leosztva relatív prímeket kapunk. Ezt használja a 4. pont és a diofantikus egyenletek összes megoldása.</p>
+    </div></details>
+
+    <details><summary>3. Ha (d, b) = 1, akkor (da, b) = (a, b)</summary><div class="sol">
+      <p>Itt <span class="m"><i>d</i></span> csak egy egész szám, nem lnko. Az állítás azt mondja, hogy a <span class="m"><i>b</i></span>-hez relatív prím szorzó nem változtat az lnko-n.</p>
+      <p><b>Bizonyítás.</b> Legyen <span class="m"><i>g</i> = (<i>a</i>, <i>b</i>)</span> és <span class="m"><i>h</i> = (<i>da</i>, <i>b</i>)</span>.</p>
+      <ul>
+        <li><b><span class="m"><i>g</i> | <i>h</i></span>:</b> <span class="m"><i>g</i> | <i>a</i></span>, így <span class="m"><i>g</i> | <i>da</i></span>; és <span class="m"><i>g</i> | <i>b</i></span>. Tehát <span class="m"><i>g</i></span> közös osztója <span class="m"><i>da</i></span>-nak és <span class="m"><i>b</i></span>-nek, így osztja <span class="m"><i>h</i></span>-t.</li>
+        <li><b><span class="m"><i>h</i> | <i>g</i></span>:</b> (B) szerint <span class="m">(<i>d</i>, <i>b</i>) = 1</span> miatt <span class="m"><i>du</i> + <i>bv</i> = 1</span>. Szorozva <span class="m"><i>a</i></span>-val: <span class="m">(<i>da</i>)<i>u</i> + <i>b</i>(<i>av</i>) = <i>a</i></span>. A <span class="m"><i>h</i></span> osztja <span class="m"><i>da</i></span>-t és <span class="m"><i>b</i></span>-t, tehát <span class="m"><i>a</i></span>-t is. Így <span class="m"><i>h</i></span> közös osztója <span class="m"><i>a</i></span>-nak és <span class="m"><i>b</i></span>-nek, tehát osztja <span class="m"><i>g</i></span>-t.</li>
+      </ul>
+      <p>(K) szerint <span class="m"><i>g</i> = <i>h</i></span>. ∎</p>
+      <p><b>Speciális eset (Euklidész-lemma):</b> ha <span class="m"><i>b</i> | <i>da</i></span> és <span class="m">(<i>d</i>, <i>b</i>) = 1</span>, akkor <span class="m"><i>b</i> | <i>a</i></span>. Ugyanis ekkor <span class="m">|<i>b</i>| = (<i>da</i>, <i>b</i>) = (<i>a</i>, <i>b</i>)</span>, ami osztja <span class="m"><i>a</i></span>-t.</p>
+    </div></details>
+
+    <details><summary>4. [a, b] = |ab| / (a, b)</summary><div class="sol">
+      <p><b>Definíció</b> (az lnko mintájára): <span class="m"><i>m</i> = [<i>a</i>, <i>b</i>]</span>, ha <span class="m"><i>m</i> ≥ 0</span>, <span class="m"><i>a</i> | <i>m</i></span>, <span class="m"><i>b</i> | <i>m</i></span>, és <span class="m"><i>m</i></span> osztja <b>minden</b> közös többszöröst. Feltesszük, hogy <span class="m"><i>a</i>, <i>b</i> ≠ 0</span> (ha valamelyik 0, mindkét oldal 0).</p>
+      <p><b>Bizonyítás.</b> Legyen <span class="m"><i>g</i> = (<i>a</i>, <i>b</i>)</span>, <span class="m"><i>a</i> = <i>ga</i>′</span>, <span class="m"><i>b</i> = <i>gb</i>′</span>. A 2. pont következménye szerint <span class="m">(<i>a</i>′, <i>b</i>′) = 1</span>. Legyen</p>
+      <p class="mb"><i>L</i> = |<i>ab</i>| / <i>g</i> = |<i>g a</i>′<i>b</i>′| = |<i>a</i>| · |<i>b</i>′| = |<i>a</i>′| · |<i>b</i>|</p>
+      <ul>
+        <li><b><span class="m"><i>L</i></span> közös többszörös:</b> a két utolsó alakból látszik, hogy <span class="m"><i>a</i> | <i>L</i></span> és <span class="m"><i>b</i> | <i>L</i></span>.</li>
+        <li><b><span class="m"><i>L</i></span> minden közös többszöröst oszt:</b> legyen <span class="m"><i>a</i> | <i>M</i></span> és <span class="m"><i>b</i> | <i>M</i></span>. Ekkor <span class="m"><i>M</i> = <i>at</i> = <i>ga</i>′<i>t</i></span>. Mivel <span class="m"><i>gb</i>′ | <i>ga</i>′<i>t</i></span>, <span class="m"><i>g</i></span>-vel egyszerűsítve <span class="m"><i>b</i>′ | <i>a</i>′<i>t</i></span>. A 3. pont Euklidész-lemmája szerint <span class="m">(<i>a</i>′, <i>b</i>′) = 1</span> miatt <span class="m"><i>b</i>′ | <i>t</i></span>, azaz <span class="m"><i>t</i> = <i>b</i>′<i>s</i></span>. Így <span class="m"><i>M</i> = <i>ga</i>′<i>b</i>′<i>s</i> = ±<i>L</i> · <i>s</i></span>, tehát <span class="m"><i>L</i> | <i>M</i></span>.</li>
+      </ul>
+      <p>Tehát <span class="m"><i>L</i> = [<i>a</i>, <i>b</i>]</span>. ∎ Például <span class="m">[90, 111] = 90 · 111 / 3 = 3330</span>.</p>
+    </div></details>
+
+    <details><summary>5. (2<sup>a</sup> − 1, 2<sup>b</sup> − 1) = 2<sup>(a, b)</sup> − 1</summary><div class="sol">
+      <p><b>Állítás:</b> minden <span class="m"><i>a</i>, <i>b</i> ≥ 0</span> egészre. (Ne feledd: <span class="m">2<sup>0</sup> − 1 = 0</span> és <span class="m">(<i>x</i>, 0) = |<i>x</i>|</span>.)</p>
+      <p><b>Kulcsazonosság.</b> Ha <span class="m"><i>a</i> ≥ <i>b</i></span>, akkor</p>
+      <p class="mb">2<sup><i>a</i></sup> − 1 = 2<sup><i>a</i>−<i>b</i></sup>(2<sup><i>b</i></sup> − 1) + (2<sup><i>a</i>−<i>b</i></sup> − 1)</p>
+      <p>(Kibontva: <span class="m">2<sup><i>a</i></sup> − 2<sup><i>a</i>−<i>b</i></sup> + 2<sup><i>a</i>−<i>b</i></sup> − 1 = 2<sup><i>a</i></sup> − 1</span> ✓.) Az 1. pontot <span class="m"><i>k</i> = 2<sup><i>a</i>−<i>b</i></sup></span>-vel alkalmazva:</p>
+      <p class="mb">(2<sup><i>a</i></sup> − 1, 2<sup><i>b</i></sup> − 1) = (2<sup><i>a</i>−<i>b</i></sup> − 1, 2<sup><i>b</i></sup> − 1)</p>
+      <p>Vagyis a bal oldal ugyanúgy viselkedik, mint az lnko: <span class="m">(<i>a</i>, <i>b</i>) = (<i>a</i> − <i>b</i>, <i>b</i>)</span>.</p>
+      <p><b>Bizonyítás teljes indukcióval <span class="m"><i>a</i> + <i>b</i></span> szerint.</b> Mindkét oldal szimmetrikus <span class="m"><i>a</i></span>-ban és <span class="m"><i>b</i></span>-ben, ezért feltehető, hogy <span class="m"><i>a</i> ≥ <i>b</i></span>.</p>
+      <ul>
+        <li><b><span class="m"><i>b</i> = 0</span>:</b> bal oldal <span class="m">(2<sup><i>a</i></sup> − 1, 0) = 2<sup><i>a</i></sup> − 1</span>; jobb oldal <span class="m">2<sup>(<i>a</i>, 0)</sup> − 1 = 2<sup><i>a</i></sup> − 1</span> ✓. Ez lefedi a kezdőesetet (<span class="m"><i>a</i> + <i>b</i> = 0</span>) is.</li>
+        <li><b><span class="m"><i>a</i> ≥ <i>b</i> &gt; 0</span>:</b> a kulcsazonosság és az 1. pont szerint</li>
+      </ul>
+      <p class="mb">(2<sup><i>a</i></sup> − 1, 2<sup><i>b</i></sup> − 1) = (2<sup><i>a</i>−<i>b</i></sup> − 1, 2<sup><i>b</i></sup> − 1) = 2<sup>(<i>a</i>−<i>b</i>, <i>b</i>)</sup> − 1 = 2<sup>(<i>a</i>, <i>b</i>)</sup> − 1</p>
+      <p>A középső lépés az indukciós feltevés, mert <span class="m">(<i>a</i> − <i>b</i>) + <i>b</i> = <i>a</i> &lt; <i>a</i> + <i>b</i></span>. Az utolsó lépés az 1. pont a kitevőkre. ∎</p>
+      <p><b>Ellenőrzés:</b> <span class="m">(2<sup>12</sup> − 1, 2<sup>8</sup> − 1) = (4095, 255)</span>; <span class="m">4095 = 16 · 255 + 15</span>, <span class="m">255 = 17 · 15</span>, tehát az lnko 15 = <span class="m">2<sup>4</sup> − 1</span>, és tényleg <span class="m">(12, 8) = 4</span> ✓.</p>
+    </div></details>
+  </article>
+</section>
+
+<!-- ================= MINTA ZH ================= -->
+<section id="minta">
+  <div class="section-head">
+    <span class="label">2026.10.07-i minta</span>
+    <h2>A minta Zh, kidolgozva</h2>
+    <p>Úgy írtam le, ahogy a dolgozatban érdemes: minden lépés indokolva, a végén ellenőrzés. Próbáld meg előbb magadtól, 60 perc alatt.</p>
+  </div>
+
+  <article class="task">
+    <div class="task-head"><span class="no">1.</span><span class="src">2. feladatsor 5. feladat</span><span class="pts">8 pont</span></div>
+    <p class="stmt">Legyen <span class="m"><i>F</i><sub>0</sub> = 0, <i>F</i><sub>1</sub> = 1</span> és <span class="m"><i>n</i> ≥ 0</span> esetén <span class="m"><i>F</i><sub><i>n</i>+2</sub> = <i>F</i><sub><i>n</i>+1</sub> + <i>F<sub>n</sub></i></span>. Mi lesz <span class="m">(<i>F</i><sub><i>n</i>+2</sub>, <i>F<sub>n</sub></i>)</span>?</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p><b>Segédállítás.</b> <span class="m">(<i>a</i>,<i>b</i>) = (<i>a</i>−<i>b</i>, <i>b</i>)</span>. Ha <span class="m"><i>d</i> | <i>a</i></span> és <span class="m"><i>d</i> | <i>b</i></span>, akkor <span class="m"><i>d</i> | <i>a</i>−<i>b</i></span>; ha <span class="m"><i>d</i> | <i>a</i>−<i>b</i></span> és <span class="m"><i>d</i> | <i>b</i></span>, akkor <span class="m"><i>d</i> | (<i>a</i>−<i>b</i>)+<i>b</i> = <i>a</i></span>. A két pár közös osztói ugyanazok, így a legnagyobb is.</p>
+        <p><b>1. lépés: <span class="m">(<i>F</i><sub><i>n</i>+1</sub>, <i>F<sub>n</sub></i>) = 1</span>, indukcióval.</b> <span class="m"><i>n</i> = 0</span>: <span class="m">(1, 0) = 1</span>. Ha <span class="m">(<i>F</i><sub><i>n</i>+1</sub>, <i>F<sub>n</sub></i>) = 1</span>, akkor</p>
+        <p class="mb">(<i>F</i><sub><i>n</i>+2</sub>, <i>F</i><sub><i>n</i>+1</sub>) = (<i>F</i><sub><i>n</i>+2</sub> − <i>F</i><sub><i>n</i>+1</sub>, <i>F</i><sub><i>n</i>+1</sub>) = (<i>F<sub>n</sub></i>, <i>F</i><sub><i>n</i>+1</sub>) = 1.</p>
+        <p><b>2. lépés.</b></p>
+        <p class="mb">(<i>F</i><sub><i>n</i>+2</sub>, <i>F<sub>n</sub></i>) = (<i>F</i><sub><i>n</i>+2</sub> − <i>F<sub>n</sub></i>, <i>F<sub>n</sub></i>) = (<i>F</i><sub><i>n</i>+1</sub>, <i>F<sub>n</sub></i>) = 1.</p>
+        <p>Eredmény: <span class="ans">(F<sub>n+2</sub>, F<sub>n</sub>) = 1 minden n ≥ 0-ra</span></p>
+        <div class="tip"><b>A feladatsor másik kérdése is jöhet:</b> <span class="m"><i>F</i><sub><i>n</i>+3</sub> = 2<i>F</i><sub><i>n</i>+1</sub> + <i>F<sub>n</sub></i></span>, így <span class="m">(<i>F</i><sub><i>n</i>+3</sub>, <i>F<sub>n</sub></i>) = (2<i>F</i><sub><i>n</i>+1</sub>, <i>F<sub>n</sub></i>) = (2, <i>F<sub>n</sub></i>)</span>, mert <span class="m"><i>F</i><sub><i>n</i>+1</sub></span> relatív prím <span class="m"><i>F<sub>n</sub></i></span>-hez, így egy közös osztó csak a 2-t oszthatja. A paritások 0, 1, 1, 0, 1, 1, … 3-as periódussal ismétlődnek, tehát <span class="m">(<i>F</i><sub><i>n</i>+3</sub>, <i>F<sub>n</sub></i>) = 2</span>, ha <span class="m">3 | <i>n</i></span>, különben 1.</div>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat lépésről lépésre</summary>
+      <div class="sol">
+        <p><b>1. Mit kérdez a feladat?</b> A <span class="m">(<i>a</i>, <i>b</i>)</span> jelölés a legnagyobb közös osztót jelenti. Azt kell megmondani, mi a legnagyobb szám, ami egyszerre osztja <span class="m"><i>F</i><sub><i>n</i>+2</sub></span>-t és <span class="m"><i>F<sub>n</sub></i></span>-et, vagyis két olyan Fibonacci-számot, amelyek között egy kimarad.</p>
+
+        <p><b>2. Először nézd meg számokkal.</b> A sorozat eleje:</p>
+        <div class="tbl"><table>
+          <thead><tr><th>n</th><th class="num">0</th><th class="num">1</th><th class="num">2</th><th class="num">3</th><th class="num">4</th><th class="num">5</th><th class="num">6</th><th class="num">7</th><th class="num">8</th><th class="num">9</th><th class="num">10</th></tr></thead>
+          <tbody><tr><td><i>F<sub>n</sub></i></td><td class="num">0</td><td class="num">1</td><td class="num">1</td><td class="num">2</td><td class="num">3</td><td class="num">5</td><td class="num">8</td><td class="num">13</td><td class="num">21</td><td class="num">34</td><td class="num">55</td></tr></tbody>
+        </table></div>
+        <p>Néhány pár: <span class="m">(<i>F</i><sub>5</sub>, <i>F</i><sub>3</sub>) = (5, 2) = 1</span>, <span class="m">(<i>F</i><sub>8</sub>, <i>F</i><sub>6</sub>) = (21, 8) = 1</span>, <span class="m">(<i>F</i><sub>10</sub>, <i>F</i><sub>8</sub>) = (55, 21) = 1</span>. Mindig 1 jön ki, tehát ezt a sejtést kell bebizonyítani. Ezt a próbálgatást a dolgozatban is érdemes leírni, mert megmutatja, mire akarsz kijutni.</p>
+
+        <p><b>3. Az egyetlen eszköz, ami kell: <span class="m">(<i>a</i>, <i>b</i>) = (<i>a</i> − <i>b</i>, <i>b</i>)</span>.</b> Ha egy szám osztja <span class="m"><i>a</i></span>-t és <span class="m"><i>b</i></span>-t, akkor a különbségüket is osztja. Visszafelé is igaz: ha osztja <span class="m"><i>a</i> − <i>b</i></span>-t és <span class="m"><i>b</i></span>-t, akkor az összegüket, <span class="m"><i>a</i></span>-t is osztja. A két számpárnak tehát pontosan ugyanazok a közös osztói, így a legnagyobb is ugyanaz. Példa: <span class="m">(55, 21) = (34, 21)</span>, és tényleg mindkettő 1.</p>
+
+        <p><b>4. Miért jó ez a Fibonacci-számoknál?</b> A definíció szerint <span class="m"><i>F</i><sub><i>n</i>+2</sub> = <i>F</i><sub><i>n</i>+1</sub> + <i>F<sub>n</sub></i></span>, vagyis <span class="m"><i>F</i><sub><i>n</i>+2</sub> − <i>F<sub>n</sub></i> = <i>F</i><sub><i>n</i>+1</sub></span>. A kivonás tehát pont egy másik Fibonacci-számot ad:</p>
+        <p class="mb">(<i>F</i><sub><i>n</i>+2</sub>, <i>F<sub>n</sub></i>) = (<i>F</i><sub><i>n</i>+2</sub> − <i>F<sub>n</sub></i>, <i>F<sub>n</sub></i>) = (<i>F</i><sub><i>n</i>+1</sub>, <i>F<sub>n</sub></i>)</p>
+        <p>A feladat ezzel átalakult: elég belátni, hogy két <em>szomszédos</em> Fibonacci-szám lnko-ja 1.</p>
+
+        <p><b>5. Miért 1 két szomszédos Fibonacci-szám lnko-ja?</b> Ugyanazzal a trükkel lépkedünk lefelé a sorozatban:</p>
+        <p class="mb">(21, 13) = (8, 13) = (13, 8) = (5, 8) = (8, 5) = (3, 5) = … = (1, 1) = (0, 1) = 1</p>
+        <p>Minden kivonás a következő, kisebb Fibonacci-párt adja, a lánc végén pedig <span class="m">(<i>F</i><sub>1</sub>, <i>F</i><sub>0</sub>) = (1, 0) = 1</span> áll. Általános <span class="m"><i>n</i></span>-re ezt a lépkedést <b>teljes indukcióval</b> írjuk le, mert nem tudjuk konkrétan végigírni a láncot:</p>
+        <ul>
+          <li><b>Kezdőlépés</b> (<span class="m"><i>n</i> = 0</span>): <span class="m">(<i>F</i><sub>1</sub>, <i>F</i><sub>0</sub>) = (1, 0) = 1</span>. Ez a lánc alja.</li>
+          <li><b>Indukciós lépés:</b> tegyük fel, hogy <span class="m">(<i>F</i><sub><i>n</i>+1</sub>, <i>F<sub>n</sub></i>) = 1</span>. Akkor <span class="m">(<i>F</i><sub><i>n</i>+2</sub>, <i>F</i><sub><i>n</i>+1</sub>) = (<i>F</i><sub><i>n</i>+2</sub> − <i>F</i><sub><i>n</i>+1</sub>, <i>F</i><sub><i>n</i>+1</sub>) = (<i>F<sub>n</sub></i>, <i>F</i><sub><i>n</i>+1</sub>) = 1</span>. Ha egy pár jó, a következő is jó.</li>
+        </ul>
+        <p>A kettő együtt olyan, mint a dominó: az első eldől, és mindegyik dönti a következőt, tehát mind eldől.</p>
+
+        <p><b>6. A kettőt összerakva</b> <span class="m">(<i>F</i><sub><i>n</i>+2</sub>, <i>F<sub>n</sub></i>) = (<i>F</i><sub><i>n</i>+1</sub>, <i>F<sub>n</sub></i>) = 1</span>, minden <span class="m"><i>n</i> ≥ 0</span>-ra.</p>
+
+        <div class="tip"><b>Így írd le a dolgozatban (ez 8 pontot ér):</b>
+          <ol>
+            <li>A segédállítás <span class="m">(<i>a</i>, <i>b</i>) = (<i>a</i> − <i>b</i>, <i>b</i>)</span> egy-két mondatos indoklással.</li>
+            <li>A <span class="m">(<i>F</i><sub><i>n</i>+1</sub>, <i>F<sub>n</sub></i>) = 1</span> indukcióval, kezdőlépéssel együtt.</li>
+            <li>A <span class="m">(<i>F</i><sub><i>n</i>+2</sub>, <i>F<sub>n</sub></i>) = (<i>F</i><sub><i>n</i>+1</sub>, <i>F<sub>n</sub></i>)</span> átalakítás.</li>
+            <li>Egyértelmű válasz: „Az lnko minden <span class="m"><i>n</i> ≥ 0</span>-ra 1.”</li>
+          </ol>
+          Csak a végeredmény („1”) és néhány példa kevés: a feladat bizonyítást vár.
+        </div>
+        <div class="warn"><b>Ha az <span class="m">(<i>F</i><sub><i>n</i>+3</sub>, <i>F<sub>n</sub></i>)</span> változat jön:</b> ott a kivonás után <span class="m">(2<i>F</i><sub><i>n</i>+1</sub>, <i>F<sub>n</sub></i>)</span> marad, és a 2-es szorzó miatt az eredmény lehet 2 is. Ellenőrizd: <span class="m">(<i>F</i><sub>6</sub>, <i>F</i><sub>3</sub>) = (8, 2) = 2</span>, de <span class="m">(<i>F</i><sub>7</sub>, <i>F</i><sub>4</sub>) = (13, 3) = 1</span>.</div>
+      </div>
+    </details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">2.</span><span class="src">3. feladatsor 4. feladat</span><span class="pts">7 pont</span></div>
+    <p class="stmt">Pajkos százlábúak futkároznak a ládában. Az egyik fajtának 14 lába van, a másiknak 20. Összesen 232 lábat számoltunk meg. Hány százlábú van a ládában?</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Legyen <span class="m"><i>x</i></span> a 14 lábúak, <span class="m"><i>y</i></span> a 20 lábúak száma, <span class="m"><i>x</i>, <i>y</i> ≥ 0</span> egészek.</p>
+        <p class="mb">14<i>x</i> + 20<i>y</i> = 232</p>
+        <p><span class="m">(14, 20) = 2 | 232</span>, tehát megoldható. Osztva 2-vel: <span class="m">7<i>x</i> + 10<i>y</i> = 116</span>.</p>
+        <p>Mod 10: <span class="m">7<i>x</i> ≡ 6 mod 10</span>. Mivel <span class="m">7 · 3 = 21 ≡ 1</span>, ezért <span class="m">7<sup>−1</sup> ≡ 3</span>, és <span class="m"><i>x</i> ≡ 18 ≡ 8 mod 10</span>.</p>
+        <p class="mb"><i>x</i> = 8 + 10<i>t</i>,&nbsp;&nbsp; <i>y</i> = (116 − 7<i>x</i>)/10 = 6 − 7<i>t</i>,&nbsp;&nbsp; <i>t</i> ∈ ℤ</p>
+        <p>Nemnegativitás: <span class="m"><i>x</i> ≥ 0 ⇒ <i>t</i> ≥ 0</span>, <span class="m"><i>y</i> ≥ 0 ⇒ <i>t</i> ≤ 6/7</span>, így <span class="m"><i>t</i> = 0</span>: <span class="m"><i>x</i> = 8, <i>y</i> = 6</span>.</p>
+        <p>Ellenőrzés: <span class="m">14·8 + 20·6 = 112 + 120 = 232</span> ✓. Eredmény: <span class="ans">14 százlábú (8 db 14 lábú, 6 db 20 lábú)</span></p>
+        <div class="warn">Az összes egész megoldás felírása önmagában nem elég, a pontot a nemnegativitásból kijövő egyetlen <span class="m"><i>t</i></span> adja.</div>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat lépésről lépésre</summary>
+      <div class="sol">
+        <p><b>1. Fordítsd le egyenletre.</b> Két ismeretlen van: <span class="m"><i>x</i></span> darab 14 lábú és <span class="m"><i>y</i></span> darab 20 lábú százlábú. A lábak száma:</p>
+        <p class="mb">14<i>x</i> + 20<i>y</i> = 232</p>
+        <p>Ez egy egyenlet két ismeretlennel, aminek általában végtelen sok megoldása van. Itt viszont csak az a jó, ahol <span class="m"><i>x</i></span> és <span class="m"><i>y</i></span> <b>nemnegatív egész</b>, hiszen fél vagy −2 százlábú nincs. Ez a feltétel fogja leszűkíteni a megoldásokat. Az ilyen egyenlet neve <b>lineáris diofantikus egyenlet</b>.</p>
+
+        <p><b>2. Van egyáltalán megoldás?</b> A bal oldal mindig osztható <span class="m">(14, 20) = 2</span>-vel, tehát a jobb oldalnak is oszthatónak kell lennie. 232 páros, úgyhogy van megoldás. (Ha 233 lábat számoltunk volna, rögtön mondhatnánk, hogy rosszul számoltunk.) Ez az 1.7. tétel: <span class="m"><i>ax</i> + <i>by</i> = <i>c</i></span> pontosan akkor oldható meg, ha <span class="m">(<i>a</i>, <i>b</i>) | <i>c</i></span>.</p>
+
+        <p><b>3. Egyszerűsíts.</b> Mindent osztva 2-vel:</p>
+        <p class="mb">7<i>x</i> + 10<i>y</i> = 116</p>
+        <p>Most már <span class="m">(7, 10) = 1</span>, kisebb számokkal könnyebb dolgozni.</p>
+
+        <p><b>4. A kulcslépés: nézd mod 10.</b> A <span class="m">10<i>y</i></span> mindig osztható 10-zel, tehát mod 10 eltűnik, és csak <span class="m"><i>x</i></span> marad:</p>
+        <p class="mb">7<i>x</i> ≡ 116 ≡ 6 mod 10</p>
+        <p>Ez azt jelenti, hogy <span class="m">7<i>x</i></span> utolsó jegye 6. Két út is van:</p>
+        <ul>
+          <li><b>Próbálgatás</b> (kis modulusnál teljesen jó): <span class="m">7·0, 7·1, …</span> utolsó jegye 0, 7, 4, 1, 8, 5, 2, 9, <b>6</b>, 3. A 6 az <span class="m"><i>x</i> = 8</span>-nál jön.</li>
+          <li><b>Inverzzel:</b> <span class="m">7·3 = 21 ≡ 1 mod 10</span>, tehát a 3-mal szorzás „visszacsinálja” a 7-tel szorzást. Mindkét oldalt 3-mal szorozva <span class="m">21<i>x</i> ≡ 18</span>, azaz <span class="m"><i>x</i> ≡ 8 mod 10</span>.</li>
+        </ul>
+        <p>Vagyis <span class="m"><i>x</i></span> csak 8, 18, 28, … vagy −2, −12, … lehet: <span class="m"><i>x</i> = 8 + 10<i>t</i></span>, ahol <span class="m"><i>t</i></span> tetszőleges egész.</p>
+
+        <p><b>5. Számold ki <span class="m"><i>y</i></span>-t.</b> Visszaírva a <span class="m">7<i>x</i> + 10<i>y</i> = 116</span>-ba:</p>
+        <p class="mb">7(8 + 10<i>t</i>) + 10<i>y</i> = 116 ⇒ 56 + 70<i>t</i> + 10<i>y</i> = 116 ⇒ 10<i>y</i> = 60 − 70<i>t</i> ⇒ <i>y</i> = 6 − 7<i>t</i></p>
+        <p>Szemléletesen: 10 darab 14 lábú pont annyi láb (140), mint 7 darab 20 lábú. Ezért ha 10-zel több 14 lábú van, 7-tel kevesebb 20 lábúnak kell lennie. Ezt a „cserét” írja le a <span class="m"><i>t</i></span>.</p>
+
+        <p><b>6. Melyik <span class="m"><i>t</i></span> ad értelmes választ?</b></p>
+        <div class="tbl"><table>
+          <thead><tr><th>t</th><th class="num">x = 8 + 10t</th><th class="num">y = 6 − 7t</th><th>jó?</th></tr></thead>
+          <tbody>
+            <tr><td>−1</td><td class="num">−2</td><td class="num">13</td><td>nem, negatív <i>x</i></td></tr>
+            <tr><td><b>0</b></td><td class="num"><b>8</b></td><td class="num"><b>6</b></td><td><b>igen</b></td></tr>
+            <tr><td>1</td><td class="num">18</td><td class="num">−1</td><td>nem, negatív <i>y</i></td></tr>
+          </tbody>
+        </table></div>
+        <p>Formálisan: <span class="m"><i>x</i> ≥ 0 ⇒ <i>t</i> ≥ −0,8</span>, <span class="m"><i>y</i> ≥ 0 ⇒ <i>t</i> ≤ 6/7</span>, és az egyetlen egész köztük a <span class="m"><i>t</i> = 0</span>.</p>
+
+        <p><b>7. Válaszolj a kérdésre és ellenőrizz.</b> A kérdés az, hogy hány százlábú van <em>összesen</em>: <span class="m">8 + 6 = 14</span>. Ellenőrzés: <span class="m">14·8 + 20·6 = 112 + 120 = 232</span> ✓.</p>
+
+        <div class="tip"><b>Így írd le a dolgozatban (7 pont):</b>
+          <ol>
+            <li>Mit jelöl <span class="m"><i>x</i></span> és <span class="m"><i>y</i></span>, és hogy nemnegatív egészek.</li>
+            <li>Az egyenlet, és az lnko-feltétel: <span class="m">(14, 20) = 2 | 232</span>.</li>
+            <li>A kongruencia megoldása (<span class="m"><i>x</i> ≡ 8 mod 10</span>), indoklással.</li>
+            <li>Az általános megoldás: <span class="m"><i>x</i> = 8 + 10<i>t</i>, <i>y</i> = 6 − 7<i>t</i></span>.</li>
+            <li>A nemnegativitásból <span class="m"><i>t</i> = 0</span>, a válasz (14 százlábú) és az ellenőrzés.</li>
+          </ol>
+        </div>
+        <div class="warn"><b>Mod 7 is működik</b>, ott <span class="m"><i>x</i></span> tűnik el: <span class="m">10<i>y</i> ≡ 116 mod 7</span>, azaz <span class="m">3<i>y</i> ≡ 4</span>, és <span class="m">3<sup>−1</sup> ≡ 5</span> miatt <span class="m"><i>y</i> ≡ 20 ≡ 6 mod 7</span>. Ugyanaz jön ki. Mindig azt a modulust válaszd, ahol könnyebb az inverzet megtalálni.</div>
+      </div>
+    </details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">3.</span><span class="src">4. feladatsor 3. feladat</span><span class="pts">7 pont</span></div>
+    <p class="stmt">Hány <em>lényegesen különböző</em> megoldása van az alábbi kongruenciarendszereknek?</p>
+    <p class="mb">(I)&nbsp; 3<i>x</i> ≡ 1 mod 7,&nbsp; 2<i>x</i> ≡ 4 mod 8&nbsp;&nbsp;&nbsp;&nbsp; (II)&nbsp; 5<i>x</i> ≡ 1 mod 6,&nbsp; 2<i>x</i> ≡ 8 mod 10</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>„Lényegesen különböző” = inkongruens a modulusok legkisebb közös többszöröse szerint.</p>
+        <p><b>(I)</b> <span class="m">3<i>x</i> ≡ 1 mod 7</span>: <span class="m">3·5 = 15 ≡ 1</span>, így <span class="m"><i>x</i> ≡ 5 mod 7</span>.</p>
+        <p><span class="m">2<i>x</i> ≡ 4 mod 8</span>: <span class="m">(2, 8) = 2 | 4</span>, 2-vel osztva (a modulust is!) <span class="m"><i>x</i> ≡ 2 mod 4</span>. Mod 8 ez két maradékosztály: 2 és 6.</p>
+        <p>Behelyettesítés: <span class="m"><i>x</i> = 2 + 4<i>k</i> ≡ 5 mod 7 ⇒ 4<i>k</i> ≡ 3 mod 7</span>. <span class="m">4<sup>−1</sup> ≡ 2 mod 7</span>, tehát <span class="m"><i>k</i> ≡ 6 mod 7</span>, <span class="m"><i>x</i> = 26 + 28<i>s</i></span>.</p>
+        <p>Összes megoldás: <span class="m"><i>x</i> ≡ 26 mod 28</span>. A modulusok lkkt-je <span class="m">[7, 8] = 56</span>, mod 56 ez két osztály: <span class="m"><i>x</i> ≡ 26</span> és <span class="m"><i>x</i> ≡ 54 mod 56</span>.</p>
+        <p><span class="ans">(I): 2 lényegesen különböző megoldás</span></p>
+        <p><b>(II)</b> <span class="m">5<i>x</i> ≡ 1 mod 6</span>: <span class="m">5 ≡ −1</span>, így <span class="m"><i>x</i> ≡ −1 ≡ 5 mod 6</span>.</p>
+        <p><span class="m">2<i>x</i> ≡ 8 mod 10</span>: <span class="m">(2, 10) = 2 | 8</span>, osztva <span class="m"><i>x</i> ≡ 4 mod 5</span>.</p>
+        <p>Behelyettesítés: <span class="m"><i>x</i> = 4 + 5<i>k</i> ≡ 5 mod 6 ⇒ 5<i>k</i> ≡ 1 ⇒ −<i>k</i> ≡ 1 ⇒ <i>k</i> ≡ 5 mod 6</span>, tehát <span class="m"><i>x</i> = 29 + 30<i>s</i></span>.</p>
+        <p><span class="m">[6, 10] = 30</span>, mod 30 egy osztály: <span class="m"><i>x</i> ≡ 29</span>. Ellenőrzés: <span class="m">5·29 = 145 = 24·6 + 1</span> ✓, <span class="m">2·29 = 58 ≡ 8 mod 10</span> ✓.</p>
+        <p><span class="ans">(II): 1 lényegesen különböző megoldás</span></p>
+        <div class="tip">Ha bizonytalan vagy a „lényegesen különböző” értelmezésében, írd le mindkettőt: „az összes megoldás <span class="m"><i>x</i> ≡ 26 mod 28</span>, ami mod [7, 8] = 56 két osztály”. Így nem lehet belekötni.</div>
+      </div>
+    </details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">4.</span><span class="src">4. feladatsor 5. feladat</span><span class="pts">8 pont</span></div>
+    <p class="stmt">Határozza meg az utolsó két számjegyét a <span class="m">7<sup>3<sup>47</sup></sup></span> hatványnak!</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Az utolsó két jegy a maradék mod 100. <span class="m">(7, 100) = 1</span>.</p>
+        <p><b>Rövid út.</b> <span class="m">7<sup>2</sup> = 49</span>, <span class="m">7<sup>4</sup> = 49<sup>2</sup> = 2401 ≡ 1 mod 100</span>. Elég tehát a kitevő maradéka mod 4.</p>
+        <p><span class="m">3 ≡ −1 mod 4</span>, és 47 páratlan, így <span class="m">3<sup>47</sup> ≡ (−1)<sup>47</sup> = −1 ≡ 3 mod 4</span>. Legyen <span class="m">3<sup>47</sup> = 4<i>k</i> + 3</span>:</p>
+        <p class="mb">7<sup>3<sup>47</sup></sup> = (7<sup>4</sup>)<sup><i>k</i></sup> · 7<sup>3</sup> ≡ 1 · 343 ≡ 43 mod 100</p>
+        <p><b>Euler–Fermattal is.</b> <span class="m">φ(100) = 100·(1−½)(1−⅕) = 40</span>. Kell <span class="m">3<sup>47</sup> mod 40</span>: <span class="m">3<sup>4</sup> = 81 ≡ 1 mod 40</span>, <span class="m">47 = 4·11 + 3</span>, így <span class="m">3<sup>47</sup> ≡ 27 mod 40</span>. Ezért <span class="m">7<sup>3<sup>47</sup></sup> ≡ 7<sup>27</sup> = (7<sup>4</sup>)<sup>6</sup>·7<sup>3</sup> ≡ 43</span>.</p>
+        <p>Eredmény: <span class="ans">az utolsó két jegy 43</span></p>
+        <div class="warn">A kitevőt mod φ(100) = 40 (vagy mod 4) kell redukálni, nem mod 100.</div>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat lépésről lépésre</summary>
+      <div class="sol">
+        <p><b>1. Hogyan kell olvasni?</b> <span class="m">7<sup>3<sup>47</sup></sup></span> azt jelenti: 7 a <span class="m">3<sup>47</sup></span>-ediken. A kitevő maga is hatalmas szám, <span class="m">3<sup>47</sup> ≈ 2,7 · 10<sup>22</sup></span>, tehát közvetlenül kiszámolni esélytelen.</p>
+        <div class="warn">Nem ugyanaz, mint <span class="m">(7<sup>3</sup>)<sup>47</sup> = 343<sup>47</sup> = 7<sup>141</sup></span>. A hatványtornyot felülről lefelé kell olvasni.</div>
+
+        <p><b>2. Mit kell kiszámolni?</b> Egy szám utolsó két jegye a 100-zal vett osztási maradéka (pl. 12 345 → 45). A feladat tehát: <span class="m">7<sup>3<sup>47</sup></sup> mod 100</span>.</p>
+
+        <p><b>3. Keresd meg, mikor ismétlődnek a hatványok.</b> Számold ki a 7 első néhány hatványát mod 100. Mindig csak az előző maradékot kell 7-tel szorozni:</p>
+        <div class="tbl"><table>
+          <thead><tr><th>k</th><th class="num">1</th><th class="num">2</th><th class="num">3</th><th class="num">4</th><th class="num">5</th><th class="num">6</th><th class="num">7</th><th class="num">8</th></tr></thead>
+          <tbody><tr><td>7<sup>k</sup> mod 100</td><td class="num">7</td><td class="num">49</td><td class="num">43</td><td class="num"><b>1</b></td><td class="num">7</td><td class="num">49</td><td class="num">43</td><td class="num"><b>1</b></td></tr></tbody>
+        </table></div>
+        <p>(<span class="m">49 · 7 = 343 → 43</span>, <span class="m">43 · 7 = 301 → 1</span>.) Mivel <span class="m">7<sup>4</sup> ≡ 1</span>, a maradékok 4-es ciklusban ismétlődnek: 7, 49, 43, 1, 7, 49, 43, 1, …</p>
+
+        <p><b>4. Mi következik ebből?</b> Ugyanaz, mint az <span class="m"><i>i</i></span> hatványainál az 1. feladatsorban: csak az számít, hogy a kitevő milyen maradékot ad 4-gyel osztva. Ha <span class="m"><i>k</i> = 4<i>q</i> + <i>r</i></span>, akkor</p>
+        <p class="mb">7<sup><i>k</i></sup> = (7<sup>4</sup>)<sup><i>q</i></sup> · 7<sup><i>r</i></sup> ≡ 1<sup><i>q</i></sup> · 7<sup><i>r</i></sup> = 7<sup><i>r</i></sup> mod 100</p>
+        <p>A feladat ezzel átalakult: <b>mennyi <span class="m">3<sup>47</sup> mod 4</span>?</b></p>
+
+        <p><b>5. A kitevő maradéka mod 4.</b> A 3 hatványai mod 4: <span class="m">3, 9 ≡ 1, 3, 1, …</span>, páratlan kitevőnél 3, párosnál 1. Elegánsabban: <span class="m">3 ≡ −1 mod 4</span>, így <span class="m">3<sup>47</sup> ≡ (−1)<sup>47</sup> = −1 ≡ 3 mod 4</span>.</p>
+
+        <p><b>6. Összerakás.</b> <span class="m">3<sup>47</sup> = 4<i>q</i> + 3</span> valamilyen <span class="m"><i>q</i></span>-ra, tehát</p>
+        <p class="mb">7<sup>3<sup>47</sup></sup> = (7<sup>4</sup>)<sup><i>q</i></sup> · 7<sup>3</sup> ≡ 7<sup>3</sup> = 343 ≡ 43 mod 100</p>
+        <p>Az utolsó két jegy: <span class="ans">43</span></p>
+
+        <p><b>7. Hol van ebben az Euler–Fermat?</b> A tétel garantálja, hogy <span class="m">7<sup>40</sup> ≡ 1 mod 100</span>, mert <span class="m">(7, 100) = 1</span> és <span class="m">φ(100) = 40</span>. Ha nem veszed észre, hogy már <span class="m">7<sup>4</sup> ≡ 1</span>, akkor a kitevőt mod 40 redukálod (<span class="m">3<sup>47</sup> ≡ 27 mod 40</span>), és <span class="m">7<sup>27</sup></span>-ből ugyanúgy 43 jön ki. A rövidebb ciklust megtalálni csak gyorsítás.</p>
+
+        <div class="tip"><b>Így írd le a dolgozatban (8 pont):</b>
+          <ol>
+            <li>„Az utolsó két jegy a maradék mod 100.”</li>
+            <li><span class="m">(7, 100) = 1</span>, és <span class="m">7<sup>4</sup> = 2401 ≡ 1 mod 100</span> (vagy Euler–Fermat: <span class="m">7<sup>40</sup> ≡ 1</span>).</li>
+            <li>Ezért a kitevő csak mod 4 (ill. mod 40) számít, a maradékos osztás tételével indokolva.</li>
+            <li><span class="m">3<sup>47</sup> ≡ 3 mod 4</span>, indoklással.</li>
+            <li><span class="m">7<sup>3</sup> = 343 ≡ 43</span>, és a válasz: az utolsó két jegy 43.</li>
+          </ol>
+        </div>
+      </div>
+    </details>
+  </article>
+</section>
+
+<!-- ================= FELADATSOROK ================= -->
+<section id="sorok">
+  <div class="section-head">
+    <span class="label">1–4. feladatsor</span>
+    <h2>A feladatsorok megoldásai</h2>
+    <p>Minden feladat alatt lenyitható a megoldás. Ami a minta Zh-ban már szerepelt, arra csak visszautalok. Minden számszerű eredményt programmal is ellenőriztem.</p>
+  </div>
+
+  <!-- 1. sor -->
+  <div class="sheetgroup">
+    <h3>1. feladatsor <span class="label">09.07–11. · maradékos osztás, számrendszer, Fibonacci</span></h3>
+
+    <article class="task">
+      <div class="task-head"><span class="no">1/1</span><span class="src">bemelegítő</span></div>
+      <p class="stmt"><span class="m"><i>z</i><sup>3</sup>, <i>z</i><sup>13</sup>, <i>z</i><sup>135</sup></span>, ha <span class="m"><i>z</i> = <i>i</i></span>, <span class="m"><i>z</i> = (1+<i>i</i>)/√2</span>, ill. <span class="m"><i>z</i> = 1 − <i>i</i></span>. Indoklás a maradékos osztás tételével.</p>
+      <details><summary>Megoldás</summary><div class="sol">
+        <p><b><span class="m"><i>z</i> = <i>i</i></span>:</b> <span class="m"><i>i</i><sup>4</sup> = 1</span>, ezért <span class="m"><i>n</i> = 4<i>q</i> + <i>r</i></span> esetén <span class="m"><i>i<sup>n</sup></i> = (<i>i</i><sup>4</sup>)<sup><i>q</i></sup><i>i<sup>r</sup></i> = <i>i<sup>r</sup></i></span>. <span class="m">3 = 0·4+3, 13 = 3·4+1, 135 = 33·4+3</span>.</p>
+        <p><span class="ans">−i, i, −i</span></p>
+        <p><b><span class="m"><i>z</i> = (1+<i>i</i>)/√2</span>:</b> <span class="m"><i>z</i><sup>2</sup> = (1 + 2<i>i</i> − 1)/2 = <i>i</i></span>, így <span class="m"><i>z</i><sup>8</sup> = <i>i</i><sup>4</sup> = 1</span>; maradékos osztás 8-cal. <span class="m">13 = 8+5</span>, <span class="m">135 = 16·8+7</span>.</p>
+        <p><span class="m"><i>z</i><sup>3</sup> = <i>i</i>·<i>z</i> = (−1+<i>i</i>)/√2</span>, <span class="m"><i>z</i><sup>5</sup> = <i>z</i><sup>4</sup><i>z</i> = −<i>z</i> = (−1−<i>i</i>)/√2</span>, <span class="m"><i>z</i><sup>7</sup> = <i>z</i><sup>−1</sup> = <i>z̄</i> = (1−<i>i</i>)/√2</span>.</p>
+        <p><b><span class="m"><i>z</i> = 1−<i>i</i></span>:</b> <span class="m">(1−<i>i</i>)<sup>2</sup> = −2<i>i</i></span>, <span class="m">(1−<i>i</i>)<sup>4</sup> = −4</span>, így <span class="m">(1−<i>i</i>)<sup>4<i>q</i>+<i>r</i></sup> = (−4)<sup><i>q</i></sup>(1−<i>i</i>)<sup><i>r</i></sup></span>.</p>
+        <p><span class="m"><i>z</i><sup>3</sup> = −2<i>i</i>(1−<i>i</i>) = −2 − 2<i>i</i></span>; <span class="m"><i>z</i><sup>13</sup> = (−4)<sup>3</sup>(1−<i>i</i>) = −64 + 64<i>i</i></span>; <span class="m"><i>z</i><sup>135</sup> = (−4)<sup>33</sup>(−2−2<i>i</i>) = 2<sup>67</sup>(1+<i>i</i>)</span>.</p>
+      </div></details>
+    </article>
+
+    <article class="task">
+      <div class="task-head"><span class="no">1/2–3</span><span class="src">bemelegítő</span></div>
+      <p class="stmt">Írja fel a 25-öt 2, 3, 4, 5 alapú számrendszerben. Sorolja fel a prímeket 1 és 150 között.</p>
+      <details><summary>Megoldás</summary><div class="sol">
+        <p><span class="m">25 = 11001<sub>2</sub> = 221<sub>3</sub> = 121<sub>4</sub> = 100<sub>5</sub></span>. Módszer, pl. 3-ra: 25 = 8·3 + <b>1</b>, 8 = 2·3 + <b>2</b>, 2 = 0·3 + <b>2</b>, alulról olvasva 221.</p>
+        <p>Eratoszthenész szitája: <span class="m">√150 &lt; 13</span>, elég 2, 3, 5, 7, 11 többszöröseit kihúzni. 35 prím:</p>
+        <p>2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149.</p>
+      </div></details>
+    </article>
+
+    <article class="task">
+      <div class="task-head"><span class="no">1/4</span><span class="src">gyakorló</span></div>
+      <p class="stmt">a) <span class="m">13·15 + 31·42 + 51<sup>2</sup> mod 2</span>; b) <span class="m">73·82 + 17·71 mod 4</span>; c) <span class="m">123+594+931 mod 10</span>; d) <span class="m">123·594·931 mod 10</span>; e) <span class="m">17<sup>10</sup> mod 3</span>; f) <span class="m">3<sup>32</sup> mod 5</span>.</p>
+      <details><summary>Megoldás</summary><div class="sol">
+        <p>Előbb mindent cserélj a maradékára, csak utána számolj.</p>
+        <ul>
+          <li>a) <span class="m">1·1 + 1·0 + 1 = 2 ≡ 0</span> → <span class="ans">0</span></li>
+          <li>b) <span class="m">1·2 + 1·3 = 5 ≡ 1</span> → <span class="ans">1</span></li>
+          <li>c) <span class="m">3 + 4 + 1 = 8</span> → <span class="ans">8</span></li>
+          <li>d) <span class="m">3·4·1 = 12 ≡ 2</span> → <span class="ans">2</span></li>
+          <li>e) <span class="m">17 ≡ −1 mod 3</span>, <span class="m">(−1)<sup>10</sup> = 1</span> → <span class="ans">1</span></li>
+          <li>f) <span class="m">3<sup>4</sup> = 81 ≡ 1 mod 5</span>, <span class="m">3<sup>32</sup> = (3<sup>4</sup>)<sup>8</sup> ≡ 1</span> → <span class="ans">1</span></li>
+        </ul>
+      </div></details>
+    </article>
+
+    <article class="task">
+      <div class="task-head"><span class="no">1/5</span><span class="src">gyakorló</span></div>
+      <p class="stmt">Fibonacci-számok; <span class="m"><i>N</i> = Σ<sub><i>i</i>≥2</sub> <i>c<sub>i</sub>F<sub>i</sub></i></span>, <span class="m"><i>c<sub>i</sub></i> ∈ {0,1}</span> (Zeckendorf-felírás): létezés, nincs két szomszédos 1-es, egyértelműség.</p>
+      <details><summary>Megoldás</summary><div class="sol">
+        <p>a) <span class="m"><i>F</i><sub>0</sub>, …, <i>F</i><sub>9</sub></span>: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34.</p>
+        <p>b) <span class="m">7 = <i>F</i><sub>5</sub> + <i>F</i><sub>3</sub> = 5 + 2</span>; <span class="m">12 = <i>F</i><sub>6</sub> + <i>F</i><sub>4</sub> + <i>F</i><sub>2</sub> = 8 + 3 + 1</span>; <span class="m">15 = <i>F</i><sub>7</sub> + <i>F</i><sub>3</sub> = 13 + 2</span>.</p>
+        <p>c–d) <b>Mohó algoritmus, indukció <span class="m"><i>N</i></span> szerint.</b> <span class="m"><i>N</i> = 0</span>: üres összeg. Különben legyen <span class="m"><i>F<sub>k</sub></i></span> a legnagyobb, amire <span class="m"><i>F<sub>k</sub></i> ≤ <i>N</i> &lt; <i>F</i><sub><i>k</i>+1</sub></span>. Ekkor <span class="m">0 ≤ <i>N</i> − <i>F<sub>k</sub></i> &lt; <i>F</i><sub><i>k</i>+1</sub> − <i>F<sub>k</sub></i> = <i>F</i><sub><i>k</i>−1</sub></span>. Az indukciós feltevés szerint <span class="m"><i>N</i> − <i>F<sub>k</sub></i></span> felírható, és minden tagja <span class="m">&lt; <i>F</i><sub><i>k</i>−1</sub></span>, vagyis indexe <span class="m">≤ <i>k</i>−2</span>. Hozzávéve <span class="m"><i>F<sub>k</sub></i></span>-t, nincs két szomszédos 1-es.</p>
+        <p>e) <b>Lemma:</b> ha a legnagyobb index <span class="m"><i>k</i></span> és nincs két szomszédos index, akkor az összeg <span class="m">≤ <i>F<sub>k</sub></i> + <i>F</i><sub><i>k</i>−2</sub> + <i>F</i><sub><i>k</i>−4</sub> + … = <i>F</i><sub><i>k</i>+1</sub> − 1</span> (indukcióval). Tehát egy ilyen felírásban a legnagyobb tag szükségképpen az a <span class="m"><i>F<sub>k</sub></i></span>, amire <span class="m"><i>F<sub>k</sub></i> ≤ <i>N</i> &lt; <i>F</i><sub><i>k</i>+1</sub></span>, mert kisebb vezető taggal nem érnénk el <span class="m"><i>N</i></span>-et. A maradék <span class="m"><i>N</i> − <i>F<sub>k</sub></i></span>-ra indukció.</p>
+      </div></details>
+    </article>
+
+    <article class="task">
+      <div class="task-head"><span class="no">1/6</span><span class="src">érdekes</span></div>
+      <p class="stmt"><span class="m"><i>F</i><sub>2</sub>, …, <i>F</i><sub>8</sub></span> és <span class="m"><i>F</i><sub>111</sub></span> utolsó jegye 2, 3, 4 alapú számrendszerben; utolsó két jegye kettes számrendszerben.</p>
+      <details><summary>Megoldás</summary><div class="sol">
+        <p>Utolsó jegy <span class="m"><i>g</i></span> alapban = maradék mod <span class="m"><i>g</i></span>. A maradékok rekurzióval számolhatók, és periodikusak (a periódus akkor zárul, amikor újra (0, 1) jön).</p>
+        <div class="tbl"><table>
+          <thead><tr><th></th><th class="num">F₂</th><th class="num">F₃</th><th class="num">F₄</th><th class="num">F₅</th><th class="num">F₆</th><th class="num">F₇</th><th class="num">F₈</th><th>periódus</th><th class="num">F₁₁₁</th></tr></thead>
+          <tbody>
+            <tr><td>mod 2</td><td class="num">1</td><td class="num">0</td><td class="num">1</td><td class="num">1</td><td class="num">0</td><td class="num">1</td><td class="num">1</td><td>3</td><td class="num">111 ≡ 0 → <b>0</b></td></tr>
+            <tr><td>mod 3</td><td class="num">1</td><td class="num">2</td><td class="num">0</td><td class="num">2</td><td class="num">2</td><td class="num">1</td><td class="num">0</td><td>8</td><td class="num">111 ≡ 7 → <b>1</b></td></tr>
+            <tr><td>mod 4</td><td class="num">1</td><td class="num">2</td><td class="num">3</td><td class="num">1</td><td class="num">0</td><td class="num">1</td><td class="num">1</td><td>6</td><td class="num">111 ≡ 3 → <b>2</b></td></tr>
+          </tbody>
+        </table></div>
+        <p>Utolsó két bináris jegy = maradék mod 4 = 2, azaz <span class="ans">…10<sub>2</sub></span></p>
+      </div></details>
+    </article>
+
+    <article class="task">
+      <div class="task-head"><span class="no">1/7</span><span class="src">érdekes</span></div>
+      <p class="stmt">Irányított 6-kör szomszédsági mátrixa, <span class="m"><i>M</i></span>; számolja ki <span class="m"><i>M</i><sup>2</sup>, <i>M</i><sup>3</sup>, <i>M</i><sup>6</sup>, <i>M</i><sup>24</sup>, <i>M</i><sup>113</sup></span>-at.</p>
+      <details><summary>Megoldás</summary><div class="sol">
+        <p><span class="m">(<i>M<sup>n</sup></i>)<sub><i>ij</i></sub></span> = az <span class="m"><i>i</i></span>-ből <span class="m"><i>j</i></span>-be vezető <span class="m"><i>n</i></span> hosszú séták száma. A körön minden lépés egyértelmű, így <span class="m">(<i>M<sup>n</sup></i>)<sub><i>ij</i></sub> = 1</span>, ha <span class="m"><i>j</i> ≡ <i>i</i> + <i>n</i> mod 6</span>, különben 0.</p>
+        <ul>
+          <li><span class="m"><i>M</i><sup>2</sup></span>: <span class="m"><i>i</i> → <i>i</i>+2</span>; <span class="m"><i>M</i><sup>3</sup></span>: <span class="m"><i>i</i> → <i>i</i>+3</span> (szimmetrikus).</li>
+          <li><span class="m"><i>M</i><sup>6</sup> = <i>I</i></span>, <span class="m"><i>M</i><sup>24</sup> = (<i>M</i><sup>6</sup>)<sup>4</sup> = <i>I</i></span>.</li>
+          <li><span class="m">113 = 18·6 + 5</span>, így <span class="m"><i>M</i><sup>113</sup> = <i>M</i><sup>5</sup> = <i>M</i><sup>−1</sup> = <i>M</i><sup>T</sup></span>: <span class="m"><i>i</i> → <i>i</i>−1</span>.</li>
+        </ul>
+      </div></details>
+    </article>
+  </div>
+
+  <!-- 2. sor -->
+  <div class="sheetgroup">
+    <h3>2. feladatsor <span class="label">09.14–18. · lnko, kongruenciák</span></h3>
+
+    <article class="task">
+      <div class="task-head"><span class="no">2/1</span><span class="src">bemelegítő</span></div>
+      <p class="stmt">Lnko euklideszi algoritmussal és lkkt: (13, 14), (16, 37), (90, 111), (168, 219).</p>
+      <details><summary>Megoldás</summary><div class="sol">
+        <ul>
+          <li><span class="m">14 = 1·13 + 1, 13 = 13·1</span> → lnko 1, lkkt 182.</li>
+          <li><span class="m">37 = 2·16 + 5, 16 = 3·5 + 1, 5 = 5·1</span> → lnko 1, lkkt 592.</li>
+          <li><span class="m">111 = 1·90 + 21, 90 = 4·21 + 6, 21 = 3·6 + 3, 6 = 2·3</span> → lnko 3, lkkt 3330.</li>
+          <li><span class="m">219 = 1·168 + 51, 168 = 3·51 + 15, 51 = 3·15 + 6, 15 = 2·6 + 3, 6 = 2·3</span> → lnko 3, lkkt 12 264.</li>
+        </ul>
+        <p>Lkkt mindig: <span class="m">[<i>a</i>,<i>b</i>] = <i>ab</i>/(<i>a</i>,<i>b</i>)</span>.</p>
+      </div></details>
+    </article>
+
+    <article class="task">
+      <div class="task-head"><span class="no">2/2</span><span class="src">gyakorló</span></div>
+      <p class="stmt">a) <span class="m"><i>x</i> ≡ 1 mod 3</span>; b) <span class="m">2<i>x</i> ≡ 1 mod 3</span>; c) <span class="m">2<i>x</i> ≡ 1 mod 4</span>; d) <span class="m">2<i>x</i> ≡ 2 mod 4</span>; e) <span class="m"><i>x</i>(<i>x</i>−2) ≡ 0 mod 8</span>; f) <span class="m"><i>x</i><sup>2</sup> ≡ 1 mod 5</span>; g) <span class="m"><i>x</i><sup>2</sup> ≡ 1 mod 6</span>; h) <span class="m"><i>x</i><sup>4</sup> ≡ 1 mod 5</span>.</p>
+      <details><summary>Megoldás</summary><div class="sol">
+        <ul>
+          <li>a) <span class="m"><i>x</i> = 3<i>k</i> + 1</span>.</li>
+          <li>b) <span class="m">2<sup>−1</sup> ≡ 2 mod 3</span> → <span class="m"><i>x</i> ≡ 2 mod 3</span>.</li>
+          <li>c) <span class="m">(2, 4) = 2 ∤ 1</span> → <b>nincs megoldás</b> (bal oldal páros, a jobb páratlan).</li>
+          <li>d) <span class="m">(2,4) = 2 | 2</span> → <span class="m"><i>x</i> ≡ 1 mod 2</span>, azaz mod 4 két megoldás: 1, 3.</li>
+          <li>e) Ha <span class="m"><i>x</i></span> páratlan, a szorzat páratlan, nem jó. Ha <span class="m"><i>x</i> = 2<i>k</i></span>: <span class="m">2<i>k</i>(2<i>k</i>−2) = 4<i>k</i>(<i>k</i>−1)</span>, és <span class="m"><i>k</i>(<i>k</i>−1)</span> páros, tehát 8 osztja. → <span class="m"><i>x</i></span> <b>páros</b> (mod 8: 0, 2, 4, 6).</li>
+          <li>f) <span class="m">5 | (<i>x</i>−1)(<i>x</i>+1)</span>, 5 prím → <span class="m"><i>x</i> ≡ ±1</span>: 1, 4 mod 5.</li>
+          <li>g) Próbálgatás mod 6: <span class="m"><i>x</i> ≡ 1, 5 mod 6</span>.</li>
+          <li>h) Kis Fermat: <span class="m">5 ∤ <i>x</i> ⇒ <i>x</i><sup>4</sup> ≡ 1</span>; <span class="m">5 | <i>x</i></span> esetén 0. → <span class="m"><i>x</i> ≢ 0 mod 5</span>.</li>
+        </ul>
+      </div></details>
+      <details><summary>Részletes magyarázat: e), f), g), h)</summary><div class="sol">
+        <p><b>Az alapötlet mind a négyhez.</b> Ha <span class="m"><i>x</i> ≡ <i>y</i> mod <i>m</i></span>, akkor bármilyen szorzás, összeadás, hatványozás után is kongruensek maradnak. Ezért elég a <span class="m">0, 1, …, <i>m</i>−1</span> maradékokat kipróbálni: ami ott jó, az a teljes maradékosztályára jó. Kis modulusnál ez teljes értékű megoldás, csak írd le a táblázatot.</p>
+
+        <p><b>e) <span class="m"><i>x</i>(<i>x</i> − 2) ≡ 0 mod 8</span></b></p>
+        <div class="tbl"><table>
+          <thead><tr><th>x mod 8</th><th class="num">0</th><th class="num">1</th><th class="num">2</th><th class="num">3</th><th class="num">4</th><th class="num">5</th><th class="num">6</th><th class="num">7</th></tr></thead>
+          <tbody>
+            <tr><td>x(x−2)</td><td class="num">0</td><td class="num">−1</td><td class="num">0</td><td class="num">3</td><td class="num">8</td><td class="num">15</td><td class="num">24</td><td class="num">35</td></tr>
+            <tr><td>mod 8</td><td class="num"><b>0</b></td><td class="num">7</td><td class="num"><b>0</b></td><td class="num">3</td><td class="num"><b>0</b></td><td class="num">7</td><td class="num"><b>0</b></td><td class="num">3</td></tr>
+          </tbody>
+        </table></div>
+        <p>Megoldás: <span class="m"><i>x</i> ≡ 0, 2, 4, 6 mod 8</span>, vagyis <span class="ans">x páros</span></p>
+        <p>Táblázat nélkül is megy. Ha <span class="m"><i>x</i></span> páratlan, mindkét tényező páratlan, a szorzat is, tehát nem osztható 8-cal. Ha <span class="m"><i>x</i> = 2<i>k</i></span>, akkor <span class="m"><i>x</i>(<i>x</i> − 2) = 2<i>k</i> · 2(<i>k</i> − 1) = 4 · <i>k</i>(<i>k</i> − 1)</span>, és két szomszédos egész szorzata páros, tehát a szorzat osztható 8-cal.</p>
+        <div class="warn"><b>Csapda:</b> csábító azt mondani, hogy „a szorzat 0, tehát <span class="m"><i>x</i> ≡ 0</span> vagy <span class="m"><i>x</i> ≡ 2</span>”. Ez mod 8 hamis, mert a 8 nem prím: <span class="m"><i>x</i> = 4</span>-re <span class="m">4 · 2 = 8 ≡ 0</span>, pedig egyik tényező sem 0 mod 8.</div>
+
+        <p><b>f) <span class="m"><i>x</i><sup>2</sup> ≡ 1 mod 5</span></b></p>
+        <p>Vigyél át mindent egy oldalra és alakítsd szorzattá: <span class="m"><i>x</i><sup>2</sup> − 1 = (<i>x</i> − 1)(<i>x</i> + 1) ≡ 0 mod 5</span>. Az 5 <b>prím</b>, és ha egy prím oszt egy szorzatot, akkor valamelyik tényezőt is osztja. Tehát <span class="m"><i>x</i> ≡ 1</span> vagy <span class="m"><i>x</i> ≡ −1 ≡ 4 mod 5</span>.</p>
+        <p>Ellenőrzés táblázattal: <span class="m"><i>x</i><sup>2</sup></span> mod 5 a 0, 1, 2, 3, 4-re: 0, <b>1</b>, 4, 4, <b>1</b>. <span class="ans">x ≡ 1 vagy 4 mod 5</span></p>
+        <div class="tip">Az e) és f) közti különbség a lényeg: prím modulusnál a szorzat-trükk működik, összetett modulusnál nem.</div>
+
+        <p><b>g) <span class="m"><i>x</i><sup>2</sup> ≡ 1 mod 6</span></b></p>
+        <p>A 6 nem prím, a szorzat-trükk nem biztonságos, ezért próbálgatás:</p>
+        <div class="tbl"><table>
+          <thead><tr><th>x mod 6</th><th class="num">0</th><th class="num">1</th><th class="num">2</th><th class="num">3</th><th class="num">4</th><th class="num">5</th></tr></thead>
+          <tbody><tr><td>x² mod 6</td><td class="num">0</td><td class="num"><b>1</b></td><td class="num">4</td><td class="num">3</td><td class="num">4</td><td class="num"><b>1</b></td></tr></tbody>
+        </table></div>
+        <p><span class="ans">x ≡ 1 vagy 5 mod 6</span></p>
+        <p>Másképp: <span class="m">6 = 2 · 3</span>, tehát <span class="m"><i>x</i><sup>2</sup> ≡ 1</span> kell mod 2 és mod 3 is. Mod 2: <span class="m"><i>x</i> ≡ 1</span>. Mod 3 (prím): <span class="m"><i>x</i> ≡ ±1</span>. A kínai maradéktétellel a két párosítás <span class="m"><i>x</i> ≡ 1</span> és <span class="m"><i>x</i> ≡ 5 mod 6</span>.</p>
+        <div class="tip">Érdekesség: mod 8 a <span class="m"><i>x</i><sup>2</sup> ≡ 1</span>-nek négy megoldása van (1, 3, 5, 7). Összetett modulusnál egy másodfokú kongruenciának kettőnél több megoldása is lehet.</div>
+
+        <p><b>h) <span class="m"><i>x</i><sup>4</sup> ≡ 1 mod 5</span></b></p>
+        <p><b>Kis Fermat-tétellel:</b> ha <span class="m">5 ∤ <i>x</i></span>, akkor <span class="m"><i>x</i><sup>5−1</sup> = <i>x</i><sup>4</sup> ≡ 1 mod 5</span>. Ha <span class="m">5 | <i>x</i></span>, akkor <span class="m"><i>x</i><sup>4</sup> ≡ 0</span>, nem jó.</p>
+        <p>Ellenőrzés: <span class="m">1<sup>4</sup> = 1, 2<sup>4</sup> = 16 ≡ 1, 3<sup>4</sup> = 81 ≡ 1, 4<sup>4</sup> = 256 ≡ 1</span>. <span class="ans">x ≡ 1, 2, 3, 4 mod 5, azaz 5 ∤ x</span></p>
+        <p>Szorzattá alakítással is kijön: <span class="m"><i>x</i><sup>4</sup> − 1 = (<i>x</i> − 1)(<i>x</i> + 1)(<i>x</i><sup>2</sup> + 1)</span>. Az első két tényező az 1-et és a 4-et adja, az <span class="m"><i>x</i><sup>2</sup> ≡ −1 ≡ 4</span> pedig a 2-t és a 3-at.</p>
+      </div></details>
+    </article>
+
+    <article class="task">
+      <div class="task-head"><span class="no">2/3</span><span class="src">érdekes</span></div>
+      <p class="stmt"><span class="m"><i>z</i> = <i>i</i></span>, <span class="m"><i>w</i> = ½ + (√3/2)<i>i</i></span>. Mely <span class="m"><i>n</i></span> egészekre <span class="m"><i>z<sup>n</sup></i> = <i>w<sup>n</sup></i> = 1</span>?</p>
+      <details><summary>Megoldás</summary><div class="sol">
+        <p><span class="m"><i>z</i> = cos 90° + <i>i</i> sin 90°</span>: <span class="m"><i>z<sup>n</sup></i> = 1 ⇔ 4 | <i>n</i></span>. <span class="m"><i>w</i> = cos 60° + <i>i</i> sin 60°</span>: <span class="m"><i>w<sup>n</sup></i> = cos(<i>n</i>·60°) + <i>i</i> sin(<i>n</i>·60°) = 1 ⇔ 6 | <i>n</i></span>.</p>
+        <p>Mindkettő ⇔ <span class="m">[4, 6] = 12 | <i>n</i></span>. <span class="ans">n = 12k, k ∈ ℤ</span> (negatív <span class="m"><i>k</i></span> is!)</p>
+      </div></details>
+    </article>
+
+    <article class="task">
+      <div class="task-head"><span class="no">2/4</span><span class="src">érdekes</span></div>
+      <p class="stmt">Mutassa meg: <span class="m">(<i>ca</i>,<i>cb</i>) = <i>c</i>(<i>a</i>,<i>b</i>)</span> és <span class="m">(<i>a</i>,<i>b</i>) = (<i>a</i>−<i>b</i>,<i>b</i>)</span>. Számolja ki <span class="m">(2<sup>13</sup>−1, 2<sup>8</sup>−1)</span> és <span class="m">(2<sup>15</sup>−1, 2<sup>9</sup>−1)</span>.</p>
+      <details><summary>Megoldás</summary><div class="sol">
+        <p><b><span class="m">(<i>ca</i>,<i>cb</i>) = <i>c</i>(<i>a</i>,<i>b</i>)</span></b> (<span class="m"><i>c</i> ≥ 0</span>): <span class="m"><i>c</i>(<i>a</i>,<i>b</i>)</span> osztja <span class="m"><i>ca</i></span>-t és <span class="m"><i>cb</i></span>-t, tehát <span class="m"><i>c</i>(<i>a</i>,<i>b</i>) | (<i>ca</i>,<i>cb</i>)</span>. Fordítva: Bézout szerint <span class="m">(<i>a</i>,<i>b</i>) = <i>ax</i> + <i>by</i></span>, így <span class="m"><i>c</i>(<i>a</i>,<i>b</i>) = (<i>ca</i>)<i>x</i> + (<i>cb</i>)<i>y</i></span>, ezt <span class="m">(<i>ca</i>,<i>cb</i>)</span> osztja. Két nemnegatív szám, amelyek osztják egymást, egyenlő.</p>
+        <p><b><span class="m">(<i>a</i>,<i>b</i>) = (<i>a</i>−<i>b</i>,<i>b</i>)</span></b>: lásd a minta Zh 1. feladatát.</p>
+        <p><b>Számolás.</b> Maradékos osztás „a kitevőkön”: <span class="m">2<sup><i>a</i></sup> − 1 = 2<sup><i>a</i>−<i>b</i></sup>(2<sup><i>b</i></sup> − 1) + (2<sup><i>a</i>−<i>b</i></sup> − 1)</span>, így</p>
+        <p class="mb">(2<sup><i>a</i></sup>−1, 2<sup><i>b</i></sup>−1) = (2<sup><i>b</i></sup>−1, 2<sup><i>a</i>−<i>b</i></sup>−1)</p>
+        <p>Vagyis a kitevőkön fut az euklideszi algoritmus: <span class="m">(13, 8) → (8, 5) → (5, 3) → (3, 2) → (2, 1) → 1</span>, és <span class="m">(15, 9) → (9, 6) → (6, 3) → 3</span>.</p>
+        <p><span class="ans">(2¹³−1, 2⁸−1) = 2¹−1 = 1</span>&nbsp; <span class="ans">(2¹⁵−1, 2⁹−1) = 2³−1 = 7</span></p>
+      </div></details>
+    </article>
+
+    <article class="task">
+      <div class="task-head"><span class="no">2/5</span><span class="src">érdekes · volt a minta Zh-ban</span></div>
+      <p class="stmt"><span class="m">(<i>F</i><sub><i>n</i>+1</sub>, <i>F<sub>n</sub></i>) = 1</span>; mi lesz <span class="m">(<i>F</i><sub><i>n</i>+2</sub>, <i>F<sub>n</sub></i>)</span> és <span class="m">(<i>F</i><sub><i>n</i>+3</sub>, <i>F<sub>n</sub></i>)</span>?</p>
+      <details><summary>Megoldás</summary><div class="sol">
+        <p>Lásd a <a href="#minta">minta Zh 1. feladatát</a>. <span class="ans">(F<sub>n+2</sub>, F<sub>n</sub>) = 1</span> és <span class="ans">(F<sub>n+3</sub>, F<sub>n</sub>) = 2, ha 3 | n, különben 1</span></p>
+      </div></details>
+      <details><summary>Részletes magyarázat: (F<sub>n+3</sub>, F<sub>n</sub>)</summary><div class="sol">
+        <p><b>1. Próbáld ki számokkal.</b></p>
+        <div class="tbl"><table>
+          <thead><tr><th>n</th><th class="num">0</th><th class="num">1</th><th class="num">2</th><th class="num">3</th><th class="num">4</th><th class="num">5</th><th class="num">6</th><th class="num">7</th><th class="num">8</th><th class="num">9</th></tr></thead>
+          <tbody>
+            <tr><td>(F<sub>n+3</sub>, F<sub>n</sub>)</td><td class="num">(2, 0)</td><td class="num">(3, 1)</td><td class="num">(5, 1)</td><td class="num">(8, 2)</td><td class="num">(13, 3)</td><td class="num">(21, 5)</td><td class="num">(34, 8)</td><td class="num">(55, 13)</td><td class="num">(89, 21)</td><td class="num">(144, 34)</td></tr>
+            <tr><td>lnko</td><td class="num"><b>2</b></td><td class="num">1</td><td class="num">1</td><td class="num"><b>2</b></td><td class="num">1</td><td class="num">1</td><td class="num"><b>2</b></td><td class="num">1</td><td class="num">1</td><td class="num"><b>2</b></td></tr>
+          </tbody>
+        </table></div>
+        <p>Ez már nem mindig 1: minden harmadik <span class="m"><i>n</i></span>-nél 2. A sejtés: <span class="m">(<i>F</i><sub><i>n</i>+3</sub>, <i>F<sub>n</sub></i>) = 2</span>, ha <span class="m">3 | <i>n</i></span>, különben 1.</p>
+
+        <p><b>2. Fejezd ki <span class="m"><i>F</i><sub><i>n</i>+3</sub></span>-at a két legkisebb taggal.</b></p>
+        <p class="mb"><i>F</i><sub><i>n</i>+3</sub> = <i>F</i><sub><i>n</i>+2</sub> + <i>F</i><sub><i>n</i>+1</sub> = (<i>F</i><sub><i>n</i>+1</sub> + <i>F<sub>n</sub></i>) + <i>F</i><sub><i>n</i>+1</sub> = 2<i>F</i><sub><i>n</i>+1</sub> + <i>F<sub>n</sub></i></p>
+
+        <p><b>3. Vond le <span class="m"><i>F<sub>n</sub></i></span>-et</b>, mint az <span class="m"><i>F</i><sub><i>n</i>+2</sub></span>-nél:</p>
+        <p class="mb">(<i>F</i><sub><i>n</i>+3</sub>, <i>F<sub>n</sub></i>) = (<i>F</i><sub><i>n</i>+3</sub> − <i>F<sub>n</sub></i>, <i>F<sub>n</sub></i>) = (2<i>F</i><sub><i>n</i>+1</sub>, <i>F<sub>n</sub></i>)</p>
+        <p>Itt elakad a kivonós trükk: a <span class="m">2<i>F</i><sub><i>n</i>+1</sub></span> már nem Fibonacci-szám. Ebből a 2-es szorzóból jön az eltérés az <span class="m"><i>F</i><sub><i>n</i>+2</sub></span>-es esethez képest.</p>
+
+        <p><b>4. A kulcslépés: <span class="m">(2<i>F</i><sub><i>n</i>+1</sub>, <i>F<sub>n</sub></i>)</span> csak 1 vagy 2 lehet.</b> Legyen <span class="m"><i>d</i> = (2<i>F</i><sub><i>n</i>+1</sub>, <i>F<sub>n</sub></i>)</span>.</p>
+        <ul>
+          <li><span class="m"><i>d</i> | <i>F<sub>n</sub></i></span>, és tudjuk, hogy <span class="m">(<i>F</i><sub><i>n</i>+1</sub>, <i>F<sub>n</sub></i>) = 1</span>. Ezért <span class="m"><i>d</i></span>-nek és <span class="m"><i>F</i><sub><i>n</i>+1</sub></span>-nek sincs közös osztója: <span class="m">(<i>d</i>, <i>F</i><sub><i>n</i>+1</sub>) = 1</span>.</li>
+          <li>Bézout (1.6. tétel): van olyan <span class="m"><i>u</i>, <i>v</i></span>, hogy <span class="m"><i>du</i> + <i>F</i><sub><i>n</i>+1</sub><i>v</i> = 1</span>. Szorozd meg 2-vel: <span class="m">2<i>du</i> + 2<i>F</i><sub><i>n</i>+1</sub><i>v</i> = 2</span>.</li>
+          <li>A bal oldal mindkét tagját osztja <span class="m"><i>d</i></span> (az elsőt nyilván, a másodikat azért, mert <span class="m"><i>d</i> | 2<i>F</i><sub><i>n</i>+1</sub></span>). Tehát <span class="m"><i>d</i> | 2</span>, azaz <span class="m"><i>d</i> = 1</span> vagy <span class="m"><i>d</i> = 2</span>.</li>
+        </ul>
+        <p>Mikor 2? Akkor, ha a 2 mindkét számot osztja. A <span class="m">2<i>F</i><sub><i>n</i>+1</sub></span>-et mindig osztja, tehát pontosan akkor, ha <span class="m"><i>F<sub>n</sub></i></span> páros. Röviden: <span class="m">(2<i>F</i><sub><i>n</i>+1</sub>, <i>F<sub>n</sub></i>) = (2, <i>F<sub>n</sub></i>)</span>.</p>
+
+        <p><b>5. Mikor páros <span class="m"><i>F<sub>n</sub></i></span>?</b> Csak a paritásokat követve (P = páros, T = páratlan): páros + páratlan = páratlan, páratlan + páratlan = páros.</p>
+        <p class="mb"><i>F</i><sub>0</sub>, <i>F</i><sub>1</sub>, <i>F</i><sub>2</sub>, … :&nbsp; P, T, T, P, T, T, P, T, T, …</p>
+        <p>Minden tag csak az előző kettőtől függ. A (P, T) pár a 0. helyen és a 3. helyen is előfordul, ezért innen minden 3 lépésenként ismétlődik. Indukcióval: ha <span class="m"><i>F</i><sub>3<i>k</i></sub></span> páros és <span class="m"><i>F</i><sub>3<i>k</i>+1</sub></span> páratlan, akkor <span class="m"><i>F</i><sub>3<i>k</i>+2</sub></span> = P + T = páratlan, <span class="m"><i>F</i><sub>3<i>k</i>+3</sub></span> = T + T = páros, <span class="m"><i>F</i><sub>3<i>k</i>+4</sub></span> = T + P = páratlan. Tehát <span class="m"><i>F<sub>n</sub></i></span> páros ⇔ <span class="m">3 | <i>n</i></span>.</p>
+
+        <p><b>6. Összerakás.</b></p>
+        <p class="mb">(<i>F</i><sub><i>n</i>+3</sub>, <i>F<sub>n</sub></i>) = (2<i>F</i><sub><i>n</i>+1</sub>, <i>F<sub>n</sub></i>) = (2, <i>F<sub>n</sub></i>) = 2, ha 3 | <i>n</i>; különben 1</p>
+        <p>Ez egyezik a táblázattal. <span class="ans">2, ha 3 | n; különben 1</span></p>
+
+        <div class="tip"><b>Így írd le a dolgozatban:</b>
+          <ol>
+            <li><span class="m"><i>F</i><sub><i>n</i>+3</sub> = 2<i>F</i><sub><i>n</i>+1</sub> + <i>F<sub>n</sub></i></span>, és ebből <span class="m">(<i>F</i><sub><i>n</i>+3</sub>, <i>F<sub>n</sub></i>) = (2<i>F</i><sub><i>n</i>+1</sub>, <i>F<sub>n</sub></i>)</span>.</li>
+            <li><span class="m">(<i>F</i><sub><i>n</i>+1</sub>, <i>F<sub>n</sub></i>) = 1</span> (indukcióval, ha még nem bizonyítottad).</li>
+            <li>A közös osztó csak a 2-t oszthatja, a Bézout-érveléssel.</li>
+            <li>A paritás 3-as periódusa indukcióval.</li>
+            <li>A válasz esetszétválasztással.</li>
+          </ol>
+        </div>
+        <div class="tip">Ugyanígy megy a gyakorló Zh A1 feladata: <span class="m"><i>F</i><sub><i>n</i>+4</sub> = 3<i>F</i><sub><i>n</i>+1</sub> + 2<i>F<sub>n</sub></i></span>, tehát <span class="m">(<i>F</i><sub><i>n</i>+4</sub>, <i>F<sub>n</sub></i>) = (3, <i>F<sub>n</sub></i>)</span>, ami 3, ha <span class="m">4 | <i>n</i></span>, különben 1.</div>
+      </div></details>
+    </article>
+  </div>
+
+  <!-- 3. sor -->
+  <div class="sheetgroup">
+    <h3>3. feladatsor <span class="label">09.21–25. · bővített euklideszi, diofantikus egyenletek</span></h3>
+
+    <article class="task">
+      <div class="task-head"><span class="no">3/1–2</span><span class="src">bemelegítő</span></div>
+      <p class="stmt"><span class="m"><i>ax</i> + <i>by</i> = (<i>a</i>,<i>b</i>)</span>, majd <span class="m"><i>ax</i> + <i>by</i> = <i>c</i></span>: a) <span class="m">13, 14; <i>c</i> = 5</span>; b) <span class="m">16, 37; <i>c</i> = −2</span>; c) <span class="m">90, −111; <i>c</i> = 13</span>.</p>
+      <details><summary>Megoldás</summary><div class="sol">
+        <p><b>b) táblázattal</b> (<span class="m"><i>a</i> = 16, <i>b</i> = 37</span>), soronként <span class="m"><i>r</i> = 16<i>x</i> + 37<i>y</i></span>:</p>
+        <div class="eu"><table>
+          <thead><tr><th>r</th><th>q</th><th>x</th><th>y</th></tr></thead>
+          <tbody>
+            <tr><td>16</td><td></td><td>1</td><td>0</td></tr>
+            <tr><td>37</td><td></td><td>0</td><td>1</td></tr>
+            <tr><td>16</td><td>0</td><td>1</td><td>0</td></tr>
+            <tr><td>5</td><td>2</td><td>−2</td><td>1</td></tr>
+            <tr><td><b>1</b></td><td>3</td><td><b>7</b></td><td><b>−3</b></td></tr>
+            <tr><td>0</td><td>5</td><td></td><td></td></tr>
+          </tbody>
+        </table></div>
+        <ul>
+          <li>a) <span class="m">13·(−1) + 14·1 = 1</span>; összes: <span class="m"><i>x</i> = −1 + 14<i>t</i>, <i>y</i> = 1 − 13<i>t</i></span>. <span class="m"><i>c</i> = 5</span>: ötszörös, <span class="m"><i>x</i> = −5 + 14<i>t</i>, <i>y</i> = 5 − 13<i>t</i></span>.</li>
+          <li>b) <span class="m">16·7 + 37·(−3) = 1</span>; összes: <span class="m"><i>x</i> = 7 + 37<i>t</i>, <i>y</i> = −3 − 16<i>t</i></span>. <span class="m"><i>c</i> = −2</span>: <span class="m"><i>x</i> = −14 + 37<i>t</i>, <i>y</i> = 6 − 16<i>t</i></span>.</li>
+          <li>c) <span class="m">111 = 90 + 21, 90 = 4·21 + 6, 21 = 3·6 + 3</span>, visszafelé: <span class="m">3 = 13·111 − 16·90</span>, azaz <span class="m">90·(−16) + (−111)·(−13) = 3</span>. Összes: <span class="m"><i>x</i> = −16 + 37<i>t</i>, <i>y</i> = −13 + 30<i>t</i></span>. <span class="m"><i>c</i> = 13</span>: <span class="m">3 ∤ 13</span>, <b>nincs megoldás</b>.</li>
+        </ul>
+      </div></details>
+      <details><summary>Részletes magyarázat: c) negatív együtthatóval</summary><div class="sol">
+        <p><b>Ötlet:</b> az lnko-t nem érdekli az előjel, <span class="m">(90, −111) = (90, 111)</span>. Futtasd az algoritmust a pozitív számokkal, és csak a legvégén fordítsd meg <span class="m"><i>y</i></span> előjelét.</p>
+        <p><b>1. Euklideszi algoritmus</b> (90 és 111):</p>
+        <p class="mb">111 = 1 · 90 + 21<br>90 = 4 · 21 + 6<br>21 = 3 · 6 + <b>3</b><br>6 = 2 · 3 + 0</p>
+        <p>Az utolsó nem nulla maradék: <span class="m">(90, 111) = 3</span>.</p>
+        <p><b>2. Visszafelé helyettesítés:</b></p>
+        <p class="mb">3 = 21 − 3 · 6<br>&nbsp;&nbsp;= 21 − 3 · (90 − 4 · 21) = 13 · 21 − 3 · 90<br>&nbsp;&nbsp;= 13 · (111 − 90) − 3 · 90 = 13 · 111 − 16 · 90</p>
+        <p>Tehát <span class="m">90 · (−16) + 111 · 13 = 3</span> (ellenőrzés: <span class="m">−1440 + 1443 = 3</span> ✓).</p>
+        <p><b>3. Előjelváltás.</b> <span class="m">111 · 13 = (−111) · (−13)</span>, így</p>
+        <p class="mb">90 · (−16) + (−111) · (−13) = 3 &nbsp;⇒&nbsp; <i>x</i> = −16,&nbsp; <i>y</i> = −13</p>
+        <p><b>4. Összes megoldás:</b> <span class="m"><i>b</i>/<i>d</i> = −37</span>, <span class="m"><i>a</i>/<i>d</i> = 30</span>, tehát <span class="m"><i>x</i> = −16 − 37<i>t</i>, <i>y</i> = −13 − 30<i>t</i></span>, vagy <span class="m"><i>t</i> → −<i>t</i></span> cserével <span class="m"><i>x</i> = −16 + 37<i>t</i>, <i>y</i> = −13 + 30<i>t</i></span>. Ellenőrzés: <span class="m">90 · 37 + (−111) · 30 = 0</span> ✓.</p>
+        <div class="tip">Közvetlenül a −111-gyel is lefut a táblázatos algoritmus, ha a maradékos osztásban <span class="m">0 ≤ <i>r</i> &lt; |<i>b</i>|</span>-t tartod (pl. <span class="m">−111 = (−2) · 90 + 69</span>), és ugyanide jut, csak eggyel több lépéssel. Az előjelváltás egyszerűbb és biztonságosabb.</div>
+      </div></details>
+      <details><summary>Részletes magyarázat: egy megoldásból az összes</summary><div class="sol">
+        <p><b>1. Szemléletesen: a „csere”.</b> Vegyük a <span class="m">13<i>x</i> + 14<i>y</i> = 1</span> egyenletet és egy megoldását: <span class="m"><i>x</i><sub>0</sub> = −1, <i>y</i><sub>0</sub> = 1</span>. Ha <span class="m"><i>x</i></span>-et 14-gyel növeled, a bal oldal <span class="m">13 · 14 = 182</span>-vel nő. Ha közben <span class="m"><i>y</i></span>-t 13-mal csökkented, a bal oldal <span class="m">14 · 13 = 182</span>-vel csökken. A kettő kioltja egymást, az összeg marad 1. Ezt bárhányszor megismételheted, előre vagy hátra:</p>
+        <p class="mb"><i>x</i> = −1 + 14<i>t</i>,&nbsp;&nbsp; <i>y</i> = 1 − 13<i>t</i>,&nbsp;&nbsp; <i>t</i> ∈ ℤ</p>
+        <p>Próba <span class="m"><i>t</i> = 1</span>-re: <span class="m">13 · 13 + 14 · (−12) = 169 − 168 = 1</span> ✓.</p>
+
+        <p><b>2. Miért nincs más megoldás?</b> Legyen <span class="m">(<i>x</i>, <i>y</i>)</span> egy tetszőleges megoldás. Vond ki belőle az ismert megoldás egyenletét:</p>
+        <p class="mb">13(<i>x</i> − <i>x</i><sub>0</sub>) + 14(<i>y</i> − <i>y</i><sub>0</sub>) = 1 − 1 = 0 &nbsp;⇒&nbsp; 13(<i>x</i> − <i>x</i><sub>0</sub>) = −14(<i>y</i> − <i>y</i><sub>0</sub>)</p>
+        <p>A jobb oldal osztható 14-gyel, tehát a bal is. Mivel <span class="m">(13, 14) = 1</span>, a 14-nek az <span class="m"><i>x</i> − <i>x</i><sub>0</sub></span>-t kell osztania: <span class="m"><i>x</i> − <i>x</i><sub>0</sub> = 14<i>t</i></span>. Visszaírva <span class="m">13 · 14<i>t</i> = −14(<i>y</i> − <i>y</i><sub>0</sub>)</span>, azaz <span class="m"><i>y</i> − <i>y</i><sub>0</sub> = −13<i>t</i></span>. Tehát minden megoldás pontosan ilyen alakú.</p>
+
+        <p><b>3. Általánosan (1.7. tétel).</b> Ha <span class="m"><i>d</i> = (<i>a</i>, <i>b</i>)</span> és <span class="m">(<i>x</i><sub>0</sub>, <i>y</i><sub>0</sub>)</span> egy megoldás, akkor az összes:</p>
+        <p class="mb"><i>x</i> = <i>x</i><sub>0</sub> + (<i>b</i>/<i>d</i>) · <i>t</i>,&nbsp;&nbsp; <i>y</i> = <i>y</i><sub>0</sub> − (<i>a</i>/<i>d</i>) · <i>t</i>,&nbsp;&nbsp; <i>t</i> ∈ ℤ</p>
+        <p>Recept: <span class="m"><i>x</i></span>-hez a <b>másik</b> együttható jön, <span class="m"><i>y</i></span>-hoz a <b>saját</b> együttható <b>ellentétes előjellel</b>, és mindkettőt el kell osztani az lnko-val.</p>
+
+        <div class="warn"><b>Ne felejtsd el leosztani <span class="m"><i>d</i></span>-vel!</b> A c) részben <span class="m">90<i>x</i> − 111<i>y</i> = 3</span>, <span class="m"><i>d</i> = 3</span>. A helyes lépésköz <span class="m">111/3 = 37</span> és <span class="m">90/3 = 30</span>: <span class="m"><i>x</i> = −16 + 37<i>t</i>, <i>y</i> = −13 + 30<i>t</i></span>. Ha 111-es és 90-es lépésközzel írnád, kimaradnának megoldások, például <span class="m"><i>x</i> = 21, <i>y</i> = 17</span> (<span class="m">1890 − 1887 = 3</span> ✓). A 2. pont érvelésében épp az kell, hogy <span class="m"><i>a</i>/<i>d</i></span> és <span class="m"><i>b</i>/<i>d</i></span> relatív prímek legyenek.</div>
+
+        <p><b>4. A 3/2 feladathoz (<span class="m"><i>ax</i> + <i>by</i> = <i>c</i></span>).</b> Az egy megoldást szorozd meg <span class="m"><i>c</i>/<i>d</i></span>-vel, a lépésköz <b>nem</b> változik. Például <span class="m">13<i>x</i> + 14<i>y</i> = 5</span>: <span class="m"><i>x</i><sub>0</sub> = −5, <i>y</i><sub>0</sub> = 5</span>, összes: <span class="m"><i>x</i> = −5 + 14<i>t</i>, <i>y</i> = 5 − 13<i>t</i></span>.</p>
+
+        <div class="tip">Az előjel-konvenció mindegy: <span class="m"><i>x</i> = −1 − 14<i>t</i>, <i>y</i> = 1 + 13<i>t</i></span> ugyanazt a halmazt írja le, mert <span class="m"><i>t</i></span> végigfut az összes egészen. Ellenőrizni mindig egy konkrét <span class="m"><i>t</i></span>-vel érdemes.</div>
+      </div></details>
+    </article>
+
+    <article class="task">
+      <div class="task-head"><span class="no">3/3</span><span class="src">gyakorló</span></div>
+      <p class="stmt">Kongruenciák segítségével: a) <span class="m">33<i>x</i> + 23<i>y</i> = 2</span>; b) <span class="m">33<i>x</i> + 15<i>y</i> = 6</span>; c) <span class="m">18<i>x</i> + 14<i>y</i> = 16</span>.</p>
+      <details><summary>Megoldás</summary><div class="sol">
+        <p><b>Recept:</b> oszd le az lnko-val, vedd az egyenletet a kisebb együttható szerinti modulusban, oldd meg <span class="m"><i>x</i></span>-re, <span class="m"><i>y</i></span>-t visszahelyettesítéssel kapod.</p>
+        <ul>
+          <li>a) mod 23: <span class="m">10<i>x</i> ≡ 2</span>. <span class="m">10·7 = 70 = 3·23 + 1</span>, így <span class="m"><i>x</i> ≡ 14 mod 23</span>. <span class="m"><i>x</i> = 14 + 23<i>t</i>, <i>y</i> = (2 − 33<i>x</i>)/23 = −20 − 33<i>t</i></span>.</li>
+          <li>b) <span class="m">(33,15) = 3 | 6</span> → <span class="m">11<i>x</i> + 5<i>y</i> = 2</span>. Mod 5: <span class="m"><i>x</i> ≡ 2</span>. <span class="m"><i>x</i> = 2 + 5<i>t</i>, <i>y</i> = −4 − 11<i>t</i></span>.</li>
+          <li>c) <span class="m">(18,14) = 2 | 16</span> → <span class="m">9<i>x</i> + 7<i>y</i> = 8</span>. Mod 7: <span class="m">2<i>x</i> ≡ 1 ⇒ <i>x</i> ≡ 4</span>. <span class="m"><i>x</i> = 4 + 7<i>t</i>, <i>y</i> = −4 − 9<i>t</i></span>.</li>
+        </ul>
+        <p>Ellenőrzés mindig egy konkrét <span class="m"><i>t</i></span>-re, pl. c) <span class="m">18·4 + 14·(−4) = 72 − 56 = 16</span> ✓.</p>
+      </div></details>
+      <details><summary>Részletes magyarázat: a) lépésről lépésre</summary><div class="sol">
+        <p><b>Miért kongruencia?</b> Ha az egyenletet mod 23 nézed, a <span class="m">23<i>y</i></span> tag eltűnik, mert mindig osztható 23-mal. Egy ismeretlen marad, és arra már van módszer (lineáris kongruencia). A 3/4-es százlábú feladat is így ment, ott mod 10.</p>
+        <p><b>1. Megoldható-e?</b> <span class="m">(33, 23) = 1 | 2</span> ✓. (Ha az lnko nagyobb, előbb le kell vele osztani az egész egyenletet.)</p>
+        <p><b>2. Modulus választása.</b> A kisebb együtthatót érdemes választani, így kisebb számokkal kell számolni: mod 23.</p>
+        <p class="mb">33<i>x</i> + 23<i>y</i> ≡ 2 mod 23 &nbsp;⇒&nbsp; 33<i>x</i> ≡ 2 mod 23</p>
+        <p><b>3. Csökkentsd az együtthatót.</b> <span class="m">33 = 23 + 10</span>, tehát <span class="m">33 ≡ 10</span>: <span class="m">10<i>x</i> ≡ 2 mod 23</span>.</p>
+        <p><b>4. Oldd meg.</b> Mivel <span class="m">(2, 23) = 1</span>, szabad 2-vel egyszerűsíteni: <span class="m">5<i>x</i> ≡ 1 mod 23</span>. Kell az 5 inverze: <span class="m">5 · 14 = 70 = 3 · 23 + 1</span>, tehát <span class="m">5<sup>−1</sup> ≡ 14</span>, és <span class="m"><i>x</i> ≡ 14 mod 23</span>.</p>
+        <p class="mb"><i>x</i> = 14 + 23<i>t</i>,&nbsp;&nbsp; <i>t</i> ∈ ℤ</p>
+        <p><b>5. Számold ki <span class="m"><i>y</i></span>-t.</b> Az eredeti egyenletből <span class="m"><i>y</i> = (2 − 33<i>x</i>)/23</span>:</p>
+        <p class="mb"><i>y</i> = (2 − 33 · 14 − 33 · 23<i>t</i>)/23 = (2 − 462)/23 − 33<i>t</i> = −460/23 − 33<i>t</i> = −20 − 33<i>t</i></p>
+        <p>A <span class="m">−460</span> osztható 23-mal. Ez nem véletlen, a 4. lépés épp ezt biztosította. Ha itt nem egész jön ki, valahol számolási hiba van.</p>
+        <p><b>6. Ellenőrzés</b> (<span class="m"><i>t</i> = 0</span>): <span class="m">33 · 14 + 23 · (−20) = 462 − 460 = 2</span> ✓.</p>
+        <p><span class="ans">x = 14 + 23t, y = −20 − 33t, t ∈ ℤ</span></p>
+      </div></details>
+    </article>
+
+    <article class="task">
+      <div class="task-head"><span class="no">3/4</span><span class="src">gyakorló · volt a minta Zh-ban</span></div>
+      <p class="stmt">Százlábúak: 14 és 20 láb, összesen 232.</p>
+      <details><summary>Megoldás</summary><div class="sol"><p>Lásd a <a href="#minta">minta Zh 2. feladatát</a>. <span class="ans">14 százlábú</span></p></div></details>
+    </article>
+
+    <article class="task">
+      <div class="task-head"><span class="no">3/5</span><span class="src">gyakorló</span></div>
+      <p class="stmt">a) <span class="m">31<i>x</i> ≡ 4 mod 17</span>; b) <span class="m">31<i>x</i> ≡ 4 mod 117</span>; c) <span class="m">5<i>x</i> ≡ 10 mod 15</span>; d) <span class="m">17<i>x</i> ≡ 4 mod 2024</span>.</p>
+      <details><summary>Megoldás</summary><div class="sol">
+        <ul>
+          <li>a) <span class="m">31 ≡ −3 mod 17</span>: <span class="m">−3<i>x</i> ≡ 4 ⇒ 3<i>x</i> ≡ 13</span>. <span class="m">3<sup>−1</sup> ≡ 6</span> (18 ≡ 1), <span class="m"><i>x</i> ≡ 78 ≡ 10</span>. <span class="ans">x ≡ 10 mod 17</span></li>
+          <li>b) <span class="m">(31, 117) = 1</span>. Euklidesz: <span class="m">117 = 3·31 + 24, 31 = 24 + 7, 24 = 3·7 + 3, 7 = 2·3 + 1</span>; visszafelé <span class="m">1 = 34·31 − 9·117</span>, tehát <span class="m">31<sup>−1</sup> ≡ 34</span>. <span class="m"><i>x</i> ≡ 4·34 = 136 ≡ 19</span>. <span class="ans">x ≡ 19 mod 117</span></li>
+          <li>c) <span class="m">(5, 15) = 5 | 10</span>, osztva: <span class="m"><i>x</i> ≡ 2 mod 3</span>. Mod 15: <span class="ans">5 megoldás: 2, 5, 8, 11, 14</span></li>
+          <li>d) <span class="m">2024 = 119·17 + 1</span>, így <span class="m">17·(−119) ≡ 1</span>, <span class="m">17<sup>−1</sup> ≡ −119</span>. <span class="m"><i>x</i> ≡ −476 ≡ 1548</span>. <span class="ans">x ≡ 1548 mod 2024</span></li>
+        </ul>
+      </div></details>
+    </article>
+
+    <article class="task">
+      <div class="task-head"><span class="no">3/6</span><span class="src">érdekes</span></div>
+      <p class="stmt">a) <span class="m">8<sup><i>a</i></sup>·16<sup><i>b</i></sup> = 32</span>; b) <span class="m">27<sup><i>a</i></sup>·81<sup><i>b</i></sup> = 9</span>; c) <span class="m">16<sup><i>a</i></sup>·128<sup><i>b</i></sup> = 1024</span>; d) <span class="m">64<sup><i>a</i></sup>·512<sup><i>b</i></sup> = 2048</span>.</p>
+      <details><summary>Megoldás</summary><div class="sol">
+        <p>Közös alapra írva a kitevők egyenlősége lineáris diofantikus egyenlet (<span class="m"><i>a</i>, <i>b</i></span> negatív is lehet).</p>
+        <ul>
+          <li>a) <span class="m">2<sup>3<i>a</i>+4<i>b</i></sup> = 2<sup>5</sup></span>: <span class="m">3<i>a</i> + 4<i>b</i> = 5</span> → <span class="m"><i>a</i> = 3 + 4<i>t</i>, <i>b</i> = −1 − 3<i>t</i></span>.</li>
+          <li>b) <span class="m">3<sup>3<i>a</i>+4<i>b</i></sup> = 3<sup>2</sup></span>: <span class="m">3<i>a</i> + 4<i>b</i> = 2</span> → <span class="m"><i>a</i> = 2 + 4<i>t</i>, <i>b</i> = −1 − 3<i>t</i></span>.</li>
+          <li>c) <span class="m">4<i>a</i> + 7<i>b</i> = 10</span> → <span class="m"><i>a</i> = −1 + 7<i>t</i>, <i>b</i> = 2 − 4<i>t</i></span>.</li>
+          <li>d) <span class="m">6<i>a</i> + 9<i>b</i> = 11</span>, de <span class="m">3 ∤ 11</span> → <b>nincs megoldás</b>.</li>
+        </ul>
+      </div></details>
+    </article>
+
+    <article class="task">
+      <div class="task-head"><span class="no">3/7</span><span class="src">érdekes</span></div>
+      <p class="stmt">a) <span class="m">3<sup>3<i>n</i>+1</sup>5<sup>2<i>n</i>+1</sup> + 2<sup>5<i>n</i>+1</sup>11<sup><i>n</i></sup> ≡ 0 mod 17</span>; b) <span class="m">61<sup><i>k</i>+1</sup> + 11<sup><i>k</i></sup>7<sup>2<i>k</i></sup>3<sup>3<i>k</i></sup>2<sup>5<i>k</i>+3</sup> ≡ 0 mod 23</span>.</p>
+      <details><summary>Megoldás</summary><div class="sol">
+        <p><b>Ötlet:</b> mindkét tagot <span class="m"><i>C</i>·<i>q<sup>n</sup></i></span> alakra hozni; ha a <span class="m"><i>q</i></span>-k egyeznek, kiemelhető.</p>
+        <p>a) <span class="m">3·5·(27·25)<sup><i>n</i></sup> + 2·(32·11)<sup><i>n</i></sup></span>. Mod 17: <span class="m">27·25 ≡ 10·8 = 80 ≡ 12</span> és <span class="m">32·11 ≡ 15·11 = 165 ≡ 12</span>. Összeg <span class="m">≡ (15 + 2)·12<sup><i>n</i></sup> = 17·12<sup><i>n</i></sup> ≡ 0</span> ✓.</p>
+        <p>b) <span class="m">61 ≡ 15 mod 23</span>, így az első tag <span class="m">15·15<sup><i>k</i></sup></span>. A második: <span class="m">8·(11·49·27·32)<sup><i>k</i></sup></span>, és <span class="m">11·3·4·9 = 1188 ≡ 15 mod 23</span>. Összeg <span class="m">≡ (15 + 8)·15<sup><i>k</i></sup> = 23·15<sup><i>k</i></sup> ≡ 0</span> ✓.</p>
+      </div></details>
+    </article>
+
+    <article class="task">
+      <div class="task-head"><span class="no">3/8</span><span class="src">érdekes</span></div>
+      <p class="stmt"><span class="m"><i>z</i> = (1+<i>i</i>)/√2</span>. Oldja meg a <span class="m"><i>z</i><sup>3<i>x</i></sup> = <i>i</i></span> egyenletet egészekre.</p>
+      <details><summary>Megoldás</summary><div class="sol">
+        <p><span class="m"><i>z</i> = cos 45° + <i>i</i> sin 45°</span>, <span class="m"><i>i</i> = <i>z</i><sup>2</sup></span>, <span class="m"><i>z</i></span> rendje 8. Tehát <span class="m"><i>z</i><sup>3<i>x</i></sup> = <i>z</i><sup>2</sup> ⇔ 3<i>x</i> ≡ 2 mod 8</span>. <span class="m">3<sup>−1</sup> ≡ 3 mod 8</span>, <span class="m"><i>x</i> ≡ 6 mod 8</span>.</p>
+        <p><span class="ans">x = 6 + 8k, k ∈ ℤ</span></p>
+        <div class="tip"><b>És a hossz?</b> Egy <span class="m"><i>z<sup>n</sup></i> = <i>w</i></span> egyenletnél két feltétel kell: <span class="m">|<i>z</i>|<sup><i>n</i></sup> = |<i>w</i>|</span> és <span class="m"><i>n</i> · arg <i>z</i> ≡ arg <i>w</i> mod 360°</span>. Itt <span class="m">|<i>z</i>| = √(½ + ½) = 1</span> és <span class="m">|<i>i</i>| = 1</span>, ezért a hosszfeltétel minden <span class="m"><i>x</i></span>-re teljesül, csak a szög számít. Ha például <span class="m"><i>z</i> = 1 + <i>i</i></span> lenne, akkor <span class="m">(√2)<sup>3<i>x</i></sup> = 1</span> csak <span class="m"><i>x</i> = 0</span>-ra igaz, de <span class="m"><i>z</i><sup>0</sup> = 1 ≠ <i>i</i></span>, így nem lenne megoldás.</div>
+      </div></details>
+    </article>
+  </div>
+
+  <!-- 4. sor -->
+  <div class="sheetgroup">
+    <h3>4. feladatsor <span class="label">09.28–10.02. · kongruenciarendszerek, Euler–Fermat</span></h3>
+
+    <article class="task">
+      <div class="task-head"><span class="no">4/1</span><span class="src">bemelegítő</span></div>
+      <p class="stmt">A két legkisebb pozitív egész, amelynek a) 13-szorosa 7-es alapban …43-ra; b) 12-szerese 8-as alapban …21-re; c) 14-szerese 16-os alapban …34-re végződik.</p>
+      <details><summary>Megoldás</summary><div class="sol">
+        <p>Az utolsó két jegy <span class="m"><i>g</i></span> alapban a maradék mod <span class="m"><i>g</i><sup>2</sup></span>.</p>
+        <ul>
+          <li>a) <span class="m">13<i>n</i> ≡ 4·7 + 3 = 31 mod 49</span>. <span class="m">13·(−15) = −195 = −4·49 + 1</span>, így <span class="m">13<sup>−1</sup> ≡ 34</span>, <span class="m"><i>n</i> ≡ 31·34 = 1054 ≡ 25 mod 49</span>. <span class="ans">25 és 74</span> (<span class="m">13·25 = 325 = 643<sub>7</sub></span> ✓)</li>
+          <li>b) <span class="m">12<i>n</i> ≡ 2·8 + 1 = 17 mod 64</span>, de <span class="m">(12, 64) = 4 ∤ 17</span>. <span class="ans">nincs ilyen szám</span></li>
+          <li>c) <span class="m">14<i>n</i> ≡ 3·16 + 4 = 52 mod 256</span>, <span class="m">(14, 256) = 2 | 52</span> → <span class="m">7<i>n</i> ≡ 26 mod 128</span>. <span class="m">7·55 = 385 = 3·128 + 1</span>, <span class="m"><i>n</i> ≡ 26·55 = 1430 ≡ 22 mod 128</span>. <span class="ans">22 és 150</span> (<span class="m">14·22 = 308 = 134<sub>16</sub></span> ✓)</li>
+        </ul>
+      </div></details>
+    </article>
+
+    <article class="task">
+      <div class="task-head"><span class="no">4/2</span><span class="src">bemelegítő</span></div>
+      <p class="stmt">(i) <span class="m">5<i>x</i> ≡ 3 (7), 3<i>x</i> ≡ 7 (8)</span>; (ii) <span class="m">3<i>x</i> ≡ 2 (4), 4<i>x</i> ≡ 3 (5)</span>; (iii) <span class="m">5<i>x</i> ≡ 1 (6), 7<i>x</i> ≡ 9 (10)</span>; (iv) <span class="m"><i>x</i> ≡ 2 (3), <i>x</i> ≡ 3 (4), <i>x</i> ≡ 1 (5)</span>.</p>
+      <details><summary>Megoldás</summary><div class="sol">
+        <ul>
+          <li>(i) <span class="m"><i>x</i> ≡ 3·3 = 9 ≡ 2 (7)</span>, <span class="m"><i>x</i> ≡ 3·7 = 21 ≡ 5 (8)</span>. <span class="m"><i>x</i> = 5 + 8<i>k</i> ≡ 2 (7) ⇒ <i>k</i> ≡ 4</span>. <span class="ans">x ≡ 37 mod 56</span></li>
+          <li>(ii) <span class="m"><i>x</i> ≡ 3·2 = 6 ≡ 2 (4)</span>, <span class="m"><i>x</i> ≡ 4·3 = 12 ≡ 2 (5)</span>. <span class="ans">x ≡ 2 mod 20</span></li>
+          <li>(iii) <span class="m"><i>x</i> ≡ 5 (6)</span>, <span class="m"><i>x</i> ≡ 3·9 = 27 ≡ 7 (10)</span>. A modulusok nem relatív prímek; bontás: <span class="m"><i>x</i> ≡ 1 (2), <i>x</i> ≡ 2 (3)</span> és <span class="m"><i>x</i> ≡ 1 (2), <i>x</i> ≡ 2 (5)</span>, a mod 2 feltételek összeférnek. <span class="ans">x ≡ 17 mod 30</span></li>
+          <li>(iv) <span class="m"><i>x</i> = 2 + 3<i>k</i> ≡ 3 (4) ⇒ <i>k</i> ≡ 3 ⇒ <i>x</i> ≡ 11 (12)</span>; <span class="m">11 + 12<i>j</i> ≡ 1 (5) ⇒ 2<i>j</i> ≡ 0 ⇒ <i>j</i> ≡ 0</span>. <span class="ans">x ≡ 11 mod 60</span></li>
+        </ul>
+      </div></details>
+      <details><summary>Részletes magyarázat: (iv)</summary><div class="sol">
+        <p><b>0. Hány megoldás lesz?</b> A 3, 4, 5 páronként relatív prímek, ezért a kínai maradéktétel (1.13.) szerint pontosan egy megoldás van mod <span class="m">3 · 4 · 5 = 60</span>.</p>
+        <p><b>1. Az elsőt írd fel paraméteresen:</b> <span class="m"><i>x</i> ≡ 2 (3)</span> ⇒ <span class="m"><i>x</i> = 2 + 3<i>k</i></span>.</p>
+        <p><b>2. Helyettesítsd a másodikba:</b> <span class="m">2 + 3<i>k</i> ≡ 3 (4) ⇒ 3<i>k</i> ≡ 1 (4)</span>. A 3 inverze mod 4 maga a 3 (<span class="m">9 ≡ 1</span>), tehát <span class="m"><i>k</i> ≡ 3 (4)</span>, <span class="m"><i>k</i> = 3 + 4<i>j</i></span>.</p>
+        <p class="mb"><i>x</i> = 2 + 3(3 + 4<i>j</i>) = 11 + 12<i>j</i> &nbsp;⇒&nbsp; az első kettő együtt: <i>x</i> ≡ 11 mod 12</p>
+        <p><b>3. Helyettesítsd a harmadikba:</b> <span class="m">11 + 12<i>j</i> ≡ 1 (5)</span>. Mod 5: <span class="m">11 ≡ 1</span>, <span class="m">12 ≡ 2</span>, tehát <span class="m">1 + 2<i>j</i> ≡ 1 ⇒ 2<i>j</i> ≡ 0 (5)</span>. Mivel <span class="m">(2, 5) = 1</span>, ebből <span class="m"><i>j</i> ≡ 0 (5)</span>, <span class="m"><i>j</i> = 5<i>s</i></span>.</p>
+        <p class="mb"><i>x</i> = 11 + 12 · 5<i>s</i> = 11 + 60<i>s</i></p>
+        <p><b>4. Ellenőrzés:</b> <span class="m">11 = 3 · 3 + 2</span> ✓, <span class="m">11 = 2 · 4 + 3</span> ✓, <span class="m">11 = 2 · 5 + 1</span> ✓. <span class="ans">x ≡ 11 mod 60</span></p>
+        <div class="tip"><b>Gyorsabb út:</b> <span class="m"><i>x</i> ≡ 2 ≡ −1 (3)</span> és <span class="m"><i>x</i> ≡ 3 ≡ −1 (4)</span>, tehát <span class="m"><i>x</i> + 1</span> osztható 3-mal és 4-gyel is, így 12-vel: <span class="m"><i>x</i> ≡ −1 ≡ 11 (12)</span>. A jelöltek 11, 23, 35, 47, 59, és ezek közül a 11 ad 1-et 5-tel osztva.</div>
+      </div></details>
+    </article>
+
+    <article class="task">
+      <div class="task-head"><span class="no">4/3</span><span class="src">gyakorló · volt a minta Zh-ban</span></div>
+      <p class="stmt">Lényegesen különböző megoldások száma.</p>
+      <details><summary>Megoldás</summary><div class="sol"><p>Lásd a <a href="#minta">minta Zh 3. feladatát</a>. <span class="ans">(I): 2 (mod 56)</span> <span class="ans">(II): 1 (mod 30)</span></p></div></details>
+    </article>
+
+    <article class="task">
+      <div class="task-head"><span class="no">4/4</span><span class="src">gyakorló</span></div>
+      <p class="stmt">a) <span class="m">2<sup>8</sup> mod 7</span>; b) <span class="m">3<sup>19</sup> mod 7</span>; c) <span class="m">4<sup>122</sup> mod 13</span>; d) <span class="m">5<sup>413</sup> mod 13</span>; e) <span class="m">6<sup>513</sup> mod 11</span>; f) <span class="m">7<sup>610</sup> mod 9</span>.</p>
+      <details><summary>Megoldás</summary><div class="sol">
+        <ul>
+          <li>a) <span class="m">2<sup>6</sup> ≡ 1</span>, <span class="m">8 = 6 + 2</span> → <span class="m">2<sup>2</sup></span> = <span class="ans">4</span></li>
+          <li>b) <span class="m">19 = 3·6 + 1</span> → <span class="m">3<sup>1</sup></span> = <span class="ans">3</span></li>
+          <li>c) <span class="m">4<sup>12</sup> ≡ 1</span>, <span class="m">122 = 10·12 + 2</span> → <span class="m">16 ≡</span> <span class="ans">3</span></li>
+          <li>d) <span class="m">413 = 34·12 + 5</span> → <span class="m">5<sup>5</sup></span>; <span class="m">5<sup>2</sup> = 25 ≡ −1</span>, így <span class="m">5<sup>5</sup> = (5<sup>2</sup>)<sup>2</sup>·5 ≡ 5</span> → <span class="ans">5</span></li>
+          <li>e) <span class="m">6<sup>10</sup> ≡ 1</span>, <span class="m">513 = 51·10 + 3</span> → <span class="m">216 = 19·11 + 7</span> → <span class="ans">7</span></li>
+          <li>f) <span class="m">φ(9) = 6</span>, <span class="m">610 = 101·6 + 4</span> → <span class="m">7<sup>4</sup> ≡ (−2)<sup>4</sup> = 16 ≡</span> <span class="ans">7</span></li>
+        </ul>
+      </div></details>
+      <details><summary>Részletes magyarázat kezdőknek</summary><div class="sol">
+        <p><b>A recept, mind a hat feladathoz ugyanaz:</b></p>
+        <ol>
+          <li><b>Feltétel:</b> <span class="m">(<i>a</i>, <i>n</i>) = 1</span>? Ha igen, használható a tétel.</li>
+          <li><b>φ(n):</b> prím <span class="m"><i>p</i></span>-re <span class="m">φ(<i>p</i>) = <i>p</i> − 1</span>; különben a képlettel vagy összeszámolással.</li>
+          <li><b>Maradékos osztás a kitevőben:</b> <span class="m"><i>k</i> = <i>q</i> · φ(<i>n</i>) + <i>r</i></span>.</li>
+          <li><b>Csere:</b> <span class="m"><i>a<sup>k</sup></i> = (<i>a</i><sup>φ(<i>n</i>)</sup>)<sup><i>q</i></sup> · <i>a<sup>r</sup></i> ≡ 1<sup><i>q</i></sup> · <i>a<sup>r</sup></i> = <i>a<sup>r</sup></i></span>.</li>
+          <li><b>Kis hatvány kiszámolása:</b> lépésenként szorozz, és minden lépés után vedd a maradékot.</li>
+        </ol>
+
+        <p><b>a) <span class="m">2<sup>8</sup> mod 7</span>, minden lépéssel.</b></p>
+        <ol>
+          <li><span class="m">(2, 7) = 1</span> ✓</li>
+          <li>A 7 prím, tehát <span class="m">φ(7) = 6</span>, és a tétel szerint <span class="m">2<sup>6</sup> ≡ 1 mod 7</span>. (Ellenőrzés: <span class="m">64 = 9 · 7 + 1</span> ✓)</li>
+          <li><span class="m">8 = 1 · 6 + 2</span></li>
+          <li><span class="m">2<sup>8</sup> = 2<sup>6</sup> · 2<sup>2</sup> ≡ 1 · 4 = 4</span></li>
+        </ol>
+        <p>Itt még közvetlenül is ellenőrizhető: <span class="m">2<sup>8</sup> = 256 = 36 · 7 + 4</span> ✓. A tétel ott segít, ahol a kitevő akkora, hogy ezt már nem lehet kiszámolni.</p>
+
+        <p><b>A többi ugyanígy:</b></p>
+        <div class="tbl"><table>
+          <thead><tr><th></th><th>(a, n) = 1?</th><th>φ(n)</th><th>kitevő</th><th>marad</th><th>kis hatvány</th><th>eredmény</th></tr></thead>
+          <tbody>
+            <tr><td>b) 3<sup>19</sup> mod 7</td><td>✓</td><td>6</td><td>19 = 3·6 + 1</td><td>3<sup>1</sup></td><td>3</td><td><b>3</b></td></tr>
+            <tr><td>c) 4<sup>122</sup> mod 13</td><td>✓</td><td>12</td><td>122 = 10·12 + 2</td><td>4<sup>2</sup></td><td>16 = 13 + 3</td><td><b>3</b></td></tr>
+            <tr><td>d) 5<sup>413</sup> mod 13</td><td>✓</td><td>12</td><td>413 = 34·12 + 5</td><td>5<sup>5</sup></td><td>5 → 12 → 8 → 1 → 5</td><td><b>5</b></td></tr>
+            <tr><td>e) 6<sup>513</sup> mod 11</td><td>✓</td><td>10</td><td>513 = 51·10 + 3</td><td>6<sup>3</sup></td><td>216 = 19·11 + 7</td><td><b>7</b></td></tr>
+            <tr><td>f) 7<sup>610</sup> mod 9</td><td>✓</td><td>6</td><td>610 = 101·6 + 4</td><td>7<sup>4</sup></td><td>7 → 4 → 1 → 7</td><td><b>7</b></td></tr>
+          </tbody>
+        </table></div>
+        <p>A „kis hatvány” oszlop a lépésenkénti szorzást mutatja. Például d)-ben: <span class="m">5 · 5 = 25 ≡ 12</span>, <span class="m">12 · 5 = 60 ≡ 8</span>, <span class="m">8 · 5 = 40 ≡ 1</span>, <span class="m">1 · 5 = 5</span>. Így sosem kell nagy számokkal dolgozni.</p>
+
+        <div class="warn"><b>f)-nél figyelj:</b> a 9 nem prím, ezért <span class="m">φ(9) ≠ 8</span>. A 9-hez relatív prímek 1 és 9 között: 1, 2, 4, 5, 7, 8, tehát <span class="m">φ(9) = 6</span>. Képlettel: <span class="m">φ(9) = 9 · (1 − ⅓) = 6</span>.</div>
+      </div></details>
+    </article>
+
+    <article class="task">
+      <div class="task-head"><span class="no">4/5</span><span class="src">érdekes · volt a minta Zh-ban</span></div>
+      <p class="stmt"><span class="m">7<sup>3<sup>47</sup></sup></span> utolsó két jegye.</p>
+      <details><summary>Megoldás</summary><div class="sol"><p>Lásd a <a href="#minta">minta Zh 4. feladatát</a>. <span class="ans">43</span></p></div></details>
+    </article>
+
+    <article class="task">
+      <div class="task-head"><span class="no">4/6</span><span class="src">érdekes</span></div>
+      <p class="stmt"><span class="m">3<sup>1003</sup></span> utolsó három jegye.</p>
+      <details><summary>Megoldás</summary><div class="sol">
+        <p>Mod 1000 kell; <span class="m">1000 = 8 · 125</span>, a kettőt külön számolom, aztán kínai maradéktétel.</p>
+        <ul>
+          <li>Mod 8: <span class="m">3<sup>2</sup> = 9 ≡ 1</span>, <span class="m">1003</span> páratlan → <span class="m">3<sup>1003</sup> ≡ 3</span>.</li>
+          <li>Mod 125: <span class="m">φ(125) = 100</span>, <span class="m">1003 = 10·100 + 3</span> → <span class="m">3<sup>1003</sup> ≡ 3<sup>3</sup> = 27</span>.</li>
+        </ul>
+        <p><span class="m"><i>x</i> ≡ 27 (125)</span> és <span class="m"><i>x</i> ≡ 3 (8)</span>: a 27 mindkettőt teljesíti (<span class="m">27 = 3·8 + 3</span>), így <span class="m"><i>x</i> ≡ 27 mod 1000</span>.</p>
+        <p><span class="ans">az utolsó három jegy 027</span></p>
+        <div class="tip">Közvetlenül φ(1000) = 400-zal is megy (<span class="m">3<sup>1003</sup> ≡ 3<sup>203</sup></span>), de az sokkal több számolás.</div>
+      </div></details>
+    </article>
+  </div>
+</section>
+
+<!-- ================= GYAKORLÓ ZH ================= -->
+<section id="gyakorlo">
+  <div class="section-head">
+    <span class="label">Új feladatok, a minta szerkezetével</span>
+    <h2>Gyakorló Zh-k</h2>
+    <p>Mindkettő 4 feladat, 30 pont. Indítsd az órát, papíron dolgozz, és csak a végén nyisd le a megoldásokat. Utána írd be a pontjaidat.</p>
+  </div>
+
+  <div class="exam" data-exam="A">
+    <div class="exam-bar">
+      <div><span class="label">A változat</span><div class="clock" id="clockA">60:00</div></div>
+      <div class="btns">
+        <button type="button" class="primary" id="startA">Indítás</button>
+        <button type="button" id="resetA">Újra</button>
+      </div>
+    </div>
+
+    <article class="task">
+      <div class="task-head"><span class="no">A1.</span><span class="src">a 2/5 rokona</span><span class="pts">8 pont</span></div>
+      <p class="stmt">Legyen <span class="m"><i>F<sub>n</sub></i></span> a Fibonacci-sorozat. Határozza meg <span class="m">(<i>F</i><sub><i>n</i>+4</sub>, <i>F<sub>n</sub></i>)</span> értékét minden <span class="m"><i>n</i> ≥ 0</span>-ra!</p>
+      <details><summary>Megoldás</summary><div class="sol">
+        <p><span class="m"><i>F</i><sub><i>n</i>+4</sub> = <i>F</i><sub><i>n</i>+3</sub> + <i>F</i><sub><i>n</i>+2</sub> = 3<i>F</i><sub><i>n</i>+1</sub> + 2<i>F<sub>n</sub></i></span>, így <span class="m">(<i>F</i><sub><i>n</i>+4</sub>, <i>F<sub>n</sub></i>) = (3<i>F</i><sub><i>n</i>+1</sub>, <i>F<sub>n</sub></i>)</span>.</p>
+        <p>Mivel <span class="m">(<i>F</i><sub><i>n</i>+1</sub>, <i>F<sub>n</sub></i>) = 1</span> (bizonyítsd, lásd minta 1.), egy közös osztó <span class="m"><i>F</i><sub><i>n</i>+1</sub></span>-hez relatív prím, tehát a 3-at osztja: <span class="m">(3<i>F</i><sub><i>n</i>+1</sub>, <i>F<sub>n</sub></i>) = (3, <i>F<sub>n</sub></i>)</span>.</p>
+        <p><span class="m"><i>F<sub>n</sub></i> mod 3</span>: 0, 1, 1, 2, 0, 2, 2, 1, majd ismétlődik (8-as periódus), nulla pontosan ha <span class="m">4 | <i>n</i></span>.</p>
+        <p><span class="ans">3, ha 4 | n; különben 1</span></p>
+      </div></details>
+    </article>
+
+    <article class="task">
+      <div class="task-head"><span class="no">A2.</span><span class="src">a 3/4 rokona</span><span class="pts">7 pont</span></div>
+      <p class="stmt">Egy levélre pontosan 501 Ft értékű bélyeget kell ragasztani. 18 és 33 forintos bélyegünk van, mindkettőből bőven. Hányféleképpen lehet ezt megtenni?</p>
+      <details><summary>Megoldás</summary><div class="sol">
+        <p><span class="m">18<i>x</i> + 33<i>y</i> = 501</span>, <span class="m"><i>x</i>, <i>y</i> ≥ 0</span>. <span class="m">(18, 33) = 3 | 501</span> → <span class="m">6<i>x</i> + 11<i>y</i> = 167</span>.</p>
+        <p>Mod 6: <span class="m">11<i>y</i> ≡ 167 ⇒ 5<i>y</i> ≡ 5 ⇒ <i>y</i> ≡ 1</span>. <span class="m"><i>y</i> = 1 + 6<i>t</i>, <i>x</i> = (167 − 11 − 66<i>t</i>)/6 = 26 − 11<i>t</i></span>.</p>
+        <p><span class="m"><i>x</i> ≥ 0 ⇒ <i>t</i> ≤ 2</span>, <span class="m"><i>y</i> ≥ 0 ⇒ <i>t</i> ≥ 0</span>: <span class="m"><i>t</i> = 0, 1, 2</span> → (26, 1), (15, 7), (4, 13).</p>
+        <p><span class="ans">3-féleképpen</span></p>
+      </div></details>
+    </article>
+
+    <article class="task">
+      <div class="task-head"><span class="no">A3.</span><span class="src">a 4/3 rokona</span><span class="pts">7 pont</span></div>
+      <p class="stmt">Hány lényegesen különböző megoldása van a <span class="m">4<i>x</i> ≡ 6 mod 10, 9<i>x</i> ≡ 3 mod 12</span> rendszernek? Adja meg őket!</p>
+      <details><summary>Megoldás</summary><div class="sol">
+        <p><span class="m">4<i>x</i> ≡ 6 (10)</span>: <span class="m">(4,10) = 2 | 6</span> → <span class="m">2<i>x</i> ≡ 3 (5) ⇒ <i>x</i> ≡ 3·3 = 9 ≡ 4 (5)</span>.</p>
+        <p><span class="m">9<i>x</i> ≡ 3 (12)</span>: <span class="m">(9,12) = 3 | 3</span> → <span class="m">3<i>x</i> ≡ 1 (4) ⇒ <i>x</i> ≡ 3 (4)</span>.</p>
+        <p><span class="m"><i>x</i> = 3 + 4<i>k</i> ≡ 4 (5) ⇒ 4<i>k</i> ≡ 1 ⇒ <i>k</i> ≡ 4 (5)</span> → <span class="m"><i>x</i> ≡ 19 mod 20</span>.</p>
+        <p><span class="m">[10, 12] = 60</span>, mod 60: <span class="ans">3 megoldás: 19, 39, 59 (mod 60)</span></p>
+      </div></details>
+    </article>
+
+    <article class="task">
+      <div class="task-head"><span class="no">A4.</span><span class="src">a 4/5 rokona</span><span class="pts">8 pont</span></div>
+      <p class="stmt">Határozza meg <span class="m">9<sup>9<sup>9</sup></sup></span> utolsó két számjegyét!</p>
+      <details><summary>Megoldás</summary><div class="sol">
+        <p><span class="m">9<sup>2</sup> = 81</span>, <span class="m">9<sup>5</sup> = 81<sup>2</sup>·9 ≡ 61·9 = 549 ≡ 49</span>, <span class="m">9<sup>10</sup> ≡ 49<sup>2</sup> = 2401 ≡ 1 mod 100</span>. Kell <span class="m">9<sup>9</sup> mod 10</span>: <span class="m">9 ≡ −1</span>, páratlan kitevő → <span class="m">9<sup>9</sup> ≡ 9 mod 10</span>.</p>
+        <p>Tehát <span class="m">9<sup>9<sup>9</sup></sup> ≡ 9<sup>9</sup> mod 100</span>, és <span class="m">9<sup>9</sup> = 9<sup>10</sup>·9<sup>−1</sup> ≡ 9<sup>−1</sup></span>. <span class="m">9·89 = 801 ≡ 1</span>, tehát <span class="m">9<sup>−1</sup> ≡ 89</span>.</p>
+        <p><span class="ans">89</span> (Euler: φ(100) = 40 is jó, csak hosszabb.)</p>
+      </div></details>
+    </article>
+
+    <div class="exam-bar score" id="scoreA">
+      <label for="pA1">A1 <input id="pA1" type="number" min="0" max="8" inputmode="numeric"></label>
+      <label for="pA2">A2 <input id="pA2" type="number" min="0" max="7" inputmode="numeric"></label>
+      <label for="pA3">A3 <input id="pA3" type="number" min="0" max="7" inputmode="numeric"></label>
+      <label for="pA4">A4 <input id="pA4" type="number" min="0" max="8" inputmode="numeric"></label>
+      <span>Összesen: <b id="sumA">0</b> / 30</span>
+      <span class="verdict" id="verdictA" hidden></span>
+    </div>
+  </div>
+
+  <div class="exam" data-exam="B" style="margin-top:22px">
+    <div class="exam-bar">
+      <div><span class="label">B változat</span><div class="clock" id="clockB">60:00</div></div>
+      <div class="btns">
+        <button type="button" class="primary" id="startB">Indítás</button>
+        <button type="button" id="resetB">Újra</button>
+      </div>
+    </div>
+
+    <article class="task">
+      <div class="task-head"><span class="no">B1.</span><span class="src">a 3/5 rokona</span><span class="pts">7 pont</span></div>
+      <p class="stmt">Oldja meg a <span class="m">39<i>x</i> ≡ 15 mod 81</span> kongruenciát! Adja meg az összes inkongruens megoldást mod 81.</p>
+      <details><summary>Megoldás</summary><div class="sol">
+        <p><span class="m">(39, 81) = 3 | 15</span>, tehát 3 megoldás lesz mod 81. Osztva: <span class="m">13<i>x</i> ≡ 5 mod 27</span>.</p>
+        <p><span class="m">27 = 2·13 + 1</span> → <span class="m">13·(−2) ≡ 1</span>, <span class="m">13<sup>−1</sup> ≡ 25</span>. <span class="m"><i>x</i> ≡ 5·25 = 125 ≡ 17 mod 27</span>.</p>
+        <p><span class="ans">x ≡ 17, 44, 71 mod 81</span></p>
+      </div></details>
+    </article>
+
+    <article class="task">
+      <div class="task-head"><span class="no">B2.</span><span class="src">a 4/1 rokona</span><span class="pts">8 pont</span></div>
+      <p class="stmt">Határozza meg azt a két legkisebb pozitív egészt, amelynek 11-szeresét 6-os számrendszerben felírva az utolsó előtti jegy 5, az utolsó jegy 2!</p>
+      <details><summary>Megoldás</summary><div class="sol">
+        <p><span class="m">11<i>n</i> ≡ 5·6 + 2 = 32 mod 36</span>. <span class="m">(11, 36) = 1</span>; <span class="m">36 = 3·11 + 3, 11 = 3·3 + 2, 3 = 2 + 1</span>, visszafelé <span class="m">1 = 4·36 − 13·11</span>, így <span class="m">11<sup>−1</sup> ≡ −13 ≡ 23</span>.</p>
+        <p><span class="m"><i>n</i> ≡ 32·23 = 736 ≡ 16 mod 36</span>. Ellenőrzés: <span class="m">11·16 = 176 = 4·36 + 5·6 + 2 = 452<sub>6</sub></span> ✓.</p>
+        <p><span class="ans">16 és 52</span></p>
+      </div></details>
+    </article>
+
+    <article class="task">
+      <div class="task-head"><span class="no">B3.</span><span class="src">a 3/7 és 4/4 rokona</span><span class="pts">7 pont</span></div>
+      <p class="stmt">Mutassa meg, hogy <span class="m">2<sup>70</sup> + 3<sup>70</sup></span> osztható 13-mal!</p>
+      <details><summary>Megoldás</summary><div class="sol">
+        <p><span class="m">2<sup>12</sup> ≡ 1 mod 13</span> (Fermat), <span class="m">70 = 5·12 + 10</span> → <span class="m">2<sup>70</sup> ≡ 2<sup>10</sup> = 1024 = 78·13 + 10 ≡ 10</span>.</p>
+        <p><span class="m">3<sup>3</sup> = 27 ≡ 1 mod 13</span>, <span class="m">70 = 23·3 + 1</span> → <span class="m">3<sup>70</sup> ≡ 3</span>.</p>
+        <p><span class="m">10 + 3 = 13 ≡ 0</span> ✓</p>
+      </div></details>
+    </article>
+
+    <article class="task">
+      <div class="task-head"><span class="no">B4.</span><span class="src">a 3/8 rokona</span><span class="pts">8 pont</span></div>
+      <p class="stmt">Legyen <span class="m"><i>z</i> = √3/2 + <i>i</i>/2</span>. Oldja meg a <span class="m"><i>z</i><sup>5<i>x</i></sup> = −<i>i</i></span> egyenletet az egész számok körében!</p>
+      <details><summary>Megoldás</summary><div class="sol">
+        <p><span class="m"><i>z</i> = cos 30° + <i>i</i> sin 30°</span>, rendje 12. <span class="m">−<i>i</i> = cos 270° + <i>i</i> sin 270° = <i>z</i><sup>9</sup></span>.</p>
+        <p><span class="m"><i>z</i><sup>5<i>x</i></sup> = <i>z</i><sup>9</sup> ⇔ 5<i>x</i> ≡ 9 mod 12</span>. <span class="m">5·5 = 25 ≡ 1</span>, <span class="m"><i>x</i> ≡ 45 ≡ 9 mod 12</span>.</p>
+        <p><span class="ans">x = 9 + 12k, k ∈ ℤ</span></p>
+      </div></details>
+    </article>
+
+    <div class="exam-bar score" id="scoreB">
+      <label for="pB1">B1 <input id="pB1" type="number" min="0" max="7" inputmode="numeric"></label>
+      <label for="pB2">B2 <input id="pB2" type="number" min="0" max="8" inputmode="numeric"></label>
+      <label for="pB3">B3 <input id="pB3" type="number" min="0" max="7" inputmode="numeric"></label>
+      <label for="pB4">B4 <input id="pB4" type="number" min="0" max="8" inputmode="numeric"></label>
+      <span>Összesen: <b id="sumB">0</b> / 30</span>
+      <span class="verdict" id="verdictB" hidden></span>
+    </div>
+  </div>
+
+  <div class="exam" data-exam="C" id="zh-c" style="margin-top:22px">
+    <div class="exam-bar">
+      <div><span class="label">C változat</span><div class="clock" id="clockC">60:00</div></div>
+      <div class="btns">
+        <button type="button" class="primary" id="startC">Indítás</button>
+        <button type="button" id="resetC">Újra</button>
+      </div>
+    </div>
+
+    <article class="task">
+      <div class="task-head"><span class="no">C1.</span><span class="src">lnko</span><span class="pts">8 pont (4 + 4)</span></div>
+      <p class="stmt">a) Mutassa meg, hogy minden <span class="m"><i>n</i></span> egészre <span class="m">(21<i>n</i> + 4, 14<i>n</i> + 3) = 1</span>!<br>b) Határozza meg <span class="m">(2<sup>18</sup> − 1, 2<sup>12</sup> − 1)</span> értékét, indoklással!</p>
+      <details><summary>Megoldás</summary><div class="sol">
+        <p><b>a)</b> Az <span class="m">(<i>a</i>, <i>b</i>) = (<i>a</i> − <i>kb</i>, <i>b</i>)</span> azonosságot többször alkalmazva (ez lényegében az euklideszi algoritmus):</p>
+        <p class="mb">(21<i>n</i> + 4, 14<i>n</i> + 3) = (7<i>n</i> + 1, 14<i>n</i> + 3) = (7<i>n</i> + 1, 14<i>n</i> + 3 − 2(7<i>n</i> + 1)) = (7<i>n</i> + 1, 1) = 1</p>
+        <p>Az első lépésben <span class="m">21<i>n</i> + 4 − (14<i>n</i> + 3) = 7<i>n</i> + 1</span>. Az azonosság indoklását (közös osztók halmaza ugyanaz) írd le!</p>
+        <p><b>b)</b> <span class="m">2<sup>18</sup> − 1 = 2<sup>6</sup>(2<sup>12</sup> − 1) + (2<sup>6</sup> − 1)</span>, így <span class="m">(2<sup>18</sup> − 1, 2<sup>12</sup> − 1) = (2<sup>12</sup> − 1, 2<sup>6</sup> − 1)</span>. Mivel <span class="m">2<sup>12</sup> − 1 = (2<sup>6</sup> − 1)(2<sup>6</sup> + 1)</span>, a <span class="m">2<sup>6</sup> − 1</span> osztja, tehát az lnko <span class="m">2<sup>6</sup> − 1</span>.</p>
+        <p><span class="ans">a) 1 &nbsp; b) 63</span> (összhangban: <span class="m">(18, 12) = 6</span>)</p>
+      </div></details>
+    </article>
+
+    <article class="task">
+      <div class="task-head"><span class="no">C2.</span><span class="src">diofantikus, szöveges</span><span class="pts">7 pont</span></div>
+      <p class="stmt">Egy csoport a büfében szendvicset (270 Ft/db) és kávét (330 Ft/db) vett, összesen 5100 Ft-ért. Több kávét vettek, mint szendvicset. Hány szendvicset és hány kávét vettek?</p>
+      <details><summary>Megoldás</summary><div class="sol">
+        <p><span class="m">270<i>x</i> + 330<i>y</i> = 5100</span>, <span class="m"><i>x</i>, <i>y</i> ≥ 0</span>. <span class="m">(270, 330) = 30 | 5100</span> → <span class="m">9<i>x</i> + 11<i>y</i> = 170</span>.</p>
+        <p>Mod 9: <span class="m">11 ≡ 2</span>, <span class="m">170 = 18 · 9 + 8</span>, tehát <span class="m">2<i>y</i> ≡ 8 ⇒ <i>y</i> ≡ 4 mod 9</span> (2-vel szabad osztani, mert <span class="m">(2, 9) = 1</span>).</p>
+        <p><span class="m"><i>y</i> = 4 + 9<i>t</i></span>, <span class="m"><i>x</i> = (170 − 44 − 99<i>t</i>)/9 = 14 − 11<i>t</i></span>.</p>
+        <p>Nemnegativitás: <span class="m"><i>t</i> ≥ 0</span> és <span class="m"><i>t</i> ≤ 14/11</span>, tehát <span class="m"><i>t</i> = 0</span>: (14, 4), vagy <span class="m"><i>t</i> = 1</span>: (3, 13). A „több kávé” feltétel csak a másodikra teljesül.</p>
+        <p>Ellenőrzés: <span class="m">270 · 3 + 330 · 13 = 810 + 4290 = 5100</span> ✓. <span class="ans">3 szendvics és 13 kávé</span></p>
+        <div class="warn">Ha a kiegészítő feltételt nem veszed figyelembe, két megoldást kapsz. Mindkettőt fel kell írni, és utána kiválasztani a jót.</div>
+      </div></details>
+    </article>
+
+    <article class="task">
+      <div class="task-head"><span class="no">C3.</span><span class="src">kongruenciarendszer</span><span class="pts">7 pont (4 + 3)</span></div>
+      <p class="stmt">Hány lényegesen különböző megoldása van az alábbi rendszereknek? Adja meg őket!</p>
+      <p class="mb">a)&nbsp; 6<i>x</i> ≡ 4 mod 10,&nbsp; 4<i>x</i> ≡ 8 mod 12&nbsp;&nbsp;&nbsp;&nbsp; b)&nbsp; <i>x</i> ≡ 1 mod 4,&nbsp; 3<i>x</i> ≡ 0 mod 6</p>
+      <details><summary>Megoldás</summary><div class="sol">
+        <p><b>a)</b> <span class="m">6<i>x</i> ≡ 4 (10)</span>: <span class="m">(6, 10) = 2 | 4</span> → <span class="m">3<i>x</i> ≡ 2 (5)</span> → <span class="m"><i>x</i> ≡ 4 (5)</span>, mert <span class="m">3 · 4 = 12 ≡ 2</span>.</p>
+        <p><span class="m">4<i>x</i> ≡ 8 (12)</span>: <span class="m">(4, 12) = 4 | 8</span> → <span class="m"><i>x</i> ≡ 2 (3)</span>.</p>
+        <p><span class="m"><i>x</i> = 4 + 5<i>k</i> ≡ 2 (3) ⇒ 1 + 2<i>k</i> ≡ 2 ⇒ 2<i>k</i> ≡ 1 ⇒ <i>k</i> ≡ 2 (3)</span> → <span class="m"><i>x</i> ≡ 14 mod 15</span>.</p>
+        <p><span class="m">[10, 12] = 60</span>, mod 60: <span class="ans">4 megoldás: 14, 29, 44, 59</span></p>
+        <p>Ellenőrzés: <span class="m">6 · 14 = 84 ≡ 4 (10)</span> ✓, <span class="m">4 · 14 = 56 = 4 · 12 + 8</span> ✓.</p>
+        <p><b>b)</b> <span class="m"><i>x</i> ≡ 1 (4)</span> miatt <span class="m"><i>x</i></span> páratlan. <span class="m">3<i>x</i> ≡ 0 (6)</span>: <span class="m">(3, 6) = 3 | 0</span> → <span class="m"><i>x</i> ≡ 0 (2)</span>, tehát <span class="m"><i>x</i></span> páros. Ellentmondás.</p>
+        <p><span class="ans">0 megoldás</span></p>
+        <div class="tip">Nem relatív prím modulusoknál mindig nézd meg, összeférnek-e a feltételek a közös prímosztó (itt a 2) szerint.</div>
+      </div></details>
+    </article>
+
+    <article class="task">
+      <div class="task-head"><span class="no">C4.</span><span class="src">Euler–Fermat, torony</span><span class="pts">8 pont</span></div>
+      <p class="stmt">Határozza meg <span class="m">3<sup>3<sup>2026</sup></sup></span> utolsó két számjegyét!</p>
+      <details><summary>Megoldás</summary><div class="sol">
+        <p><span class="m">(3, 100) = 1</span>, <span class="m">φ(100) = 40</span>, tehát <span class="m">3<sup>40</sup> ≡ 1 mod 100</span>, és a kitevő mod 40 kell.</p>
+        <p><span class="m">3<sup>2026</sup> mod 40</span>: <span class="m">3<sup>4</sup> = 81 ≡ 1 mod 40</span>, <span class="m">2026 = 506 · 4 + 2</span>, így <span class="m">3<sup>2026</sup> ≡ 3<sup>2</sup> = 9 mod 40</span>.</p>
+        <p>Tehát <span class="m">3<sup>3<sup>2026</sup></sup> ≡ 3<sup>9</sup> mod 100</span>. Lépésenként: <span class="m">3<sup>4</sup> = 81</span>, <span class="m">3<sup>5</sup> = 243 ≡ 43</span>, <span class="m">3<sup>9</sup> = 3<sup>5</sup> · 3<sup>4</sup> ≡ 43 · 81 = 3483 ≡ 83</span>.</p>
+        <p><span class="ans">83</span> (ellenőrzés: <span class="m">3<sup>9</sup> = 19 683</span> ✓)</p>
+      </div></details>
+    </article>
+
+    <div class="exam-bar score" id="scoreC">
+      <label for="pC1">C1 <input id="pC1" type="number" min="0" max="8" inputmode="numeric"></label>
+      <label for="pC2">C2 <input id="pC2" type="number" min="0" max="7" inputmode="numeric"></label>
+      <label for="pC3">C3 <input id="pC3" type="number" min="0" max="7" inputmode="numeric"></label>
+      <label for="pC4">C4 <input id="pC4" type="number" min="0" max="8" inputmode="numeric"></label>
+      <span>Összesen: <b id="sumC">0</b> / 30</span>
+      <span class="verdict" id="verdictC" hidden></span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= HIBÁK ================= -->
+<section id="hibak">
+  <div class="section-head">
+    <span class="label">Ahol a pontok elvesznek</span>
+    <h2>Gyakori hibák</h2>
+  </div>
+  <div class="mistakes">
+    <div class="mistake"><span class="x">✗</span><p><span class="m">2<i>x</i> ≡ 4 mod 8</span>-ból <span class="m"><i>x</i> ≡ 2 mod 8</span>. Helyesen <span class="m"><i>x</i> ≡ 2 mod 4</span>, ami mod 8 két megoldás. Ha <span class="m"><i>a</i></span>-val egyszerűsítesz, a modulust <span class="m">(<i>a</i>,<i>m</i>)</span>-mel osztani kell.</p></div>
+    <div class="mistake"><span class="x">✗</span><p>A „hány megoldás” kérdésnél csak egy maradékosztály a válasz. Mondd ki, melyik modulus szerint számolsz (a modulusok lkkt-je), és sorold fel az osztályokat.</p></div>
+    <div class="mistake"><span class="x">✗</span><p>A kitevőt mod <span class="m"><i>n</i></span> redukálni. A kitevő mod <span class="m">φ(<i>n</i>)</span> (vagy a rend szerint) redukálható, az alap mod <span class="m"><i>n</i></span>.</p></div>
+    <div class="mistake"><span class="x">✗</span><p>Euler–Fermat, amikor <span class="m">(<i>a</i>,<i>n</i>) ≠ 1</span>. Ilyenkor bontsd fel a modulust (pl. 1000 = 8·125), és kínai maradéktétel.</p></div>
+    <div class="mistake"><span class="x">✗</span><p>Szöveges diofantikus feladatnál az általános megoldás a végeredmény. Kell a nemnegativitás, a <span class="m"><i>t</i></span>-k leszámolása és a válasz a kérdésre (pl. „14 százlábú”).</p></div>
+    <div class="mistake"><span class="x">✗</span><p>Komplex hatványnál csak <span class="m"><i>n</i> ≥ 0</span>-t adni meg. A kérdés egészekre szól, tehát <span class="m"><i>n</i> = 12<i>k</i>, <i>k</i> ∈ ℤ</span>.</p></div>
+    <div class="mistake"><span class="x">✗</span><p>Indoklás nélküli eredmény. A minta 1. feladata bizonyítás: a segédállítást <span class="m">(<i>a</i>,<i>b</i>) = (<i>a</i>−<i>b</i>,<i>b</i>)</span> is írd le, és az indukció kezdőlépését is.</p></div>
+    <div class="mistake"><span class="x">✓</span><p>Minden végeredményt helyettesíts vissza. 30 másodperc, és a számolási hibák nagy részét elkapja.</p></div>
+  </div>
+</section>
+
+<footer>
+  Forrás: dm2gy01–04 feladatsorok, zh1_minta (2026.10.07.), Mérai László: Diszkrét matematika 2 tételjegyzet. Minden számszerű eredmény programmal ellenőrizve.
+</footer>
+</div>
+
+<script>
+(function () {
+  function setupExam(id, maxes) {
+    var clock = document.getElementById('clock' + id);
+    var start = document.getElementById('start' + id);
+    var reset = document.getElementById('reset' + id);
+    var total = 60 * 60, left = total, timer = null;
+    function render() {
+      var m = Math.floor(left / 60), s = left % 60;
+      clock.textContent = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+      clock.classList.toggle('low', left <= 300);
+    }
+    function tick() {
+      left = Math.max(0, left - 1);
+      render();
+      if (left === 0) { clearInterval(timer); timer = null; start.textContent = 'Lejárt'; start.disabled = true; }
+    }
+    start.addEventListener('click', function () {
+      if (timer) { clearInterval(timer); timer = null; start.textContent = 'Folytatás'; }
+      else { timer = setInterval(tick, 1000); start.textContent = 'Szünet'; }
+    });
+    reset.addEventListener('click', function () {
+      if (timer) clearInterval(timer);
+      timer = null; left = total; start.textContent = 'Indítás'; start.disabled = false; render();
+    });
+    render();
+
+    var inputs = maxes.map(function (_, i) { return document.getElementById('p' + id + (i + 1)); });
+    var sum = document.getElementById('sum' + id);
+    var verdict = document.getElementById('verdict' + id);
+    function update() {
+      var s = 0, filled = 0;
+      inputs.forEach(function (inp, i) {
+        var v = parseFloat(inp.value);
+        if (!isNaN(v)) { filled++; s += Math.min(Math.max(v, 0), maxes[i]); }
+      });
+      sum.textContent = s;
+      if (filled === 0) { verdict.hidden = true; return; }
+      verdict.hidden = false;
+      var pass = s >= 12;
+      verdict.className = 'verdict ' + (pass ? 'pass' : 'fail');
+      verdict.textContent = pass ? 'Megvan a 12 pont' : 'Még ' + (12 - s) + ' pont hiányzik a 12-höz';
+    }
+    inputs.forEach(function (inp) { inp.addEventListener('input', update); });
+  }
+  setupExam('A', [8, 7, 7, 8]);
+  setupExam('B', [7, 8, 7, 8]);
+  setupExam('C', [8, 7, 7, 8]);
+})();
+</script>

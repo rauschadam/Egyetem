@@ -1,0 +1,843 @@
+<!doctype html>
+<html lang="hu" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Analízis II · 5. gyakorlat kidolgozva</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['\\(', '\\)']],
+      displayMath: [['\\[', '\\]']],
+      macros: {
+        arcsin: '\\operatorname{arc\\,sin}', arccos: '\\operatorname{arc\\,cos}',
+        arctg: '\\operatorname{arc\\,tg}', arcctg: '\\operatorname{arc\\,ctg}',
+        tg: '\\operatorname{tg}', ctg: '\\operatorname{ctg}', R: '\\mathbb{R}'
+      }
+    },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js" async></script>
+<style>
+/* Layout: same exam-paper look as the DIMAT prep, in the Analysis orange; every task = statement + folded solution + folded walkthrough */
+:root {
+  --paper: #f5f7fa;
+  --grid: rgba(180, 80, 11, 0.06);
+  --card: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6574;
+  --rule: #d7dde6;
+  --accent: #b4500b;
+  --accent-soft: #fcefe4;
+  --mark: #b8352a;
+  --mark-soft: #fbe9e6;
+  --ok: #2c7a4b;
+  --ok-soft: #e3f3e9;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-label: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f141b; --grid: rgba(242, 162, 94, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+    --rule: #2a3442; --accent: #f2a25e; --accent-soft: #33241a; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+    --ok: #74d39c; --ok-soft: #173225; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f141b; --grid: rgba(242, 162, 94, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+  --rule: #2a3442; --accent: #f2a25e; --accent-soft: #33241a; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+  --ok: #74d39c; --ok-soft: #173225; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background-color: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 1.06rem;
+  line-height: 1.6;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 80px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2rem, 6vw, 3.1rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.65rem; font-weight: 700; letter-spacing: -0.01em; }
+h3 { font-size: 1.1rem; font-weight: 600; }
+p { margin: 0; }
+a { color: var(--accent); }
+.label { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding: 2px 0; margin: 6px 0 !important; min-width: 0; max-width: 100%; }
+/* grid children must be allowed to shrink, otherwise wide formulas push the page sideways */
+.task, .sol, .step, .rule-card, .sheet > * { grid-template-columns: minmax(0, 1fr); min-width: 0; }
+.rule-card li, .rule-card p, .sol p, .sol li, .step p, .stmt, .tip, .warn, .mistake p, td { overflow-x: auto; overflow-y: hidden; }
+
+/* back to subject page */
+.back { justify-self: start; display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px 9px 12px; border: 1.5px solid var(--accent); border-radius: 8px; background: var(--accent-soft); color: var(--ink); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 1.02rem; line-height: 1; white-space: nowrap; transition: background .15s, color .15s; }
+.back .arr { color: var(--accent); font-size: 1.25rem; transition: transform .15s, color .15s; }
+.back:hover, .back:focus-visible { background: var(--accent); color: var(--paper); outline: none; }
+.back:hover .arr, .back:focus-visible .arr { color: var(--paper); transform: translateX(-3px); }
+
+/* header */
+header.hero { display: grid; gap: 14px; padding-block: 0 26px; border-bottom: 2px solid var(--accent); }
+.hero .sub { color: var(--muted); max-width: 62ch; }
+.facts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.fact { display: flex; flex-direction: column; gap: 2px; padding: 8px 14px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; min-width: 120px; }
+.fact b { font-family: var(--f-display); font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+
+nav.bar { position: sticky; top: 0; z-index: 5; background: var(--paper); border-bottom: 1px solid var(--rule); margin-inline: -16px; padding-inline: 16px; }
+nav.bar ul { list-style: none; margin: 0; padding: 10px 0; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin; }
+nav.bar a { display: block; white-space: nowrap; text-decoration: none; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.04em; color: var(--ink); padding: 6px 10px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); }
+nav.bar a:hover, nav.bar a:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+nav.bar a.nav-back { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+
+section { padding-top: 44px; display: grid; gap: 18px; scroll-margin-top: 56px; }
+.section-head { display: grid; gap: 6px; }
+.section-head p { color: var(--muted); max-width: 64ch; }
+
+/* reminder cards */
+.sheet { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; }
+.rule-card { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 14px 16px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.rule-card h3 { font-size: 1rem; }
+.rule-card p, .rule-card li { font-size: 0.95rem; }
+.rule-card ul, .rule-card ol { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.rule-card.wide { grid-column: 1 / -1; }
+
+/* tables (sign charts, value tables) */
+.tbl { overflow-x: auto; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--rule); vertical-align: middle; }
+th { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+tr:last-child td, tr:last-child th { border-bottom: 0; }
+table.sgn { width: auto; min-width: 100%; }
+table.sgn th, table.sgn td { text-align: center; white-space: nowrap; border-left: 1px solid var(--rule); }
+table.sgn th:first-child { border-left: 0; text-transform: none; letter-spacing: 0; font-family: var(--f-body); font-size: 1rem; color: var(--ink); background: var(--accent-soft); }
+table.sgn td.pt { background: color-mix(in srgb, var(--accent-soft) 55%, transparent); }
+.p { color: var(--ok); font-weight: 600; }
+.n { color: var(--mark); font-weight: 600; }
+.note { font-size: 0.82rem; color: var(--muted); }
+.tag { font-family: var(--f-label); font-size: 0.72rem; color: var(--accent); }
+
+/* exercises */
+.task { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 18px; display: grid; gap: 10px; min-width: 0; scroll-margin-top: 60px; }
+.task-head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.task-head .no { font-family: var(--f-display); font-weight: 700; font-size: 1.05rem; }
+.task-head .src { font-family: var(--f-label); font-size: 0.72rem; color: var(--muted); }
+.task-head .kind { margin-left: auto; font-family: var(--f-label); font-size: 0.75rem; color: var(--accent); }
+.stmt { max-width: 70ch; }
+details { border-top: 1px dashed var(--rule); padding-top: 8px; min-width: 0; }
+summary { cursor: pointer; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); list-style: none; display: inline-flex; gap: 8px; align-items: center; padding: 4px 0; }
+summary::-webkit-details-marker { display: none; }
+summary::before { content: "+"; display: inline-grid; place-items: center; width: 18px; height: 18px; border: 1px solid currentColor; border-radius: 3px; font-size: 0.8rem; }
+details[open] > summary::before { content: "−"; }
+summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sol { display: grid; gap: 10px; padding-top: 6px; max-width: 74ch; min-width: 0; }
+.sol ol, .sol ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.step { display: grid; gap: 8px; min-width: 0; }
+.step > b:first-child { font-family: var(--f-display); font-weight: 600; }
+.ans { display: inline-block; background: var(--ok-soft); color: var(--ok); font-weight: 600; padding: 2px 9px; border-radius: 4px; }
+.warn { background: var(--mark-soft); border-left: 3px solid var(--mark); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 0.95rem; }
+.tip { background: var(--accent-soft); border-left: 3px solid var(--accent); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 0.95rem; }
+.taskgroup { display: grid; gap: 12px; }
+
+/* graphs */
+figure.graph { margin: 0; background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 8px 8px 6px; display: grid; gap: 6px; }
+figure.graph svg { width: 100%; height: auto; display: block; }
+figure.graph figcaption { display: flex; flex-wrap: wrap; gap: 4px 16px; font-family: var(--f-label); font-size: 0.72rem; color: var(--muted); padding: 0 4px; }
+.lg::before { content: ""; display: inline-block; width: 16px; height: 0; vertical-align: middle; margin-right: 6px; border-top: 2.5px solid var(--accent); }
+.lg.asy::before { border-top: 1.5px dashed var(--muted); }
+.lg.ext::before { width: 9px; height: 9px; border: 0; border-radius: 50%; background: var(--ok); }
+.lg.inf::before { width: 9px; height: 9px; border: 2px solid var(--mark); border-radius: 50%; box-sizing: border-box; }
+svg .gl { stroke: var(--rule); stroke-width: 1; opacity: .55; }
+svg .ax { stroke: var(--muted); stroke-width: 1.3; }
+svg .tk { fill: var(--muted); font-family: var(--f-label); font-size: 11px; }
+svg .cv { fill: none; stroke: var(--accent); stroke-width: 2.6; stroke-linejoin: round; stroke-linecap: round; }
+svg .as { stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 6 5; fill: none; }
+svg .pe { fill: var(--ok); stroke: var(--paper); stroke-width: 1.5; }
+svg .pi { fill: var(--paper); stroke: var(--mark); stroke-width: 2.2; }
+svg .pz { fill: var(--ink); }
+svg .po { fill: var(--paper); stroke: var(--accent); stroke-width: 2; }
+svg .pl { fill: var(--ink); font-family: var(--f-label); font-size: 12px; paint-order: stroke; stroke: var(--paper); stroke-width: 4px; stroke-linejoin: round; }
+
+/* mistakes */
+.mistakes { display: grid; gap: 10px; }
+.mistake { display: grid; grid-template-columns: auto 1fr; gap: 12px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 12px 14px; }
+.mistake .x { font-family: var(--f-display); font-weight: 700; color: var(--mark); font-size: 1.2rem; line-height: 1.3; }
+
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px; }
+button { font-family: var(--f-label); font-size: 0.78rem; padding: 7px 12px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); color: var(--ink); cursor: pointer; }
+button:hover, button:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+
+footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.88rem; }
+
+@media (max-width: 520px) {
+  body { font-size: 1rem; }
+  .task { padding: 14px; }
+  th, td { padding: 6px 8px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <a class="back" href="../../index.html#/anal2"><span class="arr" aria-hidden="true">←</span>Vissza: Analízis II.</a>
+  <span class="label">Analízis II. · 5. gyakorlat · Differenciálszámítás 4.</span>
+  <h1>Az 5. gyakorlat kidolgozva</h1>
+  <p class="sub">Inverz trigonometrikus függvények és teljes függvényvizsgálat. Előbb próbáld meg magad megoldani a feladatot, és csak utána nyisd le a megoldást. A „Részletes magyarázat” a számolási lépéseket és a buktatókat is végigveszi.</p>
+  <div class="facts">
+    <div class="fact"><span class="label">Órai feladat</span><b>4</b></div>
+    <div class="fact"><span class="label">Házi feladat</span><b>4</b></div>
+    <div class="fact"><span class="label">Grafikon</span><b>6 db</b></div>
+  </div>
+</header>
+
+<nav class="bar" aria-label="Fejezetek">
+  <ul>
+    <li><a class="nav-back" href="../../index.html#/anal2" aria-label="Vissza: Analízis II.">← ANAL II</a></li>
+    <li><a href="#emlekezteto">Emlékeztető</a></li>
+    <li><a href="#orai">Órai feladatok</a></li>
+    <li><a href="#hazi">Házi feladatok</a></li>
+    <li><a href="#hibak">Gyakori hibák</a></li>
+  </ul>
+</nav>
+
+<!-- ================= EMLÉKEZTETŐ ================= -->
+<section id="emlekezteto">
+  <div class="section-head">
+    <span class="label">Ami kell hozzá</span>
+    <h2>Emlékeztető</h2>
+    <p>Az 5. gyakorlat elméleti összefoglalója röviden. A feladatokban végig ezekre hivatkozunk.</p>
+  </div>
+  <div class="sheet">
+    <div class="rule-card">
+      <h3>Inverz trigonometrikus függvények</h3>
+      <ul>
+        <li>\(\arcsin := \big(\sin|_{[-\pi/2,\,\pi/2]}\big)^{-1}\), értékei \(\left[-\frac{\pi}{2}, \frac{\pi}{2}\right]\)-ben</li>
+        <li>\(\arccos := \big(\cos|_{[0,\,\pi]}\big)^{-1}\), értékei \([0, \pi]\)-ben</li>
+        <li>\(\arctg := \big(\tg|_{(-\pi/2,\,\pi/2)}\big)^{-1}\), értékei \(\left(-\frac{\pi}{2}, \frac{\pi}{2}\right)\)-ben</li>
+        <li>\(\arcctg := \big(\ctg|_{(0,\,\pi)}\big)^{-1}\), értékei \((0, \pi)\)-ben</li>
+      </ul>
+      <p>Például \(\arcsin x = y \iff \sin y = x\) <b>és</b> \(y \in \left[-\frac{\pi}{2}, \frac{\pi}{2}\right]\).</p>
+    </div>
+    <div class="rule-card">
+      <h3>Nevezetes értékek</h3>
+      <div class="tbl"><table class="sgn">
+        <tr><th>\(y\)</th><td>\(0\)</td><td>\(\frac{\pi}{6}\)</td><td>\(\frac{\pi}{4}\)</td><td>\(\frac{\pi}{3}\)</td><td>\(\frac{\pi}{2}\)</td></tr>
+        <tr><th>\(\sin y\)</th><td>\(0\)</td><td>\(\frac12\)</td><td>\(\frac{\sqrt2}{2}\)</td><td>\(\frac{\sqrt3}{2}\)</td><td>\(1\)</td></tr>
+        <tr><th>\(\cos y\)</th><td>\(1\)</td><td>\(\frac{\sqrt3}{2}\)</td><td>\(\frac{\sqrt2}{2}\)</td><td>\(\frac12\)</td><td>\(0\)</td></tr>
+        <tr><th>\(\tg y\)</th><td>\(0\)</td><td>\(\frac{1}{\sqrt3}\)</td><td>\(1\)</td><td>\(\sqrt3\)</td><td>–</td></tr>
+      </table></div>
+      <p class="note">\(\ctg y = 1/\tg y\). Páratlan: \(\arcsin(-x) = -\arcsin x\), \(\arctg(-x) = -\arctg x\). Viszont \(\arccos(-x) = \pi - \arccos x\).</p>
+    </div>
+    <div class="rule-card">
+      <h3>Teljes függvényvizsgálat menete</h3>
+      <ol>
+        <li><b>Kezdeti vizsgálatok:</b> értelmezési tartomány, előjel, paritás, periodicitás, folytonosság, deriválhatóság.</li>
+        <li><b>Monotonitás:</b> \(f'\) zérushelyei és előjele → lokális szélsőértékek.</li>
+        <li><b>Konvexitás:</b> \(f''\) zérushelyei és előjele → inflexiós pontok.</li>
+        <li><b>Határértékek</b> a \(D_f\) „szélein”: \(\pm\infty\)-ben és a kimaradó pontokban.</li>
+        <li><b>Aszimptoták</b> \(\pm\infty\)-ben.</li>
+        <li><b>Grafikon</b> vázolása.</li>
+      </ol>
+    </div>
+    <div class="rule-card">
+      <h3>Előjelekből következtetés</h3>
+      <ul>
+        <li>\(f' > 0\) egy intervallumon → ott \(f\) szigorúan nő (↗); \(f' \lt 0\) → csökken (↘).</li>
+        <li>\(f'(x_0)=0\) <b>és</b> \(f'\) előjelet vált \(x_0\)-ban → lokális szélsőérték. Az \(f'(x_0)=0\) önmagában csak szükséges feltétel.</li>
+        <li>\(f'' > 0\) → konvex (⌣), \(f'' \lt 0\) → konkáv (⌢). Ahol \(f''\) előjelet vált, ott inflexió van.</li>
+      </ul>
+    </div>
+    <div class="rule-card">
+      <h3>Aszimptota \(\pm\infty\)-ben</h3>
+      <p>Az \(y = Ax + B\) egyenes aszimptota \(+\infty\)-ben, ha mindkét határérték létezik és véges:</p>
+      \[A = \lim_{x\to+\infty} \frac{f(x)}{x}, \qquad B = \lim_{x\to+\infty} \big(f(x) - Ax\big).\]
+      <p>\(-\infty\)-ben külön kell kiszámolni, mert ott más is lehet.</p>
+    </div>
+    <div class="rule-card">
+      <h3>L'Hospital-szabály</h3>
+      <p>Ha \(\frac{0}{0}\) vagy \(\frac{\pm\infty}{\pm\infty}\) típusú a határérték, és \(\lim \frac{f'}{g'}\) létezik, akkor</p>
+      \[\lim \frac{f}{g} = \lim \frac{f'}{g'}.\]
+      <p>A \(0\cdot\infty\) típust előbb törtté kell alakítani, pl. \(x\cdot g(x) = \dfrac{g(x)}{1/x}\).</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ÓRAI FELADATOK ================= -->
+<section id="orai">
+  <div class="section-head">
+    <span class="label">5. gyakorlat · Feladatok</span>
+    <h2>Órai feladatok</h2>
+    <p>Az 5. gyakorlat anyagának négy feladata. A megoldások menete követi az órai kidolgozást.</p>
+  </div>
+  <div class="toolbar"><button type="button" data-toggle="orai">Összes megoldás kinyitása</button></div>
+
+  <div class="taskgroup">
+
+  <!-- Órai 1 -->
+  <article class="task" id="o1">
+    <div class="task-head"><span class="no">1. feladat</span><span class="src">5. gyakorlat · órai</span><span class="kind">inverz trig. függvények</span></div>
+    <p class="stmt">Számítsuk ki az alábbi függvényértékeket:</p>
+    \[\arcsin \frac12,\quad \arcsin\left(-\frac{\sqrt3}{2}\right),\quad \arccos\left(-\frac{\sqrt2}{2}\right),\quad \arctg 1,\quad \arctg\left(-\frac{1}{\sqrt3}\right),\quad \arcctg \sqrt3.\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Mindegyiknél ugyanaz a gondolat: a keresett \(y\) az a szög az inverz függvény értékkészletéből, amelyre a megfelelő szögfüggvény értéke az adott szám.</p>
+        <div class="tbl"><table>
+          <thead><tr><th>Kifejezés</th><th>Keressük azt az \(y\)-t, amelyre</th><th>Eredmény</th></tr></thead>
+          <tbody>
+            <tr><td>\(\arcsin \frac12\)</td><td>\(\sin y = \frac12,\ y \in \left[-\frac\pi2, \frac\pi2\right]\)</td><td>\(\frac{\pi}{6}\)</td></tr>
+            <tr><td>\(\arcsin\left(-\frac{\sqrt3}{2}\right)\)</td><td>\(\sin y = -\frac{\sqrt3}{2},\ y \in \left[-\frac\pi2, \frac\pi2\right]\)</td><td>\(-\frac{\pi}{3}\)</td></tr>
+            <tr><td>\(\arccos\left(-\frac{\sqrt2}{2}\right)\)</td><td>\(\cos y = -\frac{\sqrt2}{2},\ y \in [0, \pi]\)</td><td>\(\frac{3\pi}{4}\)</td></tr>
+            <tr><td>\(\arctg 1\)</td><td>\(\tg y = 1,\ y \in \left(-\frac\pi2, \frac\pi2\right)\)</td><td>\(\frac{\pi}{4}\)</td></tr>
+            <tr><td>\(\arctg\left(-\frac{1}{\sqrt3}\right)\)</td><td>\(\tg y = -\frac{1}{\sqrt3},\ y \in \left(-\frac\pi2, \frac\pi2\right)\)</td><td>\(-\frac{\pi}{6}\)</td></tr>
+            <tr><td>\(\arcctg \sqrt3\)</td><td>\(\ctg y = \sqrt3,\ y \in (0, \pi)\)</td><td>\(\frac{\pi}{6}\)</td></tr>
+          </tbody>
+        </table></div>
+        <p>Eredmény: <span class="ans">\(\frac\pi6,\ -\frac\pi3,\ \frac{3\pi}4,\ \frac\pi4,\ -\frac\pi6,\ \frac\pi6\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>1. Miért kell az értékkészlet?</b> A \(\sin\) nem kölcsönösen egyértelmű: \(\sin\frac{\pi}{6} = \sin\frac{5\pi}{6} = \frac12\). Inverzet csak a \(\left[-\frac\pi2, \frac\pi2\right]\)-re leszűkített \(\sin\)-nak lehet venni, ezért az \(\arcsin\frac12\) az az egyetlen szög ebből az intervallumból, amelynek a szinusza \(\frac12\). Ez \(\frac\pi6\), mert \(\frac{5\pi}{6}\) kívül esik.</p>
+        <p><b>2. Negatív argumentum \(\arcsin\)-nál és \(\arctg\)-nél.</b> Mindkettő páratlan, ezért elég a pozitív értéket kiszámolni és negálni: \(\arcsin\left(-\frac{\sqrt3}{2}\right) = -\arcsin\frac{\sqrt3}{2} = -\frac\pi3\), és \(\arctg\left(-\frac{1}{\sqrt3}\right) = -\frac\pi6\), mert \(\tg\frac\pi6 = \frac{\sin(\pi/6)}{\cos(\pi/6)} = \frac{1/2}{\sqrt3/2} = \frac{1}{\sqrt3}\).</p>
+        <p><b>3. Negatív argumentum \(\arccos\)-nál.</b> Az \(\arccos\) értékei \([0,\pi]\)-ben vannak, így negatív szög nem jöhet ki. Az \(\arccos(-x) = \pi - \arccos x\) azonosság miatt</p>
+        \[\arccos\left(-\frac{\sqrt2}{2}\right) = \pi - \arccos\frac{\sqrt2}{2} = \pi - \frac\pi4 = \frac{3\pi}{4}.\]
+        <p>Ellenőrzés: \(\cos\frac{3\pi}{4} = -\frac{\sqrt2}{2}\) (a második síknegyedben a koszinusz negatív).</p>
+        <p><b>4. \(\arcctg\) visszavezetése \(\tg\)-re.</b> \(\ctg y = \sqrt3 \iff \tg y = \frac{1}{\sqrt3}\), és \((0,\pi)\)-ben ennek a megoldása \(y = \frac\pi6\).</p>
+        <div class="warn"><b>Tipikus hiba:</b> \(\arccos\left(-\frac{\sqrt2}{2}\right) = -\frac\pi4\). Ez rossz, mert \(-\frac\pi4 \notin [0,\pi]\). A koszinusz páros, ezért a negálás itt nem működik.</div>
+      </div>
+    </details>
+  </article>
+
+  <!-- Órai 2 -->
+  <article class="task" id="o2">
+    <div class="task-head"><span class="no">2. feladat</span><span class="src">5. gyakorlat · órai</span><span class="kind">függvényvizsgálat</span></div>
+    <p class="stmt">Teljes függvényvizsgálat végzése után vázoljuk az alábbi függvény grafikonját!</p>
+    \[f(x) := x^4 - 4x^3 + 10 \qquad (x \in \R)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <div class="step"><b>1. Kezdeti vizsgálatok</b>
+          <p>\(f\) polinom, ezért \(f \in D^\infty(\R)\). Nem páros, nem páratlan, nem periodikus. A zérushelyeit nem lehet zárt alakban könnyen kiszámolni, ezért előjelvizsgálatot nem végzünk. (Bolzano-tétel alapján két valós gyöke van, mert \(f(1)=7>0\), \(f(3)=-17 \lt 0\), \(f(4)=10>0\); numerikusan \(\approx 1{,}61\) és \(\approx 3{,}82\).)</p>
+        </div>
+        <div class="step"><b>2. Monotonitás, lokális szélsőértékek</b>
+          \[f'(x) = 4x^3 - 12x^2 = 4x^2(x-3) = 0 \iff x = 0 \ \text{vagy}\ x = 3.\]
+          <div class="tbl"><table class="sgn">
+            <tr><th>\(x\)</th><td>\((-\infty, 0)\)</td><td class="pt">\(0\)</td><td>\((0, 3)\)</td><td class="pt">\(3\)</td><td>\((3, +\infty)\)</td></tr>
+            <tr><th>\(f'\)</th><td class="n">−</td><td class="pt">0</td><td class="n">−</td><td class="pt">0</td><td class="p">+</td></tr>
+            <tr><th>\(f\)</th><td>↘</td><td class="pt">\(10\)</td><td>↘</td><td class="pt">\(-17\)</td><td>↗</td></tr>
+            <tr><th></th><td></td><td class="pt"><span class="tag">nincs szélsőérték</span></td><td></td><td class="pt"><span class="tag">lok. min.</span></td><td></td></tr>
+          </table></div>
+          <p>A \(0\) nem szélsőértékhely: \(f'\) nem vált előjelet, \(f\) a \((-\infty, 3]\) intervallumon végig szigorúan csökken.</p>
+        </div>
+        <div class="step"><b>3. Konvexitás, inflexió</b>
+          \[f''(x) = 12x^2 - 24x = 12x(x-2) = 0 \iff x = 0 \ \text{vagy}\ x = 2.\]
+          <div class="tbl"><table class="sgn">
+            <tr><th>\(x\)</th><td>\((-\infty, 0)\)</td><td class="pt">\(0\)</td><td>\((0, 2)\)</td><td class="pt">\(2\)</td><td>\((2, +\infty)\)</td></tr>
+            <tr><th>\(f''\)</th><td class="p">+</td><td class="pt">0</td><td class="n">−</td><td class="pt">0</td><td class="p">+</td></tr>
+            <tr><th>\(f\)</th><td>konvex ⌣</td><td class="pt">\(10\) <span class="tag">infl.</span></td><td>konkáv ⌢</td><td class="pt">\(-6\) <span class="tag">infl.</span></td><td>konvex ⌣</td></tr>
+          </table></div>
+        </div>
+        <div class="step"><b>4. Határértékek</b>
+          <p>\(D_f = \R\), így csak \(\pm\infty\)-ben kell vizsgálni:</p>
+          \[\lim_{x\to\pm\infty} \left(x^4 - 4x^3 + 10\right) = \lim_{x\to\pm\infty} x^4\left(1 - \frac4x + \frac{10}{x^4}\right) = (+\infty)\cdot 1 = +\infty.\]
+        </div>
+        <div class="step"><b>5. Aszimptoták</b>
+          \[\lim_{x\to\pm\infty} \frac{f(x)}{x} = \lim_{x\to\pm\infty} x^3\left(1 - \frac4x + \frac{10}{x^4}\right) = \pm\infty,\]
+          <p>ez nem véges, tehát \(f\)-nek nincs aszimptotája sem \(+\infty\)-ben, sem \(-\infty\)-ben.</p>
+        </div>
+        <div class="step"><b>6. Grafikon</b>
+          <figure class="graph"><div id="g-o2"></div>
+            <figcaption><span class="lg">f</span><span class="lg ext">szélsőérték</span><span class="lg inf">inflexió</span></figcaption></figure>
+        </div>
+        <p>Összefoglalva: <span class="ans">abszolút minimum \(f(3) = -17\); inflexió \(0\)-ban és \(2\)-ben; \(R_f = [-17, +\infty)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>1. A derivált szorzattá alakítása.</b> \(4x^3 - 12x^2\)-ből kiemeljük \(4x^2\)-et: \(4x^2(x-3)\). A \(4x^2\) tényező sosem negatív, ezért \(f'\) előjele (az \(x=0\) pontot kivéve) megegyezik \(x-3\) előjelével: \(x \lt 3\)-ra negatív, \(x > 3\)-ra pozitív. Ezért kerül a táblázatba \(0\) előtt és után is „−”.</p>
+        <p><b>2. Miért nem szélsőérték a 0?</b> Az \(f'(0)=0\) csak azt jelenti, hogy ott vízszintes az érintő. Szélsőértékhez az kell, hogy a függvény irányt váltson, vagyis \(f'\) előjelet váltson. Itt a függvény \(0\) előtt is, után is csökken, csak egy pillanatra „ellaposodik”. Az ilyen pontot vízszintes érintőjű inflexiós pontnak nevezik. A konvexitási táblázat meg is erősíti: \(f''\) a \(0\)-ban előjelet vált.</p>
+        <p><b>3. A függvényértékek kiszámítása.</b> \(f(0) = 10\), \(f(2) = 16 - 32 + 10 = -6\), \(f(3) = 81 - 108 + 10 = -17\). Ezek kellenek a grafikon vázolásához.</p>
+        <p><b>4. Határérték kiemeléssel.</b> Polinomnál mindig a legmagasabb fokú tagot emeljük ki: a zárójelben maradó \(1 - \frac4x + \frac{10}{x^4}\) tart \(1\)-hez, így a viselkedést \(x^4\) dönti el, ami mindkét irányban \(+\infty\)-hez tart.</p>
+        <div class="tip"><b>Ellenőrzés a grafikonon:</b> a polinom „W”-alakú vége (\(x^4\) mindkét oldalon \(+\infty\)), egyetlen völgy \(x=3\)-nál, és a \(0\)-nál egy lapos „lépcső”.</div>
+      </div>
+    </details>
+  </article>
+
+  <!-- Órai 3 -->
+  <article class="task" id="o3">
+    <div class="task-head"><span class="no">3. feladat</span><span class="src">5. gyakorlat · órai</span><span class="kind">függvényvizsgálat</span></div>
+    <p class="stmt">Teljes függvényvizsgálat végzése után vázoljuk az alábbi függvény grafikonját!</p>
+    \[f(x) := \frac{x^2+1}{(x+1)^2} \qquad (x \in \R \setminus \{-1\})\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <div class="step"><b>1. Kezdeti vizsgálatok</b>
+          <p>\(f(x) > 0\) minden \(x \in D_f\) esetén (a számláló \(\ge 1\), a nevező pozitív), tehát a grafikon a felső félsíkban van. Racionális törtfüggvény, ezért \(f \in D^\infty(D_f)\). Nem páros, nem páratlan. \(f(0) = 1\).</p>
+        </div>
+        <div class="step"><b>2. Monotonitás, lokális szélsőértékek</b>
+          \[f'(x) = \frac{2x(x+1)^2 - (x^2+1)\cdot 2(x+1)}{(x+1)^4} = \frac{2x(x+1) - 2(x^2+1)}{(x+1)^3} = \frac{2(x-1)}{(x+1)^3}.\]
+          <div class="tbl"><table class="sgn">
+            <tr><th>\(x\)</th><td>\((-\infty, -1)\)</td><td class="pt">\(-1\)</td><td>\((-1, 1)\)</td><td class="pt">\(1\)</td><td>\((1, +\infty)\)</td></tr>
+            <tr><th>\(f'\)</th><td class="p">+</td><td class="pt">∄</td><td class="n">−</td><td class="pt">0</td><td class="p">+</td></tr>
+            <tr><th>\(f\)</th><td>↗</td><td class="pt">∄</td><td>↘</td><td class="pt">\(\frac12\) <span class="tag">lok. min.</span></td><td>↗</td></tr>
+          </table></div>
+        </div>
+        <div class="step"><b>3. Konvexitás, inflexió</b>
+          \[f''(x) = \frac{2(x+1)^3 - 2(x-1)\cdot 3(x+1)^2}{(x+1)^6} = \frac{2(x+1) - 6(x-1)}{(x+1)^4} = \frac{4(2-x)}{(x+1)^4}.\]
+          <div class="tbl"><table class="sgn">
+            <tr><th>\(x\)</th><td>\((-\infty, -1)\)</td><td class="pt">\(-1\)</td><td>\((-1, 2)\)</td><td class="pt">\(2\)</td><td>\((2, +\infty)\)</td></tr>
+            <tr><th>\(f''\)</th><td class="p">+</td><td class="pt">∄</td><td class="p">+</td><td class="pt">0</td><td class="n">−</td></tr>
+            <tr><th>\(f\)</th><td>konvex ⌣</td><td class="pt">∄</td><td>konvex ⌣</td><td class="pt">\(\frac59\) <span class="tag">infl.</span></td><td>konkáv ⌢</td></tr>
+          </table></div>
+        </div>
+        <div class="step"><b>4. Határértékek</b>
+          <p>\(\pm\infty\)-ben és a \(-1\) pontban kell vizsgálni.</p>
+          \[\lim_{x\to\pm\infty} \frac{x^2+1}{(x+1)^2} = \lim_{x\to\pm\infty} \frac{1 + \frac{1}{x^2}}{\left(1 + \frac1x\right)^2} = 1,
+          \qquad
+          \lim_{x\to-1} \frac{x^2+1}{(x+1)^2} = \lim_{x\to -1}(x^2+1) \cdot \lim_{x\to -1}\frac{1}{(x+1)^2} = 2 \cdot (+\infty) = +\infty.\]
+        </div>
+        <div class="step"><b>5. Aszimptoták</b>
+          \[A = \lim_{x\to\pm\infty} \frac{f(x)}{x} = \lim_{x\to\pm\infty} f(x) \cdot \lim_{x\to\pm\infty}\frac1x = 1 \cdot 0 = 0, \qquad B = \lim_{x\to\pm\infty} \big(f(x) - 0\cdot x\big) = 1.\]
+          <p>Az \(y = 1\) egyenes aszimptota \(-\infty\)-ben és \(+\infty\)-ben is. (A grafikonon az \(x = -1\) függőleges egyenest csak szemléltetésként jelöltük, mert ott \(f\) a \(+\infty\)-hez tart. Az előadás definíciója szerint ez nem aszimptota: aszimptotát csak \(\pm\infty\)-ben keresünk, és az mindig \(y = Ax + B\) alakú. Az \(x=-1\)-beli viselkedést a 4. lépés, a határértékek írják le.)</p>
+        </div>
+        <div class="step"><b>6. Grafikon</b>
+          <figure class="graph"><div id="g-o3"></div>
+            <figcaption><span class="lg">f</span><span class="lg asy">aszimptota</span><span class="lg ext">szélsőérték</span><span class="lg inf">inflexió</span></figcaption></figure>
+        </div>
+        <p>Összefoglalva: <span class="ans">lok. (és abszolút) min. \(f(1) = \frac12\); inflexió \(2\)-ben; aszimptota \(y = 1\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>1. A derivált egyszerűsítése.</b> A hányadosszabály után a számlálóban mindkét tagban van \((x+1)\)-es tényező: \(2x(x+1)^2\) és \((x^2+1)\cdot 2(x+1)\). Kiemeljük, és egyszerűsítünk vele:</p>
+        \[\frac{2(x+1)\big[x(x+1) - (x^2+1)\big]}{(x+1)^4} = \frac{2\big[x^2 + x - x^2 - 1\big]}{(x+1)^3} = \frac{2(x-1)}{(x+1)^3}.\]
+        <p>Mindig érdemes egyszerűsíteni, mielőtt az előjelet vizsgáljuk, mert így csak egy lineáris tényező és egy hatvány marad.</p>
+        <p><b>2. Előjel leolvasása.</b> A \((x+1)^3\) előjele megegyezik \(x+1\) előjelével (páratlan kitevő), a \((x+1)^4\) pedig mindig pozitív (páros kitevő). Így \(f'\) előjele \((x-1)\) és \((x+1)\) előjelének szorzata, \(f''\) előjele pedig egyszerűen \(2-x\) előjele.</p>
+        <p><b>3. A második derivált.</b> Most \(\frac{2(x-1)}{(x+1)^3}\)-t deriváljuk. A számlálóban \((x+1)^2\)-t emelünk ki:</p>
+        \[\frac{2(x+1)^2\big[(x+1) - 3(x-1)\big]}{(x+1)^6} = \frac{2(4 - 2x)}{(x+1)^4} = \frac{4(2-x)}{(x+1)^4}.\]
+        <p><b>4. A kiemelt értékek.</b> \(f(1) = \frac{1+1}{4} = \frac12\), \(f(2) = \frac{4+1}{9} = \frac59\).</p>
+        <div class="warn"><b>A \(-1\) nem szélsőértékhely,</b> pedig \(f'\) ott előjelet vált (+ → −). A \(-1\) nincs benne \(D_f\)-ben, így ott semmilyen függvényérték nincs. Ugyanígy a konvexitásnál: \(f\) konvex a \((-\infty,-1)\) és a \((-1, 2)\) intervallumon, de ezt <em>két külön</em> intervallumként kell megadni.</div>
+        <div class="tip"><b>Metszi-e a grafikon az aszimptotát?</b> \(f(x) = 1 \iff x^2+1 = (x+1)^2\) \(\iff 2x = 0 \iff x = 0\). Tehát a \((0;\,1)\) pontban igen, aszimptotát ugyanis szabad metszeni.</div>
+      </div>
+    </details>
+  </article>
+
+  <!-- Órai 4 -->
+  <article class="task" id="o4">
+    <div class="task-head"><span class="no">4. feladat</span><span class="src">5. gyakorlat · órai</span><span class="kind">függvényvizsgálat · L'Hospital</span></div>
+    <p class="stmt">Teljes függvényvizsgálat végzése után vázoljuk az alábbi függvény grafikonját!</p>
+    \[f(x) := x \cdot \ln^2 x \qquad (x > 0)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <div class="step"><b>1. Kezdeti vizsgálatok</b>
+          <p>\(f(x) \ge 0\), ha \(x > 0\), és \(f(x) = 0 \iff x = 1\). A grafikon a felső zárt félsíkban van. Elemi függvényekből deriválási szabályokkal áll elő, így \(f \in D^\infty(\R^+)\).</p>
+        </div>
+        <div class="step"><b>2. Monotonitás, lokális szélsőértékek</b>
+          \[f'(x) = 1\cdot \ln^2 x + x \cdot 2\ln x \cdot \frac1x = \ln^2 x + 2\ln x = \ln x\,(\ln x + 2).\]
+          <p>\(f'(x) = 0 \iff \ln x = -2\) vagy \(\ln x = 0\), azaz \(x_1 = e^{-2} = \frac{1}{e^2}\) vagy \(x_2 = 1\).</p>
+          <div class="tbl"><table class="sgn">
+            <tr><th>\(x\)</th><td>\(\left(0, \frac{1}{e^2}\right)\)</td><td class="pt">\(\frac{1}{e^2}\)</td><td>\(\left(\frac{1}{e^2}, 1\right)\)</td><td class="pt">\(1\)</td><td>\((1, +\infty)\)</td></tr>
+            <tr><th>\(\ln x\)</th><td class="n">−</td><td class="pt n">−</td><td class="n">−</td><td class="pt">0</td><td class="p">+</td></tr>
+            <tr><th>\(\ln x + 2\)</th><td class="n">−</td><td class="pt">0</td><td class="p">+</td><td class="pt p">+</td><td class="p">+</td></tr>
+            <tr><th>\(f'\)</th><td class="p">+</td><td class="pt">0</td><td class="n">−</td><td class="pt">0</td><td class="p">+</td></tr>
+            <tr><th>\(f\)</th><td>↗</td><td class="pt">\(\frac{4}{e^2}\) <span class="tag">lok. max.</span></td><td>↘</td><td class="pt">\(0\) <span class="tag">lok. min.</span></td><td>↗</td></tr>
+          </table></div>
+          <p class="note">\(f\left(\frac{1}{e^2}\right) = \frac{1}{e^2}\cdot(-2)^2 = \frac{4}{e^2} \approx 0{,}54\).</p>
+        </div>
+        <div class="step"><b>3. Konvexitás, inflexió</b>
+          \[f''(x) = \frac{2\ln x}{x} + \frac{2}{x} = \frac{2(\ln x + 1)}{x} = 0 \iff \ln x = -1 \iff x = \frac1e.\]
+          <div class="tbl"><table class="sgn">
+            <tr><th>\(x\)</th><td>\(\left(0, \frac1e\right)\)</td><td class="pt">\(\frac1e\)</td><td>\(\left(\frac1e, +\infty\right)\)</td></tr>
+            <tr><th>\(f''\)</th><td class="n">−</td><td class="pt">0</td><td class="p">+</td></tr>
+            <tr><th>\(f\)</th><td>konkáv ⌢</td><td class="pt">\(\frac1e\) <span class="tag">infl.</span></td><td>konvex ⌣</td></tr>
+          </table></div>
+        </div>
+        <div class="step"><b>4. Határértékek</b>
+          <p>\(D_f = (0, +\infty)\), ezért \(0\)-ban (jobbról) és \(+\infty\)-ben vizsgálunk.</p>
+          \[\lim_{x\to+\infty} x \cdot \ln^2 x = (+\infty)\cdot(+\infty) = +\infty.\]
+          <p>\(0\)-ban \(0 \cdot (+\infty)\) típusú, ezért törtté írjuk, és kétszer alkalmazzuk a L'Hospital-szabályt:</p>
+          \[\lim_{x\to0+0} \frac{\ln^2 x}{\frac1x} \overset{\frac{+\infty}{+\infty}}{=} \lim_{x\to0+0} \frac{2\ln x\cdot\frac1x}{-\frac{1}{x^2}} = -2\lim_{x\to0+0} \frac{\ln x}{\frac1x} \overset{\frac{-\infty}{+\infty}}{=} -2\lim_{x\to0+0} \frac{\frac1x}{-\frac{1}{x^2}} = 2\lim_{x\to0+0} x = 0.\]
+        </div>
+        <div class="step"><b>5. Aszimptoták</b>
+          \[\lim_{x\to+\infty} \frac{f(x)}{x} = \lim_{x\to+\infty} \ln^2 x = +\infty,\]
+          <p>tehát \(+\infty\)-ben nincs aszimptota.</p>
+        </div>
+        <div class="step"><b>6. Grafikon</b>
+          <figure class="graph"><div id="g-o4"></div>
+            <figcaption><span class="lg">f</span><span class="lg ext">szélsőérték</span><span class="lg inf">inflexió</span></figcaption></figure>
+        </div>
+        <p>Összefoglalva: <span class="ans">lok. max. \(f(e^{-2}) = \frac{4}{e^2}\); lok. (abszolút) min. \(f(1) = 0\); inflexió \(\frac1e\)-ben</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>1. Hogyan deriváljuk \(\ln^2 x\)-et?</b> A \(\ln^2 x\) jelentése \((\ln x)^2\). Láncszabállyal a külső függvény a négyzetre emelés, a belső a \(\ln\): \(\big((\ln x)^2\big)' = 2\ln x \cdot \frac1x\). Ezt a szorzatszabályba beírva az \(x\) és az \(\frac1x\) kiesik.</p>
+        <p><b>2. Előjel egy szorzatnál.</b> \(f' = \ln x\,(\ln x + 2)\) két tényező szorzata. Mindkettőnek külön megnézzük az előjelét (ezért van a táblázatban két plusz sor), és a szorzat ott pozitív, ahol a két előjel megegyezik.</p>
+        <p><b>3. A második derivált.</b> \(f' = \ln^2 x + 2\ln x\), ennek deriváltja \(2\ln x \cdot \frac1x + \frac2x\). Közös nevezőre hozva \(\frac{2(\ln x + 1)}{x}\). Mivel \(x > 0\), az előjelet csak \(\ln x + 1\) dönti el.</p>
+        <p><b>4. Miért így írtuk törtté?</b> Az \(x \cdot \ln^2 x\) szorzatot kétféleképpen lehet törtté írni: \(\frac{\ln^2 x}{1/x}\) vagy \(\frac{x}{1/\ln^2 x}\). Az elsőt érdemes választani, mert az \(\frac1x\) deriváltja egyszerű, és minden L'Hospital-lépés után eggyel csökken a logaritmus kitevője. A második változatban a nevező deriválása egyre bonyolultabb lenne.</p>
+        <div class="tip"><b>Hasznos tény:</b> \(\lim\limits_{x\to0+0} x^\alpha \ln^k x = 0\) minden \(\alpha > 0\) és \(k\) esetén, mert a hatvány „erősebben” tart 0-hoz, mint ahogy a logaritmus \(-\infty\)-hez. Ezt a L'Hospital-szabály ismételt alkalmazásával lehet belátni, pont úgy, ahogy fent.</div>
+        <div class="tip"><b>A grafikon a 0 közelében:</b> \(f'(x) = \ln x(\ln x + 2) \to +\infty\), ha \(x \to 0+0\), ezért a görbe meredeken indul a \((0;\,0)\) pontból. Ez a pont nem része a grafikonnak, mert \(0 \notin D_f\).</div>
+      </div>
+    </details>
+  </article>
+
+  </div>
+</section>
+
+<!-- ================= HÁZI FELADATOK ================= -->
+<section id="hazi">
+  <div class="section-head">
+    <span class="label">Összevont gyakorlati anyag · 5. gyakorlat</span>
+    <h2>Házi feladatok</h2>
+    <p>Az „Analízis II. gyakorlatok” összevont anyag 5. gyakorlatához tartozó házi feladatok.</p>
+  </div>
+  <div class="toolbar"><button type="button" data-toggle="hazi">Összes megoldás kinyitása</button></div>
+
+  <div class="taskgroup">
+
+  <!-- HF 1 -->
+  <article class="task" id="h1">
+    <div class="task-head"><span class="no">1. házi feladat</span><span class="src">5. gyakorlat · házi</span><span class="kind">függvényértékek</span></div>
+    <p class="stmt">Számítsa ki az alábbi függvényértékeket:</p>
+    \[\arccos\left(\frac{\sqrt3}{2}\right),\qquad \log_{1/4}\frac{1}{1024},\qquad e^{-2\ln 3},\qquad 8^{\log_4 9}.\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <ul>
+          <li>\(\arccos\frac{\sqrt3}{2} = y \iff \cos y = \frac{\sqrt3}{2},\ y \in [0, \pi]\) \(\iff y = \frac\pi6.\)</li>
+          <li>\(1024 = 4^5\), ezért \(\frac{1}{1024} = \left(\frac14\right)^5\), így \(\log_{1/4}\frac{1}{1024} = 5.\)</li>
+          <li>\(e^{-2\ln 3} = \left(e^{\ln 3}\right)^{-2} = 3^{-2} = \frac19.\)</li>
+          <li>\(\log_4 9 = \log_4 3^2 = 2\log_4 3 = 2\cdot\frac{\log_2 3}{\log_2 4} = \log_2 3\), ezért \(8^{\log_4 9} = \left(2^3\right)^{\log_2 3}\) \(= \left(2^{\log_2 3}\right)^3 = 3^3 = 27.\)</li>
+        </ul>
+        <p>Eredmény: <span class="ans">\(\frac\pi6,\ 5,\ \frac19,\ 27\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Az összes szükséges azonosság</b> (\(a, c > 0\), \(a, c \ne 1\), \(b > 0\)):</p>
+        \[a^{\log_a b} = b, \qquad \log_a b^k = k\log_a b, \qquad \log_a b = \frac{\log_c b}{\log_c a}, \qquad e^{k\ln a} = \left(e^{\ln a}\right)^k = a^k.\]
+        <p><b>1.</b> A \(\cos\frac\pi6 = \frac{\sqrt3}{2}\), és \(\frac\pi6 \in [0,\pi]\), tehát kész. (Pozitív argumentumnál az \(\arccos\) mindig \(\left[0,\frac\pi2\right]\)-be esik.)</p>
+        <p><b>2.</b> A \(\log_{1/4}\frac{1}{1024}\) az a kitevő, amelyre \(\frac14\)-et emelve \(\frac{1}{1024}\)-et kapunk. Mivel \(4^5 = 1024\), ez pontosan \(5\). Más úton: \(\log_{1/4}\frac{1}{1024} = \frac{\ln(1/1024)}{\ln(1/4)} = \frac{-\ln 1024}{-\ln 4} = \log_4 1024 = 5\).</p>
+        <p><b>3.</b> A kitevőben a \(-2\)-t „felvisszük”: \(-2\ln 3 = \ln 3^{-2} = \ln\frac19\), és \(e^{\ln(1/9)} = \frac19\).</p>
+        <p><b>4.</b> Itt az a trükk, hogy mindent ugyanarra az alapra írunk. Egy másik út: \(8 = 4^{3/2}\), ezért</p>
+        \[8^{\log_4 9} = \left(4^{3/2}\right)^{\log_4 9} = \left(4^{\log_4 9}\right)^{3/2} = 9^{3/2} = \left(\sqrt9\right)^3 = 27.\]
+        <div class="tip"><b>Harmadik út:</b> az \(a^{\log_c b} = b^{\log_c a}\) azonossággal \(8^{\log_4 9} = 9^{\log_4 8}\), és \(\log_4 8 = \frac32\) (mert \(4^{3/2} = 8\)), így ismét \(9^{3/2} = 27\).</div>
+        <div class="warn"><b>Tipikus hiba:</b> \(e^{-2\ln 3} = -2\cdot 3 = -6\) vagy \(= -9\). Az \(e^{\ln a} = a\) csak akkor használható, ha a kitevőben pontosan \(\ln a\) áll, ezért előbb a \(-2\)-t kell bevinni a logaritmusba.</div>
+      </div>
+    </details>
+  </article>
+
+  <!-- HF 2 -->
+  <article class="task" id="h2">
+    <div class="task-head"><span class="no">2. házi feladat</span><span class="src">5. gyakorlat · házi</span><span class="kind">függvényvizsgálat</span></div>
+    <p class="stmt">Teljes függvényvizsgálat végzése után szemléltesse az alábbi függvény grafikonját!</p>
+    \[f(x) := \left(\frac{x-3}{x+1}\right)^2 \qquad (x \in \R \setminus \{-1\})\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <div class="step"><b>1. Kezdeti vizsgálatok</b>
+          <p>\(f(x) \ge 0\), és \(f(x) = 0 \iff x = 3\). Racionális törtfüggvény, így \(f \in D^\infty(D_f)\). Nem páros, nem páratlan. \(f(0) = 9\).</p>
+        </div>
+        <div class="step"><b>2. Monotonitás, lokális szélsőértékek</b>
+          \[f'(x) = 2\cdot\frac{x-3}{x+1}\cdot\frac{(x+1) - (x-3)}{(x+1)^2} = 2\cdot\frac{x-3}{x+1}\cdot\frac{4}{(x+1)^2} = \frac{8(x-3)}{(x+1)^3}.\]
+          <div class="tbl"><table class="sgn">
+            <tr><th>\(x\)</th><td>\((-\infty, -1)\)</td><td class="pt">\(-1\)</td><td>\((-1, 3)\)</td><td class="pt">\(3\)</td><td>\((3, +\infty)\)</td></tr>
+            <tr><th>\(f'\)</th><td class="p">+</td><td class="pt">∄</td><td class="n">−</td><td class="pt">0</td><td class="p">+</td></tr>
+            <tr><th>\(f\)</th><td>↗</td><td class="pt">∄</td><td>↘</td><td class="pt">\(0\) <span class="tag">lok. min.</span></td><td>↗</td></tr>
+          </table></div>
+        </div>
+        <div class="step"><b>3. Konvexitás, inflexió</b>
+          \[f''(x) = 8\cdot\frac{(x+1)^3 - (x-3)\cdot3(x+1)^2}{(x+1)^6} = \frac{8\big[(x+1) - 3(x-3)\big]}{(x+1)^4} = \frac{16(5-x)}{(x+1)^4}.\]
+          <div class="tbl"><table class="sgn">
+            <tr><th>\(x\)</th><td>\((-\infty, -1)\)</td><td class="pt">\(-1\)</td><td>\((-1, 5)\)</td><td class="pt">\(5\)</td><td>\((5, +\infty)\)</td></tr>
+            <tr><th>\(f''\)</th><td class="p">+</td><td class="pt">∄</td><td class="p">+</td><td class="pt">0</td><td class="n">−</td></tr>
+            <tr><th>\(f\)</th><td>konvex ⌣</td><td class="pt">∄</td><td>konvex ⌣</td><td class="pt">\(\frac19\) <span class="tag">infl.</span></td><td>konkáv ⌢</td></tr>
+          </table></div>
+          <p class="note">\(f(5) = \left(\frac{2}{6}\right)^2 = \frac19\).</p>
+        </div>
+        <div class="step"><b>4. Határértékek</b>
+          \[\lim_{x\to\pm\infty} \frac{x-3}{x+1} = \lim_{x\to\pm\infty} \frac{1 - \frac3x}{1 + \frac1x} = 1 \ \Longrightarrow\ \lim_{x\to\pm\infty} f(x) = 1^2 = 1.\]
+          <p>A \(-1\)-ben \(\frac{x-3}{x+1} \to \frac{-4}{0}\), tehát az abszolút értéke \(+\infty\)-hez tart, a négyzete pedig mindkét oldalról:</p>
+          \[\lim_{x\to-1-0} f(x) = \lim_{x\to-1+0} f(x) = +\infty.\]
+        </div>
+        <div class="step"><b>5. Aszimptoták</b>
+          \[A = \lim_{x\to\pm\infty} \frac{f(x)}{x} = 1\cdot 0 = 0, \qquad B = \lim_{x\to\pm\infty} f(x) = 1.\]
+          <p>Az \(y = 1\) egyenes aszimptota \(\pm\infty\)-ben. Az \(x = -1\)-ben a 4. lépés szerint \(f \to +\infty\). Ezt a grafikonon szaggatott függőleges egyenessel jelöltük, de a kurzus definíciója szerint nem számít aszimptotának, mert aszimptotát csak \(\pm\infty\)-ben vizsgálunk.</p>
+        </div>
+        <div class="step"><b>6. Grafikon</b>
+          <figure class="graph"><div id="g-h2"></div>
+            <figcaption><span class="lg">f</span><span class="lg asy">aszimptota</span><span class="lg ext">szélsőérték</span><span class="lg inf">inflexió</span></figcaption></figure>
+        </div>
+        <p>Összefoglalva: <span class="ans">abszolút min. \(f(3) = 0\); inflexió \(5\)-ben; aszimptota \(y = 1\); \(R_f = [0, +\infty)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>1. Láncszabály.</b> A külső függvény a négyzetre emelés (\(u^2\), deriváltja \(2u\)), a belső \(u(x) = \frac{x-3}{x+1}\). A belső deriváltja hányadosszabállyal:</p>
+        \[u'(x) = \frac{1\cdot(x+1) - (x-3)\cdot 1}{(x+1)^2} = \frac{4}{(x+1)^2}.\]
+        <p>Így \(f' = 2u\cdot u' = 2\cdot\frac{x-3}{x+1}\cdot\frac{4}{(x+1)^2} = \frac{8(x-3)}{(x+1)^3}\).</p>
+        <p><b>2. Előjel.</b> A nevező \((x+1)^3\) előjele \(x+1\) előjele. \(x \lt -1\)-re: számláló −, nevező − → \(f' > 0\). \(-1 \lt x \lt 3\)-ra: számláló −, nevező + → \(f' \lt 0\). \(x > 3\)-ra mindkettő + → \(f' > 0\).</p>
+        <p><b>3. A második derivált.</b> \(\frac{8(x-3)}{(x+1)^3}\) hányadosszabállyal, majd \((x+1)^2\)-nel egyszerűsítve: \(\frac{8\,(x+1-3x+9)}{(x+1)^4} = \frac{8(10-2x)}{(x+1)^4} = \frac{16(5-x)}{(x+1)^4}\). A nevező páros kitevő miatt pozitív, így az előjelet \(5-x\) dönti el.</p>
+        <div class="tip"><b>Hasonlítsd össze az órai 3. feladattal!</b> Ugyanaz a szerkezet: \(f' = \frac{c(x-a)}{(x+1)^3}\), \(f'' = \frac{c'(b-x)}{(x+1)^4}\), aszimptota \(y = 1\), \(x=-1\)-ben \(+\infty\). Ha az egyiket érted, a másik már rutin.</div>
+        <div class="tip"><b>Honnan közelít a grafikon az \(y=1\)-hez?</b> \(f(x) = 1 \iff |x-3| = |x+1| \iff x = 1\). Ha \(x \lt 1\), akkor \(f(x) > 1\) (pl. \(f(-10) \approx 2{,}09\)), tehát \(-\infty\)-ben felülről. Ha \(x > 1\), akkor \(f(x) \lt 1\), tehát \(+\infty\)-ben alulról.</div>
+        <div class="warn"><b>Ne felejtsd el:</b> a \(-1\) körül \(f'\) előjelet vált, de ez nem szélsőérték, mert \(-1 \notin D_f\).</div>
+      </div>
+    </details>
+  </article>
+
+  <!-- HF 3 -->
+  <article class="task" id="h3">
+    <div class="task-head"><span class="no">3. házi feladat</span><span class="src">5. gyakorlat · házi</span><span class="kind">függvényvizsgálat · ferde aszimptota</span></div>
+    <p class="stmt">Teljes függvényvizsgálat végzése után vázolja az alábbi függvény grafikonját!</p>
+    \[f(x) := x - \arctg(2x) \qquad (x \in \R)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <div class="step"><b>1. Kezdeti vizsgálatok</b>
+          <p>\(f \in D^\infty(\R)\). \(f\) páratlan, mert \(f(-x) = -x - \arctg(-2x) = -x + \arctg(2x) = -f(x)\). \(f(0) = 0\). A zérushelyek: \(x = \arctg(2x)\), ennek a \(0\)-n kívül két megoldása van, \(x \approx \pm 1{,}166\) (numerikusan).</p>
+        </div>
+        <div class="step"><b>2. Monotonitás, lokális szélsőértékek</b>
+          \[f'(x) = 1 - \frac{2}{1 + 4x^2} = \frac{4x^2 - 1}{1 + 4x^2} = 0 \iff x = \pm\frac12.\]
+          <div class="tbl"><table class="sgn">
+            <tr><th>\(x\)</th><td>\(\left(-\infty, -\frac12\right)\)</td><td class="pt">\(-\frac12\)</td><td>\(\left(-\frac12, \frac12\right)\)</td><td class="pt">\(\frac12\)</td><td>\(\left(\frac12, +\infty\right)\)</td></tr>
+            <tr><th>\(f'\)</th><td class="p">+</td><td class="pt">0</td><td class="n">−</td><td class="pt">0</td><td class="p">+</td></tr>
+            <tr><th>\(f\)</th><td>↗</td><td class="pt">\(\frac\pi4 - \frac12\) <span class="tag">lok. max.</span></td><td>↘</td><td class="pt">\(\frac12 - \frac\pi4\) <span class="tag">lok. min.</span></td><td>↗</td></tr>
+          </table></div>
+          <p class="note">\(f\left(-\frac12\right) = -\frac12 - \arctg(-1) = \frac\pi4 - \frac12 \approx 0{,}285\), és a páratlanság miatt \(f\left(\frac12\right) = \frac12 - \frac\pi4 \approx -0{,}285\).</p>
+        </div>
+        <div class="step"><b>3. Konvexitás, inflexió</b>
+          \[f''(x) = \left(-\frac{2}{1+4x^2}\right)' = \frac{2\cdot 8x}{(1+4x^2)^2} = \frac{16x}{(1+4x^2)^2}.\]
+          <div class="tbl"><table class="sgn">
+            <tr><th>\(x\)</th><td>\((-\infty, 0)\)</td><td class="pt">\(0\)</td><td>\((0, +\infty)\)</td></tr>
+            <tr><th>\(f''\)</th><td class="n">−</td><td class="pt">0</td><td class="p">+</td></tr>
+            <tr><th>\(f\)</th><td>konkáv ⌢</td><td class="pt">\(0\) <span class="tag">infl.</span></td><td>konvex ⌣</td></tr>
+          </table></div>
+        </div>
+        <div class="step"><b>4. Határértékek</b>
+          <p>Az \(\arctg\) korlátos (\(|\arctg| \lt \frac\pi2\)), ezért</p>
+          \[\lim_{x\to+\infty} \big(x - \arctg(2x)\big) = +\infty, \qquad \lim_{x\to-\infty} \big(x - \arctg(2x)\big) = -\infty.\]
+        </div>
+        <div class="step"><b>5. Aszimptoták</b>
+          <p>\(+\infty\)-ben:</p>
+          \[A = \lim_{x\to+\infty} \frac{x - \arctg(2x)}{x} = 1 - \lim_{x\to+\infty}\frac{\arctg(2x)}{x} = 1 - 0 = 1, \qquad B = \lim_{x\to+\infty} \big(f(x) - x\big) = -\lim_{x\to+\infty}\arctg(2x) = -\frac\pi2.\]
+          <p>\(-\infty\)-ben ugyanígy \(A = 1\), de \(B = -\lim\limits_{x\to-\infty}\arctg(2x) = \frac\pi2\).</p>
+          <p>Aszimptoták: <span class="ans">\(y = x - \frac\pi2\) a \(+\infty\)-ben, \(y = x + \frac\pi2\) a \(-\infty\)-ben</span></p>
+        </div>
+        <div class="step"><b>6. Grafikon</b>
+          <figure class="graph"><div id="g-h3"></div>
+            <figcaption><span class="lg">f</span><span class="lg asy">aszimptoták</span><span class="lg ext">szélsőérték</span><span class="lg inf">inflexió</span></figcaption></figure>
+        </div>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>1. Az \(\arctg(2x)\) deriváltja.</b> \((\arctg u)' = \frac{1}{1+u^2}\), a belső függvény \(u = 2x\), deriváltja \(2\). Láncszabállyal: \(\big(\arctg(2x)\big)' = \frac{1}{1 + (2x)^2}\cdot 2 = \frac{2}{1+4x^2}\).</p>
+        <p><b>2. Közös nevező.</b> \(1 - \frac{2}{1+4x^2} = \frac{1 + 4x^2 - 2}{1+4x^2} = \frac{4x^2-1}{1+4x^2}\). A nevező mindig pozitív, így az előjelet \(4x^2 - 1 = (2x-1)(2x+1)\) adja: \(|x| > \frac12\) esetén pozitív, \(|x| \lt \frac12\) esetén negatív.</p>
+        <p><b>3. A második derivált.</b> Az \(1\) deriváltja \(0\), a \(-2(1+4x^2)^{-1}\) deriváltja láncszabállyal \(-2\cdot(-1)(1+4x^2)^{-2}\cdot 8x = \frac{16x}{(1+4x^2)^2}\).</p>
+        <p><b>4. A páratlanság kihasználása.</b> Elég lenne \(x \ge 0\)-ra vizsgálni, és a grafikont az origóra tükrözni. A lokális minimum \(\frac12\)-ben a tükörképe a lokális maximumnak \(-\frac12\)-ben, és a \(0\) inflexiós pont (páratlan, \(D^2\)-beli függvénynél ez mindig így van, ha \(f''\) előjelet vált).</p>
+        <p><b>5. Ferde aszimptota.</b> Az \(f(x) = x - \arctg(2x)\) alakból már látszik: nagy \(x\)-re az \(\arctg(2x)\) közel \(\frac\pi2\), így \(f(x) \approx x - \frac\pi2\). A képletes számolás ezt igazolja. Mivel \(f(x) - \left(x - \frac\pi2\right) = \frac\pi2 - \arctg(2x) > 0\), a grafikon \(+\infty\)-ben az aszimptota fölött halad.</p>
+        <div class="warn"><b>Tipikus hiba:</b> csak \(+\infty\)-ben kiszámolni az aszimptotát, és azt mondani, hogy \(-\infty\)-ben is ugyanaz. Itt a kettő különbözik, mert \(\lim\limits_{x\to\pm\infty}\arctg(2x) = \pm\frac\pi2\).</div>
+      </div>
+    </details>
+  </article>
+
+  <!-- HF 4 -->
+  <article class="task" id="h4">
+    <div class="task-head"><span class="no">4. házi feladat</span><span class="src">5. gyakorlat · házi</span><span class="kind">függvényvizsgálat</span></div>
+    <p class="stmt">Teljes függvényvizsgálat végzése után vázolja az alábbi függvény grafikonját!</p>
+    \[f(x) := \frac{e^x}{1 + e^x} \qquad (x \in \R)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <div class="step"><b>1. Kezdeti vizsgálatok</b>
+          <p>\(f \in D^\infty(\R)\). Mivel \(0 \lt e^x \lt 1 + e^x\), ezért \(0 \lt f(x) \lt 1\). \(f(0) = \frac12\). Nem páros, nem páratlan, de</p>
+          \[f(-x) = \frac{e^{-x}}{1+e^{-x}} = \frac{1}{e^x + 1} = 1 - f(x),\]
+          <p>azaz a grafikon a \(\left(0;\,\frac12\right)\) pontra középpontosan szimmetrikus.</p>
+        </div>
+        <div class="step"><b>2. Monotonitás</b>
+          \[f'(x) = \frac{e^x(1+e^x) - e^x\cdot e^x}{(1+e^x)^2} = \frac{e^x}{(1+e^x)^2} > 0 \quad (x \in \R),\]
+          <p>tehát \(f\) szigorúan monoton nő \(\R\)-en, és nincs lokális szélsőértéke.</p>
+        </div>
+        <div class="step"><b>3. Konvexitás, inflexió</b>
+          \[f''(x) = \frac{e^x(1+e^x)^2 - e^x\cdot 2(1+e^x)e^x}{(1+e^x)^4} = \frac{e^x(1 - e^x)}{(1+e^x)^3} = 0 \iff e^x = 1 \iff x = 0.\]
+          <div class="tbl"><table class="sgn">
+            <tr><th>\(x\)</th><td>\((-\infty, 0)\)</td><td class="pt">\(0\)</td><td>\((0, +\infty)\)</td></tr>
+            <tr><th>\(f''\)</th><td class="p">+</td><td class="pt">0</td><td class="n">−</td></tr>
+            <tr><th>\(f\)</th><td>konvex ⌣</td><td class="pt">\(\frac12\) <span class="tag">infl.</span></td><td>konkáv ⌢</td></tr>
+          </table></div>
+        </div>
+        <div class="step"><b>4. Határértékek</b>
+          \[\lim_{x\to-\infty} \frac{e^x}{1+e^x} = \frac{0}{1+0} = 0, \qquad \lim_{x\to+\infty} \frac{e^x}{1+e^x} = \lim_{x\to+\infty} \frac{1}{e^{-x} + 1} = \frac{1}{0+1} = 1.\]
+        </div>
+        <div class="step"><b>5. Aszimptoták</b>
+          <p>Mivel \(f\) korlátos, \(A = \lim\limits_{x\to\pm\infty}\frac{f(x)}{x} = 0\), és \(B = \lim\limits_{x\to\pm\infty} f(x)\). Így:</p>
+          <p><span class="ans">\(y = 0\) a \(-\infty\)-ben, \(y = 1\) a \(+\infty\)-ben</span></p>
+        </div>
+        <div class="step"><b>6. Grafikon</b>
+          <figure class="graph"><div id="g-h4"></div>
+            <figcaption><span class="lg">f</span><span class="lg asy">aszimptoták</span><span class="lg inf">inflexió</span></figcaption></figure>
+        </div>
+        <p>Összefoglalva: <span class="ans">szigorúan nő; nincs szélsőérték; inflexió \(\left(0;\,\frac12\right)\)-ben; \(R_f = (0, 1)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>1. Első derivált.</b> Hányadosszabály: \(\frac{(e^x)'(1+e^x) - e^x(1+e^x)'}{(1+e^x)^2}\). Mindkét derivált \(e^x\), így a számláló \(e^x + e^{2x} - e^{2x} = e^x\). Mivel \(e^x > 0\) mindig, a derivált mindig pozitív.</p>
+        <p><b>2. Második derivált.</b> A számlálóban kiemelünk \(e^x(1+e^x)\)-et, és egyszer egyszerűsítünk \((1+e^x)\)-szel:</p>
+        \[\frac{e^x(1+e^x)\big[(1+e^x) - 2e^x\big]}{(1+e^x)^4} = \frac{e^x(1 - e^x)}{(1+e^x)^3}.\]
+        <p>Az \(e^x\) és a nevező pozitív, így az előjelet \(1 - e^x\) dönti el: \(x \lt 0\)-ra \(e^x \lt 1\), tehát pozitív; \(x > 0\)-ra negatív.</p>
+        <p><b>3. A \(+\infty\)-beli határérték trükkje.</b> \(\frac{\infty}{\infty}\) típus, de L'Hospital helyett egyszerűbb a számlálót és a nevezőt \(e^x\)-szel osztani: \(\frac{1}{e^{-x} + 1}\), és \(e^{-x} \to 0\).</p>
+        <div class="tip"><b>Ez a logisztikus (szigmoid) függvény.</b> Az „S” alakot a szimmetria és a konvexitásváltás adja: \(-\infty\)-ből indul 0-hoz simulva, az inflexiós pontban a legmeredekebb (\(f'(0) = \frac14\)), és felülről 1-hez simul.</div>
+      </div>
+    </details>
+  </article>
+
+  </div>
+</section>
+
+<!-- ================= GYAKORI HIBÁK ================= -->
+<section id="hibak">
+  <div class="section-head">
+    <span class="label">Mire figyelj</span>
+    <h2>Gyakori hibák</h2>
+  </div>
+  <div class="mistakes">
+    <div class="mistake"><span class="x">✕</span><p><b>Az \(\arccos\) vagy \(\arcctg\) értéke negatív.</b> Mindkettő értékei \([0,\pi]\)-ben, illetve \((0,\pi)\)-ben vannak. Negatív argumentumnál \(\arccos(-x) = \pi - \arccos x\).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Minden stacionárius pont szélsőérték.</b> Az \(f'(x_0) = 0\) csak szükséges feltétel. Kell az előjelváltás is (órai 2. feladat, \(x=0\)).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Szélsőérték vagy inflexió olyan pontban, ami nincs \(D_f\)-ben.</b> Ha \(f'\) a \(-1\)-ben vált előjelet, de \(-1 \notin D_f\), ott nincs szélsőérték (órai 3., házi 2.).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Intervallumok összevonása a kimaradó ponton át.</b> „\(f\) konvex \(\R\setminus\{-1\}\)-en” helyett: konvex a \((-\infty,-1)\) és a \((-1, 2)\) intervallumon.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Az aszimptotát csak az egyik végtelenben számolod.</b> \(+\infty\)-ben és \(-\infty\)-ben külön kell (házi 3.: \(y = x \mp \frac\pi2\); házi 4.: \(y=1\) és \(y=0\)).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>L'Hospital \(0\cdot\infty\) típusra közvetlenül.</b> Előbb törtté kell alakítani (\(\frac00\) vagy \(\frac\infty\infty\)), és minden lépés előtt újra ellenőrizni a típust (órai 4.).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Egyszerűsítés nélküli előjelvizsgálat.</b> Racionális törtnél előbb hozd szorzat alakra és egyszerűsíts, utána a páros kitevős tényezők előjele már nem számít.</p></div>
+  </div>
+</section>
+
+<footer>Forrás: <a href="../Gyakorlat%20anyagok/05_Gy_An_II_A_B.pdf" target="_blank" rel="noopener">5. gyakorlat (PDF)</a> és <a href="../Gyakorlat%20anyagok/An_II_A_B_Gyak.pdf" target="_blank" rel="noopener">Analízis II. gyakorlatok, összevont anyag (PDF)</a>. A grafikonok a függvényekből számolva készültek.</footer>
+</div>
+
+<script>
+(function () {
+  // Minimal SVG plotter: curve sampled from f, broken at poles; dashed asymptotes; marked points.
+  function fmt(v) { return (Math.round(v * 100) / 100).toString().replace('.', ',').replace('-', '−'); }
+  function plot(el, o) {
+    var W = 640, H = o.h || 340, L = 40, R = 14, T = 12, B = 26;
+    var x0 = o.x[0], x1 = o.x[1], y0 = o.y[0], y1 = o.y[1];
+    var X = function (x) { return L + (x - x0) / (x1 - x0) * (W - L - R); };
+    var Y = function (y) { return T + (y1 - y) / (y1 - y0) * (H - T - B); };
+    var s = [], cid = 'clip-' + el.id;
+    s.push('<defs><clipPath id="' + cid + '"><rect x="' + L + '" y="' + T + '" width="' + (W - L - R) + '" height="' + (H - T - B) + '"/></clipPath></defs>');
+    var gx = o.gx || 1, gy = o.gy || 1, v;
+    for (v = Math.ceil(x0 / gx) * gx; v <= x1 + 1e-9; v += gx) {
+      s.push('<line class="gl" x1="' + X(v) + '" y1="' + T + '" x2="' + X(v) + '" y2="' + (H - B) + '"/>');
+      if (Math.abs(v) > 1e-9) s.push('<text class="tk" x="' + X(v) + '" y="' + (H - 8) + '" text-anchor="middle">' + fmt(v) + '</text>');
+    }
+    for (v = Math.ceil(y0 / gy) * gy; v <= y1 + 1e-9; v += gy) {
+      s.push('<line class="gl" x1="' + L + '" y1="' + Y(v) + '" x2="' + (W - R) + '" y2="' + Y(v) + '"/>');
+      if (Math.abs(v) > 1e-9) s.push('<text class="tk" x="' + (L - 6) + '" y="' + (Y(v) + 4) + '" text-anchor="end">' + fmt(v) + '</text>');
+    }
+    if (y0 <= 0 && y1 >= 0) s.push('<line class="ax" x1="' + L + '" y1="' + Y(0) + '" x2="' + (W - R) + '" y2="' + Y(0) + '"/>');
+    if (x0 <= 0 && x1 >= 0) {
+      s.push('<line class="ax" x1="' + X(0) + '" y1="' + T + '" x2="' + X(0) + '" y2="' + (H - B) + '"/>');
+      s.push('<text class="tk" x="' + (X(0) - 5) + '" y="' + (H - 8) + '" text-anchor="end">0</text>');
+    }
+    var g = '<g clip-path="url(#' + cid + ')">';
+    (o.asy || []).forEach(function (a) {
+      if (a.v !== undefined) { g += '<line class="as" x1="' + X(a.v) + '" y1="' + T + '" x2="' + X(a.v) + '" y2="' + (H - B) + '"/>'; return; }
+      var from = a.from !== undefined ? a.from : x0, to = a.to !== undefined ? a.to : x1;
+      g += '<line class="as" x1="' + X(from) + '" y1="' + Y(a.a * from + a.b) + '" x2="' + X(to) + '" y2="' + Y(a.a * to + a.b) + '"/>';
+    });
+    var N = 1600, d = '', pen = false, px = null, span = y1 - y0;
+    for (var i = 0; i <= N; i++) {
+      var x = x0 + (x1 - x0) * i / N;
+      if (px !== null && (o.poles || []).some(function (p) { return px < p && p <= x; })) pen = false;
+      px = x;
+      if (o.dom && !o.dom(x)) { pen = false; continue; }
+      var y = o.f(x);
+      if (!isFinite(y)) { pen = false; continue; }
+      y = Math.max(Math.min(y, y1 + span), y0 - span);
+      d += (pen ? 'L' : 'M') + X(x).toFixed(1) + ' ' + Y(y).toFixed(1);
+      pen = true;
+    }
+    g += '<path class="cv" d="' + d + '"/>';
+    (o.pts || []).forEach(function (p) {
+      var cls = { ext: 'pe', inf: 'pi', dot: 'pz', open: 'po' }[p.k];
+      g += '<circle class="' + cls + '" cx="' + X(p.x) + '" cy="' + Y(p.y) + '" r="' + (p.k === 'dot' ? 3.5 : 5.5) + '"/>';
+    });
+    g += '</g>';
+    s.push(g);
+    (o.pts || []).forEach(function (p) {
+      if (!p.t) return;
+      s.push('<text class="pl" x="' + (X(p.x) + (p.dx || 8)) + '" y="' + (Y(p.y) + (p.dy || -10)) + '" text-anchor="' + (p.a || 'start') + '">' + p.t + '</text>');
+    });
+    el.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + (o.label || 'A függvény grafikonja') + '">' + s.join('') + '</svg>';
+  }
+
+  var E = Math.E;
+  var GRAPHS = {
+    'g-o2': { label: 'x^4 − 4x^3 + 10 grafikonja', f: function (x) { return x * x * x * x - 4 * x * x * x + 10; },
+      x: [-1.5, 4.5], y: [-22, 22], gx: 1, gy: 5,
+      pts: [ { x: 0, y: 10, k: 'inf', t: 'infl. (0; 10)', dx: 10, dy: -8 },
+             { x: 2, y: -6, k: 'inf', t: 'infl. (2; −6)', dx: -10, dy: -6, a: 'end' },
+             { x: 3, y: -17, k: 'ext', t: 'min (3; −17)', dx: 10, dy: 16 } ] },
+    'g-o3': { label: '(x^2+1)/(x+1)^2 grafikonja', f: function (x) { return (x * x + 1) / ((x + 1) * (x + 1)); },
+      x: [-6, 6], y: [-0.5, 4.5], gx: 1, gy: 1, poles: [-1], asy: [ { v: -1 }, { a: 0, b: 1 } ],
+      pts: [ { x: 1, y: 0.5, k: 'ext', t: 'min (1; 1/2)', dx: -6, dy: 22, a: 'end' },
+             { x: 2, y: 5 / 9, k: 'inf', t: 'infl. (2; 5/9)', dx: 8, dy: 22 },
+             { x: 0, y: 1, k: 'dot', t: '(0; 1)', dx: 8, dy: -10 } ] },
+    'g-o4': { label: 'x·ln²x grafikonja', f: function (x) { var l = Math.log(x); return x * l * l; }, dom: function (x) { return x > 0; },
+      x: [-0.15, 2.65], y: [-0.3, 2.3], gx: 0.5, gy: 0.5,
+      pts: [ { x: 0, y: 0, k: 'open' },
+             { x: Math.exp(-2), y: 4 / (E * E), k: 'ext', t: 'max (e⁻²; 4/e²)', dx: 2, dy: -14 },
+             { x: 1 / E, y: 1 / E, k: 'inf', t: 'infl. (1/e; 1/e)', dx: 12, dy: 6 },
+             { x: 1, y: 0, k: 'ext', t: 'min (1; 0)', dx: 8, dy: 18 } ] },
+    'g-h2': { label: '((x−3)/(x+1))^2 grafikonja', f: function (x) { var u = (x - 3) / (x + 1); return u * u; },
+      x: [-8, 12], y: [-1, 10], gx: 2, gy: 2, poles: [-1], asy: [ { v: -1 }, { a: 0, b: 1 } ],
+      pts: [ { x: 3, y: 0, k: 'ext', t: 'min (3; 0)', dx: -8, dy: 18, a: 'end' },
+             { x: 5, y: 1 / 9, k: 'inf', t: 'infl. (5; 1/9)', dx: 8, dy: 18 },
+             { x: 1, y: 1, k: 'dot', t: '(1; 1)', dx: -8, dy: -10, a: 'end' } ] },
+    'g-h3': { label: 'x − arctg(2x) grafikonja', f: function (x) { return x - Math.atan(2 * x); },
+      x: [-4, 4], y: [-3.5, 3.5], gx: 1, gy: 1,
+      asy: [ { a: 1, b: -Math.PI / 2, from: 0, to: 4 }, { a: 1, b: Math.PI / 2, from: -4, to: 0 } ],
+      pts: [ { x: -0.5, y: Math.PI / 4 - 0.5, k: 'ext', t: 'max (−1/2; π/4 − 1/2)', dx: -10, dy: -12, a: 'end' },
+             { x: 0.5, y: 0.5 - Math.PI / 4, k: 'ext', t: 'min (1/2; 1/2 − π/4)', dx: 10, dy: 20 },
+             { x: 0, y: 0, k: 'inf' } ] },
+    'g-h4': { label: 'e^x/(1+e^x) grafikonja', f: function (x) { return Math.exp(x) / (1 + Math.exp(x)); },
+      x: [-6, 6], y: [-0.25, 1.25], gx: 1, gy: 0.25, asy: [ { a: 0, b: 1, from: 0, to: 6 }, { a: 0, b: 0, from: -6, to: 0 } ],
+      pts: [ { x: 0, y: 0.5, k: 'inf', t: 'infl. (0; 1/2)', dx: 10, dy: 16 } ] }
+  };
+  Object.keys(GRAPHS).forEach(function (id) { var el = document.getElementById(id); if (el) plot(el, GRAPHS[id]); });
+
+  // "open all" toggles per section
+  document.querySelectorAll('button[data-toggle]').forEach(function (btn) {
+    var sec = document.getElementById(btn.dataset.toggle);
+    btn.addEventListener('click', function () {
+      var list = sec.querySelectorAll('details');
+      var open = Array.prototype.some.call(list, function (d) { return !d.open; });
+      list.forEach(function (d) { d.open = open; });
+      btn.textContent = open ? 'Összes megoldás becsukása' : 'Összes megoldás kinyitása';
+    });
+  });
+})();
+</script>
+</body>
+</html>
