@@ -988,75 +988,6 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
     </div></details>
   </article>
 
-  <div class="sub-head">Kiegészítő feladatok egy régebbi órai jegyzetből (5. gyakorlat)</div>
-
-  <article class="concept">
-    <div class="task-head"><span class="no">Paramétertér (régi órai jegyzet)</span><span class="kind fog">fogalom</span></div>
-    <div class="body">
-    <p>Legyen \(F \subseteq A \times A\) feladat. \(F\)-nek \(B\) egy paramétertere, ha \(\exists F_1 \subseteq A \times B\) és \(\exists F_2 \subseteq B \times A\), hogy \(F = F_2 \circ F_1\). (Példa: \(A = \{1, 2, 3\}\), \(B = \{a, b\}\), \(F_1 = \{(1, a), (1, b), (2, b)\}\), \(F_2 = \{(a, 1), (b, 2)\}\).)</p>
-    </div>
-  </article>
-
-  <article class="concept">
-    <div class="task-head"><span class="no">A specifikáció tétele (régi órai jegyzet)</span><span class="kind fog">fogalom</span></div>
-    <div class="body">
-    <p>Legyen \(F \subseteq A \times A\) feladat, \(B\) az \(F\) egy paramétertere (\(F = F_2 \circ F_1\)), és \(b \in B\) tetszőleges paraméter, amihez \([Q_b] ::= F_1^{(-1)}(b)\) és \([R_b] ::= F_2(b)\). Ekkor ha \(\forall b \in B : Q_b \Rightarrow \lf(S, R_b)\), akkor az \(S\) program megoldja az \(F\) feladatot.</p>
-    </div>
-  </article>
-
-  <article class="task">
-    <div class="task-head"><span class="no">R1. feladat</span><span class="kind">specifikáció tétele</span></div>
-    <div class="stmt"><p>Legyen \(A = [1..4]\), \(S \subseteq A \times (A \cup \{\fail\})^{**}\) a következő program:</p>
-      \[S = \{\ 1 \to \sq{1, 2, 4, 1},\ 1 \to \sq{1, 3, 2},\ 2 \to \sq{2, 3},\ 3 \to \sq{3, 2},\ 3 \to \sq{3, 4},\ 4 \to \sq{4, 1, 3}\ \}\]
-      <p>Legyen \(B = \{x, y, z\}\) az \(F \subseteq A \times A\) feladat egy paramétertere, \(F_1 = \{(1, x), (2, y), (2, z), (3, z), (4, y)\}\), \(F_2 = \{(x, 1), (x, 2), (y, 3), (z, 2), (z, 4)\}\). (a) Adjuk meg az \(F\) feladatot elemeinek felsorolásával. (b) Mit mond a specifikáció tétele az \(S\) programról és az \(F\) feladatról?</p></div>
-    <details><summary>Megoldás</summary><div class="sol">
-      <p><b>(a)</b> \(F = F_2 \circ F_1 = \{(1,1), (1,2), (2,3), (2,2), (2,4), (3,2), (3,4), (4,3)\}\).</p>
-      <p><b>(b)</b> \(\D_{p(S)} = A = \{1,2,3,4\}\), \(p(S)(1) = \{1, 2\}\), \(p(S)(2) = \{3\}\), \(p(S)(3) = \{2, 4\}\), \(p(S)(4) = \{3\}\). \([Q_b] = F_1^{(-1)}(b)\), \([R_b] = F_2(b)\); kell: \(\forall b \in B : [Q_b] \subseteq [\lf(S, R_b)]\).</p>
-      <ul>
-        <li>\(b = x\): \([Q_x] = \{1\}\), \([R_x] = \{1, 2\}\), \([\lf(S, R_x)] = \{1\}\); \(\{1\} \subseteq \{1\}\) ✓</li>
-        <li>\(b = y\): \([Q_y] = \{2, 4\}\), \([R_y] = \{3\}\), \([\lf(S, R_y)] = \{2, 4\}\); \(\{2, 4\} \subseteq \{2, 4\}\) ✓</li>
-        <li>\(b = z\): \([Q_z] = \{2, 3\}\), \([R_z] = \{2, 4\}\), \([\lf(S, R_z)] = \{3\}\); \(\{2, 3\} \not\subseteq \{3\}\) ✗</li>
-      </ul>
-      <p>Tehát a tétel alapján <span class="ans">nem tudjuk megmondani</span>, hogy az \(S\) program megoldja-e az \(F\) feladatot.</p>
-      <div class="own"><b>Saját kiegészítés</b>A tétel csak <em>elégséges</em> feltétel. Közvetlenül ellenőrizve \(S\) valójában megoldja \(F\)-et: \(\D_F = A \subseteq \D_{p(S)}\), és \(p(S)(1) = \{1,2\} \subseteq F(1)\), \(p(S)(2) = \{3\} \subseteq F(2) = \{2,3,4\}\), \(p(S)(3) = \{2,4\} \subseteq F(3)\), \(p(S)(4) = \{3\} \subseteq F(4)\). A tétel azért „bukik” el, mert a 2-es állapot két paraméterhez (\(y\), \(z\)) is tartozik, és \(R_z\) külön-külön túl szigorú rá.</div>
-    </div></details>
-  </article>
-
-  <article class="task">
-    <div class="task-head"><span class="no">R2. feladat</span><span class="kind">specifikáció</span></div>
-    <div class="stmt"><p>Adott az \(F\) feladat specifikációja: \(A = (x : \Z,\ y : \Z,\ z : \Z)\), \(B = (x' : \Z,\ y' : \Z)\), \(Q = (x = x' \wedge y = y' \wedge x' > 5)\), \(R = (Q \wedge x > y \to z = x)\).</p>
-      <p>(a) Adjuk meg a \(Q_{\{x':4,\ y':2\}}\) igazsághalmazát. (b) Mit rendel \(F\) az állapottér \(\{x{:}4, y{:}2, z{:}1\}\), \(\{x{:}8, y{:}5, z{:}7\}\), \(\{x{:}9, y{:}3, z{:}10\}\) és \(\{x{:}6, y{:}9, z{:}4\}\) elemeihez?</p></div>
-    <details><summary>Megoldás</summary><div class="sol">
-      <p><b>(a)</b> \([Q_{\{x':4, y':2\}}] = \emptyset\) (mert \(x' > 5\) nem teljesül). Néhány további: \([Q_{\{x':6, y':2\}}] = \{(6, 2, *)\}\), \([R_{\{x':6, y':2\}}] = \{(6, 2, 6)\}\), \([R_{\{x':6, y':10\}}] = \{(6, 10, *)\}\).</p>
-      <p><b>(b)</b> \((4, 2, 1) \to \emptyset\), \((8, 5, 7) \to (8, 5, 8)\), \((9, 3, 10) \to (9, 3, 9)\), \((6, 9, 4) \to (6, 9, *)\) (mert \(x > y\) hamis, így \(z\) bármi lehet).</p>
-    </div></details>
-  </article>
-
-  <article class="task">
-    <div class="task-head"><span class="no">R3. feladat</span><span class="kind">specifikáció</span></div>
-    <div class="stmt"><p>Adott az \(F\) feladat specifikációja: \(A = (x : \N,\ d : \N)\), \(B = (x' : \N)\), \(Q = (x = x' \wedge x > 0)\), \(R = (Q \wedge 10^{d-1} \leq x \lt 10^d)\).</p>
-      <p>(a) \([Q_{\{x':6854\}}] = ?\) (b) \([R_{\{x':6854\}}] = ?\) (c) Mit rendel \(F\) a \(\{x{:}6854, d{:}2\}\) és \(\{x{:}7267363, d{:}123\}\) elemekhez? (e) Fogalmazzuk meg saját szavainkkal a feladatot. (f) Írjuk fel \(F\)-et halmazként.</p></div>
-    <details><summary>Megoldás</summary><div class="sol">
-      <ul>
-        <li>(a) \(\{(6854, *)\}\) &nbsp; (b) \(\{(6854, 4)\}\)</li>
-        <li>(c) \((6854, 2) \to \{(6854, 4)\}\), \((7267363, 123) \to \{(7267363, 7)\}\)</li>
-        <li>(e) <em>(saját)</em> Határozzuk meg egy pozitív egész szám (tízes számrendszerbeli) számjegyeinek számát.</li>
-        <li>(f) \(F(a, *) = \{ (a, b) \mid a > 0 \wedge 10^{b-1} \leq a \lt 10^b \}\)</li>
-      </ul>
-    </div></details>
-  </article>
-
-  <article class="task">
-    <div class="task-head"><span class="no">R5. feladat</span><span class="kind">specifikáció</span></div>
-    <div class="stmt"><p>Adott az \(F\) feladat specifikációja: \(A = (x : \N,\ y : \N,\ z : \N)\), \(B = (x' : \N,\ y' : \N)\), \(Q = (x = x' \wedge y = y' \wedge x \leq y + 1)\), \(R = \big(Q \wedge \prim(z) \wedge \min(|x - z|, |y - z|) \lt 3\big)\).</p>
-      <p>(a) Mit rendel \(F\) az állapottér \(\{x{:}10, y{:}19, z{:}13\}\) és \(\{x{:}26, y{:}34, z{:}31\}\) elemeihez? (b) Fogalmazzuk meg saját szavainkkal a feladatot.</p></div>
-    <details><summary>Megoldás</summary><div class="sol">
-      <p><b>(a)</b> \((10, 19, 13) \to \{(10, 19, 11), (10, 19, 17), (10, 19, 19)\}\); \((26, 34, 31) \to \emptyset\) (24–28 és 32–36 között nincs prím).</p>
-      <div class="own"><b>(b) Saját megfogalmazás</b>Adott két természetes szám (\(x \leq y + 1\)); keressünk olyan prímet, amely legalább az egyikükhöz 3-nál közelebb van (\(x\) és \(y\) maradjon változatlan).</div>
-      <p class="label">A régi jegyzet 4. feladata megegyezik a fenti 6. feladattal, a 6. pedig a 3. kvízzel.</p>
-    </div></details>
-  </article>
-
   </div>
 </section>
 
@@ -1118,6 +1049,7 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
       <p><b>2. változat</b> (\(f\) rögzített függvény, nem állapotkomponens):</p>
       \[A = (m : \Z,\ n : \Z,\ l : \LL,\ ind : \Z), \quad B = (m' : \Z,\ n' : \Z), \quad Q = (m = m' \wedge n = n')\]
       \[R = \big(Q \wedge l = (\exists i \in [m..n] : f(i) > 0) \wedge l \to (f(ind) > 0 \wedge \forall i \in [ind+1..n] : f(i) \leq 0)\big)\]
+      <p class="label">Órán az 1. változatot írtuk fel, az utófeltétel elején \(Q \wedge\)-val (így \(m, n, f\) megőrzése is előírt).</p>
       <div class="tip"><b>Az \(l\) szerepe</b>Lehet, hogy nincs pozitív érték; ezt az \(l\) logikai változó jelzi, és csak ha \(l\) igaz, akkor kell \(ind\)-nek értelmes helynek lennie.</div>
     </div></details>
   </article>
@@ -1138,6 +1070,7 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
     <details><summary>Megoldás</summary><div class="sol">
       \[A = (x : \Z^n), \quad B = (x' : \Z^n), \quad Q = (x = x')\]
       \[R = \Big(\forall i \in [1..n] : x[i] = \sum_{k=1}^{i} x'[k]\Big) = \big(x[1] = x'[1] \wedge \forall i \in [2..n] : x[i] = x[i-1] + x'[i]\big)\]
+      <p>Órán az előfeltételt kiegészítettük: \(Q = (x = x' \wedge n > 0)\), mert különben \(x[1]\) nem létezne. Példa: \([2, 4, 7, 1, 3] \to [2, 6, 13, 14, 17]\).</p>
     </div></details>
   </article>
 
@@ -1147,6 +1080,7 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
     <details><summary>Megoldás</summary><div class="sol">
       \[A = (x : \Z^n), \quad B = (x' : \Z^n), \quad Q = (x = x'), \quad R = \big(x \in \perm(x') \wedge \sorted(x)\big)\]
       \[\perm(x) = \{ s \in \Z^n \mid \exists \varphi : [1..n] \to [1..n] \text{ bijekció} : \forall i \in [1..n] : s[i] = x[\varphi(i)] \}, \qquad \sorted(x) = \forall i \in [2..n] : x[i-1] \leq x[i]\]
+      <div class="tip"><b>Miért kell a \(\perm\)?</b>Órai példa: \([2, 1, 9, 4, 7]\)-ből a \(\sorted(x)\) önmagában bármilyen növekvő tömböt megengedne (pl. \([1, 2, 3, 4, \dots]\)), ami nem az eredeti elemek rendezése. Az \(x \in \perm(x')\) köti ki, hogy ugyanazok az elemek maradjanak.</div>
     </div></details>
   </article>
 
@@ -1166,14 +1100,38 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
       \[A = (p : \Z), \quad B = \{\sigma\} \ \ (\text{nullatér: egyetlen eleme az origó}), \quad Q = (\igaz), \quad R = (\prim(p) \wedge p > 10000)\]
       <p>Ha a feladat \(\D_F = A\), \(F(a) = \{ n \mid \prim(n) \wedge n > 10000 \}\), akkor \(B = \{\sigma\}\), \(\D_{F_1} = A\), \(F_1(a) = \{\sigma\}\), \(\D_{F_2} = B\), \(F_2(\sigma) = \{ n \mid \prim(n) \wedge n > 10000 \}\).</p>
       <p>Az elő- és utófeltétel \(\forall b \in B\), azaz egyedül \(\sigma\)-ra: \([Q_\sigma] = F_1^{(-1)}(\sigma) = A\), tehát \(Q_\sigma = \igaz\); \([R_\sigma] = F_2(\sigma) = \{ n \mid \prim(n) \wedge n > 10000 \}\), tehát \(R_\sigma = (\prim(p) \wedge p > 10000)\).</p>
-      <div class="tip"><b>Nincs input</b>Ha a feladatnak nincs bemenő adata, a paramétertér egyelemű (nullatér), és az előfeltétel egyszerűen \(\igaz\).</div>
+      <div class="tip"><b>Nincs input</b>Ha a feladatnak nincs bemenő adata, a paramétertér egyelemű (nullatér), és az előfeltétel egyszerűen \(\igaz\). Órán a szokásos ábrával: \(A \xrightarrow{F_1} B \xrightarrow{F_2} A\), \(F = F_2 \circ F_1\), csak itt \(B\)-nek egyetlen eleme van.</div>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">8. feladat</span><span class="kind">specifikáció tömbre</span></div>
+    <div class="stmt"><p>Adott egy egész számokat tartalmazó tömb. Ha tartalmaz pozitív elemet, akkor keressük meg a legnagyobb elemét, különben a legkisebbet.</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <div class="own"><b>Saját megoldás (az órai jegyzetben csak a feladat szövege szerepel)</b>
+        \[A = (x : \Z^n,\ m : \Z), \quad B = (x' : \Z^n), \quad Q = (x = x' \wedge n \geq 1)\]
+        \[R = \Big(Q \wedge \big((\exists i \in [1..n] : x[i] > 0) \to m = \mathrm{MAX}_{i=1..n}\, x[i]\big) \wedge \big(\neg(\exists i \in [1..n] : x[i] > 0) \to m = \mathrm{MIN}_{i=1..n}\, x[i]\big)\Big)\]
+        <p>A \(\mathrm{MAX}\) kifejtve (az 1. kvíz mintájára): \(\exists j \in [1..n] : m = x[j] \wedge \forall i \in [1..n] : x[i] \leq m\); a \(\mathrm{MIN}\) ugyanígy, \(\geq\)-vel.</p>
+        <p>Az \(n \geq 1\) azért kell, mert üres tömbnek nincs se maximuma, se minimuma. Példák: \([-3, 5, 2] \to m = 5\); \([-3, -7, 0] \to m = -7\) (a 0 nem pozitív).</p>
+      </div>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">9. feladat</span><span class="kind">specifikáció</span></div>
+    <div class="stmt"><p>Döntsük el egy adott pozitív egészről, hogy prím-e.</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <div class="own"><b>Saját megoldás (az órai jegyzetben csak a feladat szövege szerepel)</b>
+        \[A = (n : \Z,\ l : \LL), \quad B = (n' : \Z), \quad Q = (n = n' \wedge n' > 0), \quad R = \big(Q \wedge l = \prim(n)\big)\]
+        <p>Ha a \(\prim\) függvényt nem akarjuk feltételezni, kifejtve: \(l = \big(n \geq 2 \wedge \forall i \in [2..n-1] : i \nmid n\big)\). Az \(n \geq 2\) miatt az 1 nem prím. Az eredmény egy logikai érték, ezért kell az \(l : \LL\) változó.</p>
+      </div>
     </div></details>
   </article>
 
   </div>
 </section>
 
-<footer>Források: <a href="../Gyakorlat/1.gyakorlat.pdf" target="_blank" rel="noopener">1.</a>, <a href="../Gyakorlat/2.gyakorlat.pdf" target="_blank" rel="noopener">2.</a>, <a href="../Gyakorlat/3.gyakorlat.pdf" target="_blank" rel="noopener">3.</a>, <a href="../Gyakorlat/4.gyakorlat.pdf" target="_blank" rel="noopener">4.</a>, <a href="../Gyakorlat/5.gyakorlat.pdf" target="_blank" rel="noopener">5.</a>, <a href="../Gyakorlat/6.gyakorlat.pdf" target="_blank" rel="noopener">6.</a> gyakorlati lap és az órai jegyzetek (Gyakorlat mappa). A „saját” jelölésű megoldások nem az óráról származnak.</footer>
+<footer>Források: <a href="../Gyakorlat/1.gyakorlat.pdf" target="_blank" rel="noopener">1.</a>, <a href="../Gyakorlat/2.gyakorlat.pdf" target="_blank" rel="noopener">2.</a>, <a href="../Gyakorlat/3.gyakorlat.pdf" target="_blank" rel="noopener">3.</a>, <a href="../Gyakorlat/4.gyakorlat.pdf" target="_blank" rel="noopener">4.</a>, <a href="../Gyakorlat/5.gyakorlat.pdf" target="_blank" rel="noopener">5.</a>, <a href="../Gyakorlat/6.gyakorlat.pdf" target="_blank" rel="noopener">6.</a> gyakorlati lap és az órai jegyzetek (2–4. és 6. gyakorlat) (Gyakorlat mappa). A „saját” jelölésű megoldások nem az óráról származnak.</footer>
 </div>
 
 <script>
@@ -1189,6 +1147,44 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
       btn.textContent = open ? 'Összes megoldás becsukása' : 'Összes megoldás kinyitása';
     });
   });
+})();
+</script>
+<!-- Fejezetsáv: az éppen olvasott szakasz gombja kiemelve -->
+<style>
+nav.bar a.active, nav.bar a.active:hover, nav.bar a.active:focus-visible { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+</style>
+<script>
+(function () {
+  var nav = document.querySelector('nav.bar');
+  if (!nav) return;
+  var links = Array.prototype.filter.call(nav.querySelectorAll('a[href^="#"]'), function (a) {
+    return a.getAttribute('href').length > 1 && document.getElementById(a.getAttribute('href').slice(1));
+  });
+  var current = null, ticking = false;
+  function sectionOf(a) { return document.getElementById(a.getAttribute('href').slice(1)); }
+  function update() {
+    ticking = false;
+    var line = nav.getBoundingClientRect().bottom + 12, active = null;
+    var visible = links.filter(function (a) { return sectionOf(a).offsetParent !== null; });
+    visible.forEach(function (a) { if (sectionOf(a).getBoundingClientRect().top <= line) active = a; });
+    // a lap alján az utolsó szakasz az aktuális akkor is, ha rövid
+    if (visible.length && window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) active = visible[visible.length - 1];
+    if (active === current) return;
+    if (current) { current.classList.remove('active'); current.removeAttribute('aria-current'); }
+    current = active;
+    if (!active) return;
+    active.classList.add('active');
+    active.setAttribute('aria-current', 'location');
+    var ul = active.closest('ul'), ur = ul.getBoundingClientRect(), ar = active.getBoundingClientRect();
+    var left = ar.left - ur.left + ul.scrollLeft, right = left + ar.width;
+    if (left < ul.scrollLeft || right > ul.scrollLeft + ul.clientWidth) ul.scrollTo({ left: Math.max(0, left - 16), behavior: 'smooth' });
+  }
+  function schedule() { if (!ticking) { ticking = true; setTimeout(update, 40); } }
+  window.addEventListener('scroll', schedule, { passive: true });
+  window.addEventListener('resize', schedule);
+  document.addEventListener('input', schedule);   // a keresés elrejthet szakaszokat
+  document.addEventListener('toggle', schedule, true);
+  update();
 })();
 </script>
 </body>

@@ -1,0 +1,890 @@
+<!doctype html>
+<html lang="hu" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Algoritmusok II · minta ZH kidolgozva</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<script>
+  window.MathJax = { tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] }, svg: { fontCache: 'global' } };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js" async></script>
+<style>
+/* Layout: same exam-paper look as the other subject pages, in the ALGO II rose; trees, graphs and struktograms are drawn from short text sources by the script at the bottom */
+:root {
+  --paper: #f5f7fa;
+  --grid: rgba(179, 50, 107, 0.06);
+  --card: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6574;
+  --rule: #d7dde6;
+  --accent: #b3326b;
+  --accent-soft: #fbe8f0;
+  --mark: #b8352a;
+  --mark-soft: #fbe9e6;
+  --ok: #2c7a4b;
+  --ok-soft: #e3f3e9;
+  --grey: #8a94a3;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-label: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f141b; --grid: rgba(245, 144, 184, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+    --rule: #2a3442; --accent: #f590b8; --accent-soft: #3b1e2b; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+    --ok: #74d39c; --ok-soft: #173225; --grey: #6b7686; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f141b; --grid: rgba(245, 144, 184, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+  --rule: #2a3442; --accent: #f590b8; --accent-soft: #3b1e2b; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+  --ok: #74d39c; --ok-soft: #173225; --grey: #6b7686; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background-color: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 1.06rem;
+  line-height: 1.6;
+}
+.wrap { max-width: 900px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 80px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2rem, 6vw, 3.1rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.65rem; font-weight: 700; letter-spacing: -0.01em; }
+h3 { font-size: 1.1rem; font-weight: 600; }
+p { margin: 0; }
+a { color: var(--accent); }
+code, .nota { font-family: var(--f-label); font-size: 0.86em; }
+.label { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding: 2px 0; margin: 6px 0 !important; min-width: 0; max-width: 100%; }
+
+/* back to subject page */
+.back { justify-self: start; display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px 9px 12px; border: 1.5px solid var(--accent); border-radius: 8px; background: var(--accent-soft); color: var(--ink); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 1.02rem; line-height: 1; white-space: nowrap; transition: background .15s, color .15s; }
+.back .arr { color: var(--accent); font-size: 1.25rem; transition: transform .15s, color .15s; }
+.back:hover, .back:focus-visible { background: var(--accent); color: var(--paper); outline: none; }
+.back:hover .arr, .back:focus-visible .arr { color: var(--paper); transform: translateX(-3px); }
+
+header.hero { display: grid; gap: 14px; padding-block: 0 26px; border-bottom: 2px solid var(--accent); }
+.hero .sub { color: var(--muted); max-width: 64ch; }
+.facts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.fact { display: flex; flex-direction: column; gap: 2px; padding: 8px 14px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; min-width: 120px; }
+.fact b { font-family: var(--f-display); font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 0.9rem; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { display: inline-block; width: 14px; height: 14px; border-radius: 50%; border: 2px solid; }
+.legend i.bad { border-color: var(--mark); background: var(--mark-soft); }
+.legend i.new { border-color: var(--ok); background: var(--ok-soft); border-style: dashed; }
+
+nav.bar { position: sticky; top: 0; z-index: 5; background: var(--paper); border-bottom: 1px solid var(--rule); margin-inline: -16px; padding-inline: 16px; }
+nav.bar ul { list-style: none; margin: 0; padding: 10px 0; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin; }
+nav.bar a { display: block; white-space: nowrap; text-decoration: none; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.04em; color: var(--ink); padding: 6px 10px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); }
+nav.bar a:hover, nav.bar a:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+nav.bar a.nav-back { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+nav.bar a.active, nav.bar a.active:hover, nav.bar a.active:focus-visible { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+
+section { padding-top: 44px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; scroll-margin-top: 56px; }
+.section-head { display: grid; gap: 6px; }
+.section-head p { color: var(--muted); max-width: 68ch; }
+.taskgroup { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.sub-head { font-family: var(--f-label); font-size: 0.74rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); padding-top: 10px; }
+
+/* tasks and theory cards */
+.task, .concept { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 18px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; min-width: 0; scroll-margin-top: 60px; }
+.concept { border-left: 4px solid var(--accent); }
+.task-head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.task-head .no { font-family: var(--f-display); font-weight: 700; font-size: 1.05rem; }
+.task-head .kind { margin-left: auto; font-family: var(--f-label); font-size: 0.72rem; padding: 2px 8px; border-radius: 3px; background: var(--accent-soft); color: var(--accent); white-space: nowrap; }
+.task-head .kind.fog { background: var(--accent); color: var(--card); }
+.task-head .kind.alg { background: var(--ink); color: var(--card); }
+.task-head .kind.hf { background: var(--ok-soft); color: var(--ok); }
+.stmt, .body { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; min-width: 0; }
+.stmt > p, .body > p, .sol > p { max-width: 74ch; }
+.body ul, .body ol, .sol ol, .sol ul, .stmt ol, .stmt ul { margin: 0; padding-left: 22px; display: grid; gap: 4px; max-width: 74ch; }
+details { border-top: 1px dashed var(--rule); padding-top: 8px; min-width: 0; }
+summary { cursor: pointer; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); list-style: none; display: inline-flex; gap: 8px; align-items: center; padding: 4px 0; }
+summary::-webkit-details-marker { display: none; }
+summary::before { content: "+"; display: inline-grid; place-items: center; width: 18px; height: 18px; border: 1px solid currentColor; border-radius: 3px; font-size: 0.8rem; }
+details[open] > summary::before { content: "−"; }
+summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sol { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; padding-top: 6px; min-width: 0; }
+.ans { display: inline-block; background: var(--ok-soft); color: var(--ok); font-weight: 600; padding: 1px 9px; border-radius: 4px; }
+.warn, .tip, .own { max-width: 74ch; font-size: 0.95rem; }
+.warn { background: var(--mark-soft); border-left: 3px solid var(--mark); padding: 8px 12px; border-radius: 0 4px 4px 0; }
+.tip { background: var(--accent-soft); border-left: 3px solid var(--accent); padding: 8px 12px; border-radius: 0 4px 4px 0; }
+.own { border: 1px dashed var(--ok); padding: 8px 12px; border-radius: 4px; }
+.own > b:first-child, .tip > b:first-child, .warn > b:first-child { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; display: block; margin-bottom: 2px; }
+.own > b:first-child { color: var(--ok); }
+.warn > b:first-child { color: var(--mark); }
+.src { font-family: var(--f-label); font-size: 0.72rem; color: var(--muted); }
+
+.tbl { overflow-x: auto; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; max-width: 100%; }
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+th, td { text-align: left; padding: 6px 9px; border-bottom: 1px solid var(--rule); vertical-align: middle; }
+th { font-family: var(--f-label); font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+tr:last-child td { border-bottom: 0; }
+table.num td, table.num th { text-align: center; font-family: var(--f-label); font-size: 0.82rem; padding: 5px 6px; white-space: nowrap; }
+table.num td.l, table.num th.l { text-align: left; }
+table.num tr.fin td { font-weight: 600; color: var(--accent); border-top: 2px solid var(--rule); }
+td.hl { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+
+/* figures: trees, graphs, lists */
+.figs { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-start; }
+.fig { margin: 0; display: grid; gap: 6px; justify-items: center; background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 10px 10px 8px; min-width: 0; max-width: 100%; }
+.fig > div { max-width: 100%; overflow-x: auto; }
+.fig figcaption { font-family: var(--f-label); font-size: 0.74rem; color: var(--muted); text-align: center; max-width: 46ch; }
+.fig figcaption b { color: var(--accent); font-weight: 500; }
+.fig .nota { color: var(--ink); text-align: center; overflow-wrap: anywhere; max-width: 60ch; }
+.arrow-next { align-self: center; font-family: var(--f-label); color: var(--accent); font-size: 1.3rem; }
+svg text { font-family: var(--f-label); font-size: 13px; fill: var(--ink); }
+svg .nd { fill: var(--card); stroke: var(--ink); stroke-width: 1.4; }
+svg .nd.bad { stroke: var(--mark); fill: var(--mark-soft); stroke-width: 2.2; }
+svg .nd.new { stroke: var(--ok); fill: var(--ok-soft); stroke-width: 2; stroke-dasharray: 4 2; }
+svg .nd.blk { fill: var(--ink); }
+svg .nd.gry { fill: var(--grey); }
+svg text.inv { fill: var(--paper); }
+svg .nd.start { stroke-width: 3; }
+svg .ed { stroke: var(--muted); stroke-width: 1.3; fill: none; }
+svg .ed.te { stroke: var(--accent); stroke-width: 2.6; }
+svg .ed.bad { stroke: var(--mark); stroke-width: 2.2; }
+svg .ah { fill: var(--muted); }
+svg .ah.te { fill: var(--accent); }
+svg text.bal { fill: var(--accent); font-size: 12px; }
+svg text.bal.bad { fill: var(--mark); font-weight: 600; }
+svg .tri { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.3; }
+svg text.sub { fill: var(--muted); font-size: 11px; }
+svg text.el { fill: var(--accent); font-size: 11px; }
+svg text.knew { fill: var(--ok); font-weight: 600; }
+
+/* struktogram, written as an indented mini-language in <pre class="sg-src"> and drawn by the script */
+.sgrow { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-start; }
+.sgwrap { max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: 0 1px 2px 0; }
+.sgfig { display: inline-grid; justify-items: center; }
+.sgt { border: 1.5px solid var(--ink); border-radius: 14px; padding: 2px 14px; font-family: var(--f-label); font-size: 0.82rem; background: var(--card); position: relative; margin-bottom: 8px; white-space: nowrap; }
+.sgt::after { content: ""; position: absolute; left: 50%; top: 100%; height: 8px; border-left: 1.5px solid var(--ink); }
+.sg { display: grid; min-width: 220px; border: 1.5px solid var(--ink); background: var(--card); font-family: var(--f-label); font-size: 0.8rem; line-height: 1.4; }
+.sg .blk { display: grid; align-content: start; }
+.sg .blk > * + * { border-top: 1.5px solid var(--ink); }
+.sg .st { padding: 4px 10px; text-align: center; white-space: nowrap; }
+.sg .st.skip { color: var(--muted); }
+.sg .cm { color: var(--muted); font-style: italic; }
+.sg .loop > .cond { padding: 4px 10px; text-align: center; white-space: nowrap; }
+.sg .loop > .blk { margin-left: 22px; border-top: 1.5px solid var(--ink); border-left: 1.5px solid var(--ink); }
+.sg .ifh { display: grid; grid-template-columns: 22px 1fr 22px; border-bottom: 1.5px solid var(--ink); }
+.sg .ifh > .c { padding: 4px 4px; text-align: center; white-space: nowrap; }
+.sg .ifh > .t { background: linear-gradient(to top right, transparent calc(50% - 0.75px), var(--ink) 50%, transparent calc(50% + 0.75px)); }
+.sg .ifh > .f { background: linear-gradient(to bottom right, transparent calc(50% - 0.75px), var(--ink) 50%, transparent calc(50% + 0.75px)); }
+.sg .ifb { display: grid; grid-template-columns: auto auto; }
+.sg .ifb > * + * { border-left: 1.5px solid var(--ink); }
+.sg .sw { display: grid; }
+.sg .sw > .swh { padding: 4px 8px 4px 24px; text-align: center; white-space: nowrap; border-bottom: 1.5px solid var(--ink); background: linear-gradient(to top right, transparent calc(50% - 0.75px), var(--ink) 50%, transparent calc(50% + 0.75px)) left top / 20px 100% no-repeat; }
+.sg .sw > .swh.last { padding-right: 24px; background: linear-gradient(to top right, transparent calc(50% - 0.75px), var(--ink) 50%, transparent calc(50% + 0.75px)) left top / 20px 100% no-repeat, linear-gradient(to bottom right, transparent calc(50% - 0.75px), var(--ink) 50%, transparent calc(50% + 0.75px)) right top / 20px 100% no-repeat; }
+.sg .sw > .bl { border-left: 1.5px solid var(--ink); }
+pre.sg-src { display: none; }
+
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px; }
+button { font-family: var(--f-label); font-size: 0.78rem; padding: 7px 12px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); color: var(--ink); cursor: pointer; }
+button:hover, button:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+
+footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.88rem; }
+@media (max-width: 520px) { body { font-size: 1rem; } .task, .concept { padding: 14px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <a class="back" href="../../index.html#/algo2"><span class="arr" aria-hidden="true">←</span>Vissza: Algoritmusok II.</a>
+  <span class="label">Algoritmusok és adatszerkezetek II. · minta 1. ZH (2024)</span>
+  <h1>Minta ZH kidolgozva</h1>
+  <p class="sub">A MintaZH_1_2024.pdf mind a hat feladata. Előbb próbáld meg magad, utána nyisd le a megoldást; a <i>Részletes magyarázat</i> a gondolatmenetet és a tipikus hibákat írja le. A minta ZH-hoz nincs hivatalos megoldás, ez <b>saját kidolgozás</b>; a fák és a Huffman-kód lépéseit programmal ellenőriztem.</p>
+  <div class="facts">
+    <div class="fact"><span class="label">Feladat</span><b id="cnt">–</b></div>
+    <div class="fact"><span class="label">Pont</span><b>60</b></div>
+    <div class="fact"><span class="label">Struktogram</span><b id="cntsg">–</b></div>
+  </div>
+  <div class="legend"><span><i class="bad"></i>elromlott egyensúlyú csúcs (itt forgatunk)</span><span><i class="new"></i>az éppen beszúrt / megváltozott elem</span></div>
+</header>
+
+<nav class="bar" aria-label="Feladatok">
+  <ul>
+    <li><a class="nav-back" href="../../index.html#/algo2" aria-label="Vissza: Algoritmusok II.">← ALGO II</a></li>
+    <li><a href="#f1">1. Huffman</a></li>
+    <li><a href="#f2">2. AVL építés</a></li>
+    <li><a href="#f3">3. AVL törlés</a></li>
+    <li><a href="#f4">4. B+ fa</a></li>
+    <li><a href="#f5">5. Általános fa</a></li>
+    <li><a href="#f6">6. Közös ismerősök</a></li>
+  </ul>
+</nav>
+
+<!-- ======================= 1. ======================= -->
+<section id="f1">
+  <div class="section-head">
+    <span class="label">1. feladat · 10 pont</span>
+    <h2>Huffman-kódolás</h2>
+  </div>
+  <div class="toolbar"><button type="button" data-toggle="f1">Összes megoldás kinyitása</button></div>
+  <div class="taskgroup">
+  <article class="task">
+    <div class="task-head"><span class="no">1. feladat</span><span class="kind">10 pont</span></div>
+    <div class="stmt">
+      <p>Rendelkezésünkre áll egy 300 ezer karakterből álló szöveg gyakorisági táblázata (ezer előfordulásban):</p>
+      <div class="tbl"><table class="num"><tr><th>betű</th><td>A</td><td>D</td><td>E</td><td>F</td><td>K</td><td>J</td><td>L</td><td>M</td><td>R</td><td>S</td></tr><tr><th>gyak.</th><td>78</td><td>7</td><td>60</td><td>6</td><td>35</td><td>8</td><td>32</td><td>25</td><td>9</td><td>40</td></tr></table></div>
+      <ol type="a">
+        <li>A táblázat alapján építse fel a Huffman-fát és adja meg az egyes betűk kódját! (6 pont)</li>
+        <li>Hány bit lenne a Huffman-kóddal a szöveg? (2 pont)</li>
+        <li>A kapott Huffman-kód segítségével dekódolja az alábbi szöveget! (2 pont)<br><code>1001001110010111010110</code></li>
+      </ol>
+    </div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p><b>a)</b> Mindig a két legkisebb gyakoriságú csúcsot vonjuk össze (itt egyik lépésben sincs holtverseny, így a fa alakja egyértelmű):</p>
+      <div class="tbl" style="max-width:560px"><table class="num">
+        <tr><th>lépés</th><th class="l">összevonás</th><th class="l">a sor utána</th></tr>
+        <tr><td>0</td><td class="l"></td><td class="l">F6 D7 J8 R9 M25 L32 K35 S40 E60 A78</td></tr>
+        <tr><td>1</td><td class="l">F6 + D7 = 13</td><td class="l">J8 R9 13 M25 L32 K35 S40 E60 A78</td></tr>
+        <tr><td>2</td><td class="l">J8 + R9 = 17</td><td class="l">13 17 M25 L32 K35 S40 E60 A78</td></tr>
+        <tr><td>3</td><td class="l">13 + 17 = 30</td><td class="l">M25 30 L32 K35 S40 E60 A78</td></tr>
+        <tr><td>4</td><td class="l">M25 + 30 = 55</td><td class="l">L32 K35 S40 55 E60 A78</td></tr>
+        <tr><td>5</td><td class="l">L32 + K35 = 67</td><td class="l">S40 55 E60 67 A78</td></tr>
+        <tr><td>6</td><td class="l">S40 + 55 = 95</td><td class="l">E60 67 A78 95</td></tr>
+        <tr><td>7</td><td class="l">E60 + 67 = 127</td><td class="l">A78 95 127</td></tr>
+        <tr><td>8</td><td class="l">A78 + 95 = 173</td><td class="l">127 173</td></tr>
+        <tr><td>9</td><td class="l">127 + 173 = 300</td><td class="l">(kész)</td></tr>
+      </table></div>
+      <div class="figs"><figure class="fig"><div data-gt="(300 0:(127|ELK 0:(60|E) 1:(67|LK 0:(32|L) 1:(35|K))) 1:(173|ASMFDJR 0:(78|A) 1:(95|SMFDJR 0:(40|S) 1:(55|MFDJR 0:(25|M) 1:(30|FDJR 0:(13|FD 0:(6|F) 1:(7|D)) 1:(17|JR 0:(8|J) 1:(9|R)))))))"></div><figcaption>a Huffman-fa (a kisebb gyakoriságú gyerek kapja a 0-t)</figcaption></figure></div>
+      <div class="tbl"><table class="num">
+        <tr><th>betű</th><td>A</td><td>E</td><td>S</td><td>K</td><td>L</td><td>M</td><td>R</td><td>J</td><td>D</td><td>F</td></tr>
+        <tr><th>kód</th><td>10</td><td>00</td><td>110</td><td>011</td><td>010</td><td>1110</td><td>111111</td><td>111110</td><td>111101</td><td>111100</td></tr>
+        <tr><th>hossz</th><td>2</td><td>2</td><td>3</td><td>3</td><td>3</td><td>4</td><td>6</td><td>6</td><td>6</td><td>6</td></tr>
+      </table></div>
+      <p><b>b)</b> Gyakoriság × kódhossz összege (ezerben):</p>
+      \[78\cdot2 + 60\cdot2 + 40\cdot3 + 35\cdot3 + 32\cdot3 + 25\cdot4 + (9+8+7+6)\cdot6 = 156+120+120+105+96+100+180 = 877\]
+      <p>A szöveg <span class="ans">877 000 bit</span> lenne (átlagosan 2,92 bit/karakter). Összehasonlításul: 10 betűhöz a naiv módszer 4 bitet használna, az 1 200 000 bit.</p>
+      <p><b>c)</b> A bitsorozatot balról olvasva, a fában a gyökértől lépkedve, levélnél betűt írunk és újrakezdjük:</p>
+      <p><code>10 | 010 | 011 | 10 | 010 | 1110 | 10 | 110</code> = A L K A L M A S → <span class="ans">ALKALMAS</span></p>
+    </div></details>
+    <details><summary>Részletes magyarázat</summary><div class="sol">
+      <ul>
+        <li><b>A 0/1 címkézés.</b> A Huffman-kód nem egyértelmű: a 0 és az 1 szerepe minden csúcsnál felcserélhető. Itt a gyakorlati anyag szokását követtem (a kisebb gyakoriságú ág a 0); a dekódolandó szöveg pont ezzel a választással ad értelmes szót (ALKALMAS), tehát a feladatíró is így címkézett. Ellentétes címkézéssel a kódhosszak és a b) eredménye ugyanaz, csak a kódszavak mások.</li>
+        <li><b>Gyakori hiba:</b> az összevont csúcsot elfelejteni visszatenni a sorba, és a „következő két betűt” összevonni. A 3. lépésben a 13 és a 17 (két összevont csúcs) a két legkisebb, nem az M!</li>
+        <li><b>Ellenőrzés:</b> a gyakoriságok összege 300 (= a szöveg hossza ezerben), és a fa gyökerében is 300 áll. A kódszavak prefixmentesek (mind levél), ezért a c) dekódolása egyértelmű, és a végén nem maradhat ki bit.</li>
+        <li>A b) kérdésre a kódfát és a kódtáblát nem számoljuk bele (csak a kódolt szöveg hossza a kérdés).</li>
+      </ul>
+    </div></details>
+  </article>
+  </div>
+</section>
+
+<!-- ======================= 2. ======================= -->
+<section id="f2">
+  <div class="section-head">
+    <span class="label">2. feladat · 10 pont</span>
+    <h2>AVL-fa építése</h2>
+  </div>
+  <div class="toolbar"><button type="button" data-toggle="f2">Összes megoldás kinyitása</button></div>
+  <div class="taskgroup">
+  <article class="task">
+    <div class="task-head"><span class="no">2. feladat</span><span class="kind">10 pont</span></div>
+    <div class="stmt"><p>Építsen AVL-fát a következő adatokból: <b>115, 93, 66, 81, 37, 52, 122, 85, 110, 70, 83</b>! Ha elromlott a fa kiegyensúlyozása, lássa el címkékkel a csúcsokat és állítsa helyre az AVL-tulajdonságot a megfelelő forgatással!</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p>Három forgatás kell: a 66, az 52 és a 83 beszúrásakor.</p>
+      <p><b>66 beszúrása:</b> 93 → <code>-</code>, 115 → <code>--</code>, bal gyereke (93) <code>-</code> ⇒ <span class="ans">(−−,−)</span> a 115-nél.</p>
+      <div class="figs">
+        <figure class="fig"><div data-avl="{[(66*) 93-] 115--!}"></div></figure>
+        <span class="arrow-next">⇒</span>
+        <figure class="fig"><div data-avl="{[66] 93= [115]}"></div></figure>
+      </div>
+      <p><b>81, 37</b> forgatás nélkül:</p>
+      <div class="figs">
+        <figure class="fig"><div data-avl="{[66+ (81*)] 93- [115]}"></div><figcaption>81</figcaption></figure>
+        <figure class="fig"><div data-avl="{[(37*) 66= (81)] 93- [115]}"></div><figcaption>37: a 66 = lesz, megállunk</figcaption></figure>
+      </div>
+      <p><b>52 beszúrása:</b> a 37 jobb gyereke; 37 → <code>+</code>, 66 → <code>-</code>, 93 → <code>--</code>, bal gyereke (66) <code>-</code> ⇒ <span class="ans">(−−,−)</span> a gyökérnél.</p>
+      <div class="figs">
+        <figure class="fig"><div data-avl="{[(37+ {52*}) 66- (81)] 93--! [115]}"></div></figure>
+        <span class="arrow-next">⇒</span>
+        <figure class="fig"><div data-avl="{[37+ (52)] 66= [(81) 93= (115)]}"></div></figure>
+      </div>
+      <p><b>122, 85, 110, 70</b> forgatás nélkül:</p>
+      <div class="figs">
+        <figure class="fig"><div data-avl="{[37+ (52)] 66+ [(81) 93+ (115+ {122*})]}"></div><figcaption>122</figcaption></figure>
+        <figure class="fig"><div data-avl="{[37+ (52)] 66+ [(81+ {85*}) 93= (115+ {122})]}"></div><figcaption>85: a 93 = lesz</figcaption></figure>
+        <figure class="fig"><div data-avl="{[37+ (52)] 66+ [(81+ {85}) 93= ({110*} 115= {122})]}"></div><figcaption>110: a 115 = lesz</figcaption></figure>
+        <figure class="fig"><div data-avl="{[37+ (52)] 66+ [({70*} 81= {85}) 93= ({110} 115= {122})]}"></div><figcaption>70: a 81 = lesz</figcaption></figure>
+      </div>
+      <p><b>83 beszúrása:</b> a 85 bal gyereke; 85 → <code>-</code>, 81 → <code>+</code>, 93 → <code>-</code>, 66 → <code>++</code>, jobb gyereke (93) <code>-</code> ⇒ <span class="ans">(++,−)</span> dupla forgatás: x = 66, y = 93, z = 81.</p>
+      <div class="figs">
+        <figure class="fig"><div data-avl="{[37+ (52)] 66++! [({70} 81+ {[83*] 85-}) 93- ({110} 115= {122})]}"></div></figure>
+        <span class="arrow-next">⇒</span>
+        <figure class="fig"><div data-avl="{[(37+ {52}) 66- (70)] 81= [({83} 85-) 93= ({110} 115= {122})]}"></div><figcaption><b>végeredmény</b></figcaption></figure>
+      </div>
+    </div></details>
+    <details><summary>Részletes magyarázat</summary><div class="sol">
+      <ul>
+        <li><b>Hol állunk meg?</b> A beszúrt csúcs szülőjétől felfelé javítjuk a jelzőket. Ha egy jelző <code>=</code> lett, a részfa nem nőtt, feljebb semmi sem változik (pl. a 37 beszúrásánál a 66). Ha <code>++</code> / <code>--</code> lett, forgatunk, és beszúrásnál utána is kész vagyunk, mert a részfa visszakapja a régi magasságát.</li>
+        <li><b>Melyik forgatás?</b> A <code>++</code> csúcs <i>jobb</i> gyerekének (a <code>--</code> csúcs <i>bal</i> gyerekének) jelzője dönt: ugyanaz az előjel → szimpla forgatás, ellentétes → dupla.</li>
+        <li><b>A dupla forgatás jelzői:</b> z (81) régi jelzője <code>+</code> volt (az új elem a z jobb oldalára került), ezért x (66) új jelzője <code>-</code>, y (93) új jelzője <code>=</code>, z mindig <code>=</code>. Ellenőrzés a végeredményen: a 66 bal részfája (37–52) 2 magas, a jobb (70) 1 → <code>-</code>. ✓</li>
+        <li>A ZH-n minden forgatás előtti fát érdemes felrajzolni a címkékkel (a <code>++</code> csúccsal együtt), mert a feladat ezt kéri; a köztes, forgatás nélküli lépéseket elég összevonni.</li>
+        <li>Zárójeles alakban a végeredmény: <code>{ [ ( 37+ {52} ) 66- (70) ] 81= [ ( {83} 85- ) 93= ( {110} 115= {122} ) ] }</code>.</li>
+      </ul>
+    </div></details>
+  </article>
+  </div>
+</section>
+
+<!-- ======================= 3. ======================= -->
+<section id="f3">
+  <div class="section-head">
+    <span class="label">3. feladat · 6 pont</span>
+    <h2>AVL-fa rajzolása és törlés</h2>
+  </div>
+  <div class="toolbar"><button type="button" data-toggle="f3">Összes megoldás kinyitása</button></div>
+  <div class="taskgroup">
+  <article class="task">
+    <div class="task-head"><span class="no">3. feladat</span><span class="kind">6 pont</span></div>
+    <div class="stmt">
+      <p>Adott egy AVL fa zárójelezett alakban a címkék megadása nélkül: <code>{ [ 66 ( 70 ) ] 82 [ ( {83} 85 ) 95 ( {110} 115 {120} ) ] }</code></p>
+      <ol type="a">
+        <li>Rajzolja fel az AVL fának megfelelő gráfot és lássa el címkékkel a csúcsokat! (2 pont)</li>
+        <li>Törölje a 66-os elemet úgy, hogy a fa AVL fa maradjon! (4 pont)</li>
+      </ol>
+    </div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p><b>a)</b> <code>[ 66 ( 70 ) ]</code>: a 66-nak csak jobb gyereke van (70). <code>( {83} 85 )</code>: a 85-nek csak bal gyereke (83). Egyensúlyok alulról: 66 <code>+</code>, 85 <code>-</code>, 115 <code>=</code>, 95 <code>=</code> (mindkét részfája 1 magas), 82 <code>+</code> (bal 1, jobb 2 magas).</p>
+      <div class="figs"><figure class="fig"><div data-avl="{[66+ (70)] 82+ [({83} 85-) 95= ({110} 115= {120})]}"></div></figure></div>
+      <p><b>b)</b> A 66-nak egy gyereke van: a helyére a jobb részfája (70) kerül. A 82 bal részfája rövidült: <code>+</code> → <code>++</code>. A jobb gyereke (95) <code>=</code> ⇒ <span class="ans">(++,=) forgatás</span>: 95 lesz a gyökér, 82 a bal gyereke, és a 95 bal részfája (85) a 82 jobb oldalára kerül.</p>
+      <div class="figs">
+        <figure class="fig"><div data-avl="{[70*] 82++! [({83} 85-) 95= ({110} 115= {120})]}"></div><figcaption>66 törölve, a 70 a helyén</figcaption></figure>
+        <span class="arrow-next">⇒</span>
+        <figure class="fig"><div data-avl="{[(70) 82+ ({83} 85-)] 95- [(110) 115= (120)]}"></div><figcaption><b>végeredmény</b></figcaption></figure>
+      </div>
+    </div></details>
+    <details><summary>Részletes magyarázat</summary><div class="sol">
+      <ul>
+        <li><b>Zárójelek olvasása:</b> egy csúcs egy zárójelpár; benne balra a bal részfa, középen a kulcs, jobbra a jobb részfa. Ha a kulcs előtt nincs zárójel (<code>[ 66 ( 70 ) ]</code>), nincs bal részfa; ha utána nincs (<code>( {83} 85 )</code>), nincs jobb részfa.</li>
+        <li><b>A (++,=) séma csak törlésnél fordul elő</b> (beszúrásnál a <code>++</code> csúcs jobb gyereke sosem <code>=</code>). Az új egyensúlyok: a régi gyökér (82) <code>+</code>, az új gyökér (95) <code>-</code>. Ellenőrzés: a 82 bal részfája (70) 0, jobb részfája (85–83) 1 magas → <code>+</code>; a 95 bal részfája 2, jobb részfája 1 magas → <code>-</code>. ✓</li>
+        <li><b>Megállás:</b> a (++,=) forgatás nem csökkenti a részfa magasságát (előtte és utána is 3), ezért feljebb nem kellene folytatni; itt amúgy is a gyökérnél vagyunk.</li>
+        <li>Zárójeles alakban: <code>{ [ (70) 82+ ( {83} 85- ) ] 95- [ (110) 115= (120) ] }</code>.</li>
+      </ul>
+    </div></details>
+  </article>
+  </div>
+</section>
+
+<!-- ======================= 4. ======================= -->
+<section id="f4">
+  <div class="section-head">
+    <span class="label">4. feladat · 12 pont</span>
+    <h2>B+ fa: beszúrás és törlés</h2>
+  </div>
+  <div class="toolbar"><button type="button" data-toggle="f4">Összes megoldás kinyitása</button></div>
+  <div class="taskgroup">
+  <article class="task">
+    <div class="task-head"><span class="no">4. feladat</span><span class="kind">12 pont</span></div>
+    <div class="stmt">
+      <p>Rajzolja le a következő B+ fát a hagyományos módon (d = 4)! (2 pont)<br><code>{ [ (10, 12, 20) 24 (24, 27) ] 30 [ (30, 33, 35) 40 (44, 46, 48) 50 (51, 52, 53) 55 (55, 62) ] }</code></p>
+      <ol type="a">
+        <li>Csúcshasítással szúrja be az <b>50</b>-es értéket! (5 pont)</li>
+        <li>Törölje ki az <b>eredeti</b> fából a <b>27</b>-es értéket! (5 pont)</li>
+      </ol>
+    </div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <div class="figs"><figure class="fig"><div data-bp="{ [ (10, 12, 20) 24 (24, 27) ] 30 [ (30, 33, 35) 40 (44, 46, 48) 50 (51, 52, 53) 55 (55, 62) ] }"></div><figcaption>az eredeti fa</figcaption></figure></div>
+      <p><b>a) 50 beszúrása.</b> A gyökérben 50 ≥ 30 → jobbra; a [40 50 55] csúcsban 50 ≤ 50 &lt; 55 → a (51, 52, 53) levél. Az 50 nincs benne, de a levél tele van: <b>szétvágjuk</b> (50, 51 | 52, 53), a második levél minimumának (52) másolata megy a szülőbe. A szülő is betelne (40 50 52 55, öt gyerek), ezért azt is kettévágjuk: (40 50) és (55), a <b>középső 52 felmegy</b> a gyökérbe, ahol van hely: (30 52).</p>
+      <div class="figs"><figure class="fig"><div data-bp="{ [ (10, 12, 20) 24 (24, 27) ] 30 [ (30, 33, 35) 40 (44, 46, 48) 50 (50*, 51)* ]* 52* [ (52, 53)* 55 (55, 62) ]* }*"></div><figcaption><b>a) eredménye</b></figcaption></figure></div>
+      <p><b>b) 27 törlése (az eredeti fából).</b> A (24, 27) levélben a 24 egyedül maradna (minimum ⌊4/2⌋ = 2 kulcs). Ennek a levélnek csak bal testvére van, a (10, 12, 20), és annak egy kulccsal több van a minimumnál: <b>egyenlően elosztjuk</b> a 4 kulcsot, (10, 12) és (20, 24), a szülőben a hasító kulcs a második levél minimuma, <b>20</b> lesz.</p>
+      <div class="figs"><figure class="fig"><div data-bp="{ [ (10, 12)* 20* (20, 24)* ]* 30 [ (30, 33, 35) 40 (44, 46, 48) 50 (51, 52, 53) 55 (55, 62) ] }"></div><figcaption><b>b) eredménye</b></figcaption></figure></div>
+    </div></details>
+    <details><summary>Részletes magyarázat</summary><div class="sol">
+      <ul>
+        <li><b>Melyik levélbe kerül az 50?</b> A belső csúcs i-edik gyerekében \(kulcs[i-1] \le r &lt; kulcs[i]\). Az 50 egyenlő a hasító kulccsal, ezért a hasító kulcstól <i>jobbra</i> lévő levélbe kerül, nem a (44, 46, 48)-ba. Ugyanez az oka, hogy egy hasító kulcs (itt az 50) nem okvetlenül van benne a levelekben.</li>
+        <li><b>Levél vs. belső csúcs vágása:</b> levélnél a felvitt kulcs <i>másolat</i> (az 52 a levélben is marad), belső csúcsnál a középső kulcs <i>felmegy</i>, és onnan eltűnik (az 52 nincs már a [40 50] és [55] csúcsokban). d = 4-nél a 4 hasító kulcsból 2 marad balra, 1 felmegy, 1 jobbra kerül; a gyerekek 3 + 2 arányban oszlanak meg.</li>
+        <li>Ha a gyökér is betelt volna, azt is kettévágnánk, és új gyökér jönne létre (a fa magassága nőne). Itt a gyökérben volt hely, a magasság nem változik.</li>
+        <li><b>Törlésnél először kölcsönzünk:</b> összevonni csak akkor kell, ha a szomszédos testvér (közös szülővel!) is a minimumon van. A (24, 27) levélnek nincs jobb testvére ugyanabban a szülőben (a (30, 33, 35) már a másik részfában van), ezért a bal testvérétől kér. Az elosztás után a szülőbeli hasító kulcsot mindig a jobb oldali levél minimumára írjuk át.</li>
+        <li>A b) feladat az <b>eredeti</b> fára vonatkozik, nem az a) eredményére (a jobb részfa változatlan).</li>
+      </ul>
+    </div></details>
+  </article>
+  </div>
+</section>
+
+<!-- ======================= 5. ======================= -->
+<section id="f5">
+  <div class="section-head">
+    <span class="label">5. feladat · 10 pont</span>
+    <h2>Általános fa: negatív kulcsú levelek</h2>
+  </div>
+  <div class="toolbar"><button type="button" data-toggle="f5">Összes megoldás kinyitása</button></div>
+  <div class="taskgroup">
+  <article class="task">
+    <div class="task-head"><span class="no">5. feladat</span><span class="kind">10 pont</span></div>
+    <div class="stmt"><p>Adott egy egész számokat tartalmazó általános fa, láncoltan ábrázolt bináris fával reprezentálva. Írjon <b>rekurzív</b> algoritmust, amely megszámolja, hogy hány negatív számot tartalmazó levele van az általános fának! (Megadandó a használt típusok és változók leírása, valamint az algoritmus struktogramja.)</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p><b>Típusok, változók.</b> <code>Node</code> = { key : ℤ ; child1, sibling : Node* } – <code>child1</code> az első gyerekre, <code>sibling</code> a következő testvérre mutat (ez a „bináris fás” ábrázolás: bal pointer = első gyerek, jobb pointer = testvér). Bemenet: <code>t : Node*</code>, a fa gyökere (üres fánál ⊘). Kimenet: a negatív kulcsú levelek száma, ℕ. Segédváltozó: <code>db : ℕ</code>.</p>
+      <div class="sgrow">
+<pre class="sg-src">
+@NegLevelek(t : Node*) : ℕ
+if t = ⊘
+  return 0
+else
+  db := NegLevelek(t→child1) + NegLevelek(t→sibling)
+  if t→child1 = ⊘ ∧ t→key < 0
+    db := db + 1
+  return db
+</pre>
+<pre class="sg-src">
+@NegLevelek(t : Node*) : ℕ
+db := 0
+loop t ≠ ⊘
+  if t→child1 = ⊘
+    if t→key < 0
+      db := db + 1
+  else
+    db := db + NegLevelek(t→child1)
+  t := t→sibling
+return db
+</pre>
+      </div>
+      <p>Az első a teljesen rekurzív, a második a testvérek felé ciklust használó (a gyerekek felé szintén rekurzív) változat; bármelyik jó megoldás. Mindkettő minden csúcsot egyszer érint: \(\Theta(n)\).</p>
+      <div class="figs">
+        <figure class="fig"><div data-gt="(5 (−3!) (2 (−7!) (4)) (−1 (−2!)))"></div><figcaption>példa: a negatív levelek pirossal → <b>3</b></figcaption></figure>
+        <figure class="fig"><div data-lcrs="(5 (−3!) (2 (−7!) (4)) (−1 (−2!)))"></div><figcaption>ugyanez láncolt bináris fával</figcaption></figure>
+      </div>
+    </div></details>
+    <details><summary>Részletes magyarázat</summary><div class="sol">
+      <ul>
+        <li><b>Mi a levél ebben az ábrázolásban?</b> Az általános fa levele az a csúcs, amelynek nincs gyereke, vagyis <code>child1 = ⊘</code>. A <code>sibling</code> pointere ettől még lehet nem üres! A leggyakoribb hiba a bináris fáknál megszokott <code>left = ⊘ ∧ right = ⊘</code> feltétel: az a példában csak a −2-t és a 4-et találná meg levélnek, a −3-at és a −7-et nem (azoknak van testvérük).</li>
+        <li>A −1 nem levél (van gyereke, a −2), ezért nem számít, pedig negatív.</li>
+        <li>A teljesen rekurzív változatban a <code>child1</code> és a <code>sibling</code> irányt is rekurzióval járjuk be, mint egy bináris fát; ez rövid, de a testvérek száma szerinti mélységű rekurziót is okozhat. A ciklusos változat a gyakorlaton tanult szokás: testvéreken ciklus, gyerekek felé rekurzió.</li>
+        <li>Pontozásnál a típus- és változóleírás is kell: írd le, mit jelent a két pointer, mi a paraméter és mit ad vissza a függvény.</li>
+      </ul>
+    </div></details>
+  </article>
+  </div>
+</section>
+
+<!-- ======================= 6. ======================= -->
+<section id="f6">
+  <div class="section-head">
+    <span class="label">6. feladat · 12 pont</span>
+    <h2>Gráf: közös ismerősök mátrixa</h2>
+  </div>
+  <div class="toolbar"><button type="button" data-toggle="f6">Összes megoldás kinyitása</button></div>
+  <div class="taskgroup">
+  <article class="task">
+    <div class="task-head"><span class="no">6. feladat</span><span class="kind">12 pont</span></div>
+    <div class="stmt"><p>Adott egy n csúcspontú irányítatlan gráf, amely n ember ismeretségi kapcsolatait jelöli (senki nem ismerőse saját magának). A gráf csúcsmátrixosan van reprezentálva. Adjon olyan algoritmust, amely előállít egy olyan mátrixot, amely megadja, hogy tetszőleges két embernek hány közös ismerőse van! (Megadandó a használt típusok és változók leírása, valamint az algoritmus struktogramja.)</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p><b>Típusok, változók.</b> Az emberek az 1..n sorszámok. <code>A/1 : bit[n,n]</code> a csúcsmátrix: \(A[i,j] = 1\), ha i és j ismerősök; irányítatlan gráf, ezért szimmetrikus, és a főátlója 0 (nincs hurokél). Eredmény: <code>K/1 : ℕ[n,n]</code>, \(K[i,j]\) = i és j közös ismerőseinek száma. Segédváltozók: <code>i, j, k : ℕ</code> ciklusváltozók, <code>db : ℕ</code> számláló.</p>
+      <p>k pontosan akkor közös ismerőse i-nek és j-nek, ha \(A[i,k] = 1 \wedge A[k,j] = 1\). Tehát \(K[i,j] = \sum_{k=1}^{n} A[i,k] \cdot A[k,j]\), ami éppen az \(A^2\) mátrixszorzat (a kettő hosszú utak száma i és j között).</p>
+<pre class="sg-src">
+@KözösIsmerősök(A/1 : bit[n,n] ; K/1 : ℕ[n,n])
+loop i := 1 to n
+  K[i,i] := 0   // önmagával nem kérdés
+  loop j := i + 1 to n
+    db := 0
+    loop k := 1 to n
+      if A[i,k] = 1 ∧ A[k,j] = 1
+        db := db + 1
+    K[i,j] := db ; K[j,i] := db   // szimmetrikus
+</pre>
+      <p><b>Műveletigény:</b> három egymásba ágyazott, legfeljebb n lépéses ciklus: \(\Theta(n^3)\) (a szimmetria miatt a párok felét számoljuk, kb. \(n^3/2\) lépés). Segédmemória az eredménymátrixon kívül \(\Theta(1)\).</p>
+      <div class="figs">
+        <figure class="fig"><div data-g='{"v":{"1":[25,22],"2":[140,22],"3":[82,90],"4":[200,90]},"e":[[1,2],[1,3],[2,3],[3,4]]}'></div><figcaption>példa: 4 ember</figcaption></figure>
+        <figure class="fig"><div class="tbl"><table class="num"><tr><th>A</th><th>1</th><th>2</th><th>3</th><th>4</th></tr><tr><th>1</th><td>0</td><td>1</td><td>1</td><td>0</td></tr><tr><th>2</th><td>1</td><td>0</td><td>1</td><td>0</td></tr><tr><th>3</th><td>1</td><td>1</td><td>0</td><td>1</td></tr><tr><th>4</th><td>0</td><td>0</td><td>1</td><td>0</td></tr></table></div><figcaption>csúcsmátrix</figcaption></figure>
+        <figure class="fig"><div class="tbl"><table class="num"><tr><th>K</th><th>1</th><th>2</th><th>3</th><th>4</th></tr><tr><th>1</th><td>0</td><td>1</td><td>1</td><td>1</td></tr><tr><th>2</th><td>1</td><td>0</td><td>1</td><td>1</td></tr><tr><th>3</th><td>1</td><td>1</td><td>0</td><td>0</td></tr><tr><th>4</th><td>1</td><td>1</td><td>0</td><td>0</td></tr></table></div><figcaption>eredmény: pl. 1 és 4 közös ismerőse a 3</figcaption></figure>
+      </div>
+    </div></details>
+    <details><summary>Részletes magyarázat</summary><div class="sol">
+      <ul>
+        <li><b>A főátló:</b> \(\sum_k A[i,k] \cdot A[k,i]\) i ismerőseinek száma (fokszáma) lenne. A feladat két emberről szól, ezért 0-t írtam; ha a teljes \(A^2\)-et kérnék, a ciklus j := 1-től menne, és az átlóban a fokszám állna. Érdemes a megoldásban megindokolni, melyiket választod.</li>
+        <li><b>Miért elég j &gt; i?</b> A gráf irányítatlan, \(A\) szimmetrikus, így \(K[i,j] = K[j,i]\): egyszer számoljuk ki, és mindkét helyre beírjuk.</li>
+        <li><b>Hurokél nincs</b>, ezért k = i vagy k = j esetén \(A[i,i] = 0\), illetve \(A[j,j] = 0\) miatt a feltétel magától hamis; nem kell külön kizárni.</li>
+        <li>Ez a kettő hosszú utak keresése: nem azt kérdezzük, <i>van-e</i> ilyen út, hanem <i>hány</i> van, ezért nem állhatunk meg az első közös ismerősnél.</li>
+      </ul>
+    </div></details>
+  </article>
+  </div>
+</section>
+
+<footer>Forrás: <a href="../MintaZH_1_2024.pdf" target="_blank" rel="noopener">MintaZH_1_2024.pdf</a>. A megoldások saját kidolgozások, a gyakorlaton tanult jelölésekkel és algoritmusokkal (lásd a <a href="gyakorlatok.html">gyakorlatok kidolgozását</a>).</footer>
+</div>
+
+<script>
+/* Drawing from text sources:
+   data-avl  : binary tree in the course notation, e.g. "{ [2] 4+ [ (6) 8= (10) ] }"; suffix ! = broken node, * = new node; "α~h" = subtree triangle with height label
+   data-bp   : B+ tree, e.g. "{ [ (1 2) 3 (5 6 7) ] 8 [ ... ] }"; data-d = degree (default 4); a node followed by * or ! is highlighted, a key with * too
+   data-gt   : general tree "(a (b) (c))"; "lbl:" before a child = edge label; "15|AZ" = node text + caption; data-lcrs = same tree drawn first-child / next-sibling
+   data-g    : graph as JSON {v:{id:[x,y]}, e:[[u,v]], dir, tree:[[u,v]], col:{id:'b'|'g'}, s}
+   data-adj  : adjacency lists "A|1:2,4|2:4,5|3:1|4:|5:2,3"
+   pre.sg-src: struktogram in an indented mini-language (@title, if/else, loop, switch/case) */
+(function () {
+  var OPEN = '([{', CLOSE = ')]}';
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function tok(s) { return s.match(/[(\[{]|[)\]}]|[^\s()\[\]{}]+/g) || []; }
+  function isOpen(t) { return t !== undefined && t.length === 1 && OPEN.indexOf(t) >= 0; }
+  function isClose(t) { return t !== undefined && t.length === 1 && CLOSE.indexOf(t) >= 0; }
+  function svg(w, h, body) {
+    return '<svg xmlns="http://www.w3.org/2000/svg" width="' + Math.ceil(w) + '" height="' + Math.ceil(h) + '" viewBox="0 0 ' + Math.ceil(w) + ' ' + Math.ceil(h) + '" role="img">' + body + '</svg>';
+  }
+  function txt(x, y, s, cls, anchor) {
+    return '<text x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" text-anchor="' + (anchor || 'middle') + '" dominant-baseline="central"' + (cls ? ' class="' + cls + '"' : '') + '>' + esc(s) + '</text>';
+  }
+  function line(x1, y1, x2, y2, cls) { return '<line x1="' + x1.toFixed(1) + '" y1="' + y1.toFixed(1) + '" x2="' + x2.toFixed(1) + '" y2="' + y2.toFixed(1) + '" class="' + (cls || 'ed') + '"/>'; }
+  function arrowHead(x1, y1, x2, y2, cls) {
+    var a = Math.atan2(y2 - y1, x2 - x1), s = 8;
+    var p1 = [x2 - s * Math.cos(a - 0.4), y2 - s * Math.sin(a - 0.4)], p2 = [x2 - s * Math.cos(a + 0.4), y2 - s * Math.sin(a + 0.4)];
+    return '<polygon class="ah' + (cls ? ' ' + cls : '') + '" points="' + x2.toFixed(1) + ',' + y2.toFixed(1) + ' ' + p1[0].toFixed(1) + ',' + p1[1].toFixed(1) + ' ' + p2[0].toFixed(1) + ',' + p2[1].toFixed(1) + '"/>';
+  }
+  function arrow(x1, y1, x2, y2, cls) { return line(x1, y1, x2, y2, 'ed' + (cls ? ' ' + cls : '')) + arrowHead(x1, y1, x2, y2, cls); }
+  function nodeCls(mark) { return 'nd' + (mark.indexOf('!') >= 0 ? ' bad' : mark.indexOf('*') >= 0 ? ' new' : ''); }
+  function addNota(el, s) {
+    if (el.dataset.nota === '0') return;
+    var c = document.createElement('code'); c.className = 'nota';
+    c.textContent = s.replace(/[!*]/g, '').replace(/\s+/g, ' ').trim();
+    el.parentNode.insertBefore(c, el.nextSibling);
+  }
+
+  /* ---------- binary (AVL) tree ---------- */
+  function parseBin(s) {
+    var t = tok(s), i = 0;
+    function node() {
+      if (!isOpen(t[i])) throw new Error('avl: ( expected in ' + s);
+      i++;
+      var n = { l: null, r: null };
+      if (isOpen(t[i])) n.l = node();
+      var m = /^(.*?)(\+\+|--|\+|-|=)?([!*]*)$/.exec(t[i++]);
+      n.key = m[1]; n.bal = m[2] || ''; n.mark = m[3] || '';
+      if (/~/.test(n.key)) { n.bal = ''; }
+      if (isOpen(t[i])) n.r = node();
+      if (!isClose(t[i])) throw new Error('avl: ) expected in ' + s);
+      i++;
+      return n;
+    }
+    return node();
+  }
+  function drawBin(el) {
+    var src = el.dataset.avl, root = parseBin(src), list = [], maxd = 0, maxLen = 1;
+    (function walk(n, d) { if (!n) return; walk(n.l, d + 1); n.d = d; n.i = list.length; list.push(n); maxd = Math.max(maxd, d); maxLen = Math.max(maxLen, n.key.split('~')[0].length); walk(n.r, d + 1); })(root, 0);
+    var gap = Math.max(38, maxLen * 9 + 20), dy = 54, r = 15;
+    var tri = list.some(function (n) { return /~/.test(n.key); });
+    var W = list.length * gap + 34 + (tri ? 26 : 0), H = maxd * dy + 2 * r + 18 + (tri ? 16 : 0);
+    function X(n) { return 12 + gap / 2 + n.i * gap; }
+    function Y(n) { return r + 8 + n.d * dy; }
+    var edges = '', nodes = '';
+    list.forEach(function (n) {
+      [n.l, n.r].forEach(function (c) { if (c) edges += line(X(n), Y(n), X(c), Y(c) - (/~/.test(c.key) ? 14 : 0)); });
+      var x = X(n), y = Y(n);
+      if (/~/.test(n.key)) {
+        var p = n.key.split('~');
+        nodes += '<polygon class="tri" points="' + x + ',' + (y - 14) + ' ' + (x - 19) + ',' + (y + 20) + ' ' + (x + 19) + ',' + (y + 20) + '"/>';
+        nodes += txt(x, y + 9, p[0]) + txt(x + 22, y + 2, p[1], 'sub', 'start');
+        return;
+      }
+      var rx = Math.max(r, n.key.length * 4.6 + 8);
+      nodes += '<ellipse cx="' + x + '" cy="' + y + '" rx="' + rx + '" ry="' + r + '" class="' + nodeCls(n.mark) + '"/>' + txt(x, y + 0.5, n.key);
+      if (n.bal) nodes += txt(x + rx + 2, y - 11, n.bal.replace('-', '−').replace('-', '−'), 'bal' + (n.bal.length > 1 ? ' bad' : ''), 'start');
+    });
+    el.innerHTML = svg(W, H, edges + nodes);
+    addNota(el, src);
+  }
+
+  /* ---------- B+ tree ---------- */
+  function parseBp(s) {
+    var t = tok(s), i = 0;
+    function node() {
+      i++;
+      var n = { keys: [], km: [], kids: [], mark: '' };
+      while (!isClose(t[i])) {
+        if (t[i] === undefined) throw new Error('bp: unbalanced ' + s);
+        if (isOpen(t[i])) { n.kids.push(node()); continue; }
+        var m = /^(.*?)([!*]*)$/.exec(t[i++].replace(/,$/, ''));
+        if (m[1] === '') continue;
+        n.keys.push(m[1]); n.km.push(m[2]);
+      }
+      i++;
+      if (t[i] === '*' || t[i] === '!') n.mark = t[i++];
+      return n;
+    }
+    return node();
+  }
+  function drawBp(el) {
+    var src = el.dataset.bp, d = +(el.dataset.d || 4), root = parseBp(src);
+    var maxLen = 1, depth = 0;
+    (function scan(n, lv) { depth = Math.max(depth, lv); n.keys.forEach(function (k) { maxLen = Math.max(maxLen, k.length); }); n.kids.forEach(function (c) { scan(c, lv + 1); }); })(root, 0);
+    var cw = Math.max(24, maxLen * 8.5 + 10), ch = 24, w = (d - 1) * cw, gapX = 14, dy = 66, cur = 10, out = '', edges = '';
+    function place(n, lv) {
+      n.lv = lv;
+      if (!n.kids.length) { n.x = cur; cur += w + gapX; return; }
+      n.kids.forEach(function (c) { place(c, lv + 1); });
+      var a = n.kids[0], b = n.kids[n.kids.length - 1];
+      n.x = (a.x + b.x) / 2;
+    }
+    place(root, 0);
+    var W = cur - gapX + 10, H = depth * dy + ch + 20;
+    function draw(n) {
+      var x = n.x, y = 10 + n.lv * dy, cls = n.mark === '!' ? ' bad' : n.mark === '*' ? ' new' : '';
+      out += '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + ch + '" class="nd' + cls + '"/>';
+      for (var j = 1; j < d - 1; j++) out += line(x + j * cw, y, x + j * cw, y + ch, 'ed');
+      n.keys.forEach(function (k, j) { out += txt(x + (j + 0.5) * cw, y + ch / 2 + 0.5, k, n.km[j] ? 'knew' : ''); });
+      n.kids.forEach(function (c, j) {
+        var px = x + j * cw; if (j === 0) px += 4; if (j === d - 1) px -= 4;
+        edges += arrow(px, y + ch, c.x + w / 2, 10 + c.lv * dy - 1);
+        draw(c);
+      });
+    }
+    draw(root);
+    el.innerHTML = svg(W, H, edges + out);
+    addNota(el, src);
+  }
+
+  /* ---------- general tree ---------- */
+  function parseGt(s) {
+    var t = tok(s), i = 0;
+    function node() {
+      i++;
+      var raw = t[i++], m = /^(.*?)([!*]*)$/.exec(raw);
+      if (m[1] === '') m = [raw, raw, ''];   // a bare "*" is the multiplication node, not a mark
+      var p = m[1].split('|');
+      var n = { label: p[0], sub: p[1] || '', mark: m[2] || '', kids: [], edge: '' };
+      while (!isClose(t[i])) {
+        if (t[i] === undefined) throw new Error('gt: unbalanced ' + s);
+        var e = '';
+        if (/:$/.test(t[i]) && isOpen(t[i + 1])) { e = t[i].slice(0, -1); i++; }
+        var c = node(); c.edge = e; n.kids.push(c);
+      }
+      i++;
+      return n;
+    }
+    return node();
+  }
+  function gtRx(n) { return Math.max(15, n.label.length * 4.4 + 9); }
+  function drawGt(el) {
+    var root = parseGt(el.dataset.gt), cur = 10, maxLv = 0, hasSub = false, out = '', edges = '';
+    function place(n, lv) {
+      n.lv = lv; maxLv = Math.max(maxLv, lv); if (n.sub) hasSub = true;
+      if (!n.kids.length) { var w = Math.max(2 * gtRx(n), n.sub.length * 7) + 12; n.x = cur + w / 2; cur += w; return; }
+      n.kids.forEach(function (c) { place(c, lv + 1); });
+      n.x = (n.kids[0].x + n.kids[n.kids.length - 1].x) / 2;
+    }
+    place(root, 0);
+    var dy = hasSub ? 70 : 56, padL = hasSub ? 60 : 0, W = cur + 10 + 2 * padL, H = maxLv * dy + 30 + 16 + (hasSub ? 16 : 0);
+    (function shift(n) { n.x += padL; n.kids.forEach(shift); })(root);
+    function Y(n) { return 23 + n.lv * dy; }
+    (function draw(n, px) {
+      n.kids.forEach(function (c) {
+        edges += line(n.x, Y(n), c.x, Y(c));
+        if (c.edge) {
+          var mx = (n.x + c.x) / 2, my = (Y(n) + Y(c)) / 2, side = c.x < n.x ? -9 : 9;
+          edges += txt(mx + side, my - 4, c.edge, 'el', c.x < n.x ? 'end' : 'start');
+        }
+        draw(c, n.x);
+      });
+      var rx = gtRx(n);
+      out += '<ellipse cx="' + n.x + '" cy="' + Y(n) + '" rx="' + rx + '" ry="15" class="' + nodeCls(n.mark) + '"/>' + txt(n.x, Y(n) + 0.5, n.label);
+      if (n.sub && !n.kids.length) out += txt(n.x, Y(n) + 25, n.sub, 'sub');
+      else if (n.sub) {   // internal node: caption beside it, on the side away from the parent edge
+        var right = px === undefined || n.x >= px;
+        out += txt(n.x + (right ? rx + 4 : -rx - 4), Y(n) - 10, n.sub, 'sub', right ? 'start' : 'end');
+      }
+    })(root);
+    el.innerHTML = svg(W, H, edges + out);
+  }
+  function drawLcrs(el) {
+    var root = parseGt(el.dataset.lcrs), maxX = 0, maxRow = 0, out = '', bw = 30, bh = 24, sx = 50, sy = 54;
+    function lay(n, x, row) {
+      n.cx = x; n.row = row; maxX = Math.max(maxX, x); maxRow = Math.max(maxRow, row);
+      var cx = x;
+      n.kids.forEach(function (c) { cx += lay(c, cx, row + 1); });
+      return Math.max(1, cx - x);
+    }
+    lay(root, 0, 0);
+    function X(n) { return 12 + n.cx * sx; }
+    function Y(n) { return 22 + n.row * sy; }
+    var W = 12 + maxX * sx + bw + 14, H = 22 + maxRow * sy + bh + 10;
+    out += arrow(X(root) - 10, 2, X(root) + 6, 20);
+    (function draw(n) {
+      out += '<rect x="' + X(n) + '" y="' + Y(n) + '" width="' + bw + '" height="' + bh + '" class="' + nodeCls(n.mark) + '"/>' + txt(X(n) + bw / 2, Y(n) + bh / 2 + 0.5, n.label);
+      n.kids.forEach(function (c, j) {
+        if (j === 0) out += arrow(X(n) + bw / 2, Y(n) + bh, X(c) + bw / 2, Y(c) - 1);
+        else { var p = n.kids[j - 1]; out += arrow(X(p) + bw, Y(p) + bh / 2, X(c) - 1, Y(c) + bh / 2); }
+        draw(c);
+      });
+    })(root);
+    el.innerHTML = svg(W, H, out);
+  }
+
+  /* ---------- graph ---------- */
+  function drawGraph(el) {
+    var g = JSON.parse(el.dataset.g), r = 15, out = '', maxX = 0, maxY = 0;
+    var key = function (u, v) { return u + '>' + v; }, E = {}, T = {};
+    g.e.forEach(function (e) { E[key(e[0], e[1])] = 1; });
+    (g.tree || []).forEach(function (e) { T[key(e[0], e[1])] = T[key(e[1], e[0])] = 1; });
+    Object.keys(g.v).forEach(function (k) { maxX = Math.max(maxX, g.v[k][0]); maxY = Math.max(maxY, g.v[k][1]); });
+    g.e.forEach(function (e) {
+      var a = g.v[e[0]], b = g.v[e[1]], dx = b[0] - a[0], dy = b[1] - a[1], L = Math.sqrt(dx * dx + dy * dy), ux = dx / L, uy = dy / L;
+      var off = (g.dir && E[key(e[1], e[0])]) ? 5 : 0, ox = -uy * off, oy = ux * off;
+      var cls = T[key(e[0], e[1])] ? 'te' : '';
+      var x1 = a[0] + ux * r + ox, y1 = a[1] + uy * r + oy, x2 = b[0] - ux * (r + 1) + ox, y2 = b[1] - uy * (r + 1) + oy;
+      out += g.dir ? arrow(x1, y1, x2, y2, cls) : line(a[0], a[1], b[0], b[1], 'ed' + (cls ? ' ' + cls : ''));
+    });
+    Object.keys(g.v).forEach(function (k) {
+      var p = g.v[k], c = (g.col || {})[k], cls = 'nd' + (c === 'b' ? ' blk' : c === 'g' ? ' gry' : '') + (String(g.s) === k ? ' start' : '');
+      out += '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="' + r + '" class="' + cls + '"/>' + txt(p[0], p[1] + 0.5, k, c === 'b' || c === 'g' ? 'inv' : '');
+    });
+    el.innerHTML = svg(maxX + r + 6, maxY + r + 6, out);
+  }
+
+  /* ---------- adjacency lists ---------- */
+  function drawAdj(el) {
+    var parts = el.dataset.adj.split('|'), name = parts.shift(), rows = parts.map(function (p) { var q = p.split(':'); return { i: q[0], l: q[1] ? q[1].split(',') : [] }; });
+    var rh = 30, cw = 26, x0 = 30, out = '', maxLen = 0;
+    rows.forEach(function (r) { maxLen = Math.max(maxLen, r.l.length); });
+    out += txt(x0 + 15, 10, name, 'sub');
+    rows.forEach(function (r, j) {
+      var y = 22 + j * rh;
+      out += txt(x0 - 10, y + rh / 2, r.i, 'sub') + '<rect x="' + x0 + '" y="' + y + '" width="30" height="' + rh + '" class="nd"/>';
+      if (!r.l.length) { out += txt(x0 + 15, y + rh / 2, '⊘', 'sub'); return; }
+      out += '<circle cx="' + (x0 + 15) + '" cy="' + (y + rh / 2) + '" r="3" class="nd blk"/>';
+      var px = x0 + 15, bx = x0 + 52;
+      r.l.forEach(function (v, k) {
+        var mark = /[!*]$/.test(v) ? v.slice(-1) : '', vv = v.replace(/[!*]$/, ''), yy = y + 4;
+        out += arrow(px + 3, y + rh / 2, bx - 1, y + rh / 2);
+        out += '<rect x="' + bx + '" y="' + yy + '" width="' + 2 * cw + '" height="' + (rh - 8) + '" class="' + nodeCls(mark) + '"/>' + line(bx + cw, yy, bx + cw, yy + rh - 8);
+        out += txt(bx + cw / 2, y + rh / 2, vv);
+        if (k === r.l.length - 1) out += txt(bx + 1.5 * cw, y + rh / 2, '⊘', 'sub');
+        else out += '<circle cx="' + (bx + 1.5 * cw) + '" cy="' + (y + rh / 2) + '" r="3" class="nd blk"/>';
+        px = bx + 1.5 * cw; bx += 2 * cw + 22;
+      });
+    });
+    el.innerHTML = svg(x0 + 52 + maxLen * (2 * cw + 22) + 4, 22 + rows.length * rh + 4, out);
+  }
+
+  /* ---------- struktogram ---------- */
+  function parseSg(src) {
+    var lines = src.replace(/\t/g, '  ').split('\n').filter(function (l) { return l.trim(); });
+    var base = Math.min.apply(null, lines.map(function (l) { return l.match(/^ */)[0].length; }));
+    var items = lines.map(function (l) { return { ind: l.match(/^ */)[0].length - base, text: l.trim() }; });
+    var pos = 0;
+    function kids(ind) { pos++; return (pos < items.length && items[pos].ind > ind) ? block(items[pos].ind) : []; }
+    function block(ind) { var out = []; while (pos < items.length && items[pos].ind === ind && !/^(else|case\b)/.test(items[pos].text)) out.push(stmt(ind)); return out; }
+    function stmt(ind) {
+      var t = items[pos].text, m;
+      if (t.charAt(0) === '@') { pos++; return { k: 'title', text: t.slice(1).trim() }; }
+      if ((m = /^if\s+(.*)$/.exec(t))) {
+        var a = kids(ind), b = null;
+        if (pos < items.length && items[pos].ind === ind && items[pos].text === 'else') b = kids(ind);
+        return { k: 'if', c: m[1], a: a, b: b };
+      }
+      if ((m = /^loop\s+(.*)$/.exec(t))) return { k: 'loop', c: m[1], a: kids(ind) };
+      if (t === 'switch') {
+        pos++; var cases = [];
+        while (pos < items.length && items[pos].ind > ind && /^case\s/.test(items[pos].text)) {
+          var ci = items[pos].ind, c = items[pos].text.slice(5).trim();
+          cases.push({ c: c, a: kids(ci) });
+        }
+        return { k: 'sw', cases: cases };
+      }
+      pos++; return { k: 'st', text: t };
+    }
+    return block(0);
+  }
+  function fmt(s) {
+    var i = s.indexOf('//');
+    if (i < 0) return esc(s);
+    return esc(s.slice(0, i).trim()) + (i > 0 ? ' ' : '') + '<span class="cm">' + esc(s.slice(i)) + '</span>';
+  }
+  function rBlock(a) { return '<div class="blk">' + a.map(rStmt).join('') + '</div>'; }
+  function rBranch(a) { return a && a.length ? rBlock(a) : '<div class="blk"><div class="st skip">SKIP</div></div>'; }
+  function rStmt(s) {
+    if (s.k === 'st') return '<div class="st">' + fmt(s.text) + '</div>';
+    if (s.k === 'loop') return '<div class="loop"><div class="cond">' + fmt(s.c) + '</div>' + rBlock(s.a) + '</div>';
+    if (s.k === 'if') return '<div class="if"><div class="ifh"><span class="t"></span><span class="c">' + fmt(s.c) + '</span><span class="f"></span></div><div class="ifb">' + rBranch(s.a) + rBranch(s.b) + '</div></div>';
+    if (s.k === 'sw') {
+      var n = s.cases.length, h = '', b = '';
+      s.cases.forEach(function (c, j) {
+        h += '<div class="swh' + (j ? ' bl' : '') + (j === n - 1 ? ' last' : '') + '" style="grid-row:1;grid-column:' + (j + 1) + '">' + fmt(c.c) + '</div>';
+        b += '<div class="' + (j ? 'bl ' : '') + 'swb" style="grid-row:2;grid-column:' + (j + 1) + '">' + rBranch(c.a) + '</div>';
+      });
+      return '<div class="sw" style="grid-template-columns:repeat(' + n + ',auto)">' + h + b + '</div>';
+    }
+    return '';
+  }
+  function drawSg(pre) {
+    var ast = parseSg(pre.textContent), title = null;
+    if (ast[0] && ast[0].k === 'title') title = ast.shift().text;
+    var d = document.createElement('div'); d.className = 'sgwrap';
+    d.innerHTML = '<div class="sgfig">' + (title ? '<div class="sgt">' + fmt(title) + '</div>' : '') + '<div class="sg">' + rBlock(ast) + '</div></div>';
+    pre.parentNode.replaceChild(d, pre);
+  }
+
+  function each(sel, f) {
+    document.querySelectorAll(sel).forEach(function (el) {
+      try { f(el); } catch (e) { el.textContent = '⚠ ' + e.message; console.error(e); }
+    });
+  }
+  each('[data-avl]', drawBin);
+  each('[data-bp]', drawBp);
+  each('[data-gt]', drawGt);
+  each('[data-lcrs]', drawLcrs);
+  each('[data-g]', drawGraph);
+  each('[data-adj]', drawAdj);
+  each('pre.sg-src', drawSg);
+
+  document.getElementById('cnt').textContent = document.querySelectorAll('.task').length;
+  document.getElementById('cntsg').textContent = document.querySelectorAll('.sgwrap').length;
+  document.querySelectorAll('button[data-toggle]').forEach(function (btn) {
+    var sec = document.getElementById(btn.dataset.toggle);
+    btn.addEventListener('click', function () {
+      var list = sec.querySelectorAll('details');
+      var open = Array.prototype.some.call(list, function (d) { return !d.open; });
+      list.forEach(function (d) { d.open = open; });
+      btn.textContent = open ? 'Összes megoldás becsukása' : 'Összes megoldás kinyitása';
+    });
+  });
+})();
+</script>
+<script>
+/* section bar: highlight the chip of the section being read */
+(function () {
+  var nav = document.querySelector('nav.bar');
+  if (!nav) return;
+  var links = Array.prototype.filter.call(nav.querySelectorAll('a[href^="#"]'), function (a) {
+    return a.getAttribute('href').length > 1 && document.getElementById(a.getAttribute('href').slice(1));
+  });
+  var current = null, ticking = false;
+  function sectionOf(a) { return document.getElementById(a.getAttribute('href').slice(1)); }
+  function update() {
+    ticking = false;
+    var line = nav.getBoundingClientRect().bottom + 12, active = null;
+    links.forEach(function (a) { if (sectionOf(a).getBoundingClientRect().top <= line) active = a; });
+    if (links.length && window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) active = links[links.length - 1];
+    if (active === current) return;
+    if (current) { current.classList.remove('active'); current.removeAttribute('aria-current'); }
+    current = active;
+    if (!active) return;
+    active.classList.add('active');
+    active.setAttribute('aria-current', 'location');
+    var ul = active.closest('ul'), ur = ul.getBoundingClientRect(), ar = active.getBoundingClientRect();
+    var left = ar.left - ur.left + ul.scrollLeft, right = left + ar.width;
+    if (left < ul.scrollLeft || right > ul.scrollLeft + ul.clientWidth) ul.scrollTo({ left: Math.max(0, left - 16), behavior: 'smooth' });
+  }
+  function schedule() { if (!ticking) { ticking = true; setTimeout(update, 40); } }
+  window.addEventListener('scroll', schedule, { passive: true });
+  window.addEventListener('resize', schedule);
+  document.addEventListener('toggle', schedule, true);
+  update();
+})();
+</script>
+</body>
+</html>

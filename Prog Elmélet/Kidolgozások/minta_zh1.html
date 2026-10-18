@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="hu" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Programozáselmélet · minta ZH kidolgozva</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['\\(', '\\)']],
+      displayMath: [['\\[', '\\]']],
+      macros: {
+        N: '\\mathbb{N}', Z: '\\mathbb{Z}', R: '\\mathbb{R}', LL: '\\mathbb{L}',
+        D: '\\mathcal{D}', fail: '\\mathit{fail}', lf: '\\mathit{lf}',
+        sgn: '\\operatorname{sgn}', prim: '\\operatorname{prim}', perm: '\\operatorname{perm}', sorted: '\\operatorname{sorted}',
+        igaz: '\\mathit{igaz}', hamis: '\\mathit{hamis}', SKIP: '\\mathit{SKIP}', ABORT: '\\mathit{ABORT}',
+        sq: ['\\langle #1 \\rangle', 1]
+      }
+    },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js" async></script>
+<style>
+/* Layout: same exam-paper look as the other prep pages, in the Programozáselmélet violet; each task = statement + folded solution */
+:root {
+  --paper: #f5f7fa;
+  --grid: rgba(107, 70, 193, 0.06);
+  --card: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6574;
+  --rule: #d7dde6;
+  --accent: #6b46c1;
+  --accent-soft: #efe9fb;
+  --mark: #b8352a;
+  --mark-soft: #fbe9e6;
+  --ok: #2c7a4b;
+  --ok-soft: #e3f3e9;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-label: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f141b; --grid: rgba(196, 167, 255, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+    --rule: #2a3442; --accent: #c4a7ff; --accent-soft: #261f3d; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+    --ok: #74d39c; --ok-soft: #173225; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f141b; --grid: rgba(196, 167, 255, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+  --rule: #2a3442; --accent: #c4a7ff; --accent-soft: #261f3d; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+  --ok: #74d39c; --ok-soft: #173225; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background-color: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 1.06rem;
+  line-height: 1.6;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 80px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2rem, 6vw, 3.1rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.65rem; font-weight: 700; letter-spacing: -0.01em; }
+h3 { font-size: 1.1rem; font-weight: 600; }
+p { margin: 0; }
+a { color: var(--accent); }
+.label { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding: 2px 0; margin: 6px 0 !important; min-width: 0; max-width: 100%; }
+
+/* back to subject page */
+.back { justify-self: start; display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px 9px 12px; border: 1.5px solid var(--accent); border-radius: 8px; background: var(--accent-soft); color: var(--ink); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 1.02rem; line-height: 1; white-space: nowrap; transition: background .15s, color .15s; }
+.back .arr { color: var(--accent); font-size: 1.25rem; transition: transform .15s, color .15s; }
+.back:hover, .back:focus-visible { background: var(--accent); color: var(--paper); outline: none; }
+.back:hover .arr, .back:focus-visible .arr { color: var(--paper); transform: translateX(-3px); }
+
+header.hero { display: grid; gap: 14px; padding-block: 0 26px; border-bottom: 2px solid var(--accent); }
+.hero .sub { color: var(--muted); max-width: 62ch; }
+.facts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.fact { display: flex; flex-direction: column; gap: 2px; padding: 8px 14px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; min-width: 120px; }
+.fact b { font-family: var(--f-display); font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+
+nav.bar { position: sticky; top: 0; z-index: 5; background: var(--paper); border-bottom: 1px solid var(--rule); margin-inline: -16px; padding-inline: 16px; }
+nav.bar ul { list-style: none; margin: 0; padding: 10px 0; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin; }
+nav.bar a { display: block; white-space: nowrap; text-decoration: none; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.04em; color: var(--ink); padding: 6px 10px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); }
+nav.bar a:hover, nav.bar a:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+nav.bar a.nav-back { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+
+section { padding-top: 44px; display: grid; gap: 16px; scroll-margin-top: 56px; }
+.section-head { display: grid; gap: 6px; }
+.section-head p { color: var(--muted); max-width: 66ch; }
+.taskgroup { display: grid; gap: 12px; }
+.sub-head { font-family: var(--f-label); font-size: 0.74rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); padding-top: 10px; }
+
+/* tasks */
+.task { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 18px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; min-width: 0; scroll-margin-top: 60px; }
+.task-head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.task-head .no { font-family: var(--f-display); font-weight: 700; font-size: 1.05rem; }
+.task-head .kind { margin-left: auto; font-family: var(--f-label); font-size: 0.72rem; padding: 2px 8px; border-radius: 3px; background: var(--accent-soft); color: var(--accent); white-space: nowrap; }
+.task-head .kind.quiz { background: var(--ok-soft); color: var(--ok); }
+.task-head .kind.fog { background: var(--accent); color: var(--card); }
+
+/* concept card: a definition written on the sheet, shown open, separate from the tasks */
+.concept { background: var(--card); border: 1px solid var(--rule); border-left: 4px solid var(--accent); border-radius: 6px; padding: 14px 18px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; min-width: 0; }
+.concept .body { display: grid; gap: 6px; max-width: 76ch; min-width: 0; font-size: 0.97rem; }
+.concept .body ul { margin: 0; padding-left: 20px; display: grid; gap: 3px; }
+.concept .body p, .concept .body li { overflow-x: auto; overflow-y: hidden; }
+.stmt { display: grid; gap: 8px; max-width: 72ch; min-width: 0; }
+details { border-top: 1px dashed var(--rule); padding-top: 8px; min-width: 0; }
+summary { cursor: pointer; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); list-style: none; display: inline-flex; gap: 8px; align-items: center; padding: 4px 0; }
+summary::-webkit-details-marker { display: none; }
+summary::before { content: "+"; display: inline-grid; place-items: center; width: 18px; height: 18px; border: 1px solid currentColor; border-radius: 3px; font-size: 0.8rem; }
+details[open] > summary::before { content: "−"; }
+summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sol { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; padding-top: 6px; max-width: 76ch; min-width: 0; }
+.sol ol, .sol ul, .stmt ol, .stmt ul { margin: 0; padding-left: 22px; display: grid; gap: 4px; }
+.sol p, .sol li, .stmt p, .stmt li, .tip, .warn, .own { overflow-x: auto; overflow-y: hidden; }
+.ans { display: inline-block; background: var(--ok-soft); color: var(--ok); font-weight: 600; padding: 1px 9px; border-radius: 4px; }
+.warn { background: var(--mark-soft); border-left: 3px solid var(--mark); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 0.95rem; }
+.tip { background: var(--accent-soft); border-left: 3px solid var(--accent); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 0.95rem; }
+.own { border: 1px dashed var(--ok); padding: 8px 12px; border-radius: 4px; font-size: 0.95rem; }
+.own > b:first-child, .tip > b:first-child, .warn > b:first-child { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; display: block; margin-bottom: 2px; }
+.own > b:first-child { color: var(--ok); }
+
+.tbl { overflow-x: auto; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--rule); vertical-align: middle; }
+th { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+tr:last-child td { border-bottom: 0; }
+
+/* struktogram (Nassi–Shneiderman) */
+.sgrow { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-start; }
+.sgwrap { display: grid; gap: 4px; justify-items: start; }
+.sgwrap > .label { color: var(--accent); }
+.stmt > .sg { justify-self: start; }
+.sg { display: inline-grid; min-width: 210px; border: 1.5px solid var(--ink); background: var(--card); font-size: 0.98rem; }
+.sg > * + * { border-top: 1.5px solid var(--ink); }
+.st { padding: 6px 14px; text-align: center; }
+/* ciklus: the condition and the left strip form one L-shaped area, only the body is framed (top + left) */
+.loop > .cond { padding: 6px 14px; text-align: center; }
+.loop > .body { margin-left: 26px; border-top: 1.5px solid var(--ink); border-left: 1.5px solid var(--ink); display: grid; }
+.loop > .body > * + * { border-top: 1.5px solid var(--ink); }
+/* elágazás: one condition, corner triangles marked T (left = true branch) and F (right = false branch) */
+.ifh { display: grid; grid-template-columns: 30px 1fr 30px; border-bottom: 1.5px solid var(--ink); }
+.ifh > .c { padding: 6px 4px; text-align: center; }
+.ifh > .t, .ifh > .f { display: flex; align-items: flex-end; padding: 0 4px 3px; font-family: var(--f-label); font-size: 0.7rem; font-weight: 500; line-height: 1; }
+.ifh > .t { justify-content: flex-start; background: linear-gradient(to top right, transparent calc(50% - 0.75px), var(--ink) 50%, transparent calc(50% + 0.75px)); }
+.ifh > .f { justify-content: flex-end; background: linear-gradient(to bottom right, transparent calc(50% - 0.75px), var(--ink) 50%, transparent calc(50% + 0.75px)); }
+.ifb { display: grid; grid-template-columns: 1fr 1fr; }
+.ifb > * + * { border-left: 1.5px solid var(--ink); }
+
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px; }
+button { font-family: var(--f-label); font-size: 0.78rem; padding: 7px 12px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); color: var(--ink); cursor: pointer; }
+button:hover, button:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+
+footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.88rem; }
+@media (max-width: 520px) { body { font-size: 1rem; } .task { padding: 14px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <a class="back" href="../../index.html#/progelm"><span class="arr" aria-hidden="true">←</span>Vissza: Programozáselmélet</a>
+  <span class="label">Programozáselmélet · 1. ZH · minta (konzultáció)</span>
+  <h1>Minta ZH kidolgozva</h1>
+  <p class="sub">Az 1. ZH konzultációján átvett mintafeladatsor, öt feladat. Előbb oldd meg magad, utána nyisd le a megoldást. A konzultáción csak néhány részt oldottak meg; ezeket „konzultáció” jelzi, a többit én dolgoztam ki („saját”). Ahol a kézírásos válasz hiányos, azt megjegyzés jelzi.</p>
+  <div class="facts">
+    <div class="fact"><span class="label">Feladat</span><b>5</b></div>
+    <div class="fact"><span class="label">Összpontszám</span><b>60</b></div>
+    <div class="fact"><span class="label">Témák</span><b>1–6. gyak</b></div>
+  </div>
+</header>
+
+<nav class="bar" aria-label="Feladatok">
+  <ul>
+    <li><a class="nav-back" href="../../index.html#/progelm" aria-label="Vissza: Programozáselmélet">← PROG ELM</a></li>
+    <li><a href="#zh1">1. feladat</a></li>
+    <li><a href="#zh2">2. feladat</a></li>
+    <li><a href="#zh3">3. feladat</a></li>
+    <li><a href="#zh4">4. feladat</a></li>
+    <li><a href="#zh5">5. feladat</a></li>
+  </ul>
+</nav>
+
+<!-- ======================= 1. FELADAT ======================= -->
+<section id="zh1">
+  <div class="section-head">
+    <span class="label">1. feladat · 16 pont</span>
+    <h2>Program, programfüggvény, megoldás, lf</h2>
+    <p>Ugyanaz a program és feladat, mint a <a href="gyakorlatok.html#gy2">2. gyakorlat</a> 2. feladatában, kiegészítve egy leggyengébb előfeltételes kérdéssel.</p>
+  </div>
+  <div class="toolbar"><button type="button" data-toggle="zh1">Összes megoldás kinyitása</button></div>
+  <div class="taskgroup">
+  <div class="task">
+    <div class="task-head"><span class="no">Közös adatok az 1. feladathoz</span><span class="kind">16 pont</span></div>
+    <div class="stmt">
+    <p>Legyen \(A = [1..5]\), és \(S \subseteq A \times (\overline{A} \cup \{\fail\})^{**}\) a következő program az \(A\) felett:</p>
+    \[S = \left\{ \begin{array}{lll} 1 \to \sq{1, 2, 5, 1} & 1 \to \sq{1, 4, 3, 5, 2} & 1 \to \sq{1, 3, 2, 3, \dots} \\ 2 \to \sq{2, 1} & 2 \to \sq{2, 4} & 3 \to \sq{3, 3, 3, \dots} \\ 4 \to \sq{4, 1, 5, 4, 2} & 4 \to \sq{4, 3, 1, 2, 5, 1} & 5 \to \sq{5, 2, 3, 4} \\ 5 \to \sq{5, 2, \fail} & 5 \to \sq{5, 3, 4} & \end{array} \right\}\]
+    <p>Legyen \(F \subseteq A \times A\) a következő feladat: \(F = \{ (2,1), (2,4), (4,1), (4,2), (4,5) \}\).</p>
+    </div>
+  </div>
+
+  <article class="task">
+    <div class="task-head"><span class="no">1. a)</span><span class="kind">programfüggvény</span></div>
+    <div class="stmt"><p>Határozd meg a következő halmazokat: \(S(2)\), \(\D_{p(S)}\), \(p(S)(4)\), \(p(S)(3)\) és \(p(S)\).</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <ul>
+        <li>\(S(2) = \{ \sq{2, 1},\ \sq{2, 4} \}\) <span class="label">konzultáció</span></li>
+        <li>\(\D_{p(S)} = \{2, 4\}\): az 1-ből és a 3-ból van végtelen végrehajtás, az 5-ből van \(\fail\)-re futó.</li>
+        <li>\(p(S)(4) = \{1, 2\}\) <span class="label">konzultáció</span> (a két végrehajtás végpontja)</li>
+        <li>\(p(S)(3) = \emptyset\) <span class="label">konzultáció</span> (\(3 \notin \D_{p(S)}\))</li>
+        <li>\(p(S) = \{ (2,1), (2,4), (4,1), (4,2) \}\)</li>
+      </ul>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">1. b)</span><span class="kind">megoldás</span></div>
+    <div class="stmt"><p>Megoldja-e \(S\) az \(F\) feladatot? Válaszodat részletesen indokold.</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p>A megoldás definíciója: 1. \(\D_F \subseteq \D_{p(S)}\) és 2. \(\forall a \in \D_F : p(S)(a) \subseteq F(a)\).</p>
+      <ol>
+        <li>\(\{2, 4\} = \D_F \subseteq \D_{p(S)} = \{2, 4\}\) ✓</li>
+        <li>\(\{1, 4\} = p(S)(2) \subseteq F(2) = \{1, 4\}\) ✓ &nbsp; és &nbsp; \(\{1, 2\} = p(S)(4) \subseteq F(4) = \{1, 2, 5\}\) ✓</li>
+      </ol>
+      <p><span class="ans">Igen, \(S\) megoldja \(F\)-et.</span> Az 1, 3, 5 állapotokban a program hibás vagy végtelen futása nem számít, mert ezek nincsenek \(\D_F\)-ben.</p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">1. c)</span><span class="kind">lf</span></div>
+    <div class="stmt"><p>Legyenek \(Q, R : A \to \LL\) adottak úgy, hogy \([R] = \{1, 4, 5\}\) és \([Q] = \{1, 2\}\). Határozd meg az \([\lf(S, R)]\) halmazt. Döntsd el, benne van-e a 2 az \(\lf(S, Q)\) igazsághalmazában. Válaszaidat indokold.</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p>\([\lf(S, R)] = \{ a \in A \mid a \in \D_{p(S)} \wedge p(S)(a) \subseteq [R] \}\), és csak a 2 és a 4 van \(\D_{p(S)}\)-ben:</p>
+      <ul>
+        <li>2: \(p(S)(2) = \{1, 4\} \subseteq \{1, 4, 5\}\) ✓</li>
+        <li>4: \(p(S)(4) = \{1, 2\} \not\subseteq \{1, 4, 5\}\), mert \(2 \notin [R]\) ✗</li>
+      </ul>
+      <p>Tehát <span class="ans">\([\lf(S, R)] = \{2\}\)</span>.</p>
+      <p><b>Benne van-e a 2 az \([\lf(S, Q)]\)-ban?</b> <span class="ans">Nem.</span> A program ugyan biztosan terminál a 2-ből, de a 4-ben is megállhat, és \(4 \notin [Q] = \{1, 2\}\): \(p(S)(2) = \{1, 4\} \not\subseteq \{1, 2\}\). (Teljes halmazként \([\lf(S, Q)] = \{4\}\), mert \(p(S)(4) = \{1, 2\} \subseteq [Q]\).)</p>
+      <span class="label">saját kidolgozás</span>
+    </div></details>
+  </article>
+  </div>
+</section>
+
+<!-- ======================= 2. FELADAT ======================= -->
+<section id="zh2">
+  <div class="section-head">
+    <span class="label">2. feladat · 7 + 6 pont</span>
+    <h2>Végrehajtások, programfüggvény, lf tulajdonság</h2>
+  </div>
+  <div class="toolbar"><button type="button" data-toggle="zh2">Összes megoldás kinyitása</button></div>
+  <div class="taskgroup">
+
+  <article class="task">
+    <div class="task-head"><span class="no">2. a)</span><span class="kind">7 pont</span></div>
+    <div class="stmt">
+      <p>Legyen \(H = \{ a \in \Z \mid a \geq -5 \}\), \(A = (x : H)\), és \(S\) az alábbi program.</p>
+      <div class="sg"><div class="loop"><div class="cond">\(x \neq 10\)</div><div class="body"><div class="st">\(x := x + \sgn(x)\)</div></div></div></div>
+      <ul>
+        <li>Mit rendel \(S\) az állapottér 4, 13, −2, 0 és 10 pontjaihoz? Mit rendel \(p(S)\) ugyanezekhez az állapotokhoz?</li>
+        <li>Határozd meg a \(\D_{p(S)}\) halmazt és \(S\) programfüggvényét.</li>
+      </ul>
+    </div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <div class="tbl"><table>
+        <thead><tr><th>Állapot</th><th>\(S\) végrehajtása</th><th>\(p(S)\)</th></tr></thead>
+        <tbody>
+          <tr><td>\(4\)</td><td>\(\sq{4, 5, 6, 7, 8, 9, 10}\) <span class="label">konzultáció</span></td><td>\(\{10\}\)</td></tr>
+          <tr><td>\(13\)</td><td>\(\sq{13, 14, 15, \dots}\) (végtelen)</td><td>\(\emptyset\) (nincs értelmezve)</td></tr>
+          <tr><td>\(-2\)</td><td>\(\sq{-2, -3, -4, -5, \fail}\) (a \(-6 \notin H\))</td><td>\(\emptyset\) (nincs értelmezve)</td></tr>
+          <tr><td>\(0\)</td><td>\(\sq{0, 0, 0, \dots}\) (végtelen, mert \(\sgn(0) = 0\))</td><td>\(\emptyset\) (nincs értelmezve)</td></tr>
+          <tr><td>\(10\)</td><td>\(\sq{10}\) <span class="label">konzultáció</span></td><td>\(\{10\}\)</td></tr>
+        </tbody>
+      </table></div>
+      \[\D_{p(S)} = \{1, \dots, 10\}, \qquad p(S)(a) = \{10\} \quad (a \in [1..10])\]
+      <p>Ugyanez a program volt a <a href="gyakorlatok.html#gy2">2. gyakorlaton</a> is (plusz-mínusz és 1. feladat).</p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">2. b)</span><span class="kind">6 pont · igaz-e?</span></div>
+    <div class="stmt"><p>Legyen \(A\) tetszőleges állapottér, \(R : A \to \LL\) logikai függvény, \(S\) program az \(A\) állapottér felett. Igaz-e, hogy \([\lf(S, R)] \cup [\lf(S, \neg R)] = \D_{p(S)}\)?</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <div class="own"><b>Saját megoldás</b>
+        <p><span class="ans">Nem igaz</span> (csak a \(\subseteq\) irány).</p>
+        <p><b>\(\subseteq\) igaz:</b> az \(\lf\) definíciója szerint \([\lf(S, R)] \subseteq \D_{p(S)}\) és \([\lf(S, \neg R)] \subseteq \D_{p(S)}\), így az uniójuk is.</p>
+        <p><b>\(\supseteq\) nem igaz</b>, mert egy nem-determinisztikus program ugyanabból az állapotból \(R\)-es és \(\neg R\)-es állapotban is megállhat; ekkor egyiket sem garantálja. Ellenpélda: \(A = \{1, 2, 3\}\), \([R] = \{2\}\) (így \([\neg R] = \{1, 3\}\), mert \(R : A \to \LL\) mindenhol értelmezett), és</p>
+        \[S = \{ 1 \to \sq{1, 2},\ 1 \to \sq{1, 3},\ 2 \to \sq{2},\ 3 \to \sq{3} \}\]
+        <p>Ekkor \(\D_{p(S)} = \{1, 2, 3\}\), \(p(S)(1) = \{2, 3\}\). \([\lf(S, R)] = \{2\}\), \([\lf(S, \neg R)] = \{3\}\), az uniójuk \(\{2, 3\} \neq \{1, 2, 3\}\).</p>
+        <p>Determinisztikus programra az egyenlőség igaz lenne: ott \(p(S)(a)\) egyelemű, ami vagy \([R]\)-ben, vagy \([\neg R]\)-ben van. (Lásd még az előadás \(\lf\)-tulajdonságait: a „vagy”-ra csak \(\lf(S,Q) \vee \lf(S,R) \Rightarrow \lf(S, Q \vee R)\) igaz.)</p>
+      </div>
+    </div></details>
+  </article>
+  </div>
+</section>
+
+<!-- ======================= 3. FELADAT ======================= -->
+<section id="zh3">
+  <div class="section-head">
+    <span class="label">3. feladat · 6 + 6 pont</span>
+    <h2>Feladat modellezése és specifikálása</h2>
+  </div>
+  <div class="toolbar"><button type="button" data-toggle="zh3">Összes megoldás kinyitása</button></div>
+  <div class="taskgroup">
+
+  <article class="task">
+    <div class="task-head"><span class="no">3. a)</span><span class="kind">6 pont · modellezés</span></div>
+    <div class="stmt">
+      <p><em>Adj meg egy olyan prímet, ami közelebb van a végponthoz, mint bármely az intervallumban lévő prímszám.</em></p>
+      <p>Mit választanál a feladat állapotterének? Néhány esetet illusztrálva szemléltesd egy ábrával a feladatot, mint egy leképezést. Van-e olyan állapot, ami nincs a feladat értelmezési tartományában? Van-e olyan állapot, amihez több elemet is hozzárendelünk?</p>
+    </div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p><b>Állapottér</b> <span class="label">konzultáció</span>: az intervallum két végpontja és a keresett prím: \(A = (x : \N,\ y : \N,\ z : \N)\).</p>
+      <p><b>Ábra</b> <span class="label">konzultáció</span>: a konzultáción a \((1, 9, *) \to (1, 9, 7)\) leképezést rajzolták fel: az \([1..9]\) intervallum prímjei 2, 3, 5, 7, és ezek közül a 7 van a legközelebb a \(9\)-es végponthoz.</p>
+      <div class="own"><b>Saját kiegészítés</b>
+        <p>A konzultációs példa alapján a feladatot így értjük: keressük az \([x..y]\)-beli prímek közül azt, amelyik a legközelebb van az \(y\) végponthoz (azaz a legnagyobb \(y\)-nál nem nagyobb prímet az intervallumban). További esetek az ábrához:</p>
+        <ul>
+          <li>\((1, 9, *) \to (1, 9, 7)\)</li>
+          <li>\((10, 20, *) \to (10, 20, 19)\)</li>
+          <li>\((14, 16, *)\): a \([14..16]\)-ban nincs prím, ezért nem rendelünk hozzá semmit.</li>
+        </ul>
+        <p><b>Van-e értelmezési tartományon kívüli állapot?</b> Igen: ahol az intervallumban nincs prím, pl. \((14, 16, *)\), \((24, 28, *)\), vagy ahol az intervallum üres (\(x \gt y\), pl. \((9, 1, *)\)).</p>
+        <p><b>Van-e olyan állapot, amihez több elemet rendelünk?</b> A prím (\(z\)) egyértelmű, tehát ha előírjuk, hogy \(x\) és \(y\) megmaradjon, akkor nincs: \((1, 9, *)\)-hoz csak \((1, 9, 7)\) tartozik. Ha viszont a feladat nem írja elő az input megőrzését, akkor igen: \((1, 9, *)\)-hoz bármely \((*, *, 7)\) célállapot jó (és a \(*\) kezdőérték miatt eleve végtelen sok kiinduló állapot képződik ugyanoda).</p>
+        <p>Ha a feladat „a végponthoz” alatt bármelyik végpontot értené, akkor egyenlő távolság esetén több prím is jó lehet (pl. \([2..7]\)-ben a 2 és a 7 is 0 távolságra van egy-egy végponttól). Ilyenkor a válasz nem-determinisztikus.</p>
+      </div>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">3. b)</span><span class="kind">6 pont · specifikáció</span></div>
+    <div class="stmt"><p>Specifikáld a következő feladatot: az \(x\) egész számokat tartalmazó tömb páros elemeit növeljük meg 1-gyel.</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      \[A = (x : \Z^n), \quad B = (x' : \Z^n), \quad Q = (x = x')\]
+      \[R = \big(\forall i \in [1..n] : (x'[i] \text{ páros} \to x[i] = x'[i] + 1) \wedge (x'[i] \text{ páratlan} \to x[i] = x'[i])\big)\]
+      <p>Ez a <a href="gyakorlatok.html#gy6">6. gyakorlat</a> 2. kvíze. Fontos, hogy a páratlan elemekre is mondjunk valamit, különben a program azokat is tetszőlegesen átírhatná.</p>
+    </div></details>
+  </article>
+  </div>
+</section>
+
+<!-- ======================= 4. FELADAT ======================= -->
+<section id="zh4">
+  <div class="section-head">
+    <span class="label">4. feladat · 7 + 6 pont</span>
+    <h2>Specifikáció elemzése, a specifikáció tétele</h2>
+  </div>
+  <div class="toolbar"><button type="button" data-toggle="zh4">Összes megoldás kinyitása</button></div>
+  <div class="taskgroup">
+
+  <article class="task">
+    <div class="task-head"><span class="no">4. a)</span><span class="kind">7 pont · specifikáció</span></div>
+    <div class="stmt">
+      <p>Tekintsük a következő specifikációval megadott \(F \subseteq A \times A\) feladatot: \(A = (x : \N,\ y : \N,\ z : \N)\), \(B = (x' : \N,\ y' : \N)\),</p>
+      \[Q = (x = x' \wedge y = y' \wedge x \leq y + 1), \qquad R = \big(Q \wedge \prim(z) \wedge \min(|x - z|, |y - z|) \lt 3\big)\]
+      <ul>
+        <li>Határozd meg a \(Q_{\{x':10,\ y':19\}}\) függvény igazsághalmazát.</li>
+        <li>Határozd meg az \(R_{\{x':10,\ y':19\}}\) függvény igazsághalmazát.</li>
+        <li>Határozd meg a \(Q_{\{x':20,\ y':6\}}\) függvény igazsághalmazát.</li>
+        <li>Mit rendel \(F\) az állapottér \(\{x{:}10, y{:}19, z{:}13\}\) és \(\{x{:}26, y{:}34, z{:}31\}\) elemeihez?</li>
+      </ul>
+    </div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <ul>
+        <li>\([Q_{\{x':10, y':19\}}] = \{(10, 19, *)\}\) <span class="label">konzultáció</span></li>
+        <li>\([R_{\{x':10, y':19\}}] = \{(10, 19, 11),\ (10, 19, 17),\ (10, 19, 19)\}\)</li>
+        <li>\([Q_{\{x':20, y':6\}}] = \emptyset\) <span class="label">konzultáció</span>, mert \(20 \leq 6 + 1\) nem teljesül.</li>
+        <li>\((10, 19, 13) \to \{(10, 19, 11),\ (10, 19, 17),\ (10, 19, 19)\}\); &nbsp; \((26, 34, 31) \to \emptyset\)</li>
+      </ul>
+      <p>Miért ezek a prímek? \(|10 - z| \lt 3\) esetén \(z \in [8..12]\), ebben prím a 11; \(|19 - z| \lt 3\) esetén \(z \in [17..21]\), ebben prím a 17 és a 19. A \((26, 34, *)\)-nál \([24..28]\)-ban és \([32..36]\)-ban nincs prím, ezért a feladat semmit nem rendel hozzá (pedig az előfeltétel, \(26 \leq 35\), teljesül).</p>
+      <div class="warn"><b>Megjegyzés</b>A konzultációs kézírásban \([R_{\{x':10, y':19\}}] = \{(10, 19, 17)\}\) áll, ez hiányos: a 11 és a 19 is teljesíti az utófeltételt.</div>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">4. b)</span><span class="kind">6 pont · specifikáció tétele</span></div>
+    <div class="stmt">
+      <p>Legyen \(A = [1..4]\), és \(S \subseteq A \times (A \cup \{\fail\})^{**}\) a következő program:</p>
+      \[S = \{\ 1 \to \sq{1, 2, 4, 1},\ 1 \to \sq{1, 3, 2},\ 2 \to \sq{2, 3},\ 3 \to \sq{3, 2},\ 3 \to \sq{3, 4},\ 4 \to \sq{4, 1, 3}\ \}\]
+      <p>Legyen \(B = \{x, y, z\}\) az \(F \subseteq A \times A\) feladat egy paramétertere, \(F_1 = \{(1, x), (2, y), (2, z), (3, z), (4, y)\}\), \(F_2 = \{(x, 1), (x, 2), (y, 3), (z, 2), (z, 4)\}\). Mit mond a specifikáció tétele az \(S\) programról és az \(F\) feladatról?</p>
+    </div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <div class="own"><b>Saját megoldás</b>
+        <p>\(\D_{p(S)} = A\), \(p(S)(1) = \{1, 2\}\), \(p(S)(2) = \{3\}\), \(p(S)(3) = \{2, 4\}\), \(p(S)(4) = \{3\}\). A tétel feltétele: \(\forall b \in B : [Q_b] \subseteq [\lf(S, R_b)]\), ahol \([Q_b] = F_1^{(-1)}(b)\), \([R_b] = F_2(b)\).</p>
+        <ul>
+          <li>\(b = x\): \([Q_x] = \{1\}\), \([R_x] = \{1, 2\}\), \([\lf(S, R_x)] = \{1\}\); \(\{1\} \subseteq \{1\}\) ✓</li>
+          <li>\(b = y\): \([Q_y] = \{2, 4\}\), \([R_y] = \{3\}\), \([\lf(S, R_y)] = \{2, 4\}\); \(\{2, 4\} \subseteq \{2, 4\}\) ✓</li>
+          <li>\(b = z\): \([Q_z] = \{2, 3\}\), \([R_z] = \{2, 4\}\), \([\lf(S, R_z)] = \{3\}\); \(\{2, 3\} \not\subseteq \{3\}\) ✗</li>
+        </ul>
+        <p>A tétel feltétele nem teljesül, ezért <span class="ans">a specifikáció tétele alapján nem tudjuk eldönteni</span>, hogy \(S\) megoldja-e \(F\)-et. A tétel csak elégséges feltétel.</p>
+        <p>Kiegészítés: közvetlenül ellenőrizve \(S\) megoldja \(F\)-et. \(F = F_2 \circ F_1 = \{(1,1), (1,2), (2,2), (2,3), (2,4), (3,2), (3,4), (4,3)\}\), \(\D_F = A \subseteq \D_{p(S)}\), és \(p(S)(a) \subseteq F(a)\) minden \(a\)-ra (pl. \(p(S)(2) = \{3\} \subseteq F(2) = \{2, 3, 4\}\)). A tétel azért nem működik, mert a 2 két paraméterhez is tartozik, és \(R_z\) önmagában túl szigorú rá.</p>
+      </div>
+    </div></details>
+  </article>
+  </div>
+</section>
+
+<!-- ======================= 5. FELADAT ======================= -->
+<section id="zh5">
+  <div class="section-head">
+    <span class="label">5. feladat · 6 pont</span>
+    <h2>Megoldás: igaz-e?</h2>
+  </div>
+  <div class="toolbar"><button type="button" data-toggle="zh5">Összes megoldás kinyitása</button></div>
+  <div class="taskgroup">
+
+  <article class="task">
+    <div class="task-head"><span class="no">5.</span><span class="kind">6 pont · igaz-e?</span></div>
+    <div class="stmt"><p>Legyen \(A\) tetszőleges állapottér, \(S \subseteq A \times (\overline{A} \cup \{\fail\})^{**}\) program és \(F \subseteq A \times A\) feladat tetszőlegesek úgy, hogy teljesül, hogy \(S\) megoldja \(F\)-et. Igaz-e, hogy ha \(F_2 \subseteq F\), akkor \(S\) megoldja \(F_2\) feladatot is?</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p><span class="ans">Nem igaz.</span> Ellenpélda <span class="label">konzultáció</span>: \(A = [1..4]\),</p>
+      \[S = \{ 1 \to \sq{1, 2},\ 2 \to \sq{2},\ 3 \to \sq{3, 2},\ 4 \to \sq{4, 2} \}\]
+      <p>(a program mindenhonnan a 2-ben áll meg), \(F\) = „adjunk meg egy páros számot”, \(F_2\) = „adjuk meg a 4-et”. Formálisan:</p>
+      \[F = \{ (a, b) \mid a \in A,\ b \in \{2, 4\} \}, \qquad F_2 = \{ (a, 4) \mid a \in A \} \subseteq F\]
+      <ul>
+        <li>\(S\) megoldja \(F\)-et: \(\D_F = A \subseteq \D_{p(S)} = A\), és \(p(S)(a) = \{2\} \subseteq \{2, 4\} = F(a)\).</li>
+        <li>\(S\) nem oldja meg \(F_2\)-t: \(p(S)(a) = \{2\} \not\subseteq \{4\} = F_2(a)\).</li>
+      </ul>
+      <div class="tip"><b>A tanulság</b>A szűkebb feladat szigorúbb lehet a célállapotokban: kevesebb jó választ enged meg, és a program választása ezek közül kieshet. (Ugyanez volt a <a href="gyakorlatok.html#gy3">3. gyakorlat</a> 2. kvíze.)</div>
+    </div></details>
+  </article>
+  </div>
+</section>
+
+<footer>Forrás: <a href="../MintaZH1.pdf" target="_blank" rel="noopener">Konzultáció (1. ZH) jegyzete (PDF)</a>. A „konzultáció” címkével jelölt részek a konzultációs kézírásból valók, a többi saját kidolgozás.</footer>
+</div>
+
+<script>
+(function () {
+  document.querySelectorAll('button[data-toggle]').forEach(function (btn) {
+    var sec = document.getElementById(btn.dataset.toggle);
+    btn.addEventListener('click', function () {
+      var list = sec.querySelectorAll('details');
+      var open = Array.prototype.some.call(list, function (d) { return !d.open; });
+      list.forEach(function (d) { d.open = open; });
+      btn.textContent = open ? 'Összes megoldás becsukása' : 'Összes megoldás kinyitása';
+    });
+  });
+})();
+</script>
+<!-- Fejezetsáv: az éppen olvasott szakasz gombja kiemelve -->
+<style>
+nav.bar a.active, nav.bar a.active:hover, nav.bar a.active:focus-visible { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+</style>
+<script>
+(function () {
+  var nav = document.querySelector('nav.bar');
+  if (!nav) return;
+  var links = Array.prototype.filter.call(nav.querySelectorAll('a[href^="#"]'), function (a) {
+    return a.getAttribute('href').length > 1 && document.getElementById(a.getAttribute('href').slice(1));
+  });
+  var current = null, ticking = false;
+  function sectionOf(a) { return document.getElementById(a.getAttribute('href').slice(1)); }
+  function update() {
+    ticking = false;
+    var line = nav.getBoundingClientRect().bottom + 12, active = null;
+    var visible = links.filter(function (a) { return sectionOf(a).offsetParent !== null; });
+    visible.forEach(function (a) { if (sectionOf(a).getBoundingClientRect().top <= line) active = a; });
+    // a lap alján az utolsó szakasz az aktuális akkor is, ha rövid
+    if (visible.length && window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) active = visible[visible.length - 1];
+    if (active === current) return;
+    if (current) { current.classList.remove('active'); current.removeAttribute('aria-current'); }
+    current = active;
+    if (!active) return;
+    active.classList.add('active');
+    active.setAttribute('aria-current', 'location');
+    var ul = active.closest('ul'), ur = ul.getBoundingClientRect(), ar = active.getBoundingClientRect();
+    var left = ar.left - ur.left + ul.scrollLeft, right = left + ar.width;
+    if (left < ul.scrollLeft || right > ul.scrollLeft + ul.clientWidth) ul.scrollTo({ left: Math.max(0, left - 16), behavior: 'smooth' });
+  }
+  function schedule() { if (!ticking) { ticking = true; setTimeout(update, 40); } }
+  window.addEventListener('scroll', schedule, { passive: true });
+  window.addEventListener('resize', schedule);
+  document.addEventListener('input', schedule);   // a keresés elrejthet szakaszokat
+  document.addEventListener('toggle', schedule, true);
+  update();
+})();
+</script>
+</body>
+</html>

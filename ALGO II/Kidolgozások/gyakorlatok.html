@@ -1,0 +1,2240 @@
+<!doctype html>
+<html lang="hu" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Algoritmusok II · gyakorlatok kidolgozva</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<script>
+  window.MathJax = { tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] }, svg: { fontCache: 'global' } };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js" async></script>
+<style>
+/* Layout: same exam-paper look as the other subject pages, in the ALGO II rose; trees, graphs and struktograms are drawn from short text sources by the script at the bottom */
+:root {
+  --paper: #f5f7fa;
+  --grid: rgba(179, 50, 107, 0.06);
+  --card: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6574;
+  --rule: #d7dde6;
+  --accent: #b3326b;
+  --accent-soft: #fbe8f0;
+  --mark: #b8352a;
+  --mark-soft: #fbe9e6;
+  --ok: #2c7a4b;
+  --ok-soft: #e3f3e9;
+  --grey: #8a94a3;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-label: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f141b; --grid: rgba(245, 144, 184, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+    --rule: #2a3442; --accent: #f590b8; --accent-soft: #3b1e2b; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+    --ok: #74d39c; --ok-soft: #173225; --grey: #6b7686; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f141b; --grid: rgba(245, 144, 184, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+  --rule: #2a3442; --accent: #f590b8; --accent-soft: #3b1e2b; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+  --ok: #74d39c; --ok-soft: #173225; --grey: #6b7686; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background-color: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 1.06rem;
+  line-height: 1.6;
+}
+.wrap { max-width: 900px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 80px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2rem, 6vw, 3.1rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.65rem; font-weight: 700; letter-spacing: -0.01em; }
+h3 { font-size: 1.1rem; font-weight: 600; }
+p { margin: 0; }
+a { color: var(--accent); }
+code, .nota { font-family: var(--f-label); font-size: 0.86em; }
+.label { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding: 2px 0; margin: 6px 0 !important; min-width: 0; max-width: 100%; }
+
+/* back to subject page */
+.back { justify-self: start; display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px 9px 12px; border: 1.5px solid var(--accent); border-radius: 8px; background: var(--accent-soft); color: var(--ink); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 1.02rem; line-height: 1; white-space: nowrap; transition: background .15s, color .15s; }
+.back .arr { color: var(--accent); font-size: 1.25rem; transition: transform .15s, color .15s; }
+.back:hover, .back:focus-visible { background: var(--accent); color: var(--paper); outline: none; }
+.back:hover .arr, .back:focus-visible .arr { color: var(--paper); transform: translateX(-3px); }
+
+header.hero { display: grid; gap: 14px; padding-block: 0 26px; border-bottom: 2px solid var(--accent); }
+.hero .sub { color: var(--muted); max-width: 64ch; }
+.facts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.fact { display: flex; flex-direction: column; gap: 2px; padding: 8px 14px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; min-width: 120px; }
+.fact b { font-family: var(--f-display); font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 0.9rem; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { display: inline-block; width: 14px; height: 14px; border-radius: 50%; border: 2px solid; }
+.legend i.bad { border-color: var(--mark); background: var(--mark-soft); }
+.legend i.new { border-color: var(--ok); background: var(--ok-soft); border-style: dashed; }
+
+nav.bar { position: sticky; top: 0; z-index: 5; background: var(--paper); border-bottom: 1px solid var(--rule); margin-inline: -16px; padding-inline: 16px; }
+nav.bar ul { list-style: none; margin: 0; padding: 10px 0; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin; }
+nav.bar a { display: block; white-space: nowrap; text-decoration: none; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.04em; color: var(--ink); padding: 6px 10px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); }
+nav.bar a:hover, nav.bar a:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+nav.bar a.nav-back { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+nav.bar a.active, nav.bar a.active:hover, nav.bar a.active:focus-visible { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+
+section { padding-top: 44px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; scroll-margin-top: 56px; }
+.section-head { display: grid; gap: 6px; }
+.section-head p { color: var(--muted); max-width: 68ch; }
+.taskgroup { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.sub-head { font-family: var(--f-label); font-size: 0.74rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); padding-top: 10px; }
+
+/* tasks and theory cards */
+.task, .concept { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 18px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; min-width: 0; scroll-margin-top: 60px; }
+.concept { border-left: 4px solid var(--accent); }
+.task-head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.task-head .no { font-family: var(--f-display); font-weight: 700; font-size: 1.05rem; }
+.task-head .kind { margin-left: auto; font-family: var(--f-label); font-size: 0.72rem; padding: 2px 8px; border-radius: 3px; background: var(--accent-soft); color: var(--accent); white-space: nowrap; }
+.task-head .kind.fog { background: var(--accent); color: var(--card); }
+.task-head .kind.alg { background: var(--ink); color: var(--card); }
+.task-head .kind.hf { background: var(--ok-soft); color: var(--ok); }
+.stmt, .body { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; min-width: 0; }
+.stmt > p, .body > p, .sol > p { max-width: 74ch; }
+.body ul, .body ol, .sol ol, .sol ul, .stmt ol, .stmt ul { margin: 0; padding-left: 22px; display: grid; gap: 4px; max-width: 74ch; }
+details { border-top: 1px dashed var(--rule); padding-top: 8px; min-width: 0; }
+summary { cursor: pointer; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); list-style: none; display: inline-flex; gap: 8px; align-items: center; padding: 4px 0; }
+summary::-webkit-details-marker { display: none; }
+summary::before { content: "+"; display: inline-grid; place-items: center; width: 18px; height: 18px; border: 1px solid currentColor; border-radius: 3px; font-size: 0.8rem; }
+details[open] > summary::before { content: "−"; }
+summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sol { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; padding-top: 6px; min-width: 0; }
+.ans { display: inline-block; background: var(--ok-soft); color: var(--ok); font-weight: 600; padding: 1px 9px; border-radius: 4px; }
+.warn, .tip, .own { max-width: 74ch; font-size: 0.95rem; }
+.warn { background: var(--mark-soft); border-left: 3px solid var(--mark); padding: 8px 12px; border-radius: 0 4px 4px 0; }
+.tip { background: var(--accent-soft); border-left: 3px solid var(--accent); padding: 8px 12px; border-radius: 0 4px 4px 0; }
+.own { border: 1px dashed var(--ok); padding: 8px 12px; border-radius: 4px; }
+.own > b:first-child, .tip > b:first-child, .warn > b:first-child { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; display: block; margin-bottom: 2px; }
+.own > b:first-child { color: var(--ok); }
+.warn > b:first-child { color: var(--mark); }
+.src { font-family: var(--f-label); font-size: 0.72rem; color: var(--muted); }
+
+.tbl { overflow-x: auto; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; max-width: 100%; }
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+th, td { text-align: left; padding: 6px 9px; border-bottom: 1px solid var(--rule); vertical-align: middle; }
+th { font-family: var(--f-label); font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+tr:last-child td { border-bottom: 0; }
+table.num td, table.num th { text-align: center; font-family: var(--f-label); font-size: 0.82rem; padding: 5px 6px; white-space: nowrap; }
+table.num td.l, table.num th.l { text-align: left; }
+table.num tr.fin td { font-weight: 600; color: var(--accent); border-top: 2px solid var(--rule); }
+td.hl { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+
+/* figures: trees, graphs, lists */
+.figs { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-start; }
+.fig { margin: 0; display: grid; gap: 6px; justify-items: center; background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 10px 10px 8px; min-width: 0; max-width: 100%; }
+.fig > div { max-width: 100%; overflow-x: auto; }
+.fig figcaption { font-family: var(--f-label); font-size: 0.74rem; color: var(--muted); text-align: center; max-width: 46ch; }
+.fig figcaption b { color: var(--accent); font-weight: 500; }
+.fig .nota { color: var(--ink); text-align: center; overflow-wrap: anywhere; max-width: 60ch; }
+.arrow-next { align-self: center; font-family: var(--f-label); color: var(--accent); font-size: 1.3rem; }
+svg text { font-family: var(--f-label); font-size: 13px; fill: var(--ink); }
+svg .nd { fill: var(--card); stroke: var(--ink); stroke-width: 1.4; }
+svg .nd.bad { stroke: var(--mark); fill: var(--mark-soft); stroke-width: 2.2; }
+svg .nd.new { stroke: var(--ok); fill: var(--ok-soft); stroke-width: 2; stroke-dasharray: 4 2; }
+svg .nd.blk { fill: var(--ink); }
+svg .nd.gry { fill: var(--grey); }
+svg text.inv { fill: var(--paper); }
+svg .nd.start { stroke-width: 3; }
+svg .ed { stroke: var(--muted); stroke-width: 1.3; fill: none; }
+svg .ed.te { stroke: var(--accent); stroke-width: 2.6; }
+svg .ed.bad { stroke: var(--mark); stroke-width: 2.2; }
+svg .ah { fill: var(--muted); }
+svg .ah.te { fill: var(--accent); }
+svg text.bal { fill: var(--accent); font-size: 12px; }
+svg text.bal.bad { fill: var(--mark); font-weight: 600; }
+svg .tri { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.3; }
+svg text.sub { fill: var(--muted); font-size: 11px; }
+svg text.el { fill: var(--accent); font-size: 11px; }
+svg text.knew { fill: var(--ok); font-weight: 600; }
+
+/* struktogram, written as an indented mini-language in <pre class="sg-src"> and drawn by the script */
+.sgrow { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-start; }
+.sgwrap { max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: 0 1px 2px 0; }
+.sgfig { display: inline-grid; justify-items: center; }
+.sgt { border: 1.5px solid var(--ink); border-radius: 14px; padding: 2px 14px; font-family: var(--f-label); font-size: 0.82rem; background: var(--card); position: relative; margin-bottom: 8px; white-space: nowrap; }
+.sgt::after { content: ""; position: absolute; left: 50%; top: 100%; height: 8px; border-left: 1.5px solid var(--ink); }
+.sg { display: grid; min-width: 220px; border: 1.5px solid var(--ink); background: var(--card); font-family: var(--f-label); font-size: 0.8rem; line-height: 1.4; }
+.sg .blk { display: grid; align-content: start; }
+.sg .blk > * + * { border-top: 1.5px solid var(--ink); }
+.sg .st { padding: 4px 10px; text-align: center; white-space: nowrap; }
+.sg .st.skip { color: var(--muted); }
+.sg .cm { color: var(--muted); font-style: italic; }
+.sg .loop > .cond { padding: 4px 10px; text-align: center; white-space: nowrap; }
+.sg .loop > .blk { margin-left: 22px; border-top: 1.5px solid var(--ink); border-left: 1.5px solid var(--ink); }
+.sg .ifh { display: grid; grid-template-columns: 22px 1fr 22px; border-bottom: 1.5px solid var(--ink); }
+.sg .ifh > .c { padding: 4px 4px; text-align: center; white-space: nowrap; }
+.sg .ifh > .t { background: linear-gradient(to top right, transparent calc(50% - 0.75px), var(--ink) 50%, transparent calc(50% + 0.75px)); }
+.sg .ifh > .f { background: linear-gradient(to bottom right, transparent calc(50% - 0.75px), var(--ink) 50%, transparent calc(50% + 0.75px)); }
+.sg .ifb { display: grid; grid-template-columns: auto auto; }
+.sg .ifb > * + * { border-left: 1.5px solid var(--ink); }
+.sg .sw { display: grid; }
+.sg .sw > .swh { padding: 4px 8px 4px 24px; text-align: center; white-space: nowrap; border-bottom: 1.5px solid var(--ink); background: linear-gradient(to top right, transparent calc(50% - 0.75px), var(--ink) 50%, transparent calc(50% + 0.75px)) left top / 20px 100% no-repeat; }
+.sg .sw > .swh.last { padding-right: 24px; background: linear-gradient(to top right, transparent calc(50% - 0.75px), var(--ink) 50%, transparent calc(50% + 0.75px)) left top / 20px 100% no-repeat, linear-gradient(to bottom right, transparent calc(50% - 0.75px), var(--ink) 50%, transparent calc(50% + 0.75px)) right top / 20px 100% no-repeat; }
+.sg .sw > .bl { border-left: 1.5px solid var(--ink); }
+pre.sg-src { display: none; }
+
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px; }
+button { font-family: var(--f-label); font-size: 0.78rem; padding: 7px 12px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); color: var(--ink); cursor: pointer; }
+button:hover, button:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+
+footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.88rem; }
+@media (max-width: 520px) { body { font-size: 1rem; } .task, .concept { padding: 14px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <a class="back" href="../../index.html#/algo2"><span class="arr" aria-hidden="true">←</span>Vissza: Algoritmusok II.</a>
+  <span class="label">Algoritmusok és adatszerkezetek II. · gyakorlati anyagok</span>
+  <h1>Gyakorlati feladatok kidolgozva</h1>
+  <p class="sub">A Gyakorlat mappa összes anyaga témakörönként: az elmélet röviden, az órai feladatok lenyitható megoldással, a fák minden lépése megrajzolva, a struktogramok újrarajzolva. Ahol a lapon nincs megoldás (házik, szorgalmik), ott a megoldás <b>saját kidolgozás</b>, és ezt jelöltem. A fák lépéseit programmal is ellenőriztem.</p>
+  <div class="facts">
+    <div class="fact"><span class="label">Témakör</span><b>7</b></div>
+    <div class="fact"><span class="label">Feladat</span><b id="cnt">–</b></div>
+    <div class="fact"><span class="label">Struktogram</span><b id="cntsg">–</b></div>
+  </div>
+  <div class="legend"><span><i class="bad"></i>elromlott egyensúlyú csúcs (itt forgatunk)</span><span><i class="new"></i>az éppen beszúrt / áthelyezett elem</span></div>
+</header>
+
+<nav class="bar" aria-label="Fejezetek">
+  <ul>
+    <li><a class="nav-back" href="../../index.html#/algo2" aria-label="Vissza: Algoritmusok II.">← ALGO II</a></li>
+    <li><a href="#avl1">AVL: beszúrás</a></li>
+    <li><a href="#avl2">AVL: törlés</a></li>
+    <li><a href="#altfa">Általános fák</a></li>
+    <li><a href="#bplus">B+ fák</a></li>
+    <li><a href="#grafok">Gráfok ábrázolása</a></li>
+    <li><a href="#bfs">Szélességi bejárás</a></li>
+    <li><a href="#tomor">Tömörítés</a></li>
+  </ul>
+</nav>
+
+<!-- ======================= AVL 1 ======================= -->
+<section id="avl1">
+  <div class="section-head">
+    <span class="label">1. témakör · AVL_fa.pdf, AVL_beszur_2025.pdf</span>
+    <h2>AVL fák: definíció, forgatások, beszúrás</h2>
+    <p>A bináris keresőfák műveletei a fa magasságával arányosak; az AVL fa ezt úgy tartja \(\Theta(\log n)\)-en, hogy minden csúcsban legfeljebb 1 lehet a két részfa magasságkülönbsége.</p>
+  </div>
+  <div class="toolbar"><button type="button" data-toggle="avl1">Összes megoldás kinyitása</button></div>
+  <div class="taskgroup">
+
+  <article class="concept">
+    <div class="task-head"><span class="no">AVL fa, egyensúly, jelzők</span><span class="kind fog">elmélet</span></div>
+    <div class="body">
+      <p><b>Definíció.</b> Az AVL fák (Adelszon-Velszkij és Landisz, 1962) <b>magasság szerint kiegyensúlyozott</b> bináris keresőfák: a \(t\) fa kiegyensúlyozott (KBF), ha minden \(*p\) csúcsára \(|h(p\to right) - h(p\to left)| \le 1\).</p>
+      <ul>
+        <li>A csúcsban tároljuk az <b>egyensúlyát</b>: \(p\to b := h(p\to right) - h(p\to left) \in \{-1, 0, +1\}\).</li>
+        <li>Jelzők: <code>=</code> ha a két részfa egyforma magas, <code>-</code> ha a bal eggyel magasabb, <code>+</code> ha a jobb eggyel magasabb. A levelek jelzője mindig <code>=</code>, ezért ott nem írjuk ki.</li>
+        <li>Ha beszúrás vagy törlés miatt egy csúcs jelzője <code>++</code> vagy <code>--</code> lesz, elromlott az AVL-tulajdonság: <b>javítani kell</b> (forgatással).</li>
+        <li><b>Tétel:</b> nem üres, \(n\) csúcsú AVL fa \(h\) magasságára \(\lfloor \log n \rfloor \le h \le 1{,}45 \log n\). A keresőfa-műveletek változatlanul érvényesek, csak minden módosítás után ellenőrizzük és szükség esetén helyreállítjuk az egyensúlyt.</li>
+      </ul>
+    </div>
+  </article>
+
+  <article class="concept">
+    <div class="task-head"><span class="no">Szöveges (zárójeles) jelölés</span><span class="kind fog">elmélet</span></div>
+    <div class="body">
+      <p>Egy fát <code>(bal_részfa gyökér jobb_részfa)</code> alakban írunk le; az üres részfákat elhagyjuk, az olvashatóság kedvéért <code>{ }</code>, <code>[ ]</code>, <code>( )</code> zárójeleket váltogatunk szintenként. A belső csúcsok egyensúlyát az érték mellé írjuk, a levelekét nem.</p>
+      <div class="figs"><figure class="fig"><div data-avl="{ [2] 4+ [ (6) 8= (10) ] }"></div><figcaption>A lap példája</figcaption></figure></div>
+    </div>
+  </article>
+
+  <article class="concept">
+    <div class="task-head"><span class="no">1. szabály: (++, +) forgatás és tükörképe, a (−−, −)</span><span class="kind fog">elmélet</span></div>
+    <div class="body">
+      <p>Az \(x\) csúcs <code>++</code> lett, a jobb gyereke (\(y\)) <code>+</code>. Egy <b>balra forgatás</b> \(y\)-t emeli a gyökérbe, \(x\) lesz a bal gyereke, és \(\beta\) átkerül \(x\) jobb oldalára. A keresőfa-tulajdonság megmarad, mert \(\alpha < x < \beta < y < \gamma\).</p>
+      <div class="figs">
+        <figure class="fig"><div data-avl="{ [α~h] x++! [ (β~h) y+ (γ~h+1) ] }" data-nota="0"></div><figcaption>előtte</figcaption></figure>
+        <span class="arrow-next">⇒</span>
+        <figure class="fig"><div data-avl="{ [ (α~h) x= (β~h) ] y= [γ~h+1] }" data-nota="0"></div><figcaption>utána: mindkét csúcs <b>=</b></figcaption></figure>
+      </div>
+      <p>A részfa magassága a forgatás után ugyanannyi, mint a beszúrás előtt volt, ezért <b>beszúrásnál egy forgatás után kész vagyunk</b>. Pointer-állítás: 6 (konstans).</p>
+      <p class="src">Példa a lapról: a 21 beszúrása után a 15 lett ++, a jobb gyereke (20) +.</p>
+      <div class="figs">
+        <figure class="fig"><div data-avl="{[(3) 10-] 15++! [({17} 18-) 20+ ({[21*] 22-} 25- {30})]}"></div></figure>
+        <span class="arrow-next">⇒</span>
+        <figure class="fig"><div data-avl="{[({3} 10-) 15= ({17} 18-)] 20= [({21} 22-) 25- (30)]}"></div></figure>
+      </div>
+    </div>
+  </article>
+
+  <article class="concept">
+    <div class="task-head"><span class="no">2. szabály: (++, −) dupla forgatás és tükörképe, a (−−, +)</span><span class="kind fog">elmélet</span></div>
+    <div class="body">
+      <p>Az \(x\) csúcs <code>++</code>, de a jobb gyereke (\(y\)) <code>-</code>: a magasság-növekedés \(y\) bal részfájában, \(z\)-ben van. Most \(z\) kerül a gyökérbe, \(x\) a bal, \(y\) a jobb gyereke lesz; \(\beta\) az \(x\)-hez, \(\gamma\) az \(y\)-hoz kerül (\(\alpha < x < \beta < z < \gamma < y < \delta\)).</p>
+      <div class="figs">
+        <figure class="fig"><div data-avl="{ [α~h] x++! [ ( (β) z (γ) ) y- (δ~h) ] }" data-nota="0"></div><figcaption>előtte</figcaption></figure>
+        <span class="arrow-next">⇒</span>
+        <figure class="fig"><div data-avl="{ [ (α~h) x (β) ] z= [ (γ) y (δ~h) ] }" data-nota="0"></div><figcaption>utána: z mindig <b>=</b></figcaption></figure>
+      </div>
+      <div class="tbl" style="max-width:640px"><table class="num">
+        <tr><th>z régi jelzője</th><th>β, γ magassága</th><th>x új jelzője</th><th>y új jelzője</th></tr>
+        <tr><td>=</td><td>h, h (z az új elem)</td><td>=</td><td>=</td></tr>
+        <tr><td>−</td><td>h, h−1 (az új elem β-ba került)</td><td>=</td><td>+</td></tr>
+        <tr><td>+</td><td>h−1, h (az új elem γ-ba került)</td><td>−</td><td>=</td></tr>
+      </table></div>
+      <p>Pointer-állítás: 10 (konstans). A beszúrás teljes műveletigénye: hely keresése \(\sim\log_2 n\) + egyensúlyok ellenőrzése (legfeljebb a gyökérig) \(\sim\log_2 n\) + konstans \(\Rightarrow \Theta(\log n)\).</p>
+      <p class="src">Példa a lapról: a 19 beszúrása után a 15 lett ++, a jobb gyereke (27) −, z = 17.</p>
+      <div class="figs">
+        <figure class="fig"><div data-avl="{[(3) 10= (12)] 15++! [({16} 17+ {[19*] 20-}) 27- (28+ {30})]}"></div></figure>
+        <span class="arrow-next">⇒</span>
+        <figure class="fig"><div data-avl="{[({3} 10= {12}) 15- (16)] 17= [({19} 20-) 27= (28+ {30})]}"></div></figure>
+      </div>
+    </div>
+  </article>
+
+  <article class="concept">
+    <div class="task-head"><span class="no">A beszúrás menete</span><span class="kind fog">elmélet</span></div>
+    <div class="body">
+      <ol>
+        <li>Beszúrjuk a kulcsot, mint egy közönséges keresőfába (új levél, jelzője <code>=</code>).</li>
+        <li>Elindulunk a beszúrt csúcs szülőjétől a gyökér felé, és javítjuk a jelzőket (bal oldalon nőtt: −1, jobb oldalon nőtt: +1).</li>
+        <li>Addig megyünk, amíg <code>=</code> nem lesz egy jelző (ott a részfa magassága nem nőtt, kész), vagy <code>++</code> / <code>--</code> nem lesz (forgatunk, és kész), vagy el nem érjük a gyökeret.</li>
+        <li>Forgatás kiválasztása: <code>++</code> csúcs és jobb gyereke <code>+</code> → (++,+); jobb gyereke <code>-</code> → (++,−). Tükrösen: <code>--</code> és bal gyerek <code>-</code> → (−−,−); bal gyerek <code>+</code> → (−−,+).</li>
+      </ol>
+    </div>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">1. feladat</span><span class="kind">kiegyensúlyozottság</span></div>
+    <div class="stmt"><p>Döntsük el, hogy az alábbi bináris fák kiegyensúlyozottak-e! (A csúcsokat a hivatkozás kedvéért betűztem meg.)</p>
+      <div class="figs">
+        <figure class="fig"><div data-avl="{ [ (d) b ( (g) e ) ] a [ c (f) ] }" data-nota="0"></div><figcaption>bal oldali fa</figcaption></figure>
+        <figure class="fig"><div data-avl="{ [ (d) b ( (h) e (i) ) ] a [ (f) c ( (j) g ) ] }" data-nota="0"></div><figcaption>jobb oldali fa</figcaption></figure>
+      </div>
+    </div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <div class="own"><b>Saját megoldás (a lapon nincs)</b>Alulról felfelé kiszámoljuk minden csúcs magasságát és egyensúlyát (jobb − bal):</div>
+      <div class="figs">
+        <figure class="fig"><div data-avl="{ [ (d) b+ ( (g) e- ) ] a- [ c+ (f) ] }" data-nota="0"></div><figcaption>h(b)=2, h(c)=1 → a: 1−2 = −1</figcaption></figure>
+        <figure class="fig"><div data-avl="{ [ (d) b+ ( (h) e= (i) ) ] a= [ (f) c+ ( (j) g- ) ] }" data-nota="0"></div><figcaption>h(b)=h(c)=2 → a: 0</figcaption></figure>
+      </div>
+      <p><span class="ans">Mindkét fa kiegyensúlyozott</span>: minden csúcs egyensúlya −1, 0 vagy +1. A bal oldali fa „csálénak” tűnik, de a definíció csúcsonként csak az 1-nél nagyobb eltérést tiltja; a szintek teljessége nem követelmény.</p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">2. feladat</span><span class="kind">AVL-fa építése</span></div>
+    <div class="stmt"><p>Építsünk AVL-fát a következő adatokból: <b>32, 40, 21, 15, 43, 25, 9, 28, 35, 12, 14</b>! Ha elromlott a fa kiegyensúlyozása, lássuk el címkékkel a csúcsokat és állítsuk helyre az AVL-tulajdonságot a megfelelő forgatással!</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p>Az első kilenc beszúrás után még nem kell forgatni:</p>
+      <div class="figs"><figure class="fig"><div data-avl="{[({9} 15-) 21= (25+ {28})] 32- [(35) 40= (43)]}"></div><figcaption>32, 40, 21, 15, 43, 25, 9, 28, 35 után</figcaption></figure></div>
+      <p><b>12 beszúrása:</b> 9 jobb gyereke lesz. Felfelé: 9 → <code>+</code>, 15 → <code>--</code>, a bal gyereke (9) <code>+</code> ⇒ <span class="ans">(−−,+) forgatás</span> a 15-nél; z = 12 kerül fel.</p>
+      <div class="figs">
+        <figure class="fig"><div data-avl="{[({9+ [12*]} 15--!) 21= (25+ {28})] 32- [(35) 40= (43)]}"></div></figure>
+        <span class="arrow-next">⇒</span>
+        <figure class="fig"><div data-avl="{[({9} 12= {15}) 21= (25+ {28})] 32- [(35) 40= (43)]}"></div></figure>
+      </div>
+      <p><b>14 beszúrása:</b> 15 bal gyereke lesz. Felfelé: 15 → <code>-</code>, 12 → <code>+</code>, 21 → <code>-</code>, 32 → <code>--</code>, a bal gyereke (21) <code>-</code> ⇒ <span class="ans">(−−,−) forgatás</span> a gyökérnél.</p>
+      <div class="figs">
+        <figure class="fig"><div data-avl="{[({9} 12+ {[14*] 15-}) 21- (25+ {28})] 32--! [(35) 40= (43)]}"></div></figure>
+        <span class="arrow-next">⇒</span>
+        <figure class="fig"><div data-avl="{[(9) 12+ ({14} 15-)] 21= [(25+ {28}) 32= ({35} 40= {43})]}"></div><figcaption><b>végeredmény</b></figcaption></figure>
+      </div>
+    </div></details>
+    <details><summary>Részletes magyarázat: mind a 11 lépés</summary><div class="sol">
+      <div class="figs">
+        <figure class="fig"><div data-avl="{32*}"></div><figcaption>32</figcaption></figure>
+        <figure class="fig"><div data-avl="{32+ [40*]}"></div><figcaption>40</figcaption></figure>
+        <figure class="fig"><div data-avl="{[21*] 32= [40]}"></div><figcaption>21: 32 kiegyenlítődik, megállunk</figcaption></figure>
+        <figure class="fig"><div data-avl="{[(15*) 21-] 32- [40]}"></div><figcaption>15: 21 és 32 is balra dől</figcaption></figure>
+        <figure class="fig"><div data-avl="{[(15) 21-] 32= [40+ (43*)]}"></div><figcaption>43</figcaption></figure>
+        <figure class="fig"><div data-avl="{[(15) 21= (25*)] 32= [40+ (43)]}"></div><figcaption>25: 21 = lesz, megállunk</figcaption></figure>
+        <figure class="fig"><div data-avl="{[({9*} 15-) 21- (25)] 32- [40+ (43)]}"></div><figcaption>9</figcaption></figure>
+        <figure class="fig"><div data-avl="{[({9} 15-) 21= (25+ {28*})] 32- [40+ (43)]}"></div><figcaption>28: 21 = lesz, megállunk</figcaption></figure>
+        <figure class="fig"><div data-avl="{[({9} 15-) 21= (25+ {28})] 32- [(35*) 40= (43)]}"></div><figcaption>35: 40 = lesz</figcaption></figure>
+      </div>
+      <p>A 12 és a 14 beszúrását lásd fent. Figyeld meg: amint egy jelző <code>=</code> lesz, az a részfa nem lett magasabb, ezért feljebb már semmi sem változik.</p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">3. feladat</span><span class="kind">AVL-fa építése</span></div>
+    <div class="stmt"><p>Építsünk AVL-fát a következő adatokból: <b>100, 170, 74, 81, 136, 185, 150, 122, 52, 190, 144</b>! Ha elromlott a fa kiegyensúlyozása, lássuk el címkékkel a csúcsokat és állítsuk helyre az AVL-tulajdonságot!</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p>Egyetlen forgatás kell, a legutolsó (144) beszúrásakor. Előtte a fa:</p>
+      <div class="figs"><figure class="fig"><div data-avl="{[(52) 74= (81)] 100+ [({122} 136= {150}) 170= (185+ {190})]}"></div><figcaption>az első 10 beszúrás után</figcaption></figure></div>
+      <p><b>144 beszúrása:</b> 150 bal gyereke lesz. Felfelé: 150 → <code>-</code>, 136 → <code>+</code>, 170 → <code>-</code>, 100 → <code>++</code>, a jobb gyereke (170) <code>-</code> ⇒ <span class="ans">(++,−) forgatás</span>, x = 100, y = 170, z = 136.</p>
+      <div class="figs">
+        <figure class="fig"><div data-avl="{[(52) 74= (81)] 100++! [({122} 136+ {[144*] 150-}) 170- (185+ {190})]}"></div></figure>
+        <span class="arrow-next">⇒</span>
+        <figure class="fig"><div data-avl="{[({52} 74= {81}) 100- (122)] 136= [({144} 150-) 170= (185+ {190})]}"></div><figcaption><b>végeredmény</b></figcaption></figure>
+      </div>
+      <p>Mivel z (136) régi jelzője <code>+</code> volt (az új elem a γ részfájába került), x (100) új jelzője <code>-</code>, y (170) új jelzője <code>=</code>, ahogy a táblázat mondja.</p>
+    </div></details>
+    <details><summary>Részletes magyarázat: a lépések</summary><div class="sol">
+      <div class="figs">
+        <figure class="fig"><div data-avl="{[74] 100= [170]}"></div><figcaption>100, 170, 74</figcaption></figure>
+        <figure class="fig"><div data-avl="{[74+ (81*)] 100- [170]}"></div><figcaption>81</figcaption></figure>
+        <figure class="fig"><div data-avl="{[74+ (81)] 100= [(136*) 170-]}"></div><figcaption>136</figcaption></figure>
+        <figure class="fig"><div data-avl="{[74+ (81)] 100= [(136) 170= (185*)]}"></div><figcaption>185: 170 = lesz</figcaption></figure>
+        <figure class="fig"><div data-avl="{[74+ (81)] 100+ [(136+ {150*}) 170- (185)]}"></div><figcaption>150</figcaption></figure>
+        <figure class="fig"><div data-avl="{[74+ (81)] 100+ [({122*} 136= {150}) 170- (185)]}"></div><figcaption>122: 136 = lesz</figcaption></figure>
+        <figure class="fig"><div data-avl="{[(52*) 74= (81)] 100+ [({122} 136= {150}) 170- (185)]}"></div><figcaption>52: 74 = lesz</figcaption></figure>
+        <figure class="fig"><div data-avl="{[(52) 74= (81)] 100+ [({122} 136= {150}) 170= (185+ {190*})]}"></div><figcaption>190: 170 = lesz</figcaption></figure>
+      </div>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">4. feladat</span><span class="kind">beszúrás, jelölés</span></div>
+    <div class="stmt"><p>Adott a <code>{ [2] 4+ [ (6) 8= (10) ] }</code> AVL fa (ábráját lásd fent). Szúrjuk be a fába külön-külön (mindig az eredeti fába) a) a <b>3</b>-as, b) a <b>15</b>-ös, c) a <b>7</b>-es értéket! Írjuk le a kapott fát a zárójeles jelöléssel is!</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <div class="own"><b>Saját megoldás (a lapon nincs)</b>Mindhárom esetet az eredeti fából indítva.</div>
+      <p><b>a) 3:</b> a 2 jobb gyereke lesz; 2 → <code>+</code>, 4 bal részfája nőtt: <code>+</code> → <code>=</code>, megállunk. Nincs forgatás.</p>
+      <div class="figs"><figure class="fig"><div data-avl="{[2+ (3*)] 4= [(6) 8= (10)]}"></div></figure></div>
+      <p><b>b) 15:</b> a 10 jobb gyereke; 10 → <code>+</code>, 8 → <code>+</code>, 4 → <code>++</code>, jobb gyereke (8) <code>+</code> ⇒ (++,+).</p>
+      <div class="figs">
+        <figure class="fig"><div data-avl="{[2] 4++! [(6) 8+ (10+ {15*})]}"></div></figure>
+        <span class="arrow-next">⇒</span>
+        <figure class="fig"><div data-avl="{[(2) 4= (6)] 8= [10+ (15)]}"></div></figure>
+      </div>
+      <p><b>c) 7:</b> a 6 jobb gyereke; 6 → <code>+</code>, 8 → <code>-</code>, 4 → <code>++</code>, jobb gyereke (8) <code>-</code> ⇒ (++,−) z = 6-tal. A 6 régi jelzője <code>+</code> volt, így x = 4 új jelzője <code>-</code>, y = 8-é <code>=</code>.</p>
+      <div class="figs">
+        <figure class="fig"><div data-avl="{[2] 4++! [(6+ {7*}) 8- (10)]}"></div></figure>
+        <span class="arrow-next">⇒</span>
+        <figure class="fig"><div data-avl="{[(2) 4-] 6= [(7) 8= (10)]}"></div></figure>
+      </div>
+    </div></details>
+  </article>
+
+  <article class="concept">
+    <div class="task-head"><span class="no">Algoritmus: AVL beszúrás (Ásványi Tibor, 2025)</span><span class="kind alg">struktogram</span></div>
+    <div class="body">
+      <p>Láncolt ábrázolás: <code>Node</code> = { key : T ; b : −1..1 ; left, right : Node* }. A <code>d</code> paraméter azt jelzi, hogy <b>nőtt-e</b> az aktuális részfa magassága.</p>
+      <div class="sgrow">
+<pre class="sg-src">
+@AVLinsert(&t : Node* ; k : T ; &d : 𝔹)
+switch
+  case t = ⊘
+    t := new Node(k)
+    d := true
+  case k < t→key
+    AVLinsert(t→left, k, d)
+    if d
+      leftSubTreeGrown(t, d)
+  case k > t→key
+    AVLinsert(t→right, k, d)
+    if d
+      rightSubTreeGrown(t, d)
+  case ELSE
+    d := false
+</pre>
+<pre class="sg-src">
+@leftSubTreeGrown(&t : Node* ; &d : 𝔹)
+if t→b = −1
+  l := t→left   // t→b−− lenne: −2
+  if l→b = −1
+    balanceMMm(t, l)
+  else
+    balanceMMp(t, l)
+  d := false
+else
+  t→b−−
+  d := (t→b < 0)
+</pre>
+<pre class="sg-src">
+@rightSubTreeGrown(&t : Node* ; &d : 𝔹)
+if t→b = 1
+  r := t→right   // t→b++ lenne: +2
+  if r→b = 1
+    balancePPp(t, r)
+  else
+    balancePPm(t, r)
+  d := false
+else
+  t→b++
+  d := (t→b > 0)
+</pre>
+      </div>
+      <p>A forgatások (<code>t</code> a részfa gyökerére, <code>r</code> / <code>l</code> a jobb / bal gyerekére mutat):</p>
+      <div class="sgrow">
+<pre class="sg-src">
+@balancePPp(&t, r : Node*)   // (++,+)
+t→right := r→left
+r→left := t
+r→b := t→b := 0
+t := r
+</pre>
+<pre class="sg-src">
+@balanceMMm(&t, l : Node*)   // (−−,−)
+t→left := l→right
+l→right := t
+l→b := t→b := 0
+t := l
+</pre>
+<pre class="sg-src">
+@balancePPm(&t, r : Node*)   // (++,−)
+l := r→left
+t→right := l→left
+r→left := l→right
+l→left := t ; l→right := r
+t→b := −⌊(l→b + 1) / 2⌋
+r→b := ⌊(1 − l→b) / 2⌋
+l→b := 0
+t := l
+</pre>
+<pre class="sg-src">
+@balanceMMp(&t, l : Node*)   // (−−,+)
+r := l→right
+l→right := r→left
+t→left := r→right
+r→left := l ; r→right := t
+l→b := −⌊(r→b + 1) / 2⌋
+t→b := ⌊(1 − r→b) / 2⌋
+r→b := 0
+t := r
+</pre>
+      </div>
+      <p class="tip"><b>Ellenőrzés</b>A dupla forgatás képletei pontosan a fenti táblázatot adják: ha z (itt <code>l</code>, ill. <code>r</code>) régi egyensúlya −1 / 0 / +1, akkor a bal oldali csúcs új egyensúlya 0 / 0 / −1, a jobb oldalié +1 / 0 / 0.</p>
+    </div>
+  </article>
+
+  </div>
+</section>
+
+<!-- ======================= AVL 2 ======================= -->
+<section id="avl2">
+  <div class="section-head">
+    <span class="label">2. témakör · AVL_fa_folytatas.pdf, AVL_minkivesz.pdf, AVL_mintöröl_2025.pdf, AVL_torol.pdf, AVL_töröl_2025.pdf</span>
+    <h2>AVL fák: minimum kivétele és törlés</h2>
+    <p>Törlésnél egy részfa <em>alacsonyabb</em> lesz. A forgatások csökkentik a részfa magasságát, ezért egy forgatás után nem biztos, hogy megállhatunk: a törlés hatása akár a gyökérig is terjedhet.</p>
+  </div>
+  <div class="toolbar"><button type="button" data-toggle="avl2">Összes megoldás kinyitása</button></div>
+  <div class="taskgroup">
+
+  <article class="concept">
+    <div class="task-head"><span class="no">Minimum kivétele (remMin)</span><span class="kind fog">elmélet</span></div>
+    <div class="body">
+      <ol>
+        <li>A gyökértől balra haladunk, amíg lehet. Akinek nincs bal részfája, az a minimum; a címét visszaadjuk.</li>
+        <li>A minimum helyére (a szülője bal részfájának) a minimum <b>jobb részfája</b> kerül.</li>
+        <li>A szülő bal részfája rövidült: a jelzőjét <b>növeljük</b> eggyel; ha kell, forgatunk.</li>
+        <li>Ha a részfa nem rövidült (a gyökerének jelzője nem <code>=</code> lett), kész vagyunk; ha rövidült, a szülőnél folytatjuk.</li>
+      </ol>
+      <p>Az általános törlés segédeljárása: két gyerekes csúcs törlésekor a jobb részfa minimumát emeljük ki.</p>
+    </div>
+  </article>
+
+  <article class="concept">
+    <div class="task-head"><span class="no">3. szabály: (++, =) forgatás és tükörképe, a (−−, =)</span><span class="kind fog">elmélet</span></div>
+    <div class="body">
+      <p>Új forgatási séma, <b>csak törléskor fordulhat elő</b>: \(x\) <code>++</code> lett, a jobb gyereke (\(y\)) <code>=</code>. Ugyanaz a balra forgatás, mint (++,+)-nál, csak az egyensúlyok mások: \(x\) <code>+</code>, \(y\) <code>-</code> lesz.</p>
+      <div class="figs">
+        <figure class="fig"><div data-avl="{ [α~h] x++! [ (β~h+1) y= (γ~h+1) ] }" data-nota="0"></div><figcaption>előtte</figcaption></figure>
+        <span class="arrow-next">⇒</span>
+        <figure class="fig"><div data-avl="{ [ (α~h) x+ (β~h+1) ] y- [γ~h+1] }" data-nota="0"></div><figcaption>utána</figcaption></figure>
+      </div>
+      <p>Ez a forgatás <b>nem csökkenti</b> a részfa magasságát (előtte és utána is h+3), így utána nem kell tovább ellenőrizni a jelzőket. A (++,+) és (++,−) forgatás viszont eggyel csökkenti, ezért törlésnél utánuk felfelé folytatni kell.</p>
+      <p class="warn"><b>Megjegyzés a forráshoz</b>Az AVL_fa_folytatas.pdf ábráján γ magassága „h−1”, de y jelzője <code>=</code>, tehát β és γ egyforma magas: γ helyesen h+1.</p>
+    </div>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">1. példa</span><span class="kind">minimum kivétele</span></div>
+    <div class="stmt"><p>Vegyük ki a minimális elemet az alábbi AVL fából!</p>
+      <div class="figs"><figure class="fig"><div data-avl="{[(15+ {17}) 21= ({23} 25= {28})] 32= [(35+ {38}) 40- (43)]}"></div></figure></div>
+    </div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p>A minimum a 15 (nincs bal részfája). Helyére a jobb részfája, a 17 kerül; a 21 bal részfája rövidült: <code>=</code> → <code>+</code>. Mivel nem <code>=</code> lett, a 21-es részfa magassága nem változott: <span class="ans">kész, forgatás nélkül</span>.</p>
+      <div class="figs"><figure class="fig"><div data-avl="{[(17*) 21+ ({23} 25= {28})] 32= [(35+ {38}) 40- (43)]}"></div></figure></div>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">2. példa</span><span class="kind">minimum kivétele</span></div>
+    <div class="stmt"><p>Vegyük ki a minimális elemet az alábbi AVL fából!</p>
+      <div class="figs"><figure class="fig"><div data-avl="{[(17) 21+ ({23} 25= {28})] 32= [(35+ {38}) 40- (43)]}"></div></figure></div>
+    </div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p>A minimum a 17 (levél), a 21 bal részfája üres lesz: <code>+</code> → <code>++</code>. A jobb gyereke (25) <code>=</code> ⇒ <span class="ans">(++,=) forgatás</span>. Utána a részfa magassága nem változott, a 32 jelzője marad.</p>
+      <div class="figs">
+        <figure class="fig"><div data-avl="{[21++! ({23} 25= {28})] 32= [(35+ {38}) 40- (43)]}"></div></figure>
+        <span class="arrow-next">⇒</span>
+        <figure class="fig"><div data-avl="{[(21+ {23}) 25- (28)] 32= [(35+ {38}) 40- (43)]}"></div></figure>
+      </div>
+    </div></details>
+  </article>
+
+  <article class="concept">
+    <div class="task-head"><span class="no">Törlés AVL fából</span><span class="kind fog">elmélet</span></div>
+    <div class="body">
+      <p>Három eset: <b>levelet</b>, <b>egy gyerekes</b> vagy <b>két gyerekes</b> csúcsot törlünk.</p>
+      <ul>
+        <li>Az első kettő összevonható: „ha a törlendő csúcs egyik részfája üres, a másik részfát tesszük a helyére” (akkor is, ha az is üres). A szülő megfelelő oldala rövidült, a jelzőjét módosítjuk.</li>
+        <li>Két gyerekes csúcsnál előbb kiemeljük a <b>jobb részfa minimumát</b> (az ottani kiegyensúlyozás ekkor történik), majd ezt láncoljuk be a törlendő helyére: átveszi a két részfáját és az egyensúlyát. Ezután beállítjuk az új gyökér egyensúlyát, és ha kell, kiegyensúlyozunk.</li>
+        <li>A jobb részfa minimuma nagyobb a bal részfa minden eleménél és kisebb a jobb részfa többi eleménél, így a keresőfa-tulajdonság nem sérül. (A bal részfa maximuma is jó lenne.)</li>
+        <li>Ha a fa egy nagyobb fa része, a magasabb szinteken további kiegyensúlyozások kellhetnek, mert a részfa alacsonyabb lett.</li>
+      </ul>
+    </div>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">3. példa</span><span class="kind">gyökér törlése</span></div>
+    <div class="stmt"><p>Töröljük ki az alábbi AVL fa gyökerét, azaz a 32-t!</p>
+      <div class="figs"><figure class="fig"><div data-avl="{[(17) 21+ (25+ {28})] 32+ [(35+ {38}) 40+ ({41+ [42]} 43- {45})]}"></div></figure></div>
+    </div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p><b>1. A jobb részfa minimumának kiemelése.</b> A 32 jobb részfájában balra haladva a minimum a 35; helyére a jobb részfája (38) kerül. A 40 bal részfája rövidült: <code>+</code> → <code>++</code>, a jobb gyereke (43) <code>-</code> ⇒ (++,−) forgatás, z = 41.</p>
+      <div class="figs">
+        <figure class="fig"><div data-avl="{[(17) 21+ (25+ {28})] 32+ [(38) 40++! ({41+ [42]} 43- {45})]}"></div><figcaption>p → 35 (kiemelve)</figcaption></figure>
+        <span class="arrow-next">⇒</span>
+        <figure class="fig"><div data-avl="{[(17) 21+ (25+ {28})] 32+ [({38} 40-) 41= ({42} 43= {45})]}"></div><figcaption>forgatás után a jobb részfa alacsonyabb lett</figcaption></figure>
+      </div>
+      <p><b>2. A 35 beláncolása a 32 helyére</b>, a régi gyökér törlése. A 35 átveszi a 32 jelzőjét (<code>+</code>), de mivel a jobb részfa rövidült, <code>+</code> → <code>=</code>.</p>
+      <div class="figs"><figure class="fig"><div data-avl="{[(17) 21+ (25+ {28})] 35=* [({38} 40-) 41= ({42} 43= {45})]}"></div><figcaption><b>végeredmény</b></figcaption></figure></div>
+      <p>Ha a 35 új egyensúlya −2 vagy +2 lett volna, itt is ki kellene egyensúlyozni; és ha ez egy nagyobb fa része lenne, a magasabb szinteken is folytatódhatna a javítás, mert a részfa alacsonyabb lett.</p>
+    </div></details>
+  </article>
+
+  <article class="concept">
+    <div class="task-head"><span class="no">Algoritmus: minimum kivétele (2025)</span><span class="kind alg">struktogram</span></div>
+    <div class="body">
+      <p>Itt <code>d</code> azt jelzi, hogy <b>csökkent-e</b> az aktuális részfa magassága.</p>
+      <div class="sgrow">
+<pre class="sg-src">
+@AVLremMin(&t : Node* ; &minp : Node* ; &d : 𝔹)
+if t→left = ⊘
+  minp := t
+  t := minp→right
+  minp→right := ⊘
+  d := true
+else
+  AVLremMin(t→left, minp, d)
+  if d
+    leftSubTreeShrunk(t, d)
+</pre>
+<pre class="sg-src">
+@leftSubTreeShrunk(&t : Node* ; &d : 𝔹)
+if t→b = 1
+  balance_PP(t, d)   // t→b++ lenne: +2
+else
+  t→b++
+  d := (t→b = 0)
+</pre>
+      </div>
+      <div class="sgrow">
+<pre class="sg-src">
+@balance_PP(&t : Node* ; &d : 𝔹)
+r := t→right
+switch
+  case r→b = −1
+    balancePPm(t, r)   // (++,−)
+  case r→b = 0
+    balancePP0(t, r)   // (++,=)
+    d := false
+  case r→b = 1
+    balancePPp(t, r)   // (++,+)
+</pre>
+<pre class="sg-src">
+@balancePP0(&t, r : Node*)   // új séma
+t→right := r→left
+r→left := t
+t→b := 1
+r→b := −1
+t := r
+</pre>
+      </div>
+      <p>Az előadás jegyzetének (9. előadás, C) magyar nevű változata ugyanez: <code>AVLminKivesz</code> = AVLremMin, <code>balRészfaÖsszement</code> = leftSubTreeShrunk, <code>kiegyensúlyoz_P</code> = balance_PP, <code>kiegyensúlyozP0</code> = balancePP0 (ott <code>s</code> az egyensúly, <code>bal</code>/<code>jobb</code> a gyerekek).</p>
+    </div>
+  </article>
+
+  <article class="concept">
+    <div class="task-head"><span class="no">Algoritmus: adott kulcsú elem törlése (2025)</span><span class="kind alg">struktogram</span></div>
+    <div class="body">
+      <div class="sgrow">
+<pre class="sg-src">
+@AVLdel(&t : Node* ; k : T ; &d : 𝔹)
+if t ≠ ⊘
+  switch
+    case k < t→key
+      AVLdel(t→left, k, d)
+      if d
+        leftSubTreeShrunk(t, d)
+    case k > t→key
+      AVLdel(t→right, k, d)
+      if d
+        rightSubTreeShrunk(t, d)
+    case k = t→key
+      AVLdelRoot(t, d)
+else
+  d := false
+</pre>
+<pre class="sg-src">
+@AVLdelRoot(&t : Node* ; &d : 𝔹)
+switch
+  case t→left = ⊘
+    p := t
+    t := p→right
+    delete p
+    d := true
+  case t→right = ⊘
+    p := t
+    t := p→left
+    delete p
+    d := true
+  case t→left ≠ ⊘ ∧ t→right ≠ ⊘
+    rightSubTreeMinToRoot(t, d)
+    if d
+      rightSubTreeShrunk(t, d)
+</pre>
+<pre class="sg-src">
+@rightSubTreeMinToRoot(&t : Node* ; &d : 𝔹)
+AVLremMin(t→right, p, d)
+p→left := t→left ; p→right := t→right ; p→b := t→b
+delete t ; t := p
+</pre>
+      </div>
+      <p>Magyar nevekkel (9. előadás, D): <code>AVLtöröl</code> = AVLdel, <code>AVLgyTöröl</code> = AVLdelRoot. Minden kiegyensúlyozás konstans sok lépés, ezért a törlés is \(O(\log n)\), a legrosszabb esetben \(\Theta(\log n)\).</p>
+    </div>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">HF 1.</span><span class="kind hf">házi</span></div>
+    <div class="stmt"><p>Mutassunk olyan, legalább négy magasságú AVL fát, amelyből a minimális csúcs eltávolítása után <b>minden felette lévő szinten</b> ki kell egyensúlyozni!</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <div class="own"><b>Saját megoldás</b>Olyan fa kell, ahol a minimumhoz vezető úton minden csúcs <code>+</code> (a bal oldala alacsonyabb), és mindegyik jobb gyereke <code>+</code> vagy <code>-</code> (nem <code>=</code>), mert csak a (++,+) és (++,−) forgatás csökkenti a magasságot, így csak ezek után kell tovább menni. Ilyen a „csupa <code>+</code>” <b>Fibonacci-fa</b>: \(F_h\) = (\(F_{h-2}\) gyökér \(F_{h-1}\)).</div>
+      <div class="figs"><figure class="fig"><div data-avl="{[(1) 2+ (3+ {4})] 5+ [(6+ {7}) 8+ ({9} 10+ {11+ [12]})]}"></div><figcaption>12 csúcs, magassága 4</figcaption></figure></div>
+      <p>Az 1 kivétele után a 2 lesz <code>++</code>, jobb gyereke (3) <code>+</code> ⇒ (++,+); a részfa alacsonyabb lett, ezért az 5 is <code>++</code> lesz, jobb gyereke (8) <code>+</code> ⇒ újabb (++,+):</p>
+      <div class="figs">
+        <figure class="fig"><div data-avl="{[2++! (3+ {4})] 5+ [(6+ {7}) 8+ ({9} 10+ {11+ [12]})]}"></div><figcaption>1. kiegyensúlyozás a 2-nél</figcaption></figure>
+        <figure class="fig"><div data-avl="{[(2) 3= (4)] 5++! [(6+ {7}) 8+ ({9} 10+ {11+ [12]})]}"></div><figcaption>2. kiegyensúlyozás a gyökérnél</figcaption></figure>
+        <figure class="fig"><div data-avl="{[({2} 3= {4}) 5= (6+ {7})] 8= [(9) 10+ (11+ {12})]}"></div><figcaption><b>eredmény</b>, magassága 3</figcaption></figure>
+      </div>
+      <p>Az 1 a 2. szinten van, felette két szint van (2 és 5), és <span class="ans">mindkettőn forgatni kell</span>. Nagyobb Fibonacci-fánál ugyanez minden szinten megtörténik.</p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">HF 2.</span><span class="kind hf">házi</span></div>
+    <div class="stmt"><p>A <code>balRészfaÖsszement(t, d)</code> (leftSubTreeShrunk) mintájára dolgozzuk ki a <code>jobbRészfaÖsszement(t, d)</code> (rightSubTreeShrunk) eljárást, a segédeljárásait és a hozzá szükséges kiegyensúlyozási sémát! Mutassuk be a működését példán! Mutassunk legalább négy magasságú fát és kulcsot, amelyre az AVLtöröl minden, a fizikailag törölt csúcs feletti szinten kiegyensúlyoz!</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <div class="own"><b>Saját megoldás</b>A jobb részfa rövidült, tehát a jelző <b>csökken</b>; ha <code>-</code> volt, <code>--</code> lenne, és a <b>bal</b> gyerek alapján forgatunk. Az új séma a (−−,=).</div>
+      <div class="sgrow">
+<pre class="sg-src">
+@rightSubTreeShrunk(&t : Node* ; &d : 𝔹)
+if t→b = −1
+  balance_MM(t, d)   // t→b−− lenne: −2
+else
+  t→b−−
+  d := (t→b = 0)
+</pre>
+<pre class="sg-src">
+@balance_MM(&t : Node* ; &d : 𝔹)
+l := t→left
+switch
+  case l→b = 1
+    balanceMMp(t, l)   // (−−,+)
+  case l→b = 0
+    balanceMM0(t, l)   // (−−,=)
+    d := false
+  case l→b = −1
+    balanceMMm(t, l)   // (−−,−)
+</pre>
+<pre class="sg-src">
+@balanceMM0(&t, l : Node*)
+t→left := l→right
+l→right := t
+t→b := −1
+l→b := 1
+t := l
+</pre>
+      </div>
+      <p><b>Példa a (−−,=) esetre:</b> a 6 törlése után az 5 lesz <code>--</code>, a bal gyereke (3) <code>=</code>. Jobbra forgatunk; a részfa magassága nem változik, ezért <code>d := false</code>.</p>
+      <div class="figs">
+        <figure class="fig"><div data-avl="{[(2) 3= (4)] 5- [6]}"></div><figcaption>kiinduló fa, töröljük a 6-ot</figcaption></figure>
+        <figure class="fig"><div data-avl="{[(2) 3= (4)] 5--!}"></div><figcaption>6 törölve</figcaption></figure>
+        <span class="arrow-next">⇒</span>
+        <figure class="fig"><div data-avl="{[2] 3+ [(4) 5-]}"></div><figcaption>(−−,=) után</figcaption></figure>
+      </div>
+      <p><b>Minden szinten kiegyensúlyozó törlés:</b> a HF 1. Fibonacci-fájából az <b>1</b> törlése (AVLdel) pontosan ugyanazt csinálja, mint a minimum kivétele: a 2-nél és a gyökérnél is (++,+) forgatás kell. A tükörképes fából (csupa <code>-</code>) a maximum törlése a jobbRészfaÖsszement ágon, (−−,−) forgatásokkal teszi ugyanezt.</p>
+    </div></details>
+  </article>
+
+  </div>
+</section>
+
+<!-- ======================= ÁLTALÁNOS FÁK ======================= -->
+<section id="altfa">
+  <div class="section-head">
+    <span class="label">3. témakör · AltalanosFak_gyak.pdf</span>
+    <h2>Általános fák</h2>
+    <p>Egy kitüntetett csúcs, a gyökér, és a csúcsoknak tetszőleges sok gyereke lehet. Példák: könyvtárszerkezet, függvénykifejezések.</p>
+  </div>
+  <div class="toolbar"><button type="button" data-toggle="altfa">Összes megoldás kinyitása</button></div>
+  <div class="taskgroup">
+
+  <article class="concept">
+    <div class="task-head"><span class="no">Ábrázolás két pointerrel, zárójeles alak</span><span class="kind fog">elmélet</span></div>
+    <div class="body">
+      <p>Minden csúcsban <b>két pointer</b>: <code>child1</code> az első gyerekre, <code>sibling</code> a következő testvérre mutat (esetleg egy harmadik a szülőre). Más ábrázolás is lehet, pl. a gráfoknál használt éllistás.</p>
+      <p><code>Node</code> = { child1, sibling : Node* ; key : T } ; <code>Node()</code> { child1 := sibling := ⊘ } ; <code>Node(x)</code> { child1 := sibling := ⊘ ; key := x }.</p>
+      <div class="figs">
+        <figure class="fig"><div data-gt="(1 (2 (5)) (3) (4 (6) (7)))"></div><figcaption>a jegyzet fája</figcaption></figure>
+        <figure class="fig"><div data-lcrs="(1 (2 (5)) (3) (4 (6) (7)))"></div><figcaption>ugyanez két pointerrel: ↓ child1, → sibling</figcaption></figure>
+      </div>
+      <p><b>Zárójeles alak:</b> nem üres fa általános alakja <code>(G t1 … tn)</code>, ahol G a gyökér tartalma, t1 … tn a részfák. A fenti fa: <code>{ 1 [ 2 (5) ] (3) [ 4 (6) (7) ] }</code>.</p>
+      <p><b>Bejárások:</b> a testvéreken érdemesebb ciklussal végigmenni (hatékonyabb), a gyerekek felé rekurzióval. A <i>postorder</i> alakra a bináris fák inorderjére hasonlít, de a függvénykifejezések lengyel formáját adja, ezért hívjuk postordernek.</p>
+      <div class="sgrow">
+<pre class="sg-src">
+@preorder(t : Node*)
+loop t ≠ ⊘
+  process(t)
+  preorder(t→child1)
+  t := t→sibling
+</pre>
+<pre class="sg-src">
+@postorder(t : Node*)
+loop t ≠ ⊘
+  postorder(t→child1)
+  process(t)
+  t := t→sibling
+</pre>
+      </div>
+    </div>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">1. feladat</span><span class="kind">ábrázolás</span></div>
+    <div class="stmt"><p>Adott az alábbi általános fa. Rajzoljuk le két pointeres ábrázolásban, és adjuk meg zárójeles alakban!</p>
+      <div class="figs"><figure class="fig"><div data-gt="(a (b (f) (g)) (c) (d (h (l) (m) (n))) (e (i) (j (p)) (k)))"></div></figure></div>
+    </div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p>Minden csúcsból lefelé csak az <b>első</b> gyerekére mutat nyíl, a többi gyerek a testvérlánc mentén, jobbra érhető el:</p>
+      <div class="figs"><figure class="fig"><div data-lcrs="(a (b (f) (g)) (c) (d (h (l) (m) (n))) (e (i) (j (p)) (k)))"></div><figcaption>↓ child1, → sibling</figcaption></figure></div>
+      <p>Zárójeles alak: <code>{ a [ b ( f ) ( g ) ] [ c ] [ d ( h { l } { m } { n } ) ] [ e ( i ) ( j { p } ) ( k ) ] }</code></p>
+      <p class="warn"><b>Megjegyzés a forráshoz</b>A lap első rajzán az e első gyereke „l”-nek látszik, de a két pointeres rajz és a zárójeles alak szerint ez az <b>i</b> (az l a h gyereke).</p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">2. feladat</span><span class="kind">preorder</span></div>
+    <div class="stmt"><p>Adjuk meg a preorder bejárás algoritmusát <b>teljesen rekurzívan</b>, és járjuk be vele a fenti fát!</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+<pre class="sg-src">
+@preorder(t : Node*)
+if t ≠ ⊘
+  process(t)
+  preorder(t→child1)
+  preorder(t→sibling)
+</pre>
+      <p>Bejárás: <span class="ans">a b f g c d h l m n e i j p k</span></p>
+      <p>A gyakorlatban nem ezt használjuk (a testvérlánc mentén minden testvér egy újabb rekurziós szint, hosszú láncnál mély verem), de itt jobban látszik a rokonság a bináris fák preorderjével: <code>child1</code> ~ bal, <code>sibling</code> ~ jobb.</p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">3. feladat</span><span class="kind">postorder</span></div>
+    <div class="stmt"><p>Adjuk meg a postorder bejárás algoritmusát teljesen rekurzívan, és járjuk be vele a fenti fát!</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+<pre class="sg-src">
+@postorder(t : Node*)
+if t ≠ ⊘
+  postorder(t→child1)
+  process(t)
+  postorder(t→sibling)
+</pre>
+      <p>Bejárás: <span class="ans">f g b c l m n h d i p j k e a</span></p>
+      <p>Mivel a feldolgozás a <code>t→child1</code> után, de a testvérek előtt történik, alakra a bináris fák <i>inorder</i> bejárásának rokona; az általános fán viszont minden csúcs a teljes részfája után kerül sorra, ezért postorder.</p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">4. feladat</span><span class="kind">lengyel forma</span></div>
+    <div class="stmt"><p>Legyen <code>min3</code> egy háromparaméteres függvény, és <code>y = min3(a+1, 2*b, x) * z</code> egy függvénykifejezés. Rajzoljuk fel általános fa alakban, és adjuk meg a postorder bejárását!</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <div class="figs">
+        <figure class="fig"><div data-gt="(= (y) (* (min3 (+ (a) (1)) (* (2) (b)) (x)) (z)))"></div><figcaption>a kifejezés fája</figcaption></figure>
+        <figure class="fig"><div data-lcrs="(= (y) (* (min3 (+ (a) (1)) (* (2) (b)) (x)) (z)))"></div><figcaption>két pointerrel</figcaption></figure>
+      </div>
+      <p>Postorder: <span class="ans">y a 1 + 2 b * x min3 z * =</span></p>
+      <p>Ez pontosan a kifejezés <b>lengyel formája</b> (postfix alak): minden művelet / függvény az összes operandusa után következik. Ezért hívjuk ezt a bejárást postordernek.</p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">5. feladat</span><span class="kind">algoritmus</span></div>
+    <div class="stmt"><p>Készítsük el a fa magasságát megadó algoritmust (teljesen rekurzívan és testvér irányban ciklussal)!</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <div class="sgrow">
+<pre class="sg-src">
+@Magasság(t : Node*) : ℤ
+if t ≠ ⊘
+  mgy := Magasság(t→child1) + 1
+  mt := Magasság(t→sibling)
+  return max(mgy, mt)
+else
+  return −1
+</pre>
+<pre class="sg-src">
+@Magasság(t : Node*) : ℤ
+h := −1
+loop t ≠ ⊘
+  m := Magasság(t→child1) + 1
+  if m > h
+    h := m
+  t := t→sibling
+return h
+</pre>
+      </div>
+      <p>Mindkettő a <code>t</code>-vel kezdődő <b>testvérlánc</b> (erdő) legmagasabb fájának magasságát adja; a gyökérnek nincs testvére, így rá a fa magasságát. Üres fa magassága −1, egyetlen csúcsé 0. A fenti a…p fára: <span class="ans">3</span> (pl. a → d → h → l).</p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">6. feladat</span><span class="kind">algoritmus</span></div>
+    <div class="stmt"><p>Készítsünk algoritmust, mely kiírja a fa zárójelezett alakját (teljesen rekurzívan és testvér irányban ciklussal)!</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <div class="sgrow">
+<pre class="sg-src">
+@Zárójelez(t : Node*)
+if t ≠ ⊘
+  Write('(') ; Write(t→key)
+  Zárójelez(t→child1)
+  Write(')')
+  Zárójelez(t→sibling)
+</pre>
+<pre class="sg-src">
+@Zárójelez(t : Node*)
+loop t ≠ ⊘
+  Write('(') ; Write(t→key)
+  Zárójelez(t→child1)
+  Write(')')
+  t := t→sibling
+</pre>
+      </div>
+      <p class="warn"><b>Megjegyzés a forráshoz</b>A lap teljesen rekurzív változatának utolsó sora <code>t := t→sibling</code>; ciklus nélkül ez hatástalan (a testvérek kimaradnának). A rekurzív változatban helyesen <code>Zárójelez(t→sibling)</code> a hívás, ahogy fent.</p>
+      <p>A jegyzet fájára a kimenet: <code>(1(2(5))(3)(4(6)(7)))</code>.</p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">7. feladat</span><span class="kind">szintfolytonos</span></div>
+    <div class="stmt"><p>Készítsük el a szintfolytonos bejárást a két pointerrel ábrázolt általános fára!</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+<pre class="sg-src">
+@Szintfolytonos(t : Node*)
+if t ≠ ⊘
+  Q : Queue
+  Q.add(t)
+  loop ¬Q.isEmpty()
+    t := Q.rem()
+    loop t ≠ ⊘
+      feldolgoz(t)
+      if t→child1 ≠ ⊘
+        Q.add(t→child1)
+      t := t→sibling
+</pre>
+      <p>A sorba csak a testvércsoportok <b>első</b> elemei kerülnek; a belső ciklus a csoport többi tagját a testvérláncon járja végig. A fenti a…p fára: <span class="ans">a b c d e f g h i j k l m n p</span>.</p>
+      <p class="src">A lapon a külső elágazás feltétele „t = 0” a SKIP ággal balra; ez ugyanaz, mint fent a „t ≠ ⊘” feltétel fordított ágakkal.</p>
+    </div></details>
+  </article>
+
+  </div>
+</section>
+
+<!-- ======================= B+ FÁK ======================= -->
+<section id="bplus">
+  <div class="section-head">
+    <span class="label">4. témakör · B+ fa műveletei.pdf, B+ fa.pdf</span>
+    <h2>B+ fák</h2>
+    <p>Háttértáron (lemezen) tárolt keresőfa: egy csúcs egy teljes blokkot tölt ki, így sok kulcs és mutató fér bele, és a fa nagyon alacsony marad. A rajzokon d = 4 (negyedfokú B+ fa).</p>
+  </div>
+  <div class="toolbar"><button type="button" data-toggle="bplus">Összes megoldás kinyitása</button></div>
+  <div class="taskgroup">
+
+  <article class="concept">
+    <div class="task-head"><span class="no">A d-edfokú B+ fa invariánsai</span><span class="kind fog">elmélet</span></div>
+    <div class="body">
+      <p>Minden csúcsban legfeljebb <b>d mutató</b> (4 ≤ d) és legfeljebb <b>d−1 kulcs</b> van; d a fa fokszáma.</p>
+      <p><b>Belső csúcsok</b></p>
+      <ul>
+        <li>Eggyel több mutató van bennük, mint kulcs. A kulcsok csak <b>hasító kulcsok</b> (útjelzők).</li>
+        <li>Ha Cs-ben k kulcs van: az első gyerek részfájában minden kulcs &lt; Cs.kulcs[1]; az utolsóéban minden kulcs ≥ Cs.kulcs[k]; az i-edikben (2 ≤ i ≤ k) Cs.kulcs[i−1] ≤ r &lt; Cs.kulcs[i].</li>
+        <li>A gyökérnek legalább 2 gyereke van (kivéve, ha ő az egyetlen csúcs); minden más belső csúcsnak legalább ⌊d/2⌋.</li>
+      </ul>
+      <p><b>Levelek</b></p>
+      <ul>
+        <li>Legfeljebb d−1 kulcs és ugyanennyi, az adatrekordra mutató pointer; legalább ⌊d/2⌋ kulcs (kivéve, ha a fa egyetlen csúcs).</li>
+        <li>Minden levél <b>azonos mélységben</b> van.</li>
+        <li>A tárolt halmaz minden kulcsa megjelenik egy levélben, balról jobbra szigorúan növekvő sorrendben. (A leveleket a d-edik mutatóval gyakran listába fűzik.)</li>
+      </ul>
+      <p>d = 4 esetén: minden levélben 2–3 kulcs, minden belső csúcsban 2–4 gyerek (1–3 kulcs). A hasító kulcsok nem okvetlenül szerepelnek a levelekben (a törlés létrehoz ilyet).</p>
+      <div class="figs"><figure class="fig"><div data-bp="{ [ (1, 4) 6 (9, 10) 11 (11, 12) ] 13 [ (13, 15) 16 (16, 20, 25) ] }"></div><figcaption>egy kicsi negyedfokú B+ fa; bármely kulcs keresése 3 csúcsot érint</figcaption></figure></div>
+    </div>
+  </article>
+
+  <article class="concept">
+    <div class="task-head"><span class="no">Beszúrás és törlés</span><span class="kind fog">elmélet</span></div>
+    <div class="body">
+      <p><b>Beszúrás.</b> Üres fánál új levél (egyben gyökér). Különben megkeressük a kulcs levelét; ha már benne van, sikertelen.</p>
+      <ol>
+        <li>Ha a csúcsban van hely, rendezetten beszúrjuk.</li>
+        <li>Ha tele van, kettévágjuk, és a d kulcsot <b>egyenlően</b> elosztjuk. <b>Levélnél</b> a második csúcs legkisebb kulcsának <b>másolatát</b> szúrjuk be a szülőbe; <b>belső csúcsnál</b> a középső kulcsot <b>kivesszük</b> és azt visszük fel. Ha kell, új gyökeret hozunk létre: ekkor nő a fa magassága.</li>
+      </ol>
+      <p><b>Törlés.</b> Megkeressük a kulcs levelét (ha nincs, sikertelen).</p>
+      <ul>
+        <li><b>A)</b> A levél a gyökér: töröljük a kulcsot; ha üres lett, üres fát kapunk.</li>
+        <li><b>B)</b> Levél, nem gyökér: töröljük. Ha maradt elég kulcs, kész. Ha túl kevés, de egy szomszédos testvérnek (közös szülő!) több van a minimumnál: <b>egyenlően elosztjuk</b> a kulcsokat, és a szülőben a köztük lévő hasító kulcs a második testvér minimuma lesz. Ha a testvérek is a minimumon vannak: <b>összevonjuk</b> egy szomszédos testvérrel, és a szülőből töröljük a köztük lévő hasító kulcsot (C vagy D eset).</li>
+        <li><b>C)</b> Belső, nem gyökér csúcs: ha van még ⌊d/2⌋ gyereke, kész. Különben testvértől kölcsönzünk (a gyerekek és hasító kulcsok egyenletes elosztása, a <b>szülőbeli hasító kulcsot is beleértve</b>: a középső kulcs felmegy a szülőbe), vagy összevonunk (a szülőbeli hasító kulcs <b>lejön</b> a két testvér közé), és a szülőnél folytatjuk.</li>
+        <li><b>D)</b> A gyökérből törlünk: ha maradt 2 gyereke, kész; ha csak 1, a gyökeret töröljük, és a gyereke lesz az új gyökér: <b>csökken a fa magassága</b>.</li>
+      </ul>
+    </div>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">1. feladat</span><span class="kind">fokszám</span></div>
+    <div class="stmt"><p>Egy d-edfokú B+ fa csúcsaiban 4 bájtos kulcsok és 6 bájtos pointerek vannak. A fát mágneslemezen tároljuk, a blokkméret 4096 bájt. Mekkorának érdemes választani a d fokszámot?</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p>Egy csúcs legfeljebb d−1 kulcsot és d mutatót tartalmaz, és egy blokkba kell férnie:</p>
+      \[4(d-1) + 6d \le 4096 \;\Rightarrow\; 10d - 4 \le 4096 \;\Rightarrow\; d \le 410.\]
+      <p>A legnagyobb ilyen egészt választjuk: <span class="ans">d = 410</span>.</p>
+      <p>Ilyen fokszámmal a fa elképesztően alacsony: n = 10⁹ kulcsra a jegyzet szerinti korlát \(\log_{410}(n/409) \le h \le \log_{205}(n/2)\), azaz \(2{,}4 &lt; h &lt; 3{,}8\), tehát h = 3 (négy szint). A felső két szintet megnyitáskor a memóriába töltjük, így egy rekord eléréséhez összesen 3 lemezolvasás kell (ha nincs ilyen kulcs, csak 2).</p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">2. feladat</span><span class="kind">beszúrás</span></div>
+    <div class="stmt"><p>Rajzolja le a <code>{ [ (1 2) 3 (5 6 7) ] 8 [ (9 10) 11 (12 13) 14 (14 16 17) 18 (19 20) ] }</code> negyedfokú B+ fát! Szemléltesse a <b>11</b>, a <b>4</b>, illetve a <b>15</b> beszúrását, minden esetben az eredeti fára!</p>
+      <div class="figs"><figure class="fig"><div data-bp="{ [ (1 2) 3 (5 6 7) ] 8 [ (9 10) 11 (12 13) 14 (14 16 17) 18 (19 20) ] }" data-nota="0"></div><figcaption>az eredeti fa</figcaption></figure></div>
+    </div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p><b>11 beszúrása:</b> a helye a (12 13) levél (a 11 hasító kulcs miatt: 11 ≤ 11 &lt; 14). A levélben nincs benne és van hely: egyszerűen beszúrjuk.</p>
+      <div class="figs"><figure class="fig"><div data-bp="{ [ (1 2) 3 (5 6 7) ] 8 [ (9 10) 11 (11* 12 13)* 14 (14 16 17) 18 (19 20) ] }"></div></figure></div>
+      <p><b>4 beszúrása:</b> a helye az (5 6 7) levél, ami tele van: (4 5 | 6 7) szétvágjuk. A második új levél első eleme (6) a szülőbe kerül, ott van hely: (3 6).</p>
+      <div class="figs"><figure class="fig"><div data-bp="{ [ (1 2) 3 (4* 5)* 6* (6 7)* ]* 8 [ (9 10) 11 (12 13) 14 (14 16 17) 18 (19 20) ] }"></div></figure></div>
+      <p><b>15 beszúrása:</b> a helye a (14 16 17) levél, tele van: (14 15 | 16 17), a 16 a szülőbe menne. A szülő (11 14 18) is betelne (11 14 16 18): azt is kettévágjuk, a két fele (11 14) és (18), a <b>középső</b> 16-os kulcs felmegy a gyökérbe, ahol van hely: (8 16).</p>
+      <div class="figs"><figure class="fig"><div data-bp="{ [ (1 2) 3 (5 6 7) ] 8 16* [ (9 10) 11 (12 13) 14 (14 15*)* ]* [ (16 17)* 18 (19 20) ]* }*"></div></figure></div>
+      <p class="tip"><b>Levél vs. belső csúcs vágása</b>Levél vágásakor a fölvitt kulcs <i>másolat</i> (a 16 a levélben is megmarad), belső csúcs vágásakor a középső kulcs <i>felmegy</i>, és onnan eltűnik. Ha a gyökér is betelt volna, azt is vágnánk, és új gyökér jönne létre: így nő a B+ fa magassága.</p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">3. feladat</span><span class="kind">törlés</span></div>
+    <div class="stmt"><p>Rajzolja le a <code>{ [ ( 6 9 ) 14 ( 14 15 ) 16 ( 16 17 ) ] 18 [ ( 18 20 ) 21 ( 21 25 30 ) ] }</code> negyedfokú B+ fát! Szemléltesse a <b>18</b>, a <b>20</b>, illetve a <b>6</b> törlését (egymás után)!</p>
+      <div class="figs"><figure class="fig"><div data-bp="{ [ ( 6 9 ) 14 ( 14 15 ) 16 ( 16 17 ) ] 18 [ ( 18 20 ) 21 ( 21 25 30 ) ] }" data-nota="0"></div><figcaption>az eredeti fa</figcaption></figure></div>
+    </div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p><b>18 törlése:</b> a (18 20) levélből; a 20 egyedül maradna. A jobb testvérnek (21 25 30) több kulcsa van a minimumnál, így elosztjuk: (20 21) (25 30), és a szülőben a hasító kulcs a második testvér minimuma, <b>25</b> lesz. (A gyökérben a 18 hasító kulcsként megmaradhat.)</p>
+      <div class="figs"><figure class="fig"><div data-bp="{ [ (6 9) 14 (14 15) 16 (16 17) ] 18 [ (20 21)* 25* (25 30)* ]* }"></div></figure></div>
+      <p><b>20 törlése:</b> a (20 21) levélből; a 21 egyedül marad, a testvére (25 30) a minimumon van, nem adhat: <b>összevonjuk</b> őket (21 25 30), a szülőből törlődik a 25. A szülőnek így csak egy gyereke maradna, de a bal testvérének (14 16) három gyereke van: <b>kölcsönzünk</b> tőle egy gyereket, a (16 17) levelet. A hasító kulcsok jobbra mozognak: a gyökérből a 18 lejön a jobb oldali szülőbe, a 16 felmegy a gyökérbe.</p>
+      <div class="figs"><figure class="fig"><div data-bp="{ [ (6 9) 14 (14 15) ]* 16* [ (16 17) 18* (21 25 30)* ]* }*"></div></figure></div>
+      <p><b>6 törlése:</b> a (6 9) levélből; a 9 egyedül marad, a testvére (14 15) a minimumon van: összevonjuk (9 14 15), a szülőből törlődik a 14. A bal szülőnek csak egy gyereke maradna, a jobb testvére (2 gyerek) nem tud adni: a két szülőt <b>összevonjuk</b>, a gyökérből a 16 lejön közéjük. A gyökérnek egy gyereke marad, ezért töröljük: <b>csökken a fa magassága</b>.</p>
+      <div class="figs"><figure class="fig"><div data-bp="{ (9 14 15)* 16 (16 17) 18 (21 25 30) }*"></div></figure></div>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">4. feladat</span><span class="kind">beszúrás (jegyzet)</span></div>
+    <div class="stmt"><p>A B+ fa.pdf jegyzet példája: a <code>[ (1, 4, 9) 16 (16, 25) ]</code> fába szúrjuk be egymás után a <b>20, 13, 15, 10, 11, 12</b> kulcsokat!</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <div class="figs">
+        <figure class="fig"><div data-bp="[ (1, 4, 9) 16 (16, 25) ]"></div><figcaption>eredeti</figcaption></figure>
+        <figure class="fig"><div data-bp="[ (1, 4, 9) 16 (16, 20*, 25)* ]"></div><figcaption><b>20</b>: befér a levelébe</figcaption></figure>
+        <figure class="fig"><div data-bp="[ (1, 4)* 9* (9, 13*)* 16 (16, 20, 25) ]"></div><figcaption><b>13</b>: (1, 4 | 9, 13) hasad, a 9 másolata a szülőbe</figcaption></figure>
+        <figure class="fig"><div data-bp="[ (1, 4) 9 (9, 13, 15*)* 16 (16, 20, 25) ]"></div><figcaption><b>15</b>: befér</figcaption></figure>
+        <figure class="fig"><div data-bp="[ (1, 4) 9 (9, 10*)* 13* (13, 15)* 16 (16, 20, 25) ]"></div><figcaption><b>10</b>: (9, 10 | 13, 15) hasad, a 13 a szülőbe</figcaption></figure>
+        <figure class="fig"><div data-bp="[ (1, 4) 9 (9, 10, 11*)* 13 (13, 15) 16 (16, 20, 25) ]"></div><figcaption><b>11</b>: befér</figcaption></figure>
+        <figure class="fig"><div data-bp="{ [ (1, 4) 9 (9, 10) 11* (11*, 12*)* ]* 13* [ (13, 15) 16 (16, 20, 25) ]* }*"></div><figcaption><b>12</b>: (9, 10 | 11, 12) hasad, a 11 a szülőbe; a szülő (9 11 | 13 16) is hasad, a középső 13 felmegy az új gyökérbe</figcaption></figure>
+      </div>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">5. feladat</span><span class="kind">törlés (jegyzet)</span></div>
+    <div class="stmt"><p>Az előző eredményből (<code>{[(1,4) 9 (9,10) 11 (11,12)] 13 [(13,15) 16 (16,20,25)]}</code>) töröljük egymás után a <b>13, 15, 1</b> kulcsokat!</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <div class="figs">
+        <figure class="fig"><div data-bp="{ [ (1, 4) 9 (9, 10) 11 (11, 12) ] 13 [ (15, 16)* 20* (20, 25)* ]* }"></div><figcaption><b>13</b>: a 15 egyedül marad, átveszi a 16-ot a jobb testvérétől; a szülőben a hasító kulcs 20 lesz</figcaption></figure>
+        <figure class="fig"><div data-bp="{ [ (1, 4) 9 (9, 10) ]* 11* [ (11, 12) 13* (16, 20, 25)* ]* }*"></div><figcaption><b>15</b>: a két levél egyesül, a 20 törlődik a szülőből; a szülőnek 1 gyereke marad, egyet átvesz a testvérétől: a 13 lejön a nagyszülőből, a 11 a 13 helyére megy</figcaption></figure>
+        <figure class="fig"><div data-bp="[ (4, 9, 10)* 11 (11, 12) 13 (16, 20, 25) ]*"></div><figcaption><b>1</b>: (4, 9, 10) egyesül, a szülők is egyesülnek, a 11 lejön; a gyökérnek 1 gyereke marad, törlődik</figcaption></figure>
+      </div>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">HF</span><span class="kind hf">házi (jegyzet)</span></div>
+    <div class="stmt"><p>Bizonyítsuk be, hogy egy n kulcsot tároló, d-edfokú B+ fa h magasságára \(\log_d \frac{n}{d-1} \le h \le \log_{\lfloor d/2 \rfloor} \frac{n}{2}\)!</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <div class="own"><b>Saját megoldás</b>A magasság a gyökértől a levelekig vezető élek száma; minden levél h mélységben van. Feltesszük, hogy h ≥ 1 (egyetlen levélnél a felső becslés értelmetlen).</div>
+      <p><b>Alsó becslés (sok kulcs fér el).</b> Minden belső csúcsnak legfeljebb d gyereke van, így a h-adik szinten legfeljebb \(d^h\) levél van, mindegyikben legfeljebb d−1 kulcs:</p>
+      \[n \le (d-1)\, d^h \;\Rightarrow\; d^h \ge \frac{n}{d-1} \;\Rightarrow\; h \ge \log_d \frac{n}{d-1}.\]
+      <p><b>Felső becslés (kevés kulcs is magas fát ad).</b> A gyökérnek legalább 2, minden más belső csúcsnak legalább ⌊d/2⌋ gyereke van, így legalább \(2\lfloor d/2\rfloor^{h-1}\) levél van, mindegyikben legalább ⌊d/2⌋ kulcs:</p>
+      \[n \ge 2 \lfloor d/2 \rfloor^{h-1} \cdot \lfloor d/2 \rfloor = 2 \lfloor d/2 \rfloor^{h} \;\Rightarrow\; h \le \log_{\lfloor d/2 \rfloor} \frac{n}{2}.\]
+    </div></details>
+  </article>
+
+  </div>
+</section>
+
+<!-- ======================= GRÁFOK ÁBRÁZOLÁSA ======================= -->
+<section id="grafok">
+  <div class="section-head">
+    <span class="label">5. témakör · Grafok_abrazolasa_gyak.pdf</span>
+    <h2>Gráfok ábrázolása</h2>
+    <p>A gráfalgoritmusok egy csúcs feldolgozásakor a <b>szomszédait</b> látogatják meg, ezért az ábrázolásnak ezt kell hatékonyan támogatnia. Itt mindig \(V = \{1, \dots, n\}\), \(n = |V|\), \(m = |E|\).</p>
+  </div>
+  <div class="toolbar"><button type="button" data-toggle="grafok">Összes megoldás kinyitása</button></div>
+  <div class="taskgroup">
+
+  <article class="concept">
+    <div class="task-head"><span class="no">Definíciók</span><span class="kind fog">elmélet</span></div>
+    <div class="body">
+      <ul>
+        <li><b>Gráf:</b> \(G = (V, E)\), ahol V véges halmaz, \(E \subseteq V \times V \setminus \{(u,u) : u \in V\}\). Tehát <b>nincs hurokél és nincs párhuzamos él</b>. V = {} esetén üres gráf.</li>
+        <li><b>Irányítatlan:</b> minden \((u,v) \in E\)-re \((u,v) = (v,u)\): ábrázoláskor mindkét irányt tárolni kell. <b>Irányított:</b> \((u,v) \ne (v,u)\); a \((v,u)\) az \((u,v)\) él fordítottja.</li>
+        <li><b>Út:</b> csúcsok \(u_0, u_1, \dots, u_n\) sorozata, ahol minden \((u_{i-1}, u_i) \in E\); hossza n, az élek száma.</li>
+        <li><b>Szöveges megadás:</b> soronként <code>u → v1; v2.</code> (irányított) vagy <code>u − v1; v2.</code> (irányítatlan, minden él csak egyszer szerepel).</li>
+      </ul>
+    </div>
+  </article>
+
+  <article class="concept">
+    <div class="task-head"><span class="no">Csúcsmátrix és szomszédossági lista</span><span class="kind fog">elmélet</span></div>
+    <div class="body">
+      <ul>
+        <li><b>Szomszédossági (csúcs-) mátrix:</b> \(A/1 : \text{bit}[n,n]\), \(A[i,j] = 1 \iff (i,j) \in E\). Az i szomszédainak bejárása \(\Theta(n)\) (az i-edik sor). <b>Sűrű</b> gráfokhoz (\(m \in \Theta(n^2)\)). Irányítatlan gráfnál szimmetrikus, ezért elég a főátló alatti részt sorfolytonosan egy tömbben tárolni.</li>
+        <li><b>Szomszédossági lista:</b> \(A/1 : \text{Edge}^*[n]\); <code>A[i]</code> egy fejelem nélküli, egyirányú lista első elemére mutat, amely i szomszédait tartalmazza (<code>Edge</code> = { v : ℕ ; next : Edge* }). A lista kezdőpointere konstans időben elérhető; i szomszédainak bejárása \(O(n)\). Ritka gráfokhoz. A listákat általában csúcs szerint növekvően rendezzük.</li>
+      </ul>
+      <div class="figs">
+        <figure class="fig"><div data-g='{"v":{"1":[25,22],"2":[145,22],"4":[88,70],"3":[25,125],"5":[145,125]},"e":[[1,2],[1,4],[2,4],[2,5],[3,1],[5,2],[5,3]],"dir":1}'></div><figcaption>irányított: 1 → 2;4. 2 → 4;5. 3 → 1. 5 → 2;3.</figcaption></figure>
+        <figure class="fig"><div class="tbl"><table class="num"><tr><th></th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr><tr><th>1</th><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td></tr><tr><th>2</th><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td></tr><tr><th>3</th><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><th>4</th><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><th>5</th><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td></tr></table></div><figcaption>csúcsmátrix</figcaption></figure>
+        <figure class="fig"><div data-adj="A|1:2,4|2:4,5|3:1|4:|5:2,3"></div><figcaption>szomszédossági lista</figcaption></figure>
+      </div>
+      <div class="figs">
+        <figure class="fig"><div data-g='{"v":{"1":[25,22],"2":[150,22],"3":[25,110],"4":[150,110]},"e":[[1,2],[1,4],[2,4],[3,4]]}'></div><figcaption>irányítatlan: 1 − 2;4. 2 − 4. 3 − 4.</figcaption></figure>
+        <figure class="fig"><div class="tbl"><table class="num"><tr><th></th><th>1</th><th>2</th><th>3</th><th>4</th></tr><tr><th>1</th><td>0</td><td>1</td><td>0</td><td>1</td></tr><tr><th>2</th><td class="hl">1</td><td>0</td><td>0</td><td>1</td></tr><tr><th>3</th><td class="hl">0</td><td class="hl">0</td><td>0</td><td>1</td></tr><tr><th>4</th><td class="hl">1</td><td class="hl">1</td><td class="hl">1</td><td>0</td></tr></table></div><figcaption>szimmetrikus; kiemelve a főátló alatti rész</figcaption></figure>
+        <figure class="fig"><div data-adj="A|1:2,4|2:1,4|3:4|4:1,2,3"></div><figcaption>minden él mindkét irányban</figcaption></figure>
+      </div>
+    </div>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">1. feladat</span><span class="kind">mátrixból lista</span></div>
+    <div class="stmt"><p>Adott egy irányított gráf csúcsmátrixa az \(A/1 : \text{bit}[n,n]\) mátrixban. Készítsük el a szomszédossági listás ábrázolását a \(B/1 : \text{Edge}^*[n]\) tömbben, csúcs szerint rendezett listákkal! Műveletigény: \(O(n^2)\).</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+<pre class="sg-src">
+@Csúcsm_szLista(A/1 : bit[n,n] ; B/1 : Edge*[n])
+loop i := 1 to n
+  B[i] := ⊘
+  loop j := n downto 1
+    if A[i,j] ≠ 0
+      p := new Edge
+      p→v := j ; p→next := B[i]
+      B[i] := p
+</pre>
+      <p><b>Ötlet:</b> az i-edik sorból az i-edik listát építjük. Ha a sort <b>visszafelé</b> (n..1) járjuk, mindig a lista <b>elejére</b> fűzhetünk, és mégis növekvő listát kapunk; nem kell a lista végét nyilvántartani.</p>
+      <p><b>Műveletigény:</b> a két ciklus n·n iteráció, az igaz ág legfeljebb \(n^2\)-szer fut: \(\Theta(n^2)\).</p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">2. feladat</span><span class="kind">befok, kifok</span></div>
+    <div class="stmt"><p>Adott egy irányított gráf szomszédossági listája az \(A/1 : \text{Edge}^*[n]\) tömbben. Állítsuk elő a csúcsok befokát és kifokát a <code>Befok/1, Kifok/1 : ℕ[n]</code> tömbökben! (A példagráfra Befok[1] = 1, Kifok[1] = 2.) Műveletigény: \(\Theta(n+m)\).</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+<pre class="sg-src">
+@Befok_kifok(A/1 : Edge*[n] ; Befok/1, Kifok/1 : ℕ[n])
+loop i := 1 to n
+  Befok[i], Kifok[i] := 0, 0
+loop i := 1 to n
+  p := A[i]
+  loop p ≠ ⊘
+    u := p→v   // (i,u) él
+    Befok[u]++
+    Kifok[i]++
+    p := p→next
+</pre>
+      <p>Az A[i] lista minden eleme egy \((i, p\to v)\) él: i kifokát és \(p\to v\) befokát növeli. Első ciklus \(\Theta(n)\), a második külső ciklusa n-szer indul, a belső összesen m-szer fut: \(\Theta(n+m)\).</p>
+      <p>A példagráfra: Kifok = (2, 2, 1, 0, 2), Befok = (1, 2, 1, 2, 1).</p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">3. feladat</span><span class="kind">transzponált</span></div>
+    <div class="stmt"><p>Állítsuk elő az A-ban szomszédossági listával adott irányított gráf transzponáltját (minden él megfordítva) az \(AT/1 : \text{Edge}^*[n]\) tömbben, mindkét ábrázolásban csúcs szerint rendezett listákkal! Műveletigény: \(\Theta(n+m)\).</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+<pre class="sg-src">
+@Transzponál(A/1, AT/1 : Edge*[n])
+loop i := 1 to n
+  AT[i] := ⊘
+loop i := n downto 1
+  p := A[i]
+  loop p ≠ ⊘
+    u := p→v   // (i,u) élből (u,i) él
+    q := new Edge
+    q→v := i ; q→next := AT[u]
+    AT[u] := q
+    p := p→next
+</pre>
+      <p><b>A trükk:</b> ha i-vel 1..n irányban mennénk, az új elemet mindig az AT[u] lista <i>végére</i> kellene fűzni (vagy a végeket \(\Theta(n)\) extra tárban nyilvántartani). Visszafelé (n..1) haladva i csökken, így mindig a lista <b>elejére</b> kerül az új él, és a lista rendezett marad.</p>
+      <div class="figs">
+        <figure class="fig"><div data-g='{"v":{"1":[25,22],"2":[145,22],"4":[88,70],"3":[25,125],"5":[145,125]},"e":[[2,1],[4,1],[4,2],[5,2],[1,3],[2,5],[3,5]],"dir":1}'></div><figcaption>a példagráf transzponáltja</figcaption></figure>
+        <figure class="fig"><div data-adj="AT|1:3|2:1,5|3:5|4:1,2|5:2"></div><figcaption>AT</figcaption></figure>
+      </div>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">4. feladat</span><span class="kind">helyben transzponálás</span></div>
+    <div class="stmt"><p>Nagy gráfoknál memóriakímélés miatt az eredeti gráfot lebontják, és a <b>listaelemeit felhasználva</b> állítják elő a transzponáltat. Készítsük el a „helyben” transzponálást! A listák az eredetiben és az eredményben is növekvően rendezettek. Műveletigény: \(\Theta(n+m)\).</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+<pre class="sg-src">
+@HelybenTranszponál(A/1, AT/1 : Edge*[n])
+loop i := 1 to n
+  AT[i] := ⊘
+loop i := n downto 1
+  loop A[i] ≠ ⊘
+    p := A[i]   // az első listaelem
+    A[i] := p→next   // kifűzzük
+    u := p→v   // (i,u) volt
+    p→next := AT[u]   // befűzzük AT[u] elejére
+    AT[u] := p
+    p→v := i   // most már (u,i) él
+</pre>
+      <p>Ugyanaz, mint az előző, csak új elem foglalása helyett az eredeti listaelemet fűzzük ki, írjuk át, és fűzzük be. A lépések a példagráfon:</p>
+      <div class="figs">
+        <figure class="fig"><div data-adj="A|1:2,4|2:4,5|3:1|4:|5:2!,3"></div><figcaption>indulás: az (5,2) éllel kezdünk; AT még üres</figcaption></figure>
+        <figure class="fig"><div data-adj="A|1:2,4|2:4,5|3:1|4:|5:"></div><div data-adj="AT|1:|2:5|3:5|4:|5:"></div><figcaption>az 5 listája lebontva: (2,5), (3,5)</figcaption></figure>
+        <figure class="fig"><div data-adj="A|1:2!,4|2:|3:|4:|5:"></div><div data-adj="AT|1:3|2:5|3:5|4:2|5:2"></div><figcaption>a 3 és a 2 listája is; az (1,2) megfordítva pont AT[2] elejére illik</figcaption></figure>
+        <figure class="fig"><div data-adj="AT|1:3|2:1,5|3:5|4:1,2|5:2"></div><figcaption><b>kész</b>: A minden listája üres</figcaption></figure>
+      </div>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">5. feladat</span><span class="kind">különbséggráf</span></div>
+    <div class="stmt"><p>Adott két irányított gráf ugyanazokkal a csúcsokkal, szomszédossági listával: G1 az A1, G2 az A2 tömbben, a listák csúcs szerint növekvőek. Készítsük el <b>A1-ben</b> a G1 \ G2 gráfot (G1 azon élei, amelyek G2-ben nem szerepelnek), kihasználva a rendezettséget! Műveletigény: \(O(n^2)\).</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p><b>Ötlet: összefésülés.</b> Az A1[i] listán p, az A2[i] listán q pointerrel haladunk. Három eset: \(p\to v &lt; q\to v\): az él marad, p lép (pe-be mentjük, mert törléshez kell az előző elem); \(p\to v = q\to v\): az élt töröljük A1[i]-ből (ha az első elem, A1[i] módosul!), mindkettő lép; \(p\to v &gt; q\to v\): q lép. Ha bármelyik lista elfogyott, leállhatunk.</p>
+      <div class="sgrow">
+<pre class="sg-src">
+@KülönbségGráf(A1/1, A2/1 : Edge*[n])
+loop i := 1 to n
+  Különbség(A1, A2, i)
+</pre>
+<pre class="sg-src">
+@Különbség(A1/1, A2/1 : Edge*[n] ; i : ℕ)
+pe := ⊘ ; p := A1[i] ; q := A2[i]
+loop p ≠ ⊘ ∧ q ≠ ⊘
+  switch
+    case p→v < q→v
+      pe := p
+      p := p→next
+    case p→v = q→v
+      r := p→next
+      if pe = ⊘
+        A1[i] := r
+      else
+        pe→next := r
+      delete p
+      p := r
+      q := q→next
+    case p→v > q→v
+      q := q→next
+</pre>
+      </div>
+      <p>Példa egy i csúcsra: A1[i] = 2, 4, 6, 8, 10, 12 és A2[i] = 2, 3, 7, 8, 13 ⇒ a 2 és a 8 törlődik, marad <span class="ans">4, 6, 10, 12</span>.</p>
+      <p><b>Műveletigény:</b> egy lista hossza \(O(n)\), két lista összefésülése \(O(n)\), n csúcsra: \(O(n^2)\).</p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">6. feladat</span><span class="kind">komplementer</span></div>
+    <div class="stmt"><p>Adott egy irányítatlan gráf szomszédossági listája az \(A/1 : \text{Edge}^*[n]\) tömbben, növekvő listákkal. A listákat <b>egyszer</b> bejárva hozzuk létre az AK tömbben a komplementer gráfot (ugyanazok a csúcsok, élei a teljes gráf azon élei, amelyek G-ben nincsenek)! Műveletigény: \(O(n^2)\), \(O(n)\) segédmemória használható. Hurokél ne kerüljön bele!</p>
+      <div class="figs">
+        <figure class="fig"><div data-g='{"v":{"1":[25,22],"2":[165,22],"3":[100,68],"4":[25,115],"5":[165,115]},"e":[[1,2],[1,3],[2,5],[3,4],[3,5]]}'></div><figcaption>G</figcaption></figure>
+      </div>
+    </div>
+    <details><summary>Megoldás</summary><div class="sol">
+<pre class="sg-src">
+@KomplementerGráf(A/1, AK/1 : Edge*[n])
+sz/1 : bit[n]
+loop i := 1 to n
+  AK[i] := ⊘
+  sz[1..n] := [0, …, 0]
+  p := A[i]
+  loop p ≠ ⊘
+    sz[p→v] := 1
+    p := p→next
+  sz[i] := 1   // hurokél ellen
+  loop j := n downto 1
+    if sz[j] = 0
+      p := new Edge
+      p→v := j ; p→next := AK[i]
+      AK[i] := p
+</pre>
+      <p>Az sz segédtömbbe 1-et írunk i minden szomszédjánál (és magánál i-nél), majd ott veszünk fel élt, ahol sz[j] = 0. Visszafelé haladva az AK[i] lista elejére fűzhetünk és rendezett marad. Csúcsonként \(O(n)\): összesen \(O(n^2)\).</p>
+      <div class="figs">
+        <figure class="fig"><div data-g='{"v":{"1":[25,22],"2":[165,22],"3":[100,68],"4":[25,115],"5":[165,115]},"e":[[1,4],[1,5],[2,3],[2,4],[4,5]]}'></div><figcaption>G komplementere: 1−4;5. 2−3;4. 4−5.</figcaption></figure>
+        <figure class="fig"><div data-adj="AK|1:4,5|2:3,4|3:2|4:1,2,5|5:1,4"></div><figcaption>AK</figcaption></figure>
+      </div>
+    </div></details>
+  </article>
+
+  </div>
+</section>
+
+<!-- ======================= SZÉLESSÉGI BEJÁRÁS ======================= -->
+<section id="bfs">
+  <div class="section-head">
+    <span class="label">6. témakör · Szelessegi_gyakorlati_anyag_2024.pdf</span>
+    <h2>Szélességi bejárás (BFS)</h2>
+    <p>Egy kezdőcsúcsból felderíti az úttal elérhető csúcsokat, és mindegyikhez egy <b>minimális élszámú</b> utat ad (ha több van, az egyiket). Tetszőleges nem üres gráfon használható: irányított, irányítatlan, összefüggő vagy sem.</p>
+  </div>
+  <div class="toolbar"><button type="button" data-toggle="bfs">Összes megoldás kinyitása</button></div>
+  <div class="taskgroup">
+
+  <article class="concept">
+    <div class="task-head"><span class="no">Eredmények, színek, műveletigény</span><span class="kind fog">elmélet</span></div>
+    <div class="body">
+      <ul>
+        <li><b>d(u):</b> a legrövidebb út hossza (élszáma) s-ből; ∞, ha nincs út.</li>
+        <li><b>π(u):</b> a szülő a legrövidebb úton (honnan érkeztünk); 0 / ⊘ a kezdőcsúcsnál és az el nem érhető csúcsoknál.</li>
+        <li><b>color(u):</b> <i>fehér</i> – még nem találkoztunk vele; <i>szürke</i> – már láttuk, a sorban vár feldolgozásra; <i>fekete</i> – kész.</li>
+      </ul>
+      <div class="sgrow">
+<pre class="sg-src">
+@BFS(G : 𝒢 ; s : 𝒱)
+loop ∀u ∈ G.V
+  d(u) := ∞ ; π(u) := ⊘
+  [color(u) := white]
+d(s) := 0 ; [color(s) := grey]
+Q : Queue ; Q.add(s)
+loop ¬Q.isEmpty()
+  u := Q.rem()
+  loop ∀v : (u,v) ∈ G.E
+    if d(v) = ∞
+      d(v) := d(u) + 1
+      π(v) := u
+      [color(v) := grey]
+      Q.add(v)
+  [color(u) := black]
+</pre>
+        <div class="tbl" style="max-width:360px"><table class="num">
+          <tr><th class="l">rész</th><th>MT(n,m)</th><th>mT(n,m)</th></tr>
+          <tr><td class="l">inicializálás</td><td>Θ(n)</td><td>Θ(n)</td></tr>
+          <tr><td class="l">s, Q</td><td>Θ(1)</td><td>Θ(1)</td></tr>
+          <tr><td class="l">külső ciklus</td><td>Θ(n)</td><td>Θ(1)</td></tr>
+          <tr><td class="l">élek ciklusa</td><td>Θ(m)</td><td>0-szor is futhat</td></tr>
+          <tr class="fin"><td class="l">összesen</td><td>Θ(n+m)</td><td>Θ(n)</td></tr>
+        </table></div>
+      </div>
+      <p><b>Mi hagyható el?</b> A <i>color</i> általában (a <code>d(v) = ∞</code> vizsgálat helyettesíti a <code>color(v) = white</code>-ot); a <i>π</i>, ha nem kell maga az út; a <i>d</i>, ha csak bejárunk – de akkor a color kell, gyakran mindhárom színnel.</p>
+      <p><b>Az éleket bejáró ciklus</b> \(\forall v : (u,v) \in G.E\) u szomszédait járja be, nem az összes élt keresi végig (az \(\Theta(n\cdot m)\), sűrű gráfon \(\Theta(n^3)\) lenne). Listás ábrázolással ez összesen \(\Theta(m)\); csúcsmátrixszal \(\Theta(n^2)\), de sűrű gráfon \(m \in \Theta(n^2)\), így a \(\Theta(m)\) korlát ott is teljesül.</p>
+    </div>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">1. feladat</span><span class="kind">lejátszás</span></div>
+    <div class="stmt"><p>Játsszuk le a szélességi bejárást az alábbi irányítatlan gráfon az 1-es csúcsból! (A szomszédokat növekvő sorrendben vesszük.)</p>
+      <div class="figs"><figure class="fig"><div data-g='{"v":{"1":[25,22],"2":[105,22],"3":[185,22],"4":[105,75],"6":[250,75],"5":[185,125]},"e":[[1,2],[1,4],[2,3],[3,4],[3,5],[3,6],[4,5],[5,6]],"s":1}'></div></figure></div>
+    </div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <div class="tbl"><table class="num">
+        <tr><th class="l">kiterjesztett</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>sor</th><th>π1</th><th>π2</th><th>π3</th><th>π4</th><th>π5</th><th>π6</th></tr>
+        <tr><td class="l"></td><td>0</td><td>∞</td><td>∞</td><td>∞</td><td>∞</td><td>∞</td><td>⟨1⟩</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+        <tr><td class="l">1, d:0</td><td></td><td>1</td><td></td><td>1</td><td></td><td></td><td>⟨2; 4⟩</td><td></td><td>1</td><td></td><td>1</td><td></td><td></td></tr>
+        <tr><td class="l">2, d:1</td><td></td><td></td><td>2</td><td></td><td></td><td></td><td>⟨4; 3⟩</td><td></td><td></td><td>2</td><td></td><td></td><td></td></tr>
+        <tr><td class="l">4, d:1</td><td></td><td></td><td></td><td></td><td>2</td><td></td><td>⟨3; 5⟩</td><td></td><td></td><td></td><td></td><td>4</td><td></td></tr>
+        <tr><td class="l">3, d:2</td><td></td><td></td><td></td><td></td><td></td><td>3</td><td>⟨5; 6⟩</td><td></td><td></td><td></td><td></td><td></td><td>3</td></tr>
+        <tr><td class="l">5, d:2</td><td></td><td></td><td></td><td></td><td></td><td></td><td>⟨6⟩</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td class="l">6, d:3</td><td></td><td></td><td></td><td></td><td></td><td></td><td>⟨⟩</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr class="fin"><td class="l">végül</td><td>0</td><td>1</td><td>2</td><td>1</td><td>2</td><td>3</td><td></td><td>0</td><td>1</td><td>2</td><td>1</td><td>4</td><td>3</td></tr>
+      </table></div>
+      <div class="figs"><figure class="fig"><div data-g='{"v":{"1":[25,22],"2":[105,22],"3":[185,22],"4":[105,75],"6":[250,75],"5":[185,125]},"e":[[1,2],[1,4],[2,3],[3,4],[3,5],[3,6],[4,5],[5,6]],"tree":[[1,2],[1,4],[2,3],[4,5],[3,6]],"col":{"1":"b","2":"b","3":"b","4":"b","5":"b","6":"b"},"s":1}'></div><figcaption>a szélességi fa (π élei) kiemelve</figcaption></figure></div>
+      <p>Egy sorban csak az <b>új</b> értékeket írjuk be: amelyik csúcsot a kiterjesztett csúcs fedezte fel (d = ∞ volt). A 3 kiterjesztésekor a 4 és az 5 már nem fehér, ezért π(5) = 4 marad.</p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">2. feladat</span><span class="kind">önálló lejátszás</span></div>
+    <div class="stmt"><p>A 4-es csúcsból indulva játsszuk le a szélességi bejárást!</p>
+      <div class="figs"><figure class="fig"><div data-g='{"v":{"1":[25,22],"2":[120,22],"3":[222,22],"4":[315,17],"5":[73,77],"6":[165,77],"7":[263,77],"8":[315,127],"10":[130,132],"9":[222,132]},"e":[[1,2],[1,5],[2,3],[2,5],[2,6],[3,6],[3,7],[4,7],[4,8],[5,6],[5,10],[6,7],[6,9],[7,8],[9,10]],"s":4}'></div></figure></div>
+    </div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <div class="tbl"><table class="num">
+        <tr><th class="l">kiterj.</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>sor</th><th>π1</th><th>π2</th><th>π3</th><th>π4</th><th>π5</th><th>π6</th><th>π7</th><th>π8</th><th>π9</th><th>π10</th></tr>
+        <tr><td class="l"></td><td>∞</td><td>∞</td><td>∞</td><td>0</td><td>∞</td><td>∞</td><td>∞</td><td>∞</td><td>∞</td><td>∞</td><td>⟨4⟩</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+        <tr><td class="l">4, d:0</td><td></td><td></td><td></td><td></td><td></td><td></td><td>1</td><td>1</td><td></td><td></td><td>⟨7; 8⟩</td><td></td><td></td><td></td><td></td><td></td><td></td><td>4</td><td>4</td><td></td><td></td></tr>
+        <tr><td class="l">7, d:1</td><td></td><td></td><td>2</td><td></td><td></td><td>2</td><td></td><td></td><td></td><td></td><td>⟨8; 3; 6⟩</td><td></td><td></td><td>7</td><td></td><td></td><td>7</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td class="l">8, d:1</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>⟨3; 6⟩</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td class="l">3, d:2</td><td></td><td>3</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>⟨6; 2⟩</td><td></td><td>3</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td class="l">6, d:2</td><td></td><td></td><td></td><td></td><td>3</td><td></td><td></td><td></td><td>3</td><td></td><td>⟨2; 5; 9⟩</td><td></td><td></td><td></td><td></td><td>6</td><td></td><td></td><td></td><td>6</td><td></td></tr>
+        <tr><td class="l">2, d:3</td><td>4</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>⟨5; 9; 1⟩</td><td>2</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td class="l">5, d:3</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>4</td><td>⟨9; 1; 10⟩</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>5</td></tr>
+        <tr><td class="l">9, d:3</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>⟨1; 10⟩</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td class="l">1, d:4</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>⟨10⟩</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td class="l">10, d:4</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>⟨⟩</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr class="fin"><td class="l">végül</td><td>4</td><td>3</td><td>2</td><td>0</td><td>3</td><td>2</td><td>1</td><td>1</td><td>3</td><td>4</td><td></td><td>2</td><td>3</td><td>7</td><td>0</td><td>6</td><td>7</td><td>4</td><td>4</td><td>6</td><td>5</td></tr>
+      </table></div>
+      <div class="figs"><figure class="fig"><div data-g='{"v":{"1":[25,22],"2":[120,22],"3":[222,22],"4":[315,17],"5":[73,77],"6":[165,77],"7":[263,77],"8":[315,127],"10":[130,132],"9":[222,132]},"e":[[1,2],[1,5],[2,3],[2,5],[2,6],[3,6],[3,7],[4,7],[4,8],[5,6],[5,10],[6,7],[6,9],[7,8],[9,10]],"tree":[[4,7],[4,8],[7,3],[7,6],[3,2],[6,5],[6,9],[2,1],[5,10]],"col":{"1":"b","2":"b","3":"b","4":"b","5":"b","6":"b","7":"b","8":"b","9":"b","10":"b"},"s":4}'></div><figcaption>a szélességi fa</figcaption></figure></div>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">3. feladat</span><span class="kind">út és szélességi fa π-ből</span></div>
+    <div class="stmt"><p>Egy ismeretlen gráfon lefuttattuk a szélességi bejárást, a szülőértékek:</p>
+      <div class="tbl"><table class="num"><tr><th class="l">csúcs</th><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td><td>11</td><td>12</td></tr><tr><th class="l">szülő</th><td>10</td><td>4</td><td>6</td><td>0</td><td>11</td><td>10</td><td>2</td><td>7</td><td>6</td><td>4</td><td>7</td><td>10</td></tr></table></div>
+      <p>a) Adjuk meg az 5-ös csúcsba vezető utat! b) Rajzoljuk fel a szélességi fát! c) Mi lehetett a fa, ha a szülők: <code>3 0 6 5 3 0 11 5 6 0 9 9</code>?</p>
+    </div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p><b>a)</b> π(5)-ből visszafelé lépkedünk: π(5) = 11, π(11) = 7, π(7) = 2, π(2) = 4, π(4) = 0, tehát 4 volt a kezdőcsúcs. Az út: <span class="ans">4 → 2 → 7 → 11 → 5</span>.</p>
+      <p><b>b)</b> A gyökér a 4 (szülője 0); a gyerekei azok, akiknek a szülője 4 (2 és 10), és így tovább:</p>
+      <div class="figs"><figure class="fig"><div data-gt="(4 (2 (7 (8) (11 (5)))) (10 (1) (6 (3) (9)) (12)))"></div></figure></div>
+      <p><b>c)</b> A 2, 6 és 10 szülője is 0, de közülük csak a 6 szerepel szülőként: a 6 volt a kezdőcsúcs, a 2 és a 10 nem volt elérhető belőle (izolált a fához képest).</p>
+      <div class="figs">
+        <figure class="fig"><div data-gt="(6 (3 (1) (5 (4) (8))) (9 (11 (7)) (12)))"></div><figcaption>a szélességi fa</figcaption></figure>
+        <figure class="fig"><div data-gt="(2)"></div><div data-gt="(10)"></div><figcaption>nem elérhető csúcsok</figcaption></figure>
+      </div>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">4. feladat</span><span class="kind">algoritmus</span></div>
+    <div class="stmt"><p>Készítsük el a szélességi keresést <b>csúcsmátrixos</b> ábrázolásra (A/1 : bit[n][n]), a d és π értékeket a d/1, pi/1 : ℕ[n] tömbökben, color nélkül! Miért nem lenne helyes a <code>d[v] = ∞</code> helyett a <code>pi[v] = 0</code> feltételt vizsgálni? Mennyi a műveletigény?</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+<pre class="sg-src">
+@BFS(A/1 : bit[n,n] ; d/1, pi/1 : ℕ[n] ; s : 1..n)
+loop i := 1 to n
+  d[i] := ∞ ; pi[i] := 0
+Q : Queue ; d[s] := 0
+Q.add(s)
+loop ¬Q.isEmpty()
+  u := Q.rem()
+  loop v := 1 to n   // a mátrix u-adik sora
+    if A[u,v] = 1   // van (u,v) él
+      if d[v] = ∞
+        d[v] := d[u] + 1
+        pi[v] := u
+        Q.add(v)
+</pre>
+      <p><b>Miért nem jó a <code>pi[v] = 0</code>?</b> A \(d[v] = \infty\) csak a még fel nem fedezett csúcsokra igaz. A \(pi[v] = 0\) rájuk is igaz, de a <b>kezdőcsúcsra is</b>! Így az algoritmus s-et újra felfedezné: irányítatlan gráfban s bármely szomszédjánál azonnal (s ott van a szomszéd éllistáján), irányítottban, ha van s-be visszamutató irányított kör.</p>
+      <p><b>Műveletigény:</b> minden kiterjesztett csúcsra a mátrix teljes sorát bejárjuk: \(\Theta(n^2)\); az <code>A[u,v] = 1</code> feltétel összesen \(\Theta(m)\)-szer teljesül.</p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">5. feladat</span><span class="kind">útkiírás</span></div>
+    <div class="stmt"><p>Készítsünk rekurzív útkiíró algoritmust! A szülők a pi/1 : ℕ[n] tömbben, s a kezdőcsúcs, u a célcsúcs. Figyeljünk: u = s előfordulhat, és lehet, hogy nincs út („Nincs út.”). A csúcsok közé „→” kerüljön.</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+<pre class="sg-src">
+@Útkiír(pi/1 : ℕ[n] ; s, u : 1..n)
+if s = u
+  Write(s)
+else
+  if pi[u] = 0
+    Write("Nincs út.")
+  else
+    Útkiír(pi, s, pi[u])
+    Write(" → ") ; Write(u)
+</pre>
+      <p>Az utat visszafelé (u-tól s felé) ismerjük, de előrefelé kell kiírni: ezért <b>előbb</b> hívjuk meg rekurzívan a szülőre, és csak <b>utána</b> írjuk ki u-t. Ha nincs út, a rekurzió valahol egy 0 szülőjű, s-től különböző csúcsba fut, és csak a „Nincs út.” íródik ki (előtte semmi).</p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">6. feladat</span><span class="kind">fa-e?</span></div>
+    <div class="stmt"><p>Adott egy irányítatlan gráf szomszédossági listával (A/1 : Edge*[n]). Döntsük el szélességi bejárással, hogy a gráf fa-e (összefüggő és körmentes)! Csak a color-t használjuk.</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p><b>Miért nem elég az élek száma?</b> n−1 él esetén sem biztos, hogy fa, mert nem tudjuk, összefüggő-e: pl. 6 csúcson 5 éllel lehet benne kör és két komponens:</p>
+      <div class="figs"><figure class="fig"><div data-g='{"v":{"1":[20,20],"2":[85,20],"3":[150,20],"4":[20,75],"5":[85,75],"6":[150,75]},"e":[[1,4],[4,5],[2,5],[3,6],[1,2]]}'></div><figcaption>5 él, de nem fa (kör: 1–2–5–4, a 3–6 külön)</figcaption></figure></div>
+      <p><b>Kör észlelése:</b> egy (u, v) él feldolgozásakor, ha v <b>szürke</b>, kört találtunk. Fekete szomszéd csak a szülő lehet, az nem jelent kört; ezért kell mind a három szín.</p>
+      <div class="figs">
+        <figure class="fig"><div data-g='{"v":{"1":[95,18],"2":[55,58],"3":[135,58],"4":[20,102],"5":[90,102],"6":[165,102]},"e":[[1,2],[1,3],[2,4],[2,5],[3,6],[5,6]],"s":1}'></div><figcaption>indulás az 1-ből</figcaption></figure>
+        <figure class="fig"><div data-g='{"v":{"1":[95,18],"2":[55,58],"3":[135,58],"4":[20,102],"5":[90,102],"6":[165,102]},"e":[[1,2],[1,3],[2,4],[2,5],[3,6],[5,6]],"tree":[[1,2],[1,3]],"col":{"1":"b","2":"g","3":"g"},"s":1}'></div><figcaption>2 és 3 kiterjesztésekor fekete (szülő) és fehér szomszédok</figcaption></figure>
+        <figure class="fig"><div data-g='{"v":{"1":[95,18],"2":[55,58],"3":[135,58],"4":[20,102],"5":[90,102],"6":[165,102]},"e":[[1,2],[1,3],[2,4],[2,5],[3,6],[5,6]],"tree":[[1,2],[1,3],[2,4],[2,5],[3,6]],"col":{"1":"b","2":"b","3":"b","4":"b","5":"g","6":"g"},"s":1}'></div><figcaption>az 5 szürke szomszédja (6) kört jelez</figcaption></figure>
+      </div>
+<pre class="sg-src">
+@Fa_e(A/1 : Edge*[n]) : 𝔹
+color/1 : szín[n]   // szín = {white, grey, black}
+loop i := 2 to n
+  color[i] := white
+Q : Queue ; color[1] := grey
+Q.add(1) ; fa := igaz ; c := 0
+loop fa ∧ ¬Q.isEmpty()
+  u := Q.rem() ; c := c + 1
+  color[u] := black ; p := A[u]
+  loop fa ∧ p ≠ ⊘
+    v := p→v
+    switch
+      case color[v] = white
+        color[v] := grey
+        Q.add(v)
+      case color[v] = grey
+        fa := hamis
+      case color[v] = black
+    p := p→next
+return (fa ∧ c = n)
+</pre>
+      <p>A <code>c</code> a feldolgozott csúcsokat számolja: ha a végén <code>c = n</code>, minden csúcsot elértünk, tehát a gráf összefüggő. Két szín is elég lenne, ha a π tömböt is tárolnánk: akkor (u, v) kört jelez, ha \(color[v] \ne white \wedge v \ne \pi[u]\).</p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">7. feladat</span><span class="kind">páros gráf</span></div>
+    <div class="stmt"><p>Adott egy irányítatlan, <b>összefüggő</b> gráf. Döntsük el szélességi bejárással, hogy páros gráf-e (a csúcsok két halmazba oszthatók úgy, hogy minden él két különböző halmaz között fut)!</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p><b>Ötlet:</b> három színnel (0 fehér, 1 kék, 2 piros) színezünk. Amikor egy csúcs látókörbe kerül, az őt felfedező csúcs <b>ellentétes</b> színét kapja: \((color(u) \bmod 2) + 1\). Ha egy szomszéd <b>ugyanolyan</b> színű, mint a kiterjesztett csúcs, a gráf nem páros. Páros gráfnál a színezés egy osztályozást is ad: A = kékek, B = pirosak. Csak a color kell, d és π nem; az absztrakt gráftípuson dolgozunk.</p>
+<pre class="sg-src">
+@Páros_e(G : 𝒢) : 𝔹
+loop ∀u ∈ G.V
+  color(u) := 0   // 0: fehér, 1: kék, 2: piros
+Q : Queue
+s legyen G.V tetszőleges csúcsa
+color(s) := 1 ; Q.add(s)
+loop ¬Q.isEmpty()
+  u := Q.rem()
+  loop ∀v : (u,v) ∈ G.E
+    if color(v) = 0
+      color(v) := (color(u) mod 2) + 1
+      Q.add(v)
+    else
+      if color(v) = color(u)
+        return false
+return true
+</pre>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">8. feladat</span><span class="kind">páros gráf, nem összefüggő</span></div>
+    <div class="stmt"><p>Oldjuk meg az előző feladatot úgy is, hogy a gráf nem biztosan összefüggő!</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p>A gráf akkor páros, ha minden összefüggő komponense páros. A felső szint mindenkit fehérre állít, majd sorra veszi a csúcsokat: egy fehér csúcs egy még nem vizsgált komponens tagja, abból indítunk egy színezést. Ha valamelyik komponens nem színezhető, azonnal hamissal térünk vissza.</p>
+      <div class="sgrow">
+<pre class="sg-src">
+@Páros_e(G : 𝒢) : 𝔹
+loop ∀u ∈ G.V
+  color(u) := 0
+loop ∀u ∈ G.V
+  if color(u) = 0
+    páros := Színez(G, u)
+    if páros
+    else
+      return false
+return true
+</pre>
+<pre class="sg-src">
+@Színez(G : 𝒢 ; s : 𝒱) : 𝔹
+Q : Queue
+color(s) := 1 ; Q.add(s)
+loop ¬Q.isEmpty()
+  u := Q.rem()
+  loop ∀v : (u,v) ∈ G.E
+    if color(v) = 0
+      color(v) := (color(u) mod 2) + 1
+      Q.add(v)
+    else
+      if color(v) = color(u)
+        return false
+return true
+</pre>
+      </div>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">Szorgalmi: huszár</span><span class="kind hf">plusz pont</span></div>
+    <div class="stmt"><p>Adott egy n × m-es (n, m &gt; 0) sakktábla, az \((i_1, j_1)\) mezőn egy huszár. Minimum hány szabályos lépéssel jut el az \((i_2, j_2)\) mezőre?</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <div class="own"><b>Saját megoldás</b>A tábla mezői a gráf csúcsai, két mező között akkor van (irányítatlan) él, ha egy huszárlépés választja el őket. A legkevesebb lépés = a legrövidebb út élszáma, ezt a szélességi bejárás adja. A gráfot nem kell felépíteni: a szomszédokat a 8 lehetséges lépésből számoljuk, a d tömb egyben a „látott-e” jelzést is adja (−1 = fehér).</div>
+<pre class="sg-src">
+@Huszár(n, m, i1, j1, i2, j2 : ℕ) : ℤ
+d/1 : ℤ[n,m]
+loop i := 1 to n
+  loop j := 1 to m
+    d[i,j] := −1
+d[i1,j1] := 0 ; Q : Queue ; Q.add((i1,j1))
+loop ¬Q.isEmpty()
+  (i,j) := Q.rem()
+  if (i,j) = (i2,j2)
+    return d[i,j]
+  loop k := 1 to 8
+    (a,b) := (i + di[k], j + dj[k])
+    if 1 ≤ a ≤ n ∧ 1 ≤ b ≤ m ∧ d[a,b] = −1
+      d[a,b] := d[i,j] + 1
+      Q.add((a,b))
+return −1   // nem érhető el
+</pre>
+      <p>ahol di = (1, 2, 2, 1, −1, −2, −2, −1), dj = (2, 1, −1, −2, −2, −1, 1, 2). Műveletigény: minden mező legfeljebb egyszer kerül a sorba, mindegyiknél 8 szomszéd: \(O(n\cdot m)\).</p>
+      <ul>
+        <li><b>A lap példája</b> (14 × 8, (3,2) → (10,7)): <span class="ans">4 lépés</span>, pl. (3,2) → (5,3) → (7,4) → (9,5) → (10,7). Kevesebb nem lehet: egy lépés a sor- és oszlopkülönbség összegét legfeljebb 3-mal csökkenti, itt 7 + 5 = 12, tehát legalább 4 lépés kell.</li>
+        <li><b>Nem mindig van megoldás:</b> pl. 3 × 3-as táblán a középső mező semelyik másikból nem érhető el, és 1 × m vagy 2 × m táblán is vannak elérhetetlen mezők. Ekkor a sor kiürül, a válasz −1.</li>
+        <li>Ha van megoldás, több legrövidebb út is lehet, de a minimális lépésszám egyértelmű.</li>
+      </ul>
+    </div></details>
+  </article>
+
+  </div>
+</section>
+
+<!-- ======================= TÖMÖRÍTÉS ======================= -->
+<section id="tomor">
+  <div class="section-head">
+    <span class="label">7. témakör · ad2Tomorites.pdf, LZW_algoritmus.pdf</span>
+    <h2>Veszteségmentes adattömörítés: Huffman és LZW</h2>
+    <p>A forráskódolás azt vizsgálja, adott mennyiségű információ mekkora adattal tárolható. Csak veszteségmentes eljárásokkal foglalkozunk (az adat teljes egészében visszaállítható); bináris esetben a kódszavak a Γ = {0, 1} ábécé feletti szavak (r = 2).</p>
+  </div>
+  <div class="toolbar"><button type="button" data-toggle="tomor">Összes megoldás kinyitása</button></div>
+  <div class="taskgroup">
+
+  <article class="concept">
+    <div class="task-head"><span class="no">Kód, kódfa, naiv módszer</span><span class="kind fog">elmélet</span></div>
+    <div class="body">
+      <ul>
+        <li><b>Kód:</b> Γ feletti véges szavak (kódszavak) nem üres halmaza.</li>
+        <li><b>Kódfa:</b> a gyökérben az üres szó; egy szó gyerekei a szó után egy karaktert írva kapott szavak, az élek ezzel a karakterrel címkézettek. A kód kódfája a legkevesebb csúcsú ilyen fa, amely minden kódszót tartalmaz. Dekódolás: a gyökértől a bitek szerint lépkedünk, kódszónál kiírjuk a betűt és újrakezdjük.</li>
+        <li><b>Betűnkénti kódolás:</b> a Σ ábécé betűit egy kölcsönösen egyértelmű Σ → C ⊆ Γ* leképezés kódolja (pl. ASCII).</li>
+        <li><b>Egyenletes kód:</b> minden kódszó egyforma hosszú. A <b>naiv módszer</b> egyenletes kódot használó betűnkénti kódolás; ha \(|\Gamma| = r\), \(|\Sigma| = d\), a legrövidebb kódszóhossz \(\lceil \log_r d \rceil\).</li>
+      </ul>
+    </div>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">1. feladatsor</span><span class="kind">naiv módszer</span></div>
+    <div class="stmt"><p>Tekintsük az <code>S = AABCAADEAAB</code> szöveget.</p>
+      <ol>
+        <li>Naiv módszerrel hány bittel tudjuk ábrázolni S-t?</li>
+        <li>Adjuk meg S egy kódolt alakját naiv módszer esetén!</li>
+        <li>Adjunk meg betűnkénti kódolást, amely tömörebb eredményt ad, mint a naiv módszer!</li>
+        <li>Adjunk meg egy egyenletes kódolást, amely tömörebb eredményt ad, mint a naiv módszer!</li>
+        <li>Rajzoljuk fel a használt kód kódfáját! Milyen tulajdonságú egy egyenletes kód kódfája?</li>
+      </ol>
+    </div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <div class="own"><b>Saját megoldás (a lapon nincs)</b>Gyakoriságok: A 6, B 2, C 1, D 1, E 1; |S| = 11, d = 5.</div>
+      <ol>
+        <li>\(\lceil \log_2 5 \rceil = 3\) bit betűnként: <span class="ans">11 · 3 = 33 bit</span>.</li>
+        <li>Pl. A = 000, B = 001, C = 010, D = 011, E = 100: <code>000 000 001 010 000 000 011 100 000 000 001</code>.</li>
+        <li>A gyakori betűnek rövid kód: A = 0, B = 10, C = 110, D = 1110, E = 1111 (prefixmentes). Hossz: 6·1 + 2·2 + 3 + 4 + 4 = <span class="ans">21 bit</span> (ennyit ad a Huffman-kód is).</li>
+        <li>Ne betűnként kódoljunk! Kettes blokkokra bontva: AA | BC | AA | DE | AA | B – csak 4 különböző „szó” van, ezek 2 bites egyenletes kóddal: AA = 00, BC = 01, DE = 10, B = 11 ⇒ <span class="ans">6 · 2 = 12 bit</span>. (Ez már a szótárkódok ötlete.)</li>
+        <li>A 2. pont kódjának kódfája lent látható. Egyenletes kódnál <b>minden kódszó levél, és mind ugyanazon a szinten</b> (a kódszóhossz mélységében) van.</li>
+      </ol>
+      <div class="figs"><figure class="fig"><div data-gt="(ε 0:(0 0:(00 0:(000|A) 1:(001|B)) 1:(01 0:(010|C) 1:(011|D))) 1:(1 0:(10 0:(100|E))))"></div><figcaption>a naiv kód kódfája</figcaption></figure></div>
+    </div></details>
+  </article>
+
+  <article class="concept">
+    <div class="task-head"><span class="no">Huffman-kódolás</span><span class="kind fog">elmélet</span></div>
+    <div class="body">
+      <p>Betűnkénti kódolásnál akkor kapunk rövid kódot, ha a gyakori betűk rövid, a ritkák hosszú kódszót kapnak. A kódfát <b>alulról felfelé</b> építjük a gyakoriságok alapján (r = 2):</p>
+      <ol>
+        <li>Végigolvassuk a szöveget, meghatározzuk a gyakoriságokat.</li>
+        <li>Minden karakterhez egy csúcs; ezeket egy min-prioritásos sorba tesszük (kulcs: gyakoriság).</li>
+        <li>Kiveszünk két csúcsot, közös szülőt kapnak; az éleket 0-val és 1-gyel címkézzük a gyakoriságnak megfelelő sorrendben; a szülő a gyakoriságok összegével kerül vissza a sorba. Ismételjük, amíg egynél több csúcs van.</li>
+        <li>A kódszavakat kiolvassuk a fából, majd a bemenetet újraolvasva betűnként kódolunk.</li>
+      </ol>
+      <ul>
+        <li><b>Entrópia:</b> \(H_r(S) = -\sum_{i=1}^{d} p_i \log_r p_i\). Shannon tétele: betűnkénti kódolásnál az átlagos szóhossz \(\ell \ge H_r(S)\). Egy kódolás <b>optimális</b>, ha \(H_r(S) \le \ell &lt; H_r(S) + 1\); a Huffman-kód ilyen.</li>
+        <li><b>Prefix-kód:</b> egyik kódszó sem valódi prefixe a másiknak, a kódfában minden kódszó levél ⇒ egyértelműen dekódolható.</li>
+        <li><b>Nem egyértelmű:</b> egyenlő gyakoriságoknál bármelyiket választhatjuk, és a 0/1 szerepe felcserélhető.</li>
+        <li><b>r &gt; 2:</b> az élek 0..r−1 címkét kapnak, minden lépésben r csúcsot vonunk össze, kivéve az elsőt: ott \(k = d \bmod (r-1)\) csúcsot, ha k &gt; 1, különben k + r − 1-et.</li>
+        <li>A dekódolónak is ismernie kell a kódot: a kódfát / kódtáblát mellékelni kell (rontja a tömörítést), vagy általános gyakoriságokból (pl. a magyar nyelvéből) készítjük a kódot.</li>
+      </ul>
+    </div>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">Szemléltetés</span><span class="kind">Huffman</span></div>
+    <div class="stmt"><p>Végezzük el a Huffman-kódolást az <code>S = AZABBRAKADABRAA</code> szövegre!</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p>Gyakoriságok: A 7, Z 1, B 3, R 2, K 1, D 1. Papíron érdemes az összevonásokat előbb táblázatban vezetni:</p>
+      <div class="tbl"><table class="num">
+        <tr><th>lépés</th><th class="l">összevonás</th><th class="l">a sor utána</th></tr>
+        <tr><td>0</td><td class="l"></td><td class="l">Z1 K1 D1 R2 B3 A7</td></tr>
+        <tr><td>1</td><td class="l">K1 + D1 = DK2</td><td class="l">Z1 R2 DK2 B3 A7</td></tr>
+        <tr><td>2</td><td class="l">Z1 + R2 = ZR3</td><td class="l">DK2 ZR3 B3 A7</td></tr>
+        <tr><td>3</td><td class="l">DK2 + B3 = DKB5</td><td class="l">ZR3 DKB5 A7</td></tr>
+        <tr><td>4</td><td class="l">ZR3 + DKB5 = ZRDKB8</td><td class="l">A7 ZRDKB8</td></tr>
+        <tr><td>5</td><td class="l">A7 + ZRDKB8 = 15</td><td class="l">(kész)</td></tr>
+      </table></div>
+      <div class="figs"><figure class="fig"><div data-gt="(15|AZRDKB 0:(7|A) 1:(8|ZRDKB 0:(3|ZR 0:(1|Z) 1:(2|R)) 1:(5|DKB 0:(2|DK 0:(1|D) 1:(1|K)) 1:(3|B))))"></div><figcaption>a kódfa (a kisebb gyakoriságú gyerek kapja a 0-t)</figcaption></figure></div>
+      <div class="tbl" style="max-width:420px"><table class="num"><tr><th>betű</th><td>A</td><td>Z</td><td>R</td><td>D</td><td>K</td><td>B</td></tr><tr><th>kód</th><td>0</td><td>100</td><td>101</td><td>1100</td><td>1101</td><td>111</td></tr></table></div>
+      <p>Kódolt alak: <code>010001111111010110101100011110100</code>, <span class="ans">33 bit</span>, átlagos szóhossz 2,2. Naiv módszerrel legalább 3 bit kellene betűnként: 45 bit.</p>
+      <p>Entrópia: \(H_2(S) \approx 2{,}146\), és \(2{,}146 \le 2{,}2 &lt; 3{,}146\): a kód optimális.</p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">2. feladatsor</span><span class="kind">Huffman</span></div>
+    <div class="stmt">
+      <ol>
+        <li>A mintához hasonlóan végezzük el a Huffman-kódolást egy választott szövegre!</li>
+        <li>Keressünk olyan szöveget, ahol a Huffman-kódolás pontosan annyi bittel történik, mint a naiv módszer!</li>
+        <li>Írjunk struktogramot, amely a kódolt szöveg és a Huffman-kódfa alapján helyreállítja az eredeti szöveget!</li>
+        <li>Írjuk meg a Huffman-kódolást! Bemenet egy szöveg, kimenet a kódolt szöveg és a kódfa.</li>
+        <li>Számoljuk ki a ternáris (r = 3) Huffman-kódot a korábbi példára!</li>
+        <li>Verseny: keressük azt a 10 hosszú szöveget, amely a legnagyobb mértékben tömöríthető a naiv módszerhez képest!</li>
+      </ol>
+    </div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <div class="own"><b>Saját megoldás (a lapon nincs)</b>Az eredményeket programmal ellenőriztem.</div>
+      <p><b>1.</b> <code>ABRAKADABRA</code>: A 5, B 2, R 2, K 1, D 1. Összevonások: K + D = 2, B + R = 4, KD + BR = 6, A + 6 = 11.</p>
+      <div class="figs"><figure class="fig"><div data-gt="(11 0:(5|A) 1:(6 0:(2|KD 0:(1|K) 1:(1|D)) 1:(4|BR 0:(2|B) 1:(2|R))))"></div><figcaption>A = 0, K = 100, D = 101, B = 110, R = 111</figcaption></figure></div>
+      <p>Kódolt alak: <code>01101110100010101101110</code> = <span class="ans">23 bit</span> (naiv: 11 · 3 = 33 bit). \(H_2 \approx 2{,}04\), átlag \(23/11 \approx 2{,}09\).</p>
+      <p><b>2.</b> Ha minden betű egyformán gyakori és a betűk száma 2-hatvány, a Huffman-fa teljes kiegyensúlyozott fa, minden kódszó \(\log_2 d\) hosszú: pl. <code>ABCD</code> vagy <code>AABBCCDD</code> – <span class="ans">mindkét módszerrel 2 bit/betű</span>.</p>
+      <p><b>3.</b> Dekódolás (legalább két különböző betű esetén; a levelekben van a betű):</p>
+<pre class="sg-src">
+@HuffmanDekódol(In : bit⟨⟩ ; gy : Node* ; Out : Σ⟨⟩)
+Out := ⟨⟩ ; p := gy
+loop i := 1 to |In|
+  if In_i = 0
+    p := p→left
+  else
+    p := p→right
+  if p→left = ⊘   // levél: vége a kódszónak
+    Out := Out + p→char
+    p := gy
+</pre>
+      <p><b>4.</b> Kódolás: gyakoriságok, prioritásos sor, fa, kódtábla (bejárással), majd kódolás.</p>
+      <div class="sgrow">
+<pre class="sg-src">
+@HuffmanKódol(In : Σ⟨⟩ ; Out : bit⟨⟩ ; &gy : Node*)
+gyak/1 : ℕ[|Σ|] := [0, …, 0]
+loop i := 1 to |In|
+  gyak[In_i]++
+Q : MinPrQueue   // kulcs: freq
+loop ∀c ∈ Σ : gyak[c] > 0
+  Q.add(new Node(c, gyak[c]))
+loop Q.size() > 1
+  x := Q.remMin() ; y := Q.remMin()
+  z := new Node ; z→left := x ; z→right := y
+  z→freq := x→freq + y→freq
+  Q.add(z)
+gy := Q.remMin()
+KódTábla(gy, ⟨⟩, kód)
+Out := ⟨⟩
+loop i := 1 to |In|
+  Out := Out + kód[In_i]
+</pre>
+<pre class="sg-src">
+@KódTábla(p : Node* ; w : bit⟨⟩ ; &kód)
+if p→left = ⊘
+  kód[p→char] := w
+else
+  KódTábla(p→left, w + ⟨0⟩, kód)
+  KódTábla(p→right, w + ⟨1⟩, kód)
+</pre>
+      </div>
+      <p><b>5.</b> r = 3, d = 6: \(k = 6 \bmod 2 = 0\), ezért az első lépésben \(k + r - 1 = 2\) csúcsot vonunk össze (így a végén pontosan 3 marad a gyökérhez: 6 → 5 → 3 → 1). Z1 + K1 = 2; aztán D1 + ZK2 + R2 = 5; végül B3 + 5 + A7 = 15.</p>
+      <div class="figs"><figure class="fig"><div data-gt="(15 0:(3|B) 1:(5 0:(1|D) 1:(2|ZK 0:(1|Z) 1:(1|K)) 2:(2|R)) 2:(7|A))"></div><figcaption>A = 2, B = 0, R = 12, D = 10, Z = 110, K = 111</figcaption></figure></div>
+      <p>Kódolt alak: <code>2110200122111210201222</code>, <span class="ans">22 trit</span> (naiv: \(\lceil \log_3 6 \rceil = 2\), 30 trit). \(H_3(S) \approx 1{,}354 \le 22/15 \approx 1{,}467\).</p>
+      <p><b>6.</b> Az összes 10 hosszú szövegtípust végignézve a legjobb arány <span class="ans">60%</span>, pl. <code>AAAAAAAABC</code>: Huffman A = 0, B = 10, C = 11 ⇒ 8 + 2 + 2 = 12 bit, a naiv 2 bit/betű ⇒ 20 bit. Ugyanennyi az <code>AAAAAABCDE</code>: 18 bit vs. 30 bit.</p>
+    </div></details>
+  </article>
+
+  <article class="concept">
+    <div class="task-head"><span class="no">LZW (Lempel–Ziv–Welch) szótárkód</span><span class="kind fog">elmélet</span></div>
+    <div class="body">
+      <p>A betűnkénti kódolás hatékonysága korlátos; a szótárkódok egy kódszót egész <b>szavakhoz</b> is rendelnek, kihasználva, hogy a valós adatban rövid részek sűrűn ismétlődnek. Az LZW egy kezdeti (a betűket tartalmazó) kódtáblát bővít lépésről lépésre.</p>
+      <ul>
+        <li><b>Kódolás:</b> a bemenetet egyszer olvassuk; mindig a leghosszabb <i>ismert</i> következő szót (α) keressük. Kiírjuk a kódját, és felvesszük a szótárba az αc szót (c a következő karakter) a következő szabad kóddal.</li>
+        <li><b>Dekódolás:</b> ugyanabból a kezdeti táblából indul, és ugyanazt a táblát építi fel. Különleges eset: ha a beolvasott kód éppen a most születő (még ismeretlen) kód, akkor a szava \(s + s_1\) (az előző szó + annak első betűje).</li>
+        <li>Hosszú szövegnél a szótárat korlátozzuk (kódszavak száma, szavak hossza, vagy csak a bemenet elején építjük). A kódokat még binárisan is kódolni kell, mégis gyakran rövidebb, mint a Huffman; egyszerű és egy menetben dolgozik.</li>
+      </ul>
+      <div class="sgrow">
+<pre class="sg-src">
+@LZWcompress(In : Σ⟨⟩ ; Out : ℕ⟨⟩)
+D : Item{}   // szótár, kezdetben üres
+loop i := 1 to |Σ|
+  x : Item(⟨Σ_i⟩, i) ; D := D ∪ {x}
+code := |Σ| + 1 ; Out := ⟨⟩ ; s : Σ⟨In_1⟩
+loop i := 2 to |In|
+  c : Σ := In_i
+  if dictionaryContainsString(D, s + c)
+    s := s + c
+  else
+    Out := Out + code(D, s)
+    if code ≤ MAXCODE
+      x : Item(s + c, code++) ; D := D ∪ {x}
+    s := ⟨c⟩
+Out := Out + code(D, s)
+</pre>
+<pre class="sg-src">
+@LZWdecompress(In : ℕ⟨⟩ ; Out : Σ⟨⟩)
+D : Item{}
+loop i := 1 to |Σ|
+  x : Item(⟨Σ_i⟩, i) ; D := D ∪ {x}
+code := |Σ| + 1   // az első szabad kód
+Out := s := string(D, In_1)
+loop i := 2 to |In|
+  k := In_i
+  if k < code   // D tartalmazza k-t
+    t := string(D, k)
+    Out := Out + t
+    x : Item(s + t_1, code) ; D := D ∪ {x}
+  else
+    t := s + s_1
+    Out := Out + t
+    x : Item(t, k) ; D := D ∪ {x}   // k = code
+  s := t ; code++
+</pre>
+      </div>
+    </div>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">Szemléltetés</span><span class="kind">LZW</span></div>
+    <div class="stmt"><p>Kódoljuk LZW-vel az <code>S = ABABABAACAACCBBAAAAAAAAA</code> szöveget (kezdeti tábla: A → 1, B → 2, C → 3), majd dekódoljuk!</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p>Soronként: a kiírt kód, a megtalált (leghosszabb ismert) szó, a következő karakter, és a második+harmadik oszlop összefűzésének új kódja.</p>
+      <div class="tbl" style="max-width:480px"><table class="num">
+        <tr><th>kód</th><th>szó</th><th>köv. kar.</th><th>új kód</th></tr>
+        <tr><td>1</td><td>A</td><td>B</td><td>4 = AB</td></tr>
+        <tr><td>2</td><td>B</td><td>A</td><td>5 = BA</td></tr>
+        <tr><td>4</td><td>AB</td><td>A</td><td>6 = ABA</td></tr>
+        <tr><td>6</td><td>ABA</td><td>A</td><td>7 = ABAA</td></tr>
+        <tr><td>1</td><td>A</td><td>C</td><td>8 = AC</td></tr>
+        <tr><td>3</td><td>C</td><td>A</td><td>9 = CA</td></tr>
+        <tr><td>1</td><td>A</td><td>A</td><td>10 = AA</td></tr>
+        <tr><td>8</td><td>AC</td><td>C</td><td>11 = ACC</td></tr>
+        <tr><td>3</td><td>C</td><td>B</td><td>12 = CB</td></tr>
+        <tr><td>2</td><td>B</td><td>B</td><td>13 = BB</td></tr>
+        <tr><td>5</td><td>BA</td><td>A</td><td>14 = BAA</td></tr>
+        <tr><td>10</td><td>AA</td><td>A</td><td>15 = AAA</td></tr>
+        <tr><td>15</td><td>AAA</td><td>A</td><td>16 = AAAA</td></tr>
+        <tr><td>15</td><td>AAA</td><td>–</td><td>–</td></tr>
+      </table></div>
+      <p>A kódolt üzenet: <span class="ans">[1, 2, 4, 6, 1, 3, 1, 8, 3, 2, 5, 10, 15, 15]</span> (24 karakter helyett 14 kód).</p>
+      <p><b>Dekódolás:</b> ugyanez a táblázat töltődik ki soronként. Az első és az utolsó oszlop azonnal ismert; egy sor „következő karaktere” mindig a <i>következő</i> sor szavának első betűje. A 3. sorban a 4-es kódot olvassuk, ami már ismert (AB). A 4. sorban a 6-os kód jön, ami <b>épp most születik</b> (ABA): a szavát még nem ismerjük, de csak az első betűjére van szükség, az pedig az előző szó (AB) első betűje, A – így 6 = AB + A = ABA.</p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">3. feladatsor</span><span class="kind">LZW</span></div>
+    <div class="stmt">
+      <ol>
+        <li>Szemléltessük az <code>ABCABCABCAAABBCCAABABA</code> kódolását!</li>
+        <li>Dekódoljuk az <code>1, 3, 4, 5, 6</code> üzenetet, ha a kezdeti tábla A → 1 és B → 2!</li>
+        <li>Adjunk meg olyan 20 hosszú, három karaktert (mindegyiket legalább egyszer) tartalmazó szöveget, amelynek LZW-kódja pontosan 13 hosszú!</li>
+        <li>Keressünk olyan szöveget, amelynek LZW-kódolása rövidebb a Huffman-kódolásnál!</li>
+      </ol>
+    </div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <div class="own"><b>Saját megoldás (a lapon nincs)</b>Kezdeti tábla mindenhol A → 1, B → 2, C → 3; az eredményeket programmal ellenőriztem.</div>
+      <p><b>1.</b></p>
+      <div class="tbl" style="max-width:480px"><table class="num">
+        <tr><th>kód</th><th>szó</th><th>köv. kar.</th><th>új kód</th></tr>
+        <tr><td>1</td><td>A</td><td>B</td><td>4 = AB</td></tr>
+        <tr><td>2</td><td>B</td><td>C</td><td>5 = BC</td></tr>
+        <tr><td>3</td><td>C</td><td>A</td><td>6 = CA</td></tr>
+        <tr><td>4</td><td>AB</td><td>C</td><td>7 = ABC</td></tr>
+        <tr><td>6</td><td>CA</td><td>B</td><td>8 = CAB</td></tr>
+        <tr><td>5</td><td>BC</td><td>A</td><td>9 = BCA</td></tr>
+        <tr><td>1</td><td>A</td><td>A</td><td>10 = AA</td></tr>
+        <tr><td>10</td><td>AA</td><td>B</td><td>11 = AAB</td></tr>
+        <tr><td>2</td><td>B</td><td>B</td><td>12 = BB</td></tr>
+        <tr><td>5</td><td>BC</td><td>C</td><td>13 = BCC</td></tr>
+        <tr><td>6</td><td>CA</td><td>A</td><td>14 = CAA</td></tr>
+        <tr><td>4</td><td>AB</td><td>A</td><td>15 = ABA</td></tr>
+        <tr><td>15</td><td>ABA</td><td>–</td><td>–</td></tr>
+      </table></div>
+      <p>Kód: <span class="ans">[1, 2, 3, 4, 6, 5, 1, 10, 2, 5, 6, 4, 15]</span> (22 karakter → 13 kód).</p>
+      <p><b>2.</b> Az 1 = A, ez az első szó. A 3-as kód még nincs a táblában (épp ez a következő szabad kód), ezért a szava s + s₁ = A + A = AA, és 3 = AA. Ugyanígy minden további kód az épp születő kód: 4 = AAA, 5 = AAAA, 6 = AAAAA. A kimenet A · AA · AAA · AAAA · AAAAA = <span class="ans">15 darab A</span>.</p>
+      <div class="tbl" style="max-width:420px"><table class="num">
+        <tr><th>beolvasott</th><th>ismert?</th><th>kiírt szó</th><th>új kód</th></tr>
+        <tr><td>1</td><td>igen</td><td>A</td><td>–</td></tr>
+        <tr><td>3</td><td>nem (= code)</td><td>AA</td><td>3 = AA</td></tr>
+        <tr><td>4</td><td>nem</td><td>AAA</td><td>4 = AAA</td></tr>
+        <tr><td>5</td><td>nem</td><td>AAAA</td><td>5 = AAAA</td></tr>
+        <tr><td>6</td><td>nem</td><td>AAAAA</td><td>6 = AAAAA</td></tr>
+      </table></div>
+      <p><b>3.</b> Például <code>AABBCCAABBCCAABBCCAA</code>: kódja <span class="ans">[1, 1, 2, 2, 3, 3, 4, 6, 8, 10, 7, 9, 1]</span>, pontosan 13 hosszú (szavak: A A B B C C AA BB CC AAB BC CA A). Egy másik: az 1. feladat szövegének első 20 betűje, <code>ABCABCABCAAABBCCAABA</code>.</p>
+      <p><b>4.</b> Például <code>ABC</code> húszszor ismételve (60 karakter): az LZW 18 kódot ad, a legnagyobb kód 20 alatti, így kódonként 5 bit: <span class="ans">90 bit</span>. A Huffman (A, B, C egyformán 20-szor: kódjaik 0, 10, 11) 20·1 + 40·2 = <span class="ans">100 bit</span>. Minél hosszabb és ismétlődőbb a szöveg, annál nagyobb az LZW előnye (pl. 1000 karakternyi <code>ABAB…</code>: LZW 63 kód · 7 bit = 441 bit, Huffman 1000 bit).</p>
+    </div></details>
+  </article>
+
+  </div>
+</section>
+
+<footer>Források: a Gyakorlat mappa PDF-jei (AVL_fa, AVL_fa_folytatas, AVL_beszur_2025, AVL_minkivesz, AVL_mintöröl_2025, AVL_torol, AVL_töröl_2025, AltalanosFak_gyak, B+ fa, B+ fa műveletei, Grafok_abrazolasa_gyak, Szelessegi_gyakorlati_anyag_2024, ad2Tomorites, LZW_algoritmus). A „saját” jelölésű megoldások nem az óráról származnak.</footer>
+</div>
+
+<script>
+/* Drawing from text sources:
+   data-avl  : binary tree in the course notation, e.g. "{ [2] 4+ [ (6) 8= (10) ] }"; suffix ! = broken node, * = new node; "α~h" = subtree triangle with height label
+   data-bp   : B+ tree, e.g. "{ [ (1 2) 3 (5 6 7) ] 8 [ ... ] }"; data-d = degree (default 4); a node followed by * or ! is highlighted, a key with * too
+   data-gt   : general tree "(a (b) (c))"; "lbl:" before a child = edge label; "15|AZ" = node text + caption; data-lcrs = same tree drawn first-child / next-sibling
+   data-g    : graph as JSON {v:{id:[x,y]}, e:[[u,v]], dir, tree:[[u,v]], col:{id:'b'|'g'}, s}
+   data-adj  : adjacency lists "A|1:2,4|2:4,5|3:1|4:|5:2,3"
+   pre.sg-src: struktogram in an indented mini-language (@title, if/else, loop, switch/case) */
+(function () {
+  var OPEN = '([{', CLOSE = ')]}';
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function tok(s) { return s.match(/[(\[{]|[)\]}]|[^\s()\[\]{}]+/g) || []; }
+  function isOpen(t) { return t !== undefined && t.length === 1 && OPEN.indexOf(t) >= 0; }
+  function isClose(t) { return t !== undefined && t.length === 1 && CLOSE.indexOf(t) >= 0; }
+  function svg(w, h, body) {
+    return '<svg xmlns="http://www.w3.org/2000/svg" width="' + Math.ceil(w) + '" height="' + Math.ceil(h) + '" viewBox="0 0 ' + Math.ceil(w) + ' ' + Math.ceil(h) + '" role="img">' + body + '</svg>';
+  }
+  function txt(x, y, s, cls, anchor) {
+    return '<text x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" text-anchor="' + (anchor || 'middle') + '" dominant-baseline="central"' + (cls ? ' class="' + cls + '"' : '') + '>' + esc(s) + '</text>';
+  }
+  function line(x1, y1, x2, y2, cls) { return '<line x1="' + x1.toFixed(1) + '" y1="' + y1.toFixed(1) + '" x2="' + x2.toFixed(1) + '" y2="' + y2.toFixed(1) + '" class="' + (cls || 'ed') + '"/>'; }
+  function arrowHead(x1, y1, x2, y2, cls) {
+    var a = Math.atan2(y2 - y1, x2 - x1), s = 8;
+    var p1 = [x2 - s * Math.cos(a - 0.4), y2 - s * Math.sin(a - 0.4)], p2 = [x2 - s * Math.cos(a + 0.4), y2 - s * Math.sin(a + 0.4)];
+    return '<polygon class="ah' + (cls ? ' ' + cls : '') + '" points="' + x2.toFixed(1) + ',' + y2.toFixed(1) + ' ' + p1[0].toFixed(1) + ',' + p1[1].toFixed(1) + ' ' + p2[0].toFixed(1) + ',' + p2[1].toFixed(1) + '"/>';
+  }
+  function arrow(x1, y1, x2, y2, cls) { return line(x1, y1, x2, y2, 'ed' + (cls ? ' ' + cls : '')) + arrowHead(x1, y1, x2, y2, cls); }
+  function nodeCls(mark) { return 'nd' + (mark.indexOf('!') >= 0 ? ' bad' : mark.indexOf('*') >= 0 ? ' new' : ''); }
+  function addNota(el, s) {
+    if (el.dataset.nota === '0') return;
+    var c = document.createElement('code'); c.className = 'nota';
+    c.textContent = s.replace(/[!*]/g, '').replace(/\s+/g, ' ').trim();
+    el.parentNode.insertBefore(c, el.nextSibling);
+  }
+
+  /* ---------- binary (AVL) tree ---------- */
+  function parseBin(s) {
+    var t = tok(s), i = 0;
+    function node() {
+      if (!isOpen(t[i])) throw new Error('avl: ( expected in ' + s);
+      i++;
+      var n = { l: null, r: null };
+      if (isOpen(t[i])) n.l = node();
+      var m = /^(.*?)(\+\+|--|\+|-|=)?([!*]*)$/.exec(t[i++]);
+      n.key = m[1]; n.bal = m[2] || ''; n.mark = m[3] || '';
+      if (/~/.test(n.key)) { n.bal = ''; }
+      if (isOpen(t[i])) n.r = node();
+      if (!isClose(t[i])) throw new Error('avl: ) expected in ' + s);
+      i++;
+      return n;
+    }
+    return node();
+  }
+  function drawBin(el) {
+    var src = el.dataset.avl, root = parseBin(src), list = [], maxd = 0, maxLen = 1;
+    (function walk(n, d) { if (!n) return; walk(n.l, d + 1); n.d = d; n.i = list.length; list.push(n); maxd = Math.max(maxd, d); maxLen = Math.max(maxLen, n.key.split('~')[0].length); walk(n.r, d + 1); })(root, 0);
+    var gap = Math.max(38, maxLen * 9 + 20), dy = 54, r = 15;
+    var tri = list.some(function (n) { return /~/.test(n.key); });
+    var W = list.length * gap + 34 + (tri ? 26 : 0), H = maxd * dy + 2 * r + 18 + (tri ? 16 : 0);
+    function X(n) { return 12 + gap / 2 + n.i * gap; }
+    function Y(n) { return r + 8 + n.d * dy; }
+    var edges = '', nodes = '';
+    list.forEach(function (n) {
+      [n.l, n.r].forEach(function (c) { if (c) edges += line(X(n), Y(n), X(c), Y(c) - (/~/.test(c.key) ? 14 : 0)); });
+      var x = X(n), y = Y(n);
+      if (/~/.test(n.key)) {
+        var p = n.key.split('~');
+        nodes += '<polygon class="tri" points="' + x + ',' + (y - 14) + ' ' + (x - 19) + ',' + (y + 20) + ' ' + (x + 19) + ',' + (y + 20) + '"/>';
+        nodes += txt(x, y + 9, p[0]) + txt(x + 22, y + 2, p[1], 'sub', 'start');
+        return;
+      }
+      var rx = Math.max(r, n.key.length * 4.6 + 8);
+      nodes += '<ellipse cx="' + x + '" cy="' + y + '" rx="' + rx + '" ry="' + r + '" class="' + nodeCls(n.mark) + '"/>' + txt(x, y + 0.5, n.key);
+      if (n.bal) nodes += txt(x + rx + 2, y - 11, n.bal.replace('-', '−').replace('-', '−'), 'bal' + (n.bal.length > 1 ? ' bad' : ''), 'start');
+    });
+    el.innerHTML = svg(W, H, edges + nodes);
+    addNota(el, src);
+  }
+
+  /* ---------- B+ tree ---------- */
+  function parseBp(s) {
+    var t = tok(s), i = 0;
+    function node() {
+      i++;
+      var n = { keys: [], km: [], kids: [], mark: '' };
+      while (!isClose(t[i])) {
+        if (t[i] === undefined) throw new Error('bp: unbalanced ' + s);
+        if (isOpen(t[i])) { n.kids.push(node()); continue; }
+        var m = /^(.*?)([!*]*)$/.exec(t[i++].replace(/,$/, ''));
+        if (m[1] === '') continue;
+        n.keys.push(m[1]); n.km.push(m[2]);
+      }
+      i++;
+      if (t[i] === '*' || t[i] === '!') n.mark = t[i++];
+      return n;
+    }
+    return node();
+  }
+  function drawBp(el) {
+    var src = el.dataset.bp, d = +(el.dataset.d || 4), root = parseBp(src);
+    var maxLen = 1, depth = 0;
+    (function scan(n, lv) { depth = Math.max(depth, lv); n.keys.forEach(function (k) { maxLen = Math.max(maxLen, k.length); }); n.kids.forEach(function (c) { scan(c, lv + 1); }); })(root, 0);
+    var cw = Math.max(24, maxLen * 8.5 + 10), ch = 24, w = (d - 1) * cw, gapX = 14, dy = 66, cur = 10, out = '', edges = '';
+    function place(n, lv) {
+      n.lv = lv;
+      if (!n.kids.length) { n.x = cur; cur += w + gapX; return; }
+      n.kids.forEach(function (c) { place(c, lv + 1); });
+      var a = n.kids[0], b = n.kids[n.kids.length - 1];
+      n.x = (a.x + b.x) / 2;
+    }
+    place(root, 0);
+    var W = cur - gapX + 10, H = depth * dy + ch + 20;
+    function draw(n) {
+      var x = n.x, y = 10 + n.lv * dy, cls = n.mark === '!' ? ' bad' : n.mark === '*' ? ' new' : '';
+      out += '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + ch + '" class="nd' + cls + '"/>';
+      for (var j = 1; j < d - 1; j++) out += line(x + j * cw, y, x + j * cw, y + ch, 'ed');
+      n.keys.forEach(function (k, j) { out += txt(x + (j + 0.5) * cw, y + ch / 2 + 0.5, k, n.km[j] ? 'knew' : ''); });
+      n.kids.forEach(function (c, j) {
+        var px = x + j * cw; if (j === 0) px += 4; if (j === d - 1) px -= 4;
+        edges += arrow(px, y + ch, c.x + w / 2, 10 + c.lv * dy - 1);
+        draw(c);
+      });
+    }
+    draw(root);
+    el.innerHTML = svg(W, H, edges + out);
+    addNota(el, src);
+  }
+
+  /* ---------- general tree ---------- */
+  function parseGt(s) {
+    var t = tok(s), i = 0;
+    function node() {
+      i++;
+      var raw = t[i++], m = /^(.*?)([!*]*)$/.exec(raw);
+      if (m[1] === '') m = [raw, raw, ''];   // a bare "*" is the multiplication node, not a mark
+      var p = m[1].split('|');
+      var n = { label: p[0], sub: p[1] || '', mark: m[2] || '', kids: [], edge: '' };
+      while (!isClose(t[i])) {
+        if (t[i] === undefined) throw new Error('gt: unbalanced ' + s);
+        var e = '';
+        if (/:$/.test(t[i]) && isOpen(t[i + 1])) { e = t[i].slice(0, -1); i++; }
+        var c = node(); c.edge = e; n.kids.push(c);
+      }
+      i++;
+      return n;
+    }
+    return node();
+  }
+  function gtRx(n) { return Math.max(15, n.label.length * 4.4 + 9); }
+  function drawGt(el) {
+    var root = parseGt(el.dataset.gt), cur = 10, maxLv = 0, hasSub = false, out = '', edges = '';
+    function place(n, lv) {
+      n.lv = lv; maxLv = Math.max(maxLv, lv); if (n.sub) hasSub = true;
+      if (!n.kids.length) { var w = Math.max(2 * gtRx(n), n.sub.length * 7) + 12; n.x = cur + w / 2; cur += w; return; }
+      n.kids.forEach(function (c) { place(c, lv + 1); });
+      n.x = (n.kids[0].x + n.kids[n.kids.length - 1].x) / 2;
+    }
+    place(root, 0);
+    var dy = hasSub ? 70 : 56, padL = hasSub ? 60 : 0, W = cur + 10 + 2 * padL, H = maxLv * dy + 30 + 16 + (hasSub ? 16 : 0);
+    (function shift(n) { n.x += padL; n.kids.forEach(shift); })(root);
+    function Y(n) { return 23 + n.lv * dy; }
+    (function draw(n, px) {
+      n.kids.forEach(function (c) {
+        edges += line(n.x, Y(n), c.x, Y(c));
+        if (c.edge) {
+          var mx = (n.x + c.x) / 2, my = (Y(n) + Y(c)) / 2, side = c.x < n.x ? -9 : 9;
+          edges += txt(mx + side, my - 4, c.edge, 'el', c.x < n.x ? 'end' : 'start');
+        }
+        draw(c, n.x);
+      });
+      var rx = gtRx(n);
+      out += '<ellipse cx="' + n.x + '" cy="' + Y(n) + '" rx="' + rx + '" ry="15" class="' + nodeCls(n.mark) + '"/>' + txt(n.x, Y(n) + 0.5, n.label);
+      if (n.sub && !n.kids.length) out += txt(n.x, Y(n) + 25, n.sub, 'sub');
+      else if (n.sub) {   // internal node: caption beside it, on the side away from the parent edge
+        var right = px === undefined || n.x >= px;
+        out += txt(n.x + (right ? rx + 4 : -rx - 4), Y(n) - 10, n.sub, 'sub', right ? 'start' : 'end');
+      }
+    })(root);
+    el.innerHTML = svg(W, H, edges + out);
+  }
+  function drawLcrs(el) {
+    var root = parseGt(el.dataset.lcrs), maxX = 0, maxRow = 0, out = '', bw = 30, bh = 24, sx = 50, sy = 54;
+    function lay(n, x, row) {
+      n.cx = x; n.row = row; maxX = Math.max(maxX, x); maxRow = Math.max(maxRow, row);
+      var cx = x;
+      n.kids.forEach(function (c) { cx += lay(c, cx, row + 1); });
+      return Math.max(1, cx - x);
+    }
+    lay(root, 0, 0);
+    function X(n) { return 12 + n.cx * sx; }
+    function Y(n) { return 22 + n.row * sy; }
+    var W = 12 + maxX * sx + bw + 14, H = 22 + maxRow * sy + bh + 10;
+    out += arrow(X(root) - 10, 2, X(root) + 6, 20);
+    (function draw(n) {
+      out += '<rect x="' + X(n) + '" y="' + Y(n) + '" width="' + bw + '" height="' + bh + '" class="' + nodeCls(n.mark) + '"/>' + txt(X(n) + bw / 2, Y(n) + bh / 2 + 0.5, n.label);
+      n.kids.forEach(function (c, j) {
+        if (j === 0) out += arrow(X(n) + bw / 2, Y(n) + bh, X(c) + bw / 2, Y(c) - 1);
+        else { var p = n.kids[j - 1]; out += arrow(X(p) + bw, Y(p) + bh / 2, X(c) - 1, Y(c) + bh / 2); }
+        draw(c);
+      });
+    })(root);
+    el.innerHTML = svg(W, H, out);
+  }
+
+  /* ---------- graph ---------- */
+  function drawGraph(el) {
+    var g = JSON.parse(el.dataset.g), r = 15, out = '', maxX = 0, maxY = 0;
+    var key = function (u, v) { return u + '>' + v; }, E = {}, T = {};
+    g.e.forEach(function (e) { E[key(e[0], e[1])] = 1; });
+    (g.tree || []).forEach(function (e) { T[key(e[0], e[1])] = T[key(e[1], e[0])] = 1; });
+    Object.keys(g.v).forEach(function (k) { maxX = Math.max(maxX, g.v[k][0]); maxY = Math.max(maxY, g.v[k][1]); });
+    g.e.forEach(function (e) {
+      var a = g.v[e[0]], b = g.v[e[1]], dx = b[0] - a[0], dy = b[1] - a[1], L = Math.sqrt(dx * dx + dy * dy), ux = dx / L, uy = dy / L;
+      var off = (g.dir && E[key(e[1], e[0])]) ? 5 : 0, ox = -uy * off, oy = ux * off;
+      var cls = T[key(e[0], e[1])] ? 'te' : '';
+      var x1 = a[0] + ux * r + ox, y1 = a[1] + uy * r + oy, x2 = b[0] - ux * (r + 1) + ox, y2 = b[1] - uy * (r + 1) + oy;
+      out += g.dir ? arrow(x1, y1, x2, y2, cls) : line(a[0], a[1], b[0], b[1], 'ed' + (cls ? ' ' + cls : ''));
+    });
+    Object.keys(g.v).forEach(function (k) {
+      var p = g.v[k], c = (g.col || {})[k], cls = 'nd' + (c === 'b' ? ' blk' : c === 'g' ? ' gry' : '') + (String(g.s) === k ? ' start' : '');
+      out += '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="' + r + '" class="' + cls + '"/>' + txt(p[0], p[1] + 0.5, k, c === 'b' || c === 'g' ? 'inv' : '');
+    });
+    el.innerHTML = svg(maxX + r + 6, maxY + r + 6, out);
+  }
+
+  /* ---------- adjacency lists ---------- */
+  function drawAdj(el) {
+    var parts = el.dataset.adj.split('|'), name = parts.shift(), rows = parts.map(function (p) { var q = p.split(':'); return { i: q[0], l: q[1] ? q[1].split(',') : [] }; });
+    var rh = 30, cw = 26, x0 = 30, out = '', maxLen = 0;
+    rows.forEach(function (r) { maxLen = Math.max(maxLen, r.l.length); });
+    out += txt(x0 + 15, 10, name, 'sub');
+    rows.forEach(function (r, j) {
+      var y = 22 + j * rh;
+      out += txt(x0 - 10, y + rh / 2, r.i, 'sub') + '<rect x="' + x0 + '" y="' + y + '" width="30" height="' + rh + '" class="nd"/>';
+      if (!r.l.length) { out += txt(x0 + 15, y + rh / 2, '⊘', 'sub'); return; }
+      out += '<circle cx="' + (x0 + 15) + '" cy="' + (y + rh / 2) + '" r="3" class="nd blk"/>';
+      var px = x0 + 15, bx = x0 + 52;
+      r.l.forEach(function (v, k) {
+        var mark = /[!*]$/.test(v) ? v.slice(-1) : '', vv = v.replace(/[!*]$/, ''), yy = y + 4;
+        out += arrow(px + 3, y + rh / 2, bx - 1, y + rh / 2);
+        out += '<rect x="' + bx + '" y="' + yy + '" width="' + 2 * cw + '" height="' + (rh - 8) + '" class="' + nodeCls(mark) + '"/>' + line(bx + cw, yy, bx + cw, yy + rh - 8);
+        out += txt(bx + cw / 2, y + rh / 2, vv);
+        if (k === r.l.length - 1) out += txt(bx + 1.5 * cw, y + rh / 2, '⊘', 'sub');
+        else out += '<circle cx="' + (bx + 1.5 * cw) + '" cy="' + (y + rh / 2) + '" r="3" class="nd blk"/>';
+        px = bx + 1.5 * cw; bx += 2 * cw + 22;
+      });
+    });
+    el.innerHTML = svg(x0 + 52 + maxLen * (2 * cw + 22) + 4, 22 + rows.length * rh + 4, out);
+  }
+
+  /* ---------- struktogram ---------- */
+  function parseSg(src) {
+    var lines = src.replace(/\t/g, '  ').split('\n').filter(function (l) { return l.trim(); });
+    var base = Math.min.apply(null, lines.map(function (l) { return l.match(/^ */)[0].length; }));
+    var items = lines.map(function (l) { return { ind: l.match(/^ */)[0].length - base, text: l.trim() }; });
+    var pos = 0;
+    function kids(ind) { pos++; return (pos < items.length && items[pos].ind > ind) ? block(items[pos].ind) : []; }
+    function block(ind) { var out = []; while (pos < items.length && items[pos].ind === ind && !/^(else|case\b)/.test(items[pos].text)) out.push(stmt(ind)); return out; }
+    function stmt(ind) {
+      var t = items[pos].text, m;
+      if (t.charAt(0) === '@') { pos++; return { k: 'title', text: t.slice(1).trim() }; }
+      if ((m = /^if\s+(.*)$/.exec(t))) {
+        var a = kids(ind), b = null;
+        if (pos < items.length && items[pos].ind === ind && items[pos].text === 'else') b = kids(ind);
+        return { k: 'if', c: m[1], a: a, b: b };
+      }
+      if ((m = /^loop\s+(.*)$/.exec(t))) return { k: 'loop', c: m[1], a: kids(ind) };
+      if (t === 'switch') {
+        pos++; var cases = [];
+        while (pos < items.length && items[pos].ind > ind && /^case\s/.test(items[pos].text)) {
+          var ci = items[pos].ind, c = items[pos].text.slice(5).trim();
+          cases.push({ c: c, a: kids(ci) });
+        }
+        return { k: 'sw', cases: cases };
+      }
+      pos++; return { k: 'st', text: t };
+    }
+    return block(0);
+  }
+  function fmt(s) {
+    var i = s.indexOf('//');
+    if (i < 0) return esc(s);
+    return esc(s.slice(0, i).trim()) + (i > 0 ? ' ' : '') + '<span class="cm">' + esc(s.slice(i)) + '</span>';
+  }
+  function rBlock(a) { return '<div class="blk">' + a.map(rStmt).join('') + '</div>'; }
+  function rBranch(a) { return a && a.length ? rBlock(a) : '<div class="blk"><div class="st skip">SKIP</div></div>'; }
+  function rStmt(s) {
+    if (s.k === 'st') return '<div class="st">' + fmt(s.text) + '</div>';
+    if (s.k === 'loop') return '<div class="loop"><div class="cond">' + fmt(s.c) + '</div>' + rBlock(s.a) + '</div>';
+    if (s.k === 'if') return '<div class="if"><div class="ifh"><span class="t"></span><span class="c">' + fmt(s.c) + '</span><span class="f"></span></div><div class="ifb">' + rBranch(s.a) + rBranch(s.b) + '</div></div>';
+    if (s.k === 'sw') {
+      var n = s.cases.length, h = '', b = '';
+      s.cases.forEach(function (c, j) {
+        h += '<div class="swh' + (j ? ' bl' : '') + (j === n - 1 ? ' last' : '') + '" style="grid-row:1;grid-column:' + (j + 1) + '">' + fmt(c.c) + '</div>';
+        b += '<div class="' + (j ? 'bl ' : '') + 'swb" style="grid-row:2;grid-column:' + (j + 1) + '">' + rBranch(c.a) + '</div>';
+      });
+      return '<div class="sw" style="grid-template-columns:repeat(' + n + ',auto)">' + h + b + '</div>';
+    }
+    return '';
+  }
+  function drawSg(pre) {
+    var ast = parseSg(pre.textContent), title = null;
+    if (ast[0] && ast[0].k === 'title') title = ast.shift().text;
+    var d = document.createElement('div'); d.className = 'sgwrap';
+    d.innerHTML = '<div class="sgfig">' + (title ? '<div class="sgt">' + fmt(title) + '</div>' : '') + '<div class="sg">' + rBlock(ast) + '</div></div>';
+    pre.parentNode.replaceChild(d, pre);
+  }
+
+  function each(sel, f) {
+    document.querySelectorAll(sel).forEach(function (el) {
+      try { f(el); } catch (e) { el.textContent = '⚠ ' + e.message; console.error(e); }
+    });
+  }
+  each('[data-avl]', drawBin);
+  each('[data-bp]', drawBp);
+  each('[data-gt]', drawGt);
+  each('[data-lcrs]', drawLcrs);
+  each('[data-g]', drawGraph);
+  each('[data-adj]', drawAdj);
+  each('pre.sg-src', drawSg);
+
+  document.getElementById('cnt').textContent = document.querySelectorAll('.task').length;
+  document.getElementById('cntsg').textContent = document.querySelectorAll('.sgwrap').length;
+  document.querySelectorAll('button[data-toggle]').forEach(function (btn) {
+    var sec = document.getElementById(btn.dataset.toggle);
+    btn.addEventListener('click', function () {
+      var list = sec.querySelectorAll('details');
+      var open = Array.prototype.some.call(list, function (d) { return !d.open; });
+      list.forEach(function (d) { d.open = open; });
+      btn.textContent = open ? 'Összes megoldás becsukása' : 'Összes megoldás kinyitása';
+    });
+  });
+})();
+</script>
+<script>
+/* section bar: highlight the chip of the section being read */
+(function () {
+  var nav = document.querySelector('nav.bar');
+  if (!nav) return;
+  var links = Array.prototype.filter.call(nav.querySelectorAll('a[href^="#"]'), function (a) {
+    return a.getAttribute('href').length > 1 && document.getElementById(a.getAttribute('href').slice(1));
+  });
+  var current = null, ticking = false;
+  function sectionOf(a) { return document.getElementById(a.getAttribute('href').slice(1)); }
+  function update() {
+    ticking = false;
+    var line = nav.getBoundingClientRect().bottom + 12, active = null;
+    links.forEach(function (a) { if (sectionOf(a).getBoundingClientRect().top <= line) active = a; });
+    if (links.length && window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) active = links[links.length - 1];
+    if (active === current) return;
+    if (current) { current.classList.remove('active'); current.removeAttribute('aria-current'); }
+    current = active;
+    if (!active) return;
+    active.classList.add('active');
+    active.setAttribute('aria-current', 'location');
+    var ul = active.closest('ul'), ur = ul.getBoundingClientRect(), ar = active.getBoundingClientRect();
+    var left = ar.left - ur.left + ul.scrollLeft, right = left + ar.width;
+    if (left < ul.scrollLeft || right > ul.scrollLeft + ul.clientWidth) ul.scrollTo({ left: Math.max(0, left - 16), behavior: 'smooth' });
+  }
+  function schedule() { if (!ticking) { ticking = true; setTimeout(update, 40); } }
+  window.addEventListener('scroll', schedule, { passive: true });
+  window.addEventListener('resize', schedule);
+  document.addEventListener('toggle', schedule, true);
+  update();
+})();
+</script>
+</body>
+</html>

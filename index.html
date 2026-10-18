@@ -26,6 +26,9 @@
   --pe: #6b46c1;
   --pe-soft: #efe9fb;
   --pe-grid: rgba(107, 70, 193, 0.06);
+  --algo: #b3326b;
+  --algo-soft: #fbe8f0;
+  --algo-grid: rgba(179, 50, 107, 0.06);
   --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
   --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
   --f-label: "IBM Plex Mono", ui-monospace, Consolas, monospace;
@@ -35,6 +38,7 @@
     --paper: #0f141b; --grid: rgba(143, 168, 255, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
     --rule: #2a3442; --accent: #93abff; --accent-soft: #1d2846;
     --dimat: #93abff; --dimat-soft: #1d2846; --anal: #f2a25e; --anal-soft: #33241a; --anal-grid: rgba(242, 162, 94, 0.05); --pe: #c4a7ff; --pe-soft: #261f3d; --pe-grid: rgba(196, 167, 255, 0.05);
+    --algo: #f590b8; --algo-soft: #3b1e2b; --algo-grid: rgba(245, 144, 184, 0.05);
     color-scheme: dark;
   }
 }
@@ -42,6 +46,7 @@
   --paper: #0f141b; --grid: rgba(143, 168, 255, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
   --rule: #2a3442; --accent: #93abff; --accent-soft: #1d2846;
   --dimat: #93abff; --dimat-soft: #1d2846; --anal: #f2a25e; --anal-soft: #33241a; --anal-grid: rgba(242, 162, 94, 0.05); --pe: #c4a7ff; --pe-soft: #261f3d; --pe-grid: rgba(196, 167, 255, 0.05);
+  --algo: #f590b8; --algo-soft: #3b1e2b; --algo-grid: rgba(245, 144, 184, 0.05);
   color-scheme: dark;
 }
 
@@ -80,6 +85,7 @@ nav.bar li[hidden] { display: none; }
 nav.bar a { display: block; white-space: nowrap; text-decoration: none; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.04em; color: var(--ink); padding: 6px 10px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); }
 nav.bar a:hover, nav.bar a:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
 nav.bar a.nav-back { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+nav.bar a.active, nav.bar a.active:hover, nav.bar a.active:focus-visible { background: var(--accent); border-color: var(--accent); color: var(--paper); }
 
 /* hero */
 header.hero { display: grid; gap: 12px; padding-block: 6px 24px; border-bottom: 2px solid var(--ink); }
@@ -95,7 +101,9 @@ header.hero { display: grid; gap: 12px; padding-block: 6px 24px; border-bottom: 
 body.t-anal { --grid: var(--anal-grid); }
 .t-pe    { --hue: var(--pe);    --hue-soft: var(--pe-soft); --accent: var(--pe); --accent-soft: var(--pe-soft); }
 body.t-pe { --grid: var(--pe-grid); }
-.hero.t-dimat, .hero.t-anal, .hero.t-pe { border-bottom-color: var(--hue); }
+.t-algo  { --hue: var(--algo);  --hue-soft: var(--algo-soft); --accent: var(--algo); --accent-soft: var(--algo-soft); }
+body.t-algo { --grid: var(--algo-grid); }
+.hero.t-dimat, .hero.t-anal, .hero.t-pe, .hero.t-algo { border-bottom-color: var(--hue); }
 .hero .label.code { color: var(--hue); }
 
 /* home: subject cards */
@@ -261,7 +269,8 @@ a.item:hover .open, a.item:focus-visible .open { color: var(--hue); }
           title: 'Kidolgozások',
           items: [
             { kind: 'html', featured: true, icon: 'GYAK', title: 'Gyakorlati feladatok kidolgozva', desc: 'Az 1–6. gyakorlat órán megoldott feladatai struktogramokkal, lenyitható megoldással; a kvízekhez saját megoldás.', href: 'Prog Elmélet/Kidolgozások/gyakorlatok.html', tags: ['6 gyakorlat', 'kvízek is'] },
-            { kind: 'html', featured: true, icon: 'FOGALOM', title: 'Fogalomtár', desc: 'Az előadás-kivonatok összes definíciója, tétele és jelölése, kereshetően, kikérdezés móddal.', href: 'Prog Elmélet/Kidolgozások/fogalmak.html', tags: ['8 előadás', '90 fogalom'] }
+            { kind: 'html', featured: true, icon: 'FOGALOM', title: 'Fogalomtár', desc: 'Az előadás-kivonatok összes definíciója, tétele és jelölése, kereshetően, kikérdezés móddal.', href: 'Prog Elmélet/Kidolgozások/fogalmak.html', tags: ['8 előadás', '90 fogalom'] },
+            { kind: 'html', featured: true, icon: 'ZH', title: 'Minta ZH kidolgozva', desc: 'Az 1. ZH konzultációjának 5 feladata, lenyitható megoldással; jelölve, mi a konzultációs és mi a saját megoldás.', href: 'Prog Elmélet/Kidolgozások/minta_zh1.html', tags: ['1. ZH', '60 pont'] }
           ]
         },
         {
@@ -292,8 +301,15 @@ a.item:hover .open, a.item:focus-visible .open { color: var(--hue); }
               { kind: 'pdf', n: '2', title: '2. gyakorlat órai jegyzete', desc: 'Kézírásos OneNote-jegyzet', href: 'Prog Elmélet/Gyakorlat/2.gyakorlat_orai_jegyzet.pdf' },
               { kind: 'pdf', n: '3', title: '3. gyakorlat órai jegyzete', desc: 'Kézírásos OneNote-jegyzet', href: 'Prog Elmélet/Gyakorlat/3.gyakorlat_orai_jegyzet.pdf' },
               { kind: 'pdf', n: '4', title: '4. gyakorlat órai jegyzete', desc: 'Kézírásos OneNote-jegyzet', href: 'Prog Elmélet/Gyakorlat/4.gyakorlat_orai_jegyzet.pdf' },
-              { kind: 'pdf', n: '5', title: '5. gyakorlat régi órai jegyzete', desc: 'Kézírásos OneNote-jegyzet, részben más feladatokkal', href: 'Prog Elmélet/Gyakorlat/5.gyakorlat_regi_orai_jegyzet.pdf' }
+              { kind: 'pdf', n: '5', title: '5. gyakorlat régi órai jegyzete', desc: 'Kézírásos OneNote-jegyzet, részben más feladatokkal', href: 'Prog Elmélet/Gyakorlat/5.gyakorlat_regi_orai_jegyzet.pdf' },
+              { kind: 'pdf', n: '6', title: '6. gyakorlat órai jegyzete', desc: 'Kézírásos OneNote-jegyzet', href: 'Prog Elmélet/Gyakorlat/6.gyakorlat_orai_jegyzet.pdf' }
             ]}
+          ]
+        },
+        {
+          title: 'Zárthelyi',
+          items: [
+            { kind: 'pdf', icon: 'ZH', title: 'Minta ZH (1. ZH konzultáció)', desc: 'A konzultáció jegyzete a mintafeladatokkal, részben kézzel megoldva', href: 'Prog Elmélet/MintaZH1.pdf' }
           ]
         },
         {
@@ -310,6 +326,53 @@ a.item:hover .open, a.item:focus-visible .open { color: var(--hue); }
             { kind: 'pdf', n: '10', title: '10. alkalom', desc: 'Gyakorlatokra javasolt feladatok', href: 'Prog Elmélet/Feladatsorok/orai_feladatok_10.pdf' },
             { kind: 'pdf', n: '11', title: '11. alkalom', desc: 'Gyakorlatokra javasolt feladatok', href: 'Prog Elmélet/Feladatsorok/orai_feladatok_11.pdf' },
             { kind: 'pdf', n: '12', title: '12. alkalom', desc: 'Gyakorlatokra javasolt feladatok', href: 'Prog Elmélet/Feladatsorok/orai_feladatok_12.pdf' }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'algo2', theme: 't-algo', code: 'ALGO II', name: 'Algoritmusok és adatszerkezetek II.',
+      groups: [
+        {
+          title: 'Kidolgozások',
+          items: [
+            { kind: 'html', featured: true, icon: 'GYAK', title: 'Gyakorlati feladatok kidolgozva', desc: 'AVL fák, általános fák, B+ fák, gráfábrázolás, szélességi bejárás, Huffman és LZW: elmélet röviden, a feladatok lenyitható megoldással, minden fa-lépés megrajzolva, a struktogramok újrarajzolva.', href: 'ALGO II/Kidolgozások/gyakorlatok.html', tags: ['7 témakör', '42 feladat', '47 struktogram'] },
+            { kind: 'html', featured: true, icon: 'ZH', title: 'Minta ZH kidolgozva', desc: 'A 2024-es minta 1. ZH mind a 6 feladata: Huffman, AVL-építés és -törlés, B+ fa, két struktogramos feladat; lenyitható megoldással, részletes magyarázattal.', href: 'ALGO II/Kidolgozások/minta_zh1.html', tags: ['1. ZH', '60 pont'] }
+          ]
+        },
+        {
+          title: 'Gyakorlati anyagok', note: 'A Gyakorlat mappa anyagai témakörönként, PDF-ben, új fülön nyílnak.',
+          sections: [
+            { title: 'AVL fák', items: [
+              { kind: 'pdf', n: '1', title: 'AVL fák', desc: 'Definíció, (++,+) és (++,−) forgatás, beszúrás, fa építése két adatsorból', href: 'ALGO II/Gyakorlat/AVL_fa.pdf', tags: ['van kidolgozás'] },
+              { kind: 'pdf', n: '2', title: 'AVL fák (folytatás)', desc: 'Minimum kivétele, (++,=) forgatás, törlés', href: 'ALGO II/Gyakorlat/AVL_fa_folytatas.pdf', tags: ['van kidolgozás'] },
+              { kind: 'pdf', icon: 'STRUKT', title: 'AVL beszúrás (2025)', desc: 'Ásványi Tibor 2025-ös struktogramjai: AVLinsert és a forgatások', href: 'ALGO II/Gyakorlat/AVL_beszur_2025.pdf' },
+              { kind: 'pdf', icon: 'STRUKT', title: 'AVL minimum kivétele (2025)', desc: 'AVLremMin, leftSubTreeShrunk, balance_PP', href: 'ALGO II/Gyakorlat/AVL_mintöröl_2025.pdf' },
+              { kind: 'pdf', icon: 'STRUKT', title: 'AVL törlés (2025)', desc: 'AVLdel, AVLdelRoot, rightSubTreeMinToRoot', href: 'ALGO II/Gyakorlat/AVL_töröl_2025.pdf' },
+              { kind: 'pdf', icon: 'JEGYZ', title: 'AVL minKivesz (jegyzet)', desc: '9. előadás, C: a magyar nevű változat és a (++,=) séma', href: 'ALGO II/Gyakorlat/AVL_minkivesz.pdf' },
+              { kind: 'pdf', icon: 'JEGYZ', title: 'AVL töröl (jegyzet)', desc: '9. előadás, D: AVLtöröl, AVLgyTöröl és a házi feladatok', href: 'ALGO II/Gyakorlat/AVL_torol.pdf' }
+            ]},
+            { title: 'Általános fák', items: [
+              { kind: 'pdf', n: '3', title: 'Általános fák', desc: 'Két pointeres ábrázolás, zárójeles alak, bejárások, magasság, szintfolytonos bejárás', href: 'ALGO II/Gyakorlat/AltalanosFak_gyak.pdf', tags: ['van kidolgozás'] }
+            ]},
+            { title: 'B+ fák', items: [
+              { kind: 'pdf', n: '4', title: 'B+ fa műveletei', desc: 'Fokszám választása, beszúrás és törlés negyedfokú B+ fában, ábrákkal', href: 'ALGO II/Gyakorlat/B+ fa műveletei.pdf', tags: ['van kidolgozás'] },
+              { kind: 'pdf', icon: 'JEGYZ', title: 'B+ fák (jegyzet)', desc: 'Carl Burch tananyagának fordítása: invariánsok, beszúrás, törlés esetei', href: 'ALGO II/Gyakorlat/B+ fa.pdf' }
+            ]},
+            { title: 'Gráfok', items: [
+              { kind: 'pdf', n: '5', title: 'Gráfok ábrázolása', desc: 'Csúcsmátrix, szomszédossági lista, befok-kifok, transzponálás, különbség- és komplementer gráf', href: 'ALGO II/Gyakorlat/Grafok_abrazolasa_gyak.pdf', tags: ['van kidolgozás'] },
+              { kind: 'pdf', n: '6', title: 'Szélességi bejárás', desc: 'Lejátszás táblázattal, szélességi fa, útkiírás, fa-e, páros-e', href: 'ALGO II/Gyakorlat/Szelessegi_gyakorlati_anyag_2024.pdf', tags: ['van kidolgozás'] }
+            ]},
+            { title: 'Tömörítés', items: [
+              { kind: 'pdf', n: '7', title: 'Tömörítés', desc: 'Naiv módszer, Huffman-kódolás, LZW (Nagy Ádám segédlete)', href: 'ALGO II/Gyakorlat/ad2Tomorites.pdf', tags: ['van kidolgozás'] },
+              { kind: 'pdf', icon: 'STRUKT', title: 'LZW algoritmus', desc: 'LZWcompress és LZWdecompress struktogramja', href: 'ALGO II/Gyakorlat/LZW_algoritmus.pdf' }
+            ]}
+          ]
+        },
+        {
+          title: 'Zárthelyi',
+          items: [
+            { kind: 'pdf', icon: 'ZH', title: 'Minta 1. ZH (2024)', desc: 'Huffman, AVL, B+ fa, általános fa és gráf feladatok, 60 pont', href: 'ALGO II/MintaZH_1_2024.pdf', tags: ['van kidolgozás'] }
           ]
         }
       ]
@@ -450,6 +513,7 @@ a.item:hover .open, a.item:focus-visible .open { color: var(--hue); }
     if (s) renderSubject(s); else renderHome();
     target = s && parts[1] ? document.getElementById(parts[1]) : null;
     if (target) target.scrollIntoView({ block: 'start' }); else window.scrollTo(0, 0);
+    spyCurrent = null; spySoon();
   }
 
   document.addEventListener('keydown', function (e) {
@@ -467,6 +531,35 @@ a.item:hover .open, a.item:focus-visible .open { color: var(--hue); }
     var a = e.target.closest('nav.bar a');
     if (a && a.getAttribute('href') === location.hash) { e.preventDefault(); route(); }
   });
+
+  // highlight the chip of the section currently being read (subject pages only)
+  var spyTick = false, spyCurrent = null;
+  function spy() {
+    spyTick = false;
+    var nav = view.querySelector('nav.bar');
+    if (!nav) { spyCurrent = null; return; }
+    var line = nav.getBoundingClientRect().bottom + 12, active = null;
+    var links = Array.prototype.filter.call(nav.querySelectorAll('a'), function (a) {
+      var id = a.getAttribute('href').split('/')[2], sec = id && document.getElementById(id);
+      return sec && sec.offsetParent !== null;
+    });
+    function sec(a) { return document.getElementById(a.getAttribute('href').split('/')[2]); }
+    links.forEach(function (a) { if (sec(a).getBoundingClientRect().top <= line) active = a; });
+    if (links.length && window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) active = links[links.length - 1];
+    if (active === spyCurrent && (!active || active.classList.contains('active'))) return;
+    nav.querySelectorAll('a.active').forEach(function (a) { a.classList.remove('active'); a.removeAttribute('aria-current'); });
+    spyCurrent = active;
+    if (!active) return;
+    active.classList.add('active');
+    active.setAttribute('aria-current', 'location');
+    var ul = active.closest('ul'), ur = ul.getBoundingClientRect(), ar = active.getBoundingClientRect();
+    var left = ar.left - ur.left + ul.scrollLeft;
+    if (left < ul.scrollLeft || left + ar.width > ul.scrollLeft + ul.clientWidth) ul.scrollTo({ left: Math.max(0, left - 16), behavior: 'smooth' });
+  }
+  function spySoon() { if (!spyTick) { spyTick = true; setTimeout(spy, 40); } }
+  window.addEventListener('scroll', spySoon, { passive: true });
+  window.addEventListener('resize', spySoon);
+  view.addEventListener('input', spySoon);
 
   window.addEventListener('hashchange', route);
   route();
