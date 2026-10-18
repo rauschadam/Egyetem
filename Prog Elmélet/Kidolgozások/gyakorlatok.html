@@ -160,10 +160,6 @@ tr:last-child td { border-bottom: 0; }
 .ifb { display: grid; grid-template-columns: 1fr 1fr; }
 .ifb > * + * { border-left: 1.5px solid var(--ink); }
 
-.toolbar { display: flex; flex-wrap: wrap; gap: 8px; }
-button { font-family: var(--f-label); font-size: 0.78rem; padding: 7px 12px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); color: var(--ink); cursor: pointer; }
-button:hover, button:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
-
 footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.88rem; }
 @media (max-width: 520px) { body { font-size: 1rem; } .task { padding: 14px; } }
 </style>
@@ -202,7 +198,6 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
     <h2>Állapottér, feladat, program</h2>
     <p>Célunk olyan módszerek vizsgálata, amelyekkel egy feladathoz garantáltan (matematikai pontossággal igazoltan) helyes program készíthető. Ehhez kell egy matematikai modell a feladat, a program és a megoldás fogalmára.</p>
   </div>
-  <div class="toolbar"><button type="button" data-toggle="gy1">Összes megoldás kinyitása</button></div>
   <div class="taskgroup">
 
   <article class="task">
@@ -401,7 +396,6 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
     <h2>Programfüggvény, megoldás</h2>
     <p>Az állapottér, a feladat és a program mellé bejön a programfüggvény és a megoldás fogalma.</p>
   </div>
-  <div class="toolbar"><button type="button" data-toggle="gy2">Összes megoldás kinyitása</button></div>
   <div class="taskgroup">
 
   <article class="task">
@@ -562,7 +556,6 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
     <h2>Megoldás: ellenpéldák és bizonyítások</h2>
     <p>Megoldás definíciója: \(S\) megoldja \(F\)-et, ha 1. \(\D_F \subseteq \D_{p(S)}\) és 2. \(\forall a \in \D_F : p(S)(a) \subseteq F(a)\). „Igaz-e?” kérdésnél: ha nem, egy ellenpélda kell; ha igen, általános bizonyítás.</p>
   </div>
-  <div class="toolbar"><button type="button" data-toggle="gy3">Összes megoldás kinyitása</button></div>
   <div class="taskgroup">
 
   <article class="task">
@@ -705,7 +698,6 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
     <h2>Ekvivalencia, logikai függvények, leggyengébb előfeltétel</h2>
     <p>\([\lf(S, R)] = \{ a \in A \mid a \in \D_{p(S)} \wedge p(S)(a) \subseteq [R] \}\): azok az állapotok, ahonnan \(S\) biztosan terminál, és mindenképp \(R\)-et teljesítő állapotban.</p>
   </div>
-  <div class="toolbar"><button type="button" data-toggle="gy4">Összes megoldás kinyitása</button></div>
   <div class="taskgroup">
 
   <article class="task">
@@ -851,7 +843,6 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
     <h2>Leggyengébb előfeltétel számolása, specifikáció, paramétertér</h2>
     <p>Értékadásra: \(\lf(x := E, R) = \big((x, \dots) \in \D_{p(S)}\big) \wedge R^{x \leftarrow E}\).</p>
   </div>
-  <div class="toolbar"><button type="button" data-toggle="gy5">Összes megoldás kinyitása</button></div>
   <div class="taskgroup">
 
   <article class="task">
@@ -998,7 +989,6 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
     <h2>Specifikáció felírása</h2>
     <p>Elő- és utófeltétel felírása a paramétertér segítségével, intervallumon értelmezett függvényekre és tömbökre.</p>
   </div>
-  <div class="toolbar"><button type="button" data-toggle="gy6">Összes megoldás kinyitása</button></div>
   <div class="taskgroup">
 
   <article class="task">
@@ -1138,15 +1128,6 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
 (function () {
   document.getElementById('cnt').textContent = document.querySelectorAll('.task').length;
   document.getElementById('cntfog').textContent = document.querySelectorAll('.concept').length;
-  document.querySelectorAll('button[data-toggle]').forEach(function (btn) {
-    var sec = document.getElementById(btn.dataset.toggle);
-    btn.addEventListener('click', function () {
-      var list = sec.querySelectorAll('details');
-      var open = Array.prototype.some.call(list, function (d) { return !d.open; });
-      list.forEach(function (d) { d.open = open; });
-      btn.textContent = open ? 'Összes megoldás becsukása' : 'Összes megoldás kinyitása';
-    });
-  });
 })();
 </script>
 <!-- Fejezetsáv: az éppen olvasott szakasz gombja kiemelve -->

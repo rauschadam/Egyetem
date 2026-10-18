@@ -172,10 +172,6 @@ svg .pl { fill: var(--ink); font-family: var(--f-label); font-size: 12px; paint-
 .mistake { display: grid; grid-template-columns: auto 1fr; gap: 12px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 12px 14px; }
 .mistake .x { font-family: var(--f-display); font-weight: 700; color: var(--mark); font-size: 1.2rem; line-height: 1.3; }
 
-.toolbar { display: flex; flex-wrap: wrap; gap: 8px; }
-button { font-family: var(--f-label); font-size: 0.78rem; padding: 7px 12px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); color: var(--ink); cursor: pointer; }
-button:hover, button:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
-
 footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.88rem; }
 
 @media (max-width: 520px) {
@@ -279,7 +275,6 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
     <h2>Órai feladatok</h2>
     <p>Az 5. gyakorlat anyagának négy feladata. A megoldások menete követi az órai kidolgozást.</p>
   </div>
-  <div class="toolbar"><button type="button" data-toggle="orai">Összes megoldás kinyitása</button></div>
 
   <div class="taskgroup">
 
@@ -507,7 +502,6 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
     <h2>Házi feladatok</h2>
     <p>Az „Analízis II. gyakorlatok” összevont anyag 5. gyakorlatához tartozó házi feladatok.</p>
   </div>
-  <div class="toolbar"><button type="button" data-toggle="hazi">Összes megoldás kinyitása</button></div>
 
   <div class="taskgroup">
 
@@ -827,16 +821,6 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
   };
   Object.keys(GRAPHS).forEach(function (id) { var el = document.getElementById(id); if (el) plot(el, GRAPHS[id]); });
 
-  // "open all" toggles per section
-  document.querySelectorAll('button[data-toggle]').forEach(function (btn) {
-    var sec = document.getElementById(btn.dataset.toggle);
-    btn.addEventListener('click', function () {
-      var list = sec.querySelectorAll('details');
-      var open = Array.prototype.some.call(list, function (d) { return !d.open; });
-      list.forEach(function (d) { d.open = open; });
-      btn.textContent = open ? 'Összes megoldás becsukása' : 'Összes megoldás kinyitása';
-    });
-  });
 })();
 </script>
 <!-- Fejezetsáv: az éppen olvasott szakasz gombja kiemelve -->

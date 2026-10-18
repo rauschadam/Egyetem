@@ -191,10 +191,6 @@ svg text.knew { fill: var(--ok); font-weight: 600; }
 .sg .sw > .bl { border-left: 1.5px solid var(--ink); }
 pre.sg-src { display: none; }
 
-.toolbar { display: flex; flex-wrap: wrap; gap: 8px; }
-button { font-family: var(--f-label); font-size: 0.78rem; padding: 7px 12px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); color: var(--ink); cursor: pointer; }
-button:hover, button:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
-
 footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.88rem; }
 @media (max-width: 520px) { body { font-size: 1rem; } .task, .concept { padding: 14px; } }
 </style>
@@ -235,7 +231,6 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
     <h2>AVL fák: definíció, forgatások, beszúrás</h2>
     <p>A bináris keresőfák műveletei a fa magasságával arányosak; az AVL fa ezt úgy tartja \(\Theta(\log n)\)-en, hogy minden csúcsban legfeljebb 1 lehet a két részfa magasságkülönbsége.</p>
   </div>
-  <div class="toolbar"><button type="button" data-toggle="avl1">Összes megoldás kinyitása</button></div>
   <div class="taskgroup">
 
   <article class="concept">
@@ -520,7 +515,6 @@ t := r
     <h2>AVL fák: minimum kivétele és törlés</h2>
     <p>Törlésnél egy részfa <em>alacsonyabb</em> lesz. A forgatások csökkentik a részfa magasságát, ezért egy forgatás után nem biztos, hogy megállhatunk: a törlés hatása akár a gyökérig is terjedhet.</p>
   </div>
-  <div class="toolbar"><button type="button" data-toggle="avl2">Összes megoldás kinyitása</button></div>
   <div class="taskgroup">
 
   <article class="concept">
@@ -781,7 +775,6 @@ t := l
     <h2>Általános fák</h2>
     <p>Egy kitüntetett csúcs, a gyökér, és a csúcsoknak tetszőleges sok gyereke lehet. Példák: könyvtárszerkezet, függvénykifejezések.</p>
   </div>
-  <div class="toolbar"><button type="button" data-toggle="altfa">Összes megoldás kinyitása</button></div>
   <div class="taskgroup">
 
   <article class="concept">
@@ -960,7 +953,6 @@ if t ≠ ⊘
     <h2>B+ fák</h2>
     <p>Háttértáron (lemezen) tárolt keresőfa: egy csúcs egy teljes blokkot tölt ki, így sok kulcs és mutató fér bele, és a fa nagyon alacsony marad. A rajzokon d = 4 (negyedfokú B+ fa).</p>
   </div>
-  <div class="toolbar"><button type="button" data-toggle="bplus">Összes megoldás kinyitása</button></div>
   <div class="taskgroup">
 
   <article class="concept">
@@ -1094,7 +1086,6 @@ if t ≠ ⊘
     <h2>Gráfok ábrázolása</h2>
     <p>A gráfalgoritmusok egy csúcs feldolgozásakor a <b>szomszédait</b> látogatják meg, ezért az ábrázolásnak ezt kell hatékonyan támogatnia. Itt mindig \(V = \{1, \dots, n\}\), \(n = |V|\), \(m = |E|\).</p>
   </div>
-  <div class="toolbar"><button type="button" data-toggle="grafok">Összes megoldás kinyitása</button></div>
   <div class="taskgroup">
 
   <article class="concept">
@@ -1301,7 +1292,6 @@ loop i := 1 to n
     <h2>Szélességi bejárás (BFS)</h2>
     <p>Egy kezdőcsúcsból felderíti az úttal elérhető csúcsokat, és mindegyikhez egy <b>minimális élszámú</b> utat ad (ha több van, az egyiket). Tetszőleges nem üres gráfon használható: irányított, irányítatlan, összefüggő vagy sem.</p>
   </div>
-  <div class="toolbar"><button type="button" data-toggle="bfs">Összes megoldás kinyitása</button></div>
   <div class="taskgroup">
 
   <article class="concept">
@@ -1595,7 +1585,6 @@ return −1   // nem érhető el
     <h2>Veszteségmentes adattömörítés: Huffman és LZW</h2>
     <p>A forráskódolás azt vizsgálja, adott mennyiségű információ mekkora adattal tárolható. Csak veszteségmentes eljárásokkal foglalkozunk (az adat teljes egészében visszaállítható); bináris esetben a kódszavak a Γ = {0, 1} ábécé feletti szavak (r = 2).</p>
   </div>
-  <div class="toolbar"><button type="button" data-toggle="tomor">Összes megoldás kinyitása</button></div>
   <div class="taskgroup">
 
   <article class="concept">
@@ -2193,15 +2182,6 @@ loop i := 2 to |In|
 
   document.getElementById('cnt').textContent = document.querySelectorAll('.task').length;
   document.getElementById('cntsg').textContent = document.querySelectorAll('.sgwrap').length;
-  document.querySelectorAll('button[data-toggle]').forEach(function (btn) {
-    var sec = document.getElementById(btn.dataset.toggle);
-    btn.addEventListener('click', function () {
-      var list = sec.querySelectorAll('details');
-      var open = Array.prototype.some.call(list, function (d) { return !d.open; });
-      list.forEach(function (d) { d.open = open; });
-      btn.textContent = open ? 'Összes megoldás becsukása' : 'Összes megoldás kinyitása';
-    });
-  });
 })();
 </script>
 <script>

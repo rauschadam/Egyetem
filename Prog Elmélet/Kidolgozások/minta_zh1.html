@@ -160,10 +160,6 @@ tr:last-child td { border-bottom: 0; }
 .ifb { display: grid; grid-template-columns: 1fr 1fr; }
 .ifb > * + * { border-left: 1.5px solid var(--ink); }
 
-.toolbar { display: flex; flex-wrap: wrap; gap: 8px; }
-button { font-family: var(--f-label); font-size: 0.78rem; padding: 7px 12px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); color: var(--ink); cursor: pointer; }
-button:hover, button:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
-
 footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.88rem; }
 @media (max-width: 520px) { body { font-size: 1rem; } .task { padding: 14px; } }
 </style>
@@ -201,7 +197,6 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
     <h2>Program, programfüggvény, megoldás, lf</h2>
     <p>Ugyanaz a program és feladat, mint a <a href="gyakorlatok.html#gy2">2. gyakorlat</a> 2. feladatában, kiegészítve egy leggyengébb előfeltételes kérdéssel.</p>
   </div>
-  <div class="toolbar"><button type="button" data-toggle="zh1">Összes megoldás kinyitása</button></div>
   <div class="taskgroup">
   <div class="task">
     <div class="task-head"><span class="no">Közös adatok az 1. feladathoz</span><span class="kind">16 pont</span></div>
@@ -262,7 +257,6 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
     <span class="label">2. feladat · 7 + 6 pont</span>
     <h2>Végrehajtások, programfüggvény, lf tulajdonság</h2>
   </div>
-  <div class="toolbar"><button type="button" data-toggle="zh2">Összes megoldás kinyitása</button></div>
   <div class="taskgroup">
 
   <article class="task">
@@ -314,7 +308,6 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
     <span class="label">3. feladat · 6 + 6 pont</span>
     <h2>Feladat modellezése és specifikálása</h2>
   </div>
-  <div class="toolbar"><button type="button" data-toggle="zh3">Összes megoldás kinyitása</button></div>
   <div class="taskgroup">
 
   <article class="task">
@@ -358,7 +351,6 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
     <span class="label">4. feladat · 7 + 6 pont</span>
     <h2>Specifikáció elemzése, a specifikáció tétele</h2>
   </div>
-  <div class="toolbar"><button type="button" data-toggle="zh4">Összes megoldás kinyitása</button></div>
   <div class="taskgroup">
 
   <article class="task">
@@ -414,7 +406,6 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
     <span class="label">5. feladat · 6 pont</span>
     <h2>Megoldás: igaz-e?</h2>
   </div>
-  <div class="toolbar"><button type="button" data-toggle="zh5">Összes megoldás kinyitása</button></div>
   <div class="taskgroup">
 
   <article class="task">
@@ -438,19 +429,6 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
 <footer>Forrás: <a href="../MintaZH1.pdf" target="_blank" rel="noopener">Konzultáció (1. ZH) jegyzete (PDF)</a>. A „konzultáció” címkével jelölt részek a konzultációs kézírásból valók, a többi saját kidolgozás.</footer>
 </div>
 
-<script>
-(function () {
-  document.querySelectorAll('button[data-toggle]').forEach(function (btn) {
-    var sec = document.getElementById(btn.dataset.toggle);
-    btn.addEventListener('click', function () {
-      var list = sec.querySelectorAll('details');
-      var open = Array.prototype.some.call(list, function (d) { return !d.open; });
-      list.forEach(function (d) { d.open = open; });
-      btn.textContent = open ? 'Összes megoldás becsukása' : 'Összes megoldás kinyitása';
-    });
-  });
-})();
-</script>
 <!-- Fejezetsáv: az éppen olvasott szakasz gombja kiemelve -->
 <style>
 nav.bar a.active, nav.bar a.active:hover, nav.bar a.active:focus-visible { background: var(--accent); border-color: var(--accent); color: var(--paper); }
