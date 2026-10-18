@@ -787,6 +787,32 @@ t := l
         <figure class="fig"><div data-lcrs="(1 (2 (5)) (3) (4 (6) (7)))"></div><figcaption>ugyanez két pointerrel: ↓ child1, → sibling</figcaption></figure>
       </div>
       <p><b>Zárójeles alak:</b> nem üres fa általános alakja <code>(G t1 … tn)</code>, ahol G a gyökér tartalma, t1 … tn a részfák. A fenti fa: <code>{ 1 [ 2 (5) ] (3) [ 4 (6) (7) ] }</code>.</p>
+      <details><summary>Részletes magyarázat: hogyan épül fel a zárójeles alak?</summary><div class="sol">
+        <p><b>Az alapszabály:</b> minden csúcs egy zárójelpár, és a zárójelen belül <b>először a csúcs kulcsa</b> áll, utána sorban a <b>gyerekeinek részfái</b>: <code>( gyökér részfa1 részfa2 … részfan )</code>. Minden részfa ugyanilyen alakú (rekurzív jelölés). Egy levélnek nincs gyereke, ezért csak <code>(x)</code>.</p>
+        <p><b>Felépítés lentről felfelé</b> a fenti fán:</p>
+        <ol>
+          <li>A levelek: <code>(5)</code>, <code>(3)</code>, <code>(6)</code>, <code>(7)</code>.</li>
+          <li>A 2-es csúcs egyetlen gyereke az 5: <code>(2 (5))</code>.</li>
+          <li>A 4-es csúcs gyerekei a 6 és a 7: <code>(4 (6) (7))</code>.</li>
+          <li>Az 1-es gyökér gyerekei sorban a 2, a 3 és a 4: <code>(1 (2 (5)) (3) (4 (6) (7)))</code>. Ez már a teljes, helyes zárójeles alak.</li>
+        </ol>
+        <p><b>Mire valók a <code>{ } [ ] ( )</code>?</b> Csak az olvashatóságot segítik, a jelentésük ugyanaz. Szintenként váltogatjuk őket, hogy szemmel könnyű legyen összepárosítani a nyitó és záró zárójeleket: a gyökér <code>{ }</code>, a gyerekei <code>[ ]</code>, az unokák <code>( )</code>, utána megint <code>{ }</code>… Így: <code>{ 1 [ 2 (5) ] [ 3 ] [ 4 (6) (7) ] }</code>.</p>
+        <p class="warn"><b>Megjegyzés a forráshoz</b>A jegyzet példájában a 3-as körül <code>(3)</code> áll <code>[3]</code> helyett. Ez csak következetlenség, nem hiba, mert a zárójel fajtája nem számít; a nagyobb gyakorlati feladatban már következetesen <code>[ c ]</code> szerepel.</p>
+        <p><b>Visszafelé olvasás:</b></p>
+        <ul>
+          <li>A nyitó zárójel utáni <b>első</b> elem a csúcs kulcsa.</li>
+          <li>Utána minden <b>zárójeles csoport</b> egy gyerek részfája, balról jobbra az első, második, … gyerek.</li>
+          <li>A záró zárójel jelzi, hogy a csúcsnak nincs több gyereke.</li>
+        </ul>
+        <p>Például <code>[ 4 (6) (7) ]</code> = „4, két gyerekkel: 6 és 7”; <code>[ 2 (5) ]</code> = „2, egy gyerekkel: 5”.</p>
+        <p><b>Miért pont így?</b></p>
+        <ul>
+          <li><b>A gyökér elöl áll, nem középen.</b> A bináris (AVL) fáknál a <code>(bal gyökér jobb)</code> alakban a hely mondja meg, melyik a bal és a jobb gyerek. Az általános fának tetszőleges számú gyereke lehet, nincs „bal” és „jobb”, csak sorrend; ezért a gyökér elöl van, a gyerekek sorban utána.</li>
+          <li><b>Illik a két pointeres ábrázoláshoz:</b> a zárójelen belül egymás után következő gyerekek a <code>child1 → sibling → sibling</code> lánc, egy belső zárójelbe lépés pedig a <code>child1</code> irány.</li>
+          <li><b>A Zárójelez algoritmus pont ezt írja ki</b> (lásd a 6. feladatot): <code>(</code> és a kulcs, rekurzívan a gyerekek, végül <code>)</code>. Ezért a kulcsok sorrendje a <b>preorder</b> bejárás: 1 2 5 3 4 6 7.</li>
+        </ul>
+        <p class="tip"><b>Két gyors ellenőrzés</b>A nyitó zárójelek száma = a csúcsok száma (itt 7). Egy csúcs mélysége = hány nyitott, még be nem zárt zárójel veszi körül a <i>saját</i> zárójelén kívül (az 5-ös körül a <code>{</code> és a <code>[</code> van nyitva, tehát a mélysége 2; a gyökéré 0).</p>
+      </div></details>
       <p><b>Bejárások:</b> a testvéreken érdemesebb ciklussal végigmenni (hatékonyabb), a gyerekek felé rekurzióval. A <i>postorder</i> alakra a bináris fák inorderjére hasonlít, de a függvénykifejezések lengyel formáját adja, ezért hívjuk postordernek.</p>
       <div class="sgrow">
 <pre class="sg-src">
@@ -815,8 +841,7 @@ loop t ≠ ⊘
     <details><summary>Megoldás</summary><div class="sol">
       <p>Minden csúcsból lefelé csak az <b>első</b> gyerekére mutat nyíl, a többi gyerek a testvérlánc mentén, jobbra érhető el:</p>
       <div class="figs"><figure class="fig"><div data-lcrs="(a (b (f) (g)) (c) (d (h (l) (m) (n))) (e (i) (j (p)) (k)))"></div><figcaption>↓ child1, → sibling</figcaption></figure></div>
-      <p>Zárójeles alak: <code>{ a [ b ( f ) ( g ) ] [ c ] [ d ( h { l } { m } { n } ) ] [ e ( i ) ( j { p } ) ( k ) ] }</code></p>
-      <p class="warn"><b>Megjegyzés a forráshoz</b>A lap első rajzán az e első gyereke „l”-nek látszik, de a két pointeres rajz és a zárójeles alak szerint ez az <b>i</b> (az l a h gyereke).</p>
+      <p>Zárójeles alak: <code>{ a [ b ( f ) ( g ) ] [ c ] [ d ( h { l } { m } { n } ) ] [ e ( i ) ( j { p } ) ( k ) ] }</code></p>      <p class="warn"><b>Megjegyzés a forráshoz</b>A lap első rajzán az e első gyereke „l”-nek látszik, de a két pointeres rajz és a zárójeles alak szerint ez az <b>i</b> (az l a h gyereke).</p>
     </div></details>
   </article>
 
