@@ -96,7 +96,8 @@ section { padding-top: 44px; display: grid; grid-template-columns: minmax(0, 1fr
 .section-head { display: grid; gap: 6px; }
 .section-head p { color: var(--muted); max-width: 68ch; }
 .taskgroup { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
-.sub-head { font-family: var(--f-label); font-size: 0.74rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); padding-top: 10px; }
+.sub-intro { color: var(--muted); max-width: 68ch; }
+.sub-head { scroll-margin-top: 60px; font-family: var(--f-label); font-size: 0.74rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); padding-top: 10px; }
 
 /* tasks and theory cards */
 .task, .concept { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 18px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; min-width: 0; scroll-margin-top: 60px; }
@@ -164,6 +165,23 @@ svg .tri { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.3; }
 svg text.sub { fill: var(--muted); font-size: 11px; }
 svg text.el { fill: var(--accent); font-size: 11px; }
 svg text.knew { fill: var(--ok); font-weight: 600; }
+/* B+ anatomy figure */
+svg .ps { fill: var(--rule); fill-opacity: 0.45; }
+svg .ol { fill: none; stroke: var(--ink); stroke-width: 1.4; }
+svg .ed.nul { stroke: var(--grey); stroke-width: 1.1; }
+svg .ed.lk { stroke: var(--accent); stroke-width: 1.6; stroke-dasharray: 4 2; }
+svg .ah.lk { fill: var(--accent); }
+svg .rec { fill: var(--paper); stroke: var(--grey); stroke-width: 1.1; }
+svg .mk { fill: var(--accent); }
+svg text.mk { fill: var(--card); font-size: 11px; font-weight: 700; }
+svg .mkl { stroke: var(--accent); stroke-width: 1.2; }
+svg text.lvl { fill: var(--accent); font-size: 12px; font-weight: 600; }
+.fig.wide { flex: 1 1 100%; justify-items: stretch; }
+.fig.wide > div > svg { display: block; width: 100%; min-width: 600px; height: auto; }
+.mkn { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--accent); color: var(--card); font-family: var(--f-label); font-size: 0.72rem; font-weight: 700; }
+.ex { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; padding-top: 10px; border-top: 1px dashed var(--rule); }
+.ex > p { max-width: 74ch; }
+.ex .step { font-family: var(--f-label); font-size: 0.74rem; color: var(--accent); letter-spacing: 0.04em; }
 
 /* struktogram, written as an indented mini-language in <pre class="sg-src"> and drawn by the script */
 .sgrow { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-start; }
@@ -204,7 +222,7 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
   <h1>Gyakorlati feladatok kidolgozva</h1>
   <p class="sub">A Gyakorlat mappa összes anyaga témakörönként: az elmélet röviden, az órai feladatok lenyitható megoldással, a fák minden lépése megrajzolva, a struktogramok újrarajzolva. Ahol a lapon nincs megoldás (házik, szorgalmik), ott a megoldás <b>saját kidolgozás</b>, és ezt jelöltem. A fák lépéseit programmal is ellenőriztem.</p>
   <div class="facts">
-    <div class="fact"><span class="label">Témakör</span><b>7</b></div>
+    <div class="fact"><span class="label">Témakör</span><b>6</b></div>
     <div class="fact"><span class="label">Feladat</span><b id="cnt">–</b></div>
     <div class="fact"><span class="label">Struktogram</span><b id="cntsg">–</b></div>
   </div>
@@ -214,8 +232,7 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
 <nav class="bar" aria-label="Fejezetek">
   <ul>
     <li><a class="nav-back" href="../../index.html#/algo2" aria-label="Vissza: Algoritmusok II.">← ALGO II</a></li>
-    <li><a href="#avl1">AVL: beszúrás</a></li>
-    <li><a href="#avl2">AVL: törlés</a></li>
+    <li><a href="#avl">AVL fák</a></li>
     <li><a href="#altfa">Általános fák</a></li>
     <li><a href="#bplus">B+ fák</a></li>
     <li><a href="#grafok">Gráfok ábrázolása</a></li>
@@ -224,14 +241,16 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
   </ul>
 </nav>
 
-<!-- ======================= AVL 1 ======================= -->
-<section id="avl1">
+<!-- ======================= AVL FÁK ======================= -->
+<section id="avl">
   <div class="section-head">
-    <span class="label">1. témakör · AVL_fa.pdf, AVL_beszur_2025.pdf</span>
-    <h2>AVL fák: definíció, forgatások, beszúrás</h2>
+    <span class="label">1. témakör · AVL_fa.pdf, AVL_beszur_2025.pdf, AVL_fa_folytatas.pdf, AVL_minkivesz.pdf, AVL_mintöröl_2025.pdf, AVL_torol.pdf, AVL_töröl_2025.pdf</span>
+    <h2>AVL fák</h2>
     <p>A bináris keresőfák műveletei a fa magasságával arányosak; az AVL fa ezt úgy tartja \(\Theta(\log n)\)-en, hogy minden csúcsban legfeljebb 1 lehet a két részfa magasságkülönbsége.</p>
   </div>
   <div class="taskgroup">
+
+  <div class="sub-head" id="avl-beszur">Definíció, forgatások, beszúrás</div>
 
   <article class="concept">
     <div class="task-head"><span class="no">AVL fa, egyensúly, jelzők</span><span class="kind fog">elmélet</span></div>
@@ -505,17 +524,8 @@ t := r
     </div>
   </article>
 
-  </div>
-</section>
-
-<!-- ======================= AVL 2 ======================= -->
-<section id="avl2">
-  <div class="section-head">
-    <span class="label">2. témakör · AVL_fa_folytatas.pdf, AVL_minkivesz.pdf, AVL_mintöröl_2025.pdf, AVL_torol.pdf, AVL_töröl_2025.pdf</span>
-    <h2>AVL fák: minimum kivétele és törlés</h2>
-    <p>Törlésnél egy részfa <em>alacsonyabb</em> lesz. A forgatások csökkentik a részfa magasságát, ezért egy forgatás után nem biztos, hogy megállhatunk: a törlés hatása akár a gyökérig is terjedhet.</p>
-  </div>
-  <div class="taskgroup">
+  <div class="sub-head" id="avl-torol">Minimum kivétele és törlés</div>
+  <p class="sub-intro">Törlésnél egy részfa <em>alacsonyabb</em> lesz. A forgatások csökkentik a részfa magasságát, ezért egy forgatás után nem biztos, hogy megállhatunk: a törlés hatása akár a gyökérig is terjedhet.</p>
 
   <article class="concept">
     <div class="task-head"><span class="no">Minimum kivétele (remMin)</span><span class="kind fog">elmélet</span></div>
@@ -771,7 +781,7 @@ t := l
 <!-- ======================= ÁLTALÁNOS FÁK ======================= -->
 <section id="altfa">
   <div class="section-head">
-    <span class="label">3. témakör · AltalanosFak_gyak.pdf</span>
+    <span class="label">2. témakör · AltalanosFak_gyak.pdf</span>
     <h2>Általános fák</h2>
     <p>Egy kitüntetett csúcs, a gyökér, és a csúcsoknak tetszőleges sok gyereke lehet. Példák: könyvtárszerkezet, függvénykifejezések.</p>
   </div>
@@ -974,48 +984,137 @@ if t ≠ ⊘
 <!-- ======================= B+ FÁK ======================= -->
 <section id="bplus">
   <div class="section-head">
-    <span class="label">4. témakör · B+ fa műveletei.pdf, B+ fa.pdf</span>
+    <span class="label">3. témakör · B+ fa műveletei.pdf, B+ fa.pdf</span>
     <h2>B+ fák</h2>
     <p>Háttértáron (lemezen) tárolt keresőfa: egy csúcs egy teljes blokkot tölt ki, így sok kulcs és mutató fér bele, és a fa nagyon alacsony marad. A rajzokon d = 4 (negyedfokú B+ fa).</p>
   </div>
   <div class="taskgroup">
 
   <article class="concept">
-    <div class="task-head"><span class="no">A d-edfokú B+ fa invariánsai</span><span class="kind fog">elmélet</span></div>
+    <div class="task-head"><span class="no">Egy B+ fa részei – ábrán</span><span class="kind fog">elmélet</span></div>
     <div class="body">
-      <p>Minden csúcsban legfeljebb <b>d mutató</b> (4 ≤ d) és legfeljebb <b>d−1 kulcs</b> van; d a fa fokszáma.</p>
-      <p><b>Belső csúcsok</b></p>
+      <p>Az alábbi negyedfokú (d = 4) B+ fában minden csúcs <b>egy lemezblokk</b>: mindig d = 4 mutatóhelyet (szürke, keskeny cellák) és d − 1 = 3 kulcshelyet foglal, akkor is, ha nincs mind kitöltve. A pötty használt mutató, az áthúzott cella üres (⊘) mutató.</p>
+      <div class="figs"><figure class="fig wide"><div data-bpa="{ [ (1 4) 6 (9 10) 11 (11 12) ] 13 [ (13 15) 16 (16 20 25) ] }"></div><figcaption>a számozott jelölések magyarázata a táblázatban; bal oldalt a szintenként megengedett kulcs- és mutatószám (d = 4)</figcaption></figure></div>
+      <div class="tbl"><table>
+        <thead><tr><th>Fogalom</th><th>Mi ez?</th><th>Mennyi van belőle (d-edfokú fa)</th><th>d = 4 · az ábrán</th></tr></thead>
+        <tbody>
+          <tr><td><b>Gyökér</b></td><td>A legfelső csúcs. Ha a fa egyetlen csúcsból áll, a gyökér egyben levél is.</td><td>1 … d−1 kulcs, <b>2 … d</b> gyerekmutató (levél-gyökérnél 0 … d−1 kulcs)</td><td>1–3 kulcs, 2–4 mutató · <code>[13]</code>: 1 kulcs, 2 mutató</td></tr>
+          <tr><td><b>Belső csúcs</b></td><td>Nem gyökér és nem levél; csak útjelző, adatot nem tárol.</td><td>⌊d/2⌋−1 … d−1 kulcs, <b>⌊d/2⌋ … d</b> gyerekmutató; mindig <b>kulcs + 1</b> mutató</td><td>1–3 kulcs, 2–4 mutató · <code>[6 11]</code>: 2 kulcs, 3 mutató; <code>[16]</code>: 1 kulcs, 2 mutató</td></tr>
+          <tr><td><b>Levél</b></td><td>A legalsó szint; itt van <b>minden</b> tárolt kulcs, mindegyik mellett a rekordjára mutató pointer.</td><td>⌊d/2⌋ … d−1 kulcs, <b>ugyanennyi adatmutató + 1 láncmutató</b></td><td>2–3 kulcs, 2–3 adat- + 1 láncmutató · <code>(1 4)</code> a minimumon, <code>(16 20 25)</code> tele</td></tr>
+          <tr><td><span class="mkn">1</span> <b>Hasító kulcs</b></td><td>Belső csúcs / gyökér kulcsa: csak megmondja, merre menjünk. A k-adik hasító kulcs bal oldalán minden kulcs &lt; k, jobb oldalán minden kulcs ≥ k.</td><td>a csúcs gyerekeinek száma − 1</td><td><code>13</code>: balra 1…12, jobbra 13…25</td></tr>
+          <tr><td><span class="mkn">2</span> <b>Gyerekmutató</b></td><td>Belső csúcsban: az i-edik mutató az i-edik részfa gyökerére mutat.</td><td>kulcsok száma + 1</td><td>a gyökérből 2, <code>[6 11]</code>-ből 3 nyíl indul</td></tr>
+          <tr><td><span class="mkn">3</span> <b>Üres mutatóhely</b></td><td>A blokkban lefoglalt, de nem használt hely (⊘). Ezért fér bele új kulcs vágás nélkül.</td><td>d − (használt mutatók)</td><td>a gyökérben 2 üres hely</td></tr>
+          <tr><td><span class="mkn">4</span> <b>Adatmutató</b></td><td>Levélben: a kulcs előtti mutató a kulcshoz tartozó <b>rekordra</b> mutat (a lemezen).</td><td>levelenként = kulcsok száma</td><td><code>(1 4)</code>: 2 adatmutató</td></tr>
+          <tr><td><span class="mkn">5</span> <b>Láncmutató</b></td><td>A levél d-edik (utolsó) mutatója a <b>jobb szomszéd levélre</b> mutat; így a levelek rendezett listát alkotnak. Az utolsó levélé ⊘.</td><td>levelenként 1</td><td>(1 4) → (9 10) → (11 12) → (13 15) → (16 20 25)</td></tr>
+          <tr><td><span class="mkn">6</span> <b>Rekord</b></td><td>A tényleges adat; nem része a fának, csak a levelek mutatnak rá.</td><td>= tárolt kulcsok száma</td><td>12 rekord</td></tr>
+          <tr><td><b>Magasság (h)</b></td><td>A gyökértől a levelekig vezető élek száma; <b>minden levél azonos mélységben</b> van.</td><td>\(\log_d \frac{n}{d-1} \le h \le \log_{\lfloor d/2 \rfloor} \frac{n}{2}\)</td><td>h = 2: egy keresés h + 1 = 3 csúcsot olvas</td></tr>
+        </tbody>
+      </table></div>
+      <p><b>Keresés az ábrán.</b> Mindig a gyökérből indulunk, és minden csúcsban az első olyan hasító kulcs <i>előtti</i> mutatón megyünk le, amelynél a keresett kulcs kisebb (ha nincs ilyen, a legutolsón):</p>
       <ul>
-        <li>Eggyel több mutató van bennük, mint kulcs. A kulcsok csak <b>hasító kulcsok</b> (útjelzők).</li>
-        <li>Ha Cs-ben k kulcs van: az első gyerek részfájában minden kulcs &lt; Cs.kulcs[1]; az utolsóéban minden kulcs ≥ Cs.kulcs[k]; az i-edikben (2 ≤ i ≤ k) Cs.kulcs[i−1] ≤ r &lt; Cs.kulcs[i].</li>
-        <li>A gyökérnek legalább 2 gyereke van (kivéve, ha ő az egyetlen csúcs); minden más belső csúcsnak legalább ⌊d/2⌋.</li>
+        <li><b>15:</b> gyökér <code>[13]</code>: 15 ≥ 13 → jobbra; <code>[16]</code>: 15 &lt; 16 → balra; levél <code>(13 15)</code>: megvan, az adatmutatóján elérjük a rekordot.</li>
+        <li><b>11:</b> <code>[13]</code>: 11 &lt; 13 → balra; <code>[6 11]</code>: 11 ≥ 11 → a <b>harmadik</b> gyerek (egyenlőségnél jobbra!); <code>(11 12)</code>: megvan.</li>
+        <li><b>Intervallum [9, 15]:</b> megkeressük a 9 levelét (<code>(9 10)</code>), onnan a <b>láncmutatókon</b> lépkedünk jobbra, amíg a kulcsok ≤ 15: 9, 10, 11, 12, 13, 15. Ezért fűzik listába a leveleket.</li>
       </ul>
-      <p><b>Levelek</b></p>
-      <ul>
-        <li>Legfeljebb d−1 kulcs és ugyanennyi, az adatrekordra mutató pointer; legalább ⌊d/2⌋ kulcs (kivéve, ha a fa egyetlen csúcs).</li>
-        <li>Minden levél <b>azonos mélységben</b> van.</li>
-        <li>A tárolt halmaz minden kulcsa megjelenik egy levélben, balról jobbra szigorúan növekvő sorrendben. (A leveleket a d-edik mutatóval gyakran listába fűzik.)</li>
-      </ul>
-      <p>d = 4 esetén: minden levélben 2–3 kulcs, minden belső csúcsban 2–4 gyerek (1–3 kulcs). A hasító kulcsok nem okvetlenül szerepelnek a levelekben (a törlés létrehoz ilyet).</p>
-      <div class="figs"><figure class="fig"><div data-bp="{ [ (1, 4) 6 (9, 10) 11 (11, 12) ] 13 [ (13, 15) 16 (16, 20, 25) ] }"></div><figcaption>egy kicsi negyedfokú B+ fa; bármely kulcs keresése 3 csúcsot érint</figcaption></figure></div>
+      <p class="tip"><b>A szöveges jelölés</b>A feladatokban a fát egy sorban írjuk le, szintenként más zárójellel: <code>( )</code> levél, <code>[ ]</code> az eggyel feljebbi szint, <code>{ }</code> a még feljebbi; a zárójelek közötti számok a hasító kulcsok. Az ábra fája: <code>{ [ (1 4) 6 (9 10) 11 (11 12) ] 13 [ (13 15) 16 (16 20 25) ] }</code>. A mutatókat nem írjuk ki: két szomszédos zárójel között mindig van egy (gyerek)mutató.</p>
     </div>
   </article>
 
   <article class="concept">
-    <div class="task-head"><span class="no">Beszúrás és törlés</span><span class="kind fog">elmélet</span></div>
+    <div class="task-head"><span class="no">Beszúrás – szabály és példák</span><span class="kind fog">elmélet</span></div>
     <div class="body">
-      <p><b>Beszúrás.</b> Üres fánál új levél (egyben gyökér). Különben megkeressük a kulcs levelét; ha már benne van, sikertelen.</p>
+      <p><b>Szabály.</b> Üres fánál új levél (egyben gyökér). Különben megkeressük a kulcs levelét; ha már benne van, a beszúrás sikertelen.</p>
       <ol>
         <li>Ha a csúcsban van hely, rendezetten beszúrjuk.</li>
         <li>Ha tele van, kettévágjuk, és a d kulcsot <b>egyenlően</b> elosztjuk. <b>Levélnél</b> a második csúcs legkisebb kulcsának <b>másolatát</b> szúrjuk be a szülőbe; <b>belső csúcsnál</b> a középső kulcsot <b>kivesszük</b> és azt visszük fel. Ha kell, új gyökeret hozunk létre: ekkor nő a fa magassága.</li>
       </ol>
-      <p><b>Törlés.</b> Megkeressük a kulcs levelét (ha nincs, sikertelen).</p>
+      <p>A példák kiinduló fája (d = 4): a gyökér egyben az egyetlen belső szint, 2 kulcs, 3 gyerekmutató.</p>
+      <div class="figs"><figure class="fig"><div data-bp="[ (3 5) 8 (8 9 12) 15 (15 20 25) ]"></div><figcaption>kiinduló fa (h = 1)</figcaption></figure></div>
+
+      <div class="ex">
+        <p><b>a) Van hely a levélben – 4 beszúrása.</b> Keresés: 4 &lt; 8 → az első levél, <code>(3 5)</code>. Csak 2 kulcsa van a 3 helyből: rendezetten beírjuk. A szülő nem változik (kulcs- és mutatószáma ugyanaz).</p>
+        <div class="figs"><figure class="fig"><div data-bp="[ (3 4* 5)* 8 (8 9 12) 15 (15 20 25) ]"></div><figcaption><b>4</b> után: a levél most tele van (3 kulcs, 3 adatmutató + lánc)</figcaption></figure></div>
+      </div>
+
+      <div class="ex">
+        <p><b>b) Levél vágása – 10 beszúrása</b> (az eredeti fába). Keresés: 8 ≤ 10 &lt; 15 → <code>(8 9 12)</code>, ami tele van. Gondolatban beírjuk: 4 kulcs lenne egy 3 kulcsos csúcsban.</p>
+        <div class="figs">
+          <figure class="fig"><div data-bp="[ (3 5) 8 (8 9 10* 12)! 15 (15 20 25) ]" data-nota="0"></div><figcaption><span class="step">1. lépés</span> túlcsordulás: (8 9 10 12)</figcaption></figure>
+          <figure class="fig"><div data-bp="[ (3 5) 8 (8 9)* 10* (10* 12)* 15 (15 20 25) ]*"></div><figcaption><span class="step">2. lépés</span> 2 + 2 kulcsra vágjuk; a jobb levél minimumának, a <b>10</b>-nek a <b>másolata</b> megy fel</figcaption></figure>
+        </div>
+        <p>A 10 a levélben is megmarad (a levelekben minden kulcsnak benne kell lennie). A szülőbe egy új kulcs és egy új gyerekmutató került: 2 → 3 kulcs, 3 → 4 mutató; ez még belefér. Az új levél a láncba is bekerül: (8 9) → (10 12) → (15 20 25).</p>
+      </div>
+
+      <div class="ex">
+        <p><b>c) Láncolt vágás, új gyökér – 30 beszúrása</b> (a b) eredményébe). Keresés: 30 ≥ 15 → <code>(15 20 25)</code>, tele van.</p>
+        <div class="figs">
+          <figure class="fig"><div data-bp="[ (3 5) 8 (8 9) 10 (10 12) 15 (15 20)* 25* (25 30*)* ]!" data-nota="0"></div><figcaption><span class="step">1. lépés</span> a levél (15 20 | 25 30) hasad, a 25 másolata felmegy; így a gyökérben 4 kulcs és 5 mutató lenne: <b>túlcsordul</b></figcaption></figure>
+          <figure class="fig"><div data-bp="{ [ (3 5) 8 (8 9) 10 (10 12) ]* 15* [ (15 20) 25 (25 30) ]* }*"></div><figcaption><span class="step">2. lépés</span> a belső csúcsot is vágjuk: 5 gyerek → 3 + 2; a középső kulcs, a <b>15 felmegy</b> egy új gyökérbe</figcaption></figure>
+        </div>
+        <p>Belső csúcs vágásakor a 8 10 <b>15</b> 25 kulcsokból a bal csúcs a (8 10), a jobb a (25) kulcsot kapja, a középső 15 pedig <b>lent nem marad meg</b>, csak a szülőben. Mivel a gyökér vágódott, új gyökér jön létre 1 kulccsal és 2 mutatóval: a magasság 1 → 2. A B+ fa tehát <b>felfelé</b> nő, ezért marad minden levél azonos mélységben.</p>
+      </div>
+
+      <div class="ex">
+        <p><b>d) Sikertelen beszúrás – 9 beszúrása.</b> A keresés a <code>(8 9 12)</code> levélbe vezet, ahol a 9 már megvan: a fa nem változik.</p>
+      </div>
+      <p class="tip"><b>Levél vs. belső csúcs vágása</b>Levélnél a felvitt kulcs <i>másolat</i> (lent is marad), belső csúcsnál a középső kulcs <i>átköltözik</i> a szülőbe. Mutatószámok: levélvágás után a szülő +1 kulcsot és +1 gyerekmutatót kap; belső csúcs vágásakor a d + 1 gyerekmutató oszlik szét a két új csúcs között.</p>
+    </div>
+  </article>
+
+  <article class="concept">
+    <div class="task-head"><span class="no">Törlés – szabály és példák</span><span class="kind fog">elmélet</span></div>
+    <div class="body">
+      <p><b>Szabály.</b> Megkeressük a kulcs levelét (ha nincs, sikertelen).</p>
       <ul>
         <li><b>A)</b> A levél a gyökér: töröljük a kulcsot; ha üres lett, üres fát kapunk.</li>
         <li><b>B)</b> Levél, nem gyökér: töröljük. Ha maradt elég kulcs, kész. Ha túl kevés, de egy szomszédos testvérnek (közös szülő!) több van a minimumnál: <b>egyenlően elosztjuk</b> a kulcsokat, és a szülőben a köztük lévő hasító kulcs a második testvér minimuma lesz. Ha a testvérek is a minimumon vannak: <b>összevonjuk</b> egy szomszédos testvérrel, és a szülőből töröljük a köztük lévő hasító kulcsot (C vagy D eset).</li>
         <li><b>C)</b> Belső, nem gyökér csúcs: ha van még ⌊d/2⌋ gyereke, kész. Különben testvértől kölcsönzünk (a gyerekek és hasító kulcsok egyenletes elosztása, a <b>szülőbeli hasító kulcsot is beleértve</b>: a középső kulcs felmegy a szülőbe), vagy összevonunk (a szülőbeli hasító kulcs <b>lejön</b> a két testvér közé), és a szülőnél folytatjuk.</li>
         <li><b>D)</b> A gyökérből törlünk: ha maradt 2 gyereke, kész; ha csak 1, a gyökeret töröljük, és a gyereke lesz az új gyökér: <b>csökken a fa magassága</b>.</li>
       </ul>
+      <p>Az a)–d) példák mindegyike ebből a fából indul (d = 4: levélben legalább 2 kulcs, belső csúcsban legalább 2 gyerek):</p>
+      <div class="figs"><figure class="fig"><div data-bp="{ [ (1 3) 5 (5 7 9) ] 12 [ (12 14) 16 (16 18) ] }"></div><figcaption>kiinduló fa (h = 2)</figcaption></figure></div>
+
+      <div class="ex">
+        <p><b>a) B, marad elég kulcs – 7 törlése.</b> A <code>(5 7 9)</code> levélből törlünk; marad 2 kulcs ≥ ⌊4/2⌋: kész, semmi más nem változik.</p>
+        <div class="figs"><figure class="fig"><div data-bp="{ [ (1 3) 5 (5 9)* ] 12 [ (12 14) 16 (16 18) ] }"></div><figcaption><b>7</b> után</figcaption></figure></div>
+      </div>
+
+      <div class="ex">
+        <p><b>b) B, a levél legkisebb kulcsát töröljük – 5 törlése.</b> <code>(5 7 9)</code> → <code>(7 9)</code>, elég kulcs maradt. A szülőben az 5 hasító kulcs <b>megmaradhat</b>: továbbra is jól irányít (1, 3 &lt; 5 ≤ 7, 9). Így jön létre olyan hasító kulcs, ami egyik levélben sincs benne.</p>
+        <div class="figs"><figure class="fig"><div data-bp="{ [ (1 3) 5 (7 9)* ] 12 [ (12 14) 16 (16 18) ] }"></div><figcaption><b>5</b> után: az 5 már csak hasító kulcs</figcaption></figure></div>
+      </div>
+
+      <div class="ex">
+        <p><b>c) B, kölcsönzés a testvértől – 1 törlése.</b> <code>(1 3)</code> → <code>(3)</code>: 1 kulcs &lt; 2, alulcsordul. A szomszéd testvérnek, <code>(5 7 9)</code>-nek 3 kulcsa van, tud adni. A 3 5 7 9 kulcsokat egyenlően elosztjuk: (3 5) és (7 9); a köztük lévő hasító kulcs a jobb levél minimuma, a <b>7</b> lesz.</p>
+        <div class="figs">
+          <figure class="fig"><div data-bp="{ [ (3)! 5 (5 7 9) ] 12 [ (12 14) 16 (16 18) ] }" data-nota="0"></div><figcaption><span class="step">1. lépés</span> túl kevés kulcs</figcaption></figure>
+          <figure class="fig"><div data-bp="{ [ (3 5)* 7* (7 9)* ]* 12 [ (12 14) 16 (16 18) ] }"></div><figcaption><span class="step">2. lépés</span> elosztás, a szülőben 5 → <b>7</b></figcaption></figure>
+        </div>
+      </div>
+
+      <div class="ex">
+        <p><b>d) B összevonás → C összevonás → D – 14 törlése.</b> Egy törlés végiggyűrűzik a fán, és csökken a magasság.</p>
+        <div class="figs">
+          <figure class="fig"><div data-bp="{ [ (1 3) 5 (5 7 9) ] 12 [ (12 16 18)* ]! }" data-nota="0"></div><figcaption><span class="step">1. lépés</span> (12) alulcsordul, a testvér (16 18) a minimumon van → <b>összevonjuk</b>: (12 16 18); a szülőből törlődik a 16, így <b>1 gyereke</b> marad</figcaption></figure>
+          <figure class="fig"><div data-bp="{ [ (1 3) 5 (5 7 9) 12* (12 16 18) ]* }!" data-nota="0"></div><figcaption><span class="step">2. lépés</span> C: a belső csúcs testvérének is csak 2 gyereke van → összevonjuk őket, a gyökérből a <b>12 lejön</b> közéjük; a gyökérnek 1 gyereke marad</figcaption></figure>
+          <figure class="fig"><div data-bp="[ (1 3) 5 (5 7 9) 12 (12 16 18) ]*"></div><figcaption><span class="step">3. lépés</span> D: az 1 gyerekes gyökeret töröljük, a gyereke lesz az új gyökér; h = 2 → 1</figcaption></figure>
+        </div>
+      </div>
+
+      <div class="ex">
+        <p><b>e) C, kölcsönzés belső csúcsok között – 14 törlése</b> egy olyan fából, ahol a bal belső csúcsnak 3 gyereke van:</p>
+        <div class="figs">
+          <figure class="fig"><div data-bp="{ [ (1 3) 5 (5 7) 9 (9 10) ] 12 [ (12 14) 16 (16 18) ] }"></div><figcaption>kiinduló fa</figcaption></figure>
+          <figure class="fig"><div data-bp="{ [ (1 3) 5 (5 7) 9 (9 10) ] 12 [ (12 16 18)* ]! }" data-nota="0"></div><figcaption><span class="step">1. lépés</span> mint d)-ben: a levelek összevonódnak, a jobb belső csúcsnak 1 gyereke marad</figcaption></figure>
+          <figure class="fig"><div data-bp="{ [ (1 3) 5 (5 7) ]* 9* [ (9 10) 12* (12 16 18) ]* }"></div><figcaption><span class="step">2. lépés</span> a bal testvér átad egy gyereket, a (9 10) levelet: a <b>12 lejön</b>, a <b>9 felmegy</b> a gyökérbe</figcaption></figure>
+        </div>
+        <p>A kölcsönzésnél a két testvér 3 + 1 gyerekét osztjuk el 2 + 2-re. A hasító kulcsok „forognak”: a gyökérbeli 12 lejön a jobb csúcsba (most az választja el a (9 10) és a (12 16 18) levelet), a bal csúcs utolsó kulcsa, a 9 pedig felmegy a gyökérbe.</p>
+      </div>
+
+      <div class="ex">
+        <p><b>f) A, a levél a gyökér.</b> Ha a fa egyetlen levél, pl. <code>(4 8)</code>: a 4 törlése után <code>(8)</code> marad (a gyökérlevélre nincs alsó korlát), a 8 törlése után <b>üres fát</b> kapunk.</p>
+      </div>
+      <p class="tip"><b>Melyiket mikor?</b>Alulcsordulásnál előbb a <i>kölcsönzést</i> próbáljuk (a szomszéd testvérnek több van a minimumnál), mert az helyben megoldja a gondot. Ha egyik szomszéd sem tud adni, <i>összevonunk</i>: ez a szülőből elvesz egy kulcsot és egy mutatót, így a szülő is alulcsordulhat, és ez akár a gyökérig gyűrűzik, ahol a magasság csökken.</p>
     </div>
   </article>
 
@@ -1107,7 +1206,7 @@ if t ≠ ⊘
 <!-- ======================= GRÁFOK ÁBRÁZOLÁSA ======================= -->
 <section id="grafok">
   <div class="section-head">
-    <span class="label">5. témakör · Grafok_abrazolasa_gyak.pdf</span>
+    <span class="label">4. témakör · Grafok_abrazolasa_gyak.pdf</span>
     <h2>Gráfok ábrázolása</h2>
     <p>A gráfalgoritmusok egy csúcs feldolgozásakor a <b>szomszédait</b> látogatják meg, ezért az ábrázolásnak ezt kell hatékonyan támogatnia. Itt mindig \(V = \{1, \dots, n\}\), \(n = |V|\), \(m = |E|\).</p>
   </div>
@@ -1313,7 +1412,7 @@ loop i := 1 to n
 <!-- ======================= SZÉLESSÉGI BEJÁRÁS ======================= -->
 <section id="bfs">
   <div class="section-head">
-    <span class="label">6. témakör · Szelessegi_gyakorlati_anyag_2024.pdf</span>
+    <span class="label">5. témakör · Szelessegi_gyakorlati_anyag_2024.pdf</span>
     <h2>Szélességi bejárás (BFS)</h2>
     <p>Egy kezdőcsúcsból felderíti az úttal elérhető csúcsokat, és mindegyikhez egy <b>minimális élszámú</b> utat ad (ha több van, az egyiket). Tetszőleges nem üres gráfon használható: irányított, irányítatlan, összefüggő vagy sem.</p>
   </div>
@@ -1606,7 +1705,7 @@ return −1   // nem érhető el
 <!-- ======================= TÖMÖRÍTÉS ======================= -->
 <section id="tomor">
   <div class="section-head">
-    <span class="label">7. témakör · ad2Tomorites.pdf, LZW_algoritmus.pdf</span>
+    <span class="label">6. témakör · ad2Tomorites.pdf, LZW_algoritmus.pdf</span>
     <h2>Veszteségmentes adattömörítés: Huffman és LZW</h2>
     <p>A forráskódolás azt vizsgálja, adott mennyiségű információ mekkora adattal tárolható. Csak veszteségmentes eljárásokkal foglalkozunk (az adat teljes egészében visszaállítható); bináris esetben a kódszavak a Γ = {0, 1} ábécé feletti szavak (r = 2).</p>
   </div>
@@ -1986,30 +2085,110 @@ loop i := 2 to |In|
     var src = el.dataset.bp, d = +(el.dataset.d || 4), root = parseBp(src);
     var maxLen = 1, depth = 0;
     (function scan(n, lv) { depth = Math.max(depth, lv); n.keys.forEach(function (k) { maxLen = Math.max(maxLen, k.length); }); n.kids.forEach(function (c) { scan(c, lv + 1); }); })(root, 0);
-    var cw = Math.max(24, maxLen * 8.5 + 10), ch = 24, w = (d - 1) * cw, gapX = 14, dy = 66, cur = 10, out = '', edges = '';
+    var cw = Math.max(24, maxLen * 8.5 + 10), ch = 24, gapX = 14, dy = 66, cur = 10, out = '', edges = '';
+    // an overfull node (d keys, drawn while it is being split) gets an extra cell
+    function cells(n) { return Math.max(d - 1, n.keys.length); }
+    function wid(n) { return cells(n) * cw; }
     function place(n, lv) {
       n.lv = lv;
-      if (!n.kids.length) { n.x = cur; cur += w + gapX; return; }
+      if (!n.kids.length) { n.x = cur; cur += wid(n) + gapX; return; }
       n.kids.forEach(function (c) { place(c, lv + 1); });
       var a = n.kids[0], b = n.kids[n.kids.length - 1];
-      n.x = (a.x + b.x) / 2;
+      n.x = (a.x + b.x + wid(b)) / 2 - wid(n) / 2;
     }
     place(root, 0);
     var W = cur - gapX + 10, H = depth * dy + ch + 20;
     function draw(n) {
-      var x = n.x, y = 10 + n.lv * dy, cls = n.mark === '!' ? ' bad' : n.mark === '*' ? ' new' : '';
-      out += '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + ch + '" class="nd' + cls + '"/>';
-      for (var j = 1; j < d - 1; j++) out += line(x + j * cw, y, x + j * cw, y + ch, 'ed');
+      var x = n.x, y = 10 + n.lv * dy, cls = n.mark === '!' ? ' bad' : n.mark === '*' ? ' new' : '', nc = cells(n);
+      out += '<rect x="' + x + '" y="' + y + '" width="' + wid(n) + '" height="' + ch + '" class="nd' + cls + '"/>';
+      for (var j = 1; j < nc; j++) out += line(x + j * cw, y, x + j * cw, y + ch, 'ed');
       n.keys.forEach(function (k, j) { out += txt(x + (j + 0.5) * cw, y + ch / 2 + 0.5, k, n.km[j] ? 'knew' : ''); });
       n.kids.forEach(function (c, j) {
-        var px = x + j * cw; if (j === 0) px += 4; if (j === d - 1) px -= 4;
-        edges += arrow(px, y + ch, c.x + w / 2, 10 + c.lv * dy - 1);
+        var px = x + j * cw; if (j === 0) px += 4; if (j === nc) px -= 4;
+        edges += arrow(px, y + ch, c.x + wid(c) / 2, 10 + c.lv * dy - 1);
         draw(c);
       });
     }
     draw(root);
     el.innerHTML = svg(W, H, edges + out);
     addNota(el, src);
+  }
+
+  /* ---------- B+ tree anatomy: every pointer slot drawn, levels labelled, numbered markers ---------- */
+  function drawBpAnat(el) {
+    var src = el.dataset.bpa, d = +(el.dataset.d || 4), h = Math.floor(d / 2), root = parseBp(src);
+    var pw = 13, kw = 24, ch = 26, w = d * pw + (d - 1) * kw, gapX = 18, dy = 84, padL = 122, padR = 74, top = 30;
+    var leaves = [], depth = 0, cur = padL, out = '', edges = '', marks = '';
+    function place(n, lv) {
+      n.lv = lv; depth = Math.max(depth, lv);
+      if (!n.kids.length) { n.x = cur; cur += w + gapX; leaves.push(n); return; }
+      n.kids.forEach(function (c) { place(c, lv + 1); });
+      n.x = (n.kids[0].x + n.kids[n.kids.length - 1].x) / 2;
+    }
+    place(root, 0);
+    leaves.forEach(function (n, k) { n.next = leaves[k + 1] || null; });
+    var recY = top + depth * dy + ch + 50, rw = 24, rh = 20, W = cur - gapX + padR, H = recY + rh + 14;
+    function Y(n) { return top + n.lv * dy; }
+    function slotX(n, i) { return n.x + i * (pw + kw) + pw / 2; }
+    function keyX(n, j) { return n.x + pw + j * (pw + kw) + kw / 2; }
+    function mark(no, x, y, tx, ty) {
+      if (tx !== undefined) marks += line(x, y, tx, ty, 'mkl');
+      marks += '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="9" class="mk"/>' + txt(x, y + 0.5, String(no), 'mk');
+    }
+    (function draw(n) {
+      var x = n.x, y = Y(n), leaf = !n.kids.length, cy = y + ch / 2;
+      out += '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + ch + '" class="nd"/>';
+      for (var i = 0; i < d; i++) {
+        var sx = x + i * (pw + kw);
+        out += '<rect x="' + sx + '" y="' + y + '" width="' + pw + '" height="' + ch + '" class="ps"/>';
+        if (i) out += line(sx, y, sx, y + ch);
+        if (i < d - 1) out += line(sx + pw, y, sx + pw, y + ch);
+        var used = leaf ? (i < n.keys.length || (i === d - 1 && n.next)) : i < n.kids.length;
+        if (used) out += '<circle cx="' + slotX(n, i) + '" cy="' + cy + '" r="3" class="nd blk"/>';
+        else out += line(sx + 3, y + ch - 4, sx + pw - 3, y + 4, 'ed nul');
+      }
+      out += '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + ch + '" class="ol"/>';
+      n.keys.forEach(function (k, j) { out += txt(keyX(n, j), cy + 0.5, k); });
+      if (leaf) {
+        n.keys.forEach(function (k, j) {
+          var rx = (slotX(n, j) + keyX(n, j)) / 2 - rw / 2;
+          edges += arrow(slotX(n, j), cy, rx + rw / 2, recY - 1);
+          out += '<rect x="' + rx.toFixed(1) + '" y="' + recY + '" width="' + rw + '" height="' + rh + '" rx="3" class="rec"/>' + txt(rx + rw / 2, recY + rh / 2 + 0.5, k, 'sub');
+        });
+        if (n.next) edges += arrow(slotX(n, d - 1), cy, n.next.x - 1, cy, 'lk');
+      }
+      n.kids.forEach(function (c, j) { edges += arrow(slotX(n, j), cy, c.x + w / 2, Y(c) - 1); draw(c); });
+    })(root);
+
+    // level labels with the allowed key / pointer counts
+    function lvl(y, name, a, b) {
+      out += txt(8, y - 8, name, 'lvl', 'start') + txt(8, y + 8, a, 'sub', 'start') + (b ? txt(8, y + 22, b, 'sub', 'start') : '');
+    }
+    for (var lv = 0; lv <= depth; lv++) {
+      var y = top + lv * dy + ch / 2;
+      if (lv === 0 && depth > 0) lvl(y, 'gyökér', '1–' + (d - 1) + ' kulcs', '2–' + d + ' mutató');
+      else if (lv < depth) lvl(y, 'belső csúcs', (h - 1) + '–' + (d - 1) + ' kulcs', h + '–' + d + ' mutató');
+      else lvl(y, 'levél', h + '–' + (d - 1) + ' kulcs', (h + 1) + '–' + d + ' mutató');
+    }
+    lvl(recY + rh / 2, 'rekordok', '(a lemezen)');
+    // height bracket on the right
+    var bx = cur - gapX + 22, y0 = top + ch / 2, y1 = top + depth * dy + ch / 2;
+    out += line(bx, y0, bx, y1, 'ed') + line(bx - 5, y0, bx + 5, y0, 'ed') + line(bx - 5, y1, bx + 5, y1, 'ed');
+    out += txt(bx + 9, (y0 + y1) / 2, 'h = ' + depth, 'lvl', 'start');
+
+    // numbered markers (explained in the table under the figure)
+    var L0 = leaves[0], rY = Y(root);
+    if (depth > 0) {
+      mark(1, keyX(root, 0), rY - 16);
+      mark(2, slotX(root, 0) - 18, rY - 16, slotX(root, 0), rY + 3);
+      mark(3, slotX(root, root.kids.length) + 4, rY - 16, slotX(root, root.kids.length), rY + 3);
+    }
+    var lY = Y(L0) + ch;
+    var ay = lY + 24, ax = slotX(L0, 0) + (ay - Y(L0) - ch / 2) / (recY - Y(L0) - ch / 2) * ((slotX(L0, 0) + keyX(L0, 0)) / 2 - slotX(L0, 0));
+    mark(4, ax - 20, ay, ax - 2, ay);
+    if (L0.next) mark(5, L0.x + w + gapX / 2, Y(L0) + ch + 16);
+    mark(6, slotX(L0, 0) - 20, recY + rh / 2);
+    el.innerHTML = svg(W, H, edges + out + marks);
   }
 
   /* ---------- general tree ---------- */
@@ -2199,6 +2378,7 @@ loop i := 2 to |In|
   }
   each('[data-avl]', drawBin);
   each('[data-bp]', drawBp);
+  each('[data-bpa]', drawBpAnat);
   each('[data-gt]', drawGt);
   each('[data-lcrs]', drawLcrs);
   each('[data-g]', drawGraph);
