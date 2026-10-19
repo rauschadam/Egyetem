@@ -29,6 +29,9 @@
   --algo: #b3326b;
   --algo-soft: #fbe8f0;
   --algo-grid: rgba(179, 50, 107, 0.06);
+  --cpp: #0d7a72;
+  --cpp-soft: #e0f4f1;
+  --cpp-grid: rgba(13, 122, 114, 0.06);
   --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
   --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
   --f-label: "IBM Plex Mono", ui-monospace, Consolas, monospace;
@@ -39,6 +42,7 @@
     --rule: #2a3442; --accent: #93abff; --accent-soft: #1d2846;
     --dimat: #93abff; --dimat-soft: #1d2846; --anal: #f2a25e; --anal-soft: #33241a; --anal-grid: rgba(242, 162, 94, 0.05); --pe: #c4a7ff; --pe-soft: #261f3d; --pe-grid: rgba(196, 167, 255, 0.05);
     --algo: #f590b8; --algo-soft: #3b1e2b; --algo-grid: rgba(245, 144, 184, 0.05);
+    --cpp: #5fd0c3; --cpp-soft: #13302d; --cpp-grid: rgba(95, 208, 195, 0.05);
     color-scheme: dark;
   }
 }
@@ -47,6 +51,7 @@
   --rule: #2a3442; --accent: #93abff; --accent-soft: #1d2846;
   --dimat: #93abff; --dimat-soft: #1d2846; --anal: #f2a25e; --anal-soft: #33241a; --anal-grid: rgba(242, 162, 94, 0.05); --pe: #c4a7ff; --pe-soft: #261f3d; --pe-grid: rgba(196, 167, 255, 0.05);
   --algo: #f590b8; --algo-soft: #3b1e2b; --algo-grid: rgba(245, 144, 184, 0.05);
+  --cpp: #5fd0c3; --cpp-soft: #13302d; --cpp-grid: rgba(95, 208, 195, 0.05);
   color-scheme: dark;
 }
 
@@ -103,7 +108,9 @@ body.t-anal { --grid: var(--anal-grid); }
 body.t-pe { --grid: var(--pe-grid); }
 .t-algo  { --hue: var(--algo);  --hue-soft: var(--algo-soft); --accent: var(--algo); --accent-soft: var(--algo-soft); }
 body.t-algo { --grid: var(--algo-grid); }
-.hero.t-dimat, .hero.t-anal, .hero.t-pe, .hero.t-algo { border-bottom-color: var(--hue); }
+.t-cpp   { --hue: var(--cpp);   --hue-soft: var(--cpp-soft); --accent: var(--cpp); --accent-soft: var(--cpp-soft); }
+body.t-cpp { --grid: var(--cpp-grid); }
+.hero.t-dimat, .hero.t-anal, .hero.t-pe, .hero.t-algo, .hero.t-cpp { border-bottom-color: var(--hue); }
 .hero .label.code { color: var(--hue); }
 
 /* home: subject cards */
@@ -373,6 +380,30 @@ a.item:hover .open, a.item:focus-visible .open { color: var(--hue); }
           title: 'Zárthelyi',
           items: [
             { kind: 'pdf', icon: 'ZH', title: 'Minta 1. ZH (2024)', desc: 'Huffman, AVL, B+ fa, általános fa és gráf feladatok, 60 pont', href: 'ALGO II/MintaZH_1_2024.pdf', tags: ['van kidolgozás'] }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'cpp', theme: 't-cpp', code: 'C++', name: 'Programozási nyelvek (C++)',
+      groups: [
+        {
+          title: 'Kidolgozások',
+          items: [
+            { kind: 'html', featured: true, icon: 'FOGALOM', title: 'Fogalomtár', desc: 'A hat előadás összes fogalma, szabálya és csapdája; egyszerű és diahű nézettel, kereshetően, kikérdezés móddal.', href: 'C++/Kidolgozások/fogalmak.html', tags: ['6 előadás', '85 fogalom'] },
+            { kind: 'html', featured: true, icon: 'KÓD', title: 'Az előadások kódpéldái kidolgozva', desc: 'Minden „mit ír ki?”, „mi a hiba?” és ellenőrző kérdés a diákról: makrók, sizeof/strlen, szekvenciapontok, elfedés, new/delete, élettartam; lenyitható megoldással.', href: 'C++/Kidolgozások/kodpeldak.html', tags: ['38 feladat'] },
+            { kind: 'html', featured: true, icon: 'TESZT', title: 'Gyakorló teszt', desc: 'Feleletválasztós kérdések az elméleti vizsgához (15 tesztkérdés), azonnali visszajelzéssel és magyarázattal.', href: 'C++/Kidolgozások/teszt.html', tags: ['28 kérdés'] }
+          ]
+        },
+        {
+          title: 'Előadások', note: 'Pataki Norbert diái PDF-ben, új fülön nyílnak.',
+          items: [
+            { kind: 'pdf', n: '1', title: 'Bevezetés', desc: 'Számonkérés, nyelvek osztályozása, paradigmák, a C++ története és alapelvei', href: 'C++/Előadás/cppintro.pdf' },
+            { kind: 'pdf', n: '2', title: 'Preprocesszor', desc: 'A fordítás lépései, header fájlok, #include, #define, makrók, include guard, feltételes fordítás', href: 'C++/Előadás/preproc.pdf' },
+            { kind: 'pdf', n: '3', title: 'Lexikális egységek', desc: 'Hibák és figyelmeztetések, optimalizáció, kulcsszavak, azonosítók, névkonvenciók, szövegliterálok', href: 'C++/Előadás/cpplex.pdf' },
+            { kind: 'pdf', n: '4', title: 'Típusok és kifejezések', desc: 'Konstansok, típusok mérete, operátorok, precedencia, kötés, szekvenciapontok', href: 'C++/Előadás/cppexpr.pdf' },
+            { kind: 'pdf', n: '5', title: 'Láthatósági szabályok', desc: 'Hatókör, elfedés, globális változók, névterek, memóriaszegmensek, verem, heap, RAII', href: 'C++/Előadás/cppscope.pdf' },
+            { kind: 'pdf', n: '6', title: 'Élettartam szabályok', desc: 'Automatikus, statikus, dinamikus változók, adattagok, temporálisok, az answer-példa', href: 'C++/Előadás/cpplife.pdf' }
           ]
         }
       ]

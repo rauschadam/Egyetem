@@ -1,0 +1,556 @@
+<!doctype html>
+<html lang="hu" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>C++ · fogalomtár</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+/* C++ glossary: one card per concept, grouped by lecture; simple / strict views */
+:root {
+  --paper: #f5f7fa; --grid: rgba(13, 122, 114, 0.06); --card: #ffffff; --ink: #1b2430; --muted: #5a6574; --rule: #d7dde6;
+  --accent: #0d7a72; --accent-soft: #e0f4f1; --mark: #b8352a; --mark-soft: #fbe9e6; --ok: #2c7a4b; --ok-soft: #e3f3e9;
+  --warm: #9a5b00; --warm-soft: #fbf0dc; --blue: #2346a8; --blue-soft: #e6ecfb; --vio: #6b46c1; --vio-soft: #efe9fb;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-label: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f141b; --grid: rgba(95, 208, 195, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5; --rule: #2a3442;
+    --accent: #5fd0c3; --accent-soft: #13302d; --mark: #ff8b7b; --mark-soft: #3a1f1c; --ok: #74d39c; --ok-soft: #173225;
+    --warm: #f2c46d; --warm-soft: #33291a; --blue: #93abff; --blue-soft: #1d2846; --vio: #c4a7ff; --vio-soft: #261f3d; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f141b; --grid: rgba(95, 208, 195, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5; --rule: #2a3442;
+  --accent: #5fd0c3; --accent-soft: #13302d; --mark: #ff8b7b; --mark-soft: #3a1f1c; --ok: #74d39c; --ok-soft: #173225;
+  --warm: #f2c46d; --warm-soft: #33291a; --blue: #93abff; --blue-soft: #1d2846; --vio: #c4a7ff; --vio-soft: #261f3d; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; background-color: var(--paper); background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 22px 22px; color: var(--ink); font-family: var(--f-body); font-size: 1.06rem; line-height: 1.6; }
+.wrap { max-width: 900px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 80px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2rem, 6vw, 3.1rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.65rem; font-weight: 700; letter-spacing: -0.01em; }
+p { margin: 0; }
+a { color: var(--accent); }
+code { font-family: var(--f-label); font-size: 0.86em; background: var(--accent-soft); padding: 0 4px; border-radius: 3px; overflow-wrap: anywhere; }
+.label { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+
+.back { justify-self: start; display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px 9px 12px; border: 1.5px solid var(--accent); border-radius: 8px; background: var(--accent-soft); color: var(--ink); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 1.02rem; line-height: 1; white-space: nowrap; transition: background .15s, color .15s; }
+.back .arr { color: var(--accent); font-size: 1.25rem; transition: transform .15s, color .15s; }
+.back:hover, .back:focus-visible { background: var(--accent); color: var(--paper); outline: none; }
+.back:hover .arr, .back:focus-visible .arr { color: var(--paper); transform: translateX(-3px); }
+header.hero { display: grid; gap: 14px; padding-block: 0 26px; border-bottom: 2px solid var(--accent); }
+.hero .sub { color: var(--muted); max-width: 66ch; }
+.facts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.fact { display: flex; flex-direction: column; gap: 2px; padding: 8px 14px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; min-width: 120px; }
+.fact b { font-family: var(--f-display); font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+
+nav.bar { position: sticky; top: 0; z-index: 5; background: var(--paper); border-bottom: 1px solid var(--rule); margin-inline: -16px; padding-inline: 16px; }
+nav.bar ul { list-style: none; margin: 0; padding: 10px 0; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin; }
+nav.bar li[hidden] { display: none; }
+nav.bar a { display: block; white-space: nowrap; text-decoration: none; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.04em; color: var(--ink); padding: 6px 10px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); }
+nav.bar a:hover, nav.bar a:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+nav.bar a.nav-back { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+nav.bar a.active, nav.bar a.active:hover, nav.bar a.active:focus-visible { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+
+.tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 18px; }
+.tools input { flex: 1 1 240px; min-width: 0; font: inherit; font-size: 0.98rem; padding: 8px 12px; border: 1px solid var(--rule); border-radius: 6px; background: var(--card); color: var(--ink); }
+.tools input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+button { font-family: var(--f-label); font-size: 0.78rem; padding: 8px 12px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); color: var(--ink); cursor: pointer; }
+button:hover, button:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+button[aria-pressed="true"] { background: var(--accent); color: var(--paper); border-color: var(--accent); }
+.seg { display: inline-flex; border: 1px solid var(--accent); border-radius: 6px; overflow: hidden; }
+.seg button { border: 0; border-radius: 0; padding: 8px 14px; }
+.seg button + button { border-left: 1px solid var(--accent); }
+.seg button[aria-pressed="false"] { background: var(--card); color: var(--ink); }
+
+section.lect { padding-top: 40px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; scroll-margin-top: 56px; }
+section.lect[hidden] { display: none; }
+.section-head { display: grid; gap: 6px; }
+.section-head p { color: var(--muted); max-width: 68ch; }
+
+/* code: highlighted by the script below; .out = terminal / program output */
+pre.code, pre.out { margin: 0; padding: 10px 14px; border: 1px solid var(--rule); border-radius: 6px; font-family: var(--f-label); font-size: 0.84rem; line-height: 1.5; overflow-x: auto; tab-size: 4; }
+pre.code { background: var(--paper); }
+pre.out { background: #0a0d12; color: #cfd6e0; border-color: #222b37; }
+pre.out::before { content: "kimenet / terminál"; display: block; font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase; color: #7d8898; margin-bottom: 4px; }
+.cr { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-start; }
+.cr > pre { flex: 1 1 260px; min-width: 0; }
+.tk-kw { color: var(--vio); font-weight: 500; }
+.tk-str { color: var(--ok); }
+.tk-num { color: var(--warm); }
+.tk-com { color: var(--muted); font-style: italic; }
+.tk-pp { color: var(--blue); }
+
+.warn, .tip, .own, .note { max-width: 74ch; font-size: 0.95rem; }
+.warn { background: var(--mark-soft); border-left: 3px solid var(--mark); padding: 8px 12px; border-radius: 0 4px 4px 0; }
+.tip { background: var(--accent-soft); border-left: 3px solid var(--accent); padding: 8px 12px; border-radius: 0 4px 4px 0; }
+.note { background: var(--warm-soft); border-left: 3px solid var(--warm); padding: 8px 12px; border-radius: 0 4px 4px 0; }
+.own { border: 1px dashed var(--ok); padding: 8px 12px; border-radius: 4px; }
+.own > b:first-child, .tip > b:first-child, .warn > b:first-child, .note > b:first-child { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; display: block; margin-bottom: 2px; }
+.own > b:first-child { color: var(--ok); }
+.warn > b:first-child { color: var(--mark); }
+.tip > b:first-child { color: var(--accent); }
+.note > b:first-child { color: var(--warm); }
+.ans { display: inline-block; background: var(--ok-soft); color: var(--ok); font-weight: 600; padding: 1px 9px; border-radius: 4px; }
+.ans code { background: transparent; color: inherit; }
+
+.tbl { overflow-x: auto; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; max-width: 100%; }
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+th, td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--f-label); font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+tr:last-child td { border-bottom: 0; }
+td code, th code { white-space: nowrap; }
+
+footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.88rem; }
+.empty { color: var(--muted); padding-top: 24px; }
+
+body[data-view="simple"] .v-strict, body[data-view="strict"] .v-simple { display: none; }
+.concepts { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
+details.concept { background: var(--card); border: 1px solid var(--rule); border-left: 3px solid var(--tc, var(--accent)); border-radius: 0 6px 6px 0; padding: 10px 16px; min-width: 0; scroll-margin-top: 60px; }
+details.concept[hidden] { display: none; }
+.concept.def { --tc: var(--accent); --tcs: var(--accent-soft); }
+.concept.thm { --tc: var(--vio); --tcs: var(--vio-soft); }
+.concept.not { --tc: var(--blue); --tcs: var(--blue-soft); }
+.concept.ex  { --tc: var(--warm); --tcs: var(--warm-soft); }
+.concept.trap { --tc: var(--mark); --tcs: var(--mark-soft); }
+.concept.rem { --tc: var(--muted); --tcs: transparent; }
+summary { cursor: pointer; list-style: none; display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; padding: 2px 0; }
+summary::-webkit-details-marker { display: none; }
+summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ctype { font-family: var(--f-label); font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 7px; border-radius: 3px; color: var(--tc); background: var(--tcs); border: 1px solid color-mix(in srgb, var(--tc) 40%, transparent); white-space: nowrap; }
+.cname { font-family: var(--f-display); font-weight: 600; font-size: 1.08rem; }
+details.concept:not([open]) .cname::after { content: "  · mutasd"; font-family: var(--f-label); font-size: 0.7rem; font-weight: 400; color: var(--muted); }
+.cbody { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; padding-top: 8px; min-width: 0; }
+.cbody ol, .cbody ul { margin: 0; padding-left: 22px; display: grid; gap: 4px; }
+.cbody > p { max-width: 74ch; }
+.src { font-family: var(--f-label); font-size: 0.72rem; color: var(--muted); }
+.legend { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
+@media (max-width: 520px) { body { font-size: 1rem; } details.concept { padding: 10px 12px; } }
+
+</style>
+</head>
+<body data-view="simple">
+<div class="wrap">
+<header class="hero">
+  <a class="back" href="../../index.html#/cpp"><span class="arr" aria-hidden="true">←</span>Vissza: Programozási nyelvek (C++)</a>
+  <span class="label">Programozási nyelvek (C++) · Pataki Norbert előadásai</span>
+  <h1>Fogalomtár</h1>
+  <p class="sub">A hat előadás összes fogalma, szabálya és csapdája előadásonként. Minden kártya kétféleképpen olvasható: <b>Egyszerű</b> (saját magyarázat, példával) vagy <b>Szigorú</b> (pontosan, ahogy a dián szerepel). Kikérdezés módban csak a fogalmak neve látszik: próbáld felidézni, aztán nyisd ki.</p>
+  <div class="facts">
+    <div class="fact"><span class="label">Előadás</span><b>6</b></div>
+    <div class="fact"><span class="label">Fogalom</span><b>85</b></div>
+    <div class="fact"><span class="label">Csapda</span><b>9</b></div>
+  </div>
+  <div class="legend"><span class="concept def" style="display:contents"><span class="ctype">Fogalom</span></span><span class="concept thm" style="display:contents"><span class="ctype">Szabály</span></span><span class="concept not" style="display:contents"><span class="ctype">Eszköz</span></span><span class="concept ex" style="display:contents"><span class="ctype">Példa</span></span><span class="concept trap" style="display:contents"><span class="ctype">Csapda</span></span><span class="concept rem" style="display:contents"><span class="ctype">Megjegyzés</span></span></div>
+</header>
+
+<nav class="bar" aria-label="Előadások">
+  <ul>
+    <li><a class="nav-back" href="../../index.html#/cpp" aria-label="Vissza: Programozási nyelvek (C++)">← C++</a></li><li><a href="#ea1">1. Bevezetés</a></li><li><a href="#ea2">2. Preprocesszor</a></li><li><a href="#ea3">3. Lexikális</a></li><li><a href="#ea4">4. Kifejezések</a></li><li><a href="#ea5">5. Láthatóság</a></li><li><a href="#ea6">6. Élettartam</a></li>
+  </ul>
+</nav>
+
+<div class="tools">
+  <input id="q" type="search" placeholder="Keresés a fogalmak nevében (pl. szekvenciapont, RAII)…" aria-label="Keresés">
+  <div class="seg" role="group" aria-label="Magyarázat típusa"><button type="button" data-view="simple" aria-pressed="true">Egyszerű</button><button type="button" data-view="strict" aria-pressed="false">Szigorú (dia)</button></div>
+  <button type="button" id="quiz" aria-pressed="false">Kikérdezés mód</button>
+  <button type="button" id="openall">Mind kinyitása</button>
+</div>
+
+<section id="ea1" class="lect"><div class="section-head"><span class="label">1. előadás · <a href="../Előadás/cppintro.pdf" target="_blank" rel="noopener">dia PDF ↗</a></span><h2>Bevezetés</h2></div><div class="concepts">
+<details class="concept rem" id="ea1-szamonkeres-es-vizsga" data-name="Számonkérés és vizsga Megjegyzés" open><summary><span class="ctype">Megjegyzés</span><span class="cname">Számonkérés és vizsga</span></summary><div class="cbody v-simple"><p>Félév közben a gyakorlaton <b>3 db +/−</b> jár, és van egy <b>opcionális beadandó</b> (code review-val). A vizsga két részből áll:</p><ul><li><b>elmélet:</b> 15 tesztkérdés, kb. 30–45 perc;</li><li><b>gyakorlat:</b> egy 3 órás programozási feladat.</li></ul><div class="tbl"><table><tr><th>elméleti pont</th><td>&lt; 8</td><td>8–9</td><td>10–11</td><td>12–13</td><td>14–</td></tr><tr><th>jegy</th><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr></table></div><p>Vizsgajegy = (elmélet + gyakorlat) / 2, ha <b>mindkettő legalább 2-es</b>; ha az átlag nem egész, a <b>gyakorlati jegy felé</b> kerekítünk. Pl. elmélet 3, gyakorlat 4 → 3,5 → <b>4</b>; elmélet 4, gyakorlat 3 → 3,5 → <b>3</b>.</p></div><div class="cbody v-strict"><p class="src">dia: „Számonkérés”</p><ul><li>3 darab +/- (gyakorlat)</li><li>Opcionális beadandó, code review</li><li>Vizsga: Elmélet: 15 tesztkérdés, kb. 30-45 perc; +/- szerepe</li><li>Elmélet értékelése: 8 pont alatt: 1; 8-9 pont: 2; 10-11 pont: 3; 12-13 pont: 4; 14- pont: 5</li><li>Vizsga: Gyakorlati feladat, 3 óra</li><li>Vizsgajegy: elmélet + gyakorlat / 2.0, ha az elmélet és a gyakorlat is legalább 2-es</li><li>Vizsgajegy: gyakorlat felé kerekítve, ha az átlag nem egész szám</li></ul></div></details>
+<details class="concept rem" id="ea1-ajanlott-es-ellenjavallt-irodalom" data-name="Ajánlott és ellenjavallt irodalom Megjegyzés" open><summary><span class="ctype">Megjegyzés</span><span class="cname">Ajánlott és ellenjavallt irodalom</span></summary><div class="cbody v-simple"><p>Ajánlott: <b>Bjarne Stroustrup: A C++ programozási nyelv</b> (a nyelv megalkotójától) és <b>Scott Meyers: Hatékony C++</b> (gyakorlati tanácsok). Ellenjavallt a „tanulj meg C++-t 21 nap alatt” típusú gyorstalpaló: a nyelvet nem lehet napok alatt megtanulni.</p></div><div class="cbody v-strict"><p class="src">dia: „Ajánlott irodalom / Ellenjavallt irodalom”</p><ul><li>Bjarne Stroustrup: A C++ programozási nyelv</li><li>Scott Meyers: Hatékony C++</li><li>Ellenjavallt irodalom: „21 days”</li></ul></div></details>
+<details class="concept def" id="ea1-programozasi-nyelvek-osztalyozasa" data-name="Programozási nyelvek osztályozása Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">Programozási nyelvek osztályozása</span></summary><div class="cbody v-simple"><p>Egy nyelvet több szempont szerint jellemezhetünk:</p><ul><li><b>általános célú</b> (C++, Java) vs. <b>domain-specifikus</b> (SQL, HTML, regex: egy szűk feladatra);</li><li><b>alacsony szintű</b> (assembly, közel a géphez) vs. <b>magas szintű</b> (absztrakciók, a gép részletei rejtve);</li><li><b>fordított</b> (C++ → gépi kód) vs. <b>interpretált</b> (Python: soronként értelmezi egy program) vs. <b>bytecode</b> (Java: köztes kód + virtuális gép);</li><li>a <b>típusrendszer</b> sajátosságai (statikus/dinamikus, erős/gyenge);</li><li>a támogatott <b>programozási paradigmák</b>.</li></ul></div><div class="cbody v-strict"><p class="src">dia: „Osztályozás”</p><ul><li>Általános célú vs. Domain-specifikus</li><li>Alacsony-szintű vs. Magas-szintű</li><li>Fordított vs. interpretált vs. bytecode</li><li>Típusrendszeri sajátosságok</li><li>Programozási paradigmák</li></ul></div></details>
+<details class="concept def" id="ea1-programozasi-paradigma" data-name="Programozási paradigma Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">Programozási paradigma</span></summary><div class="cbody v-simple"><p>A paradigma egy <b>gondolkodásmód és eszköztár</b>: hogyan bontsunk egy összetett problémát kisebb részekre (<b>dekompozíció</b>), és milyen nyelvi eszközökkel, bevált tudással (know-how) rakjuk össze a megoldást. Pl. OO-ban objektumokra bontunk, funkcionálisan függvényekre.</p></div><div class="cbody v-strict"><p class="src">dia: „Programozási paradigmák fogalma”</p><ul><li>Összetett problémák</li><li>Dekompozíció</li><li>Eszközök</li><li>Know-how</li></ul></div></details>
+<details class="concept not" id="ea1-a-paradigmak-fajtai" data-name="A paradigmák fajtái Eszköz" open><summary><span class="ctype">Eszköz</span><span class="cname">A paradigmák fajtái</span></summary><div class="cbody v-simple"><p>A fő ágak:</p><ul><li><b>imperatív</b> (megmondjuk, <i>hogyan</i> számoljon, lépésenként): procedurális, strukturált, objektum-orientált;</li><li><b>deklaratív</b> (megmondjuk, <i>mit</i> akarunk): funkcionális (Haskell), logikai (Prolog);</li><li><b>generikus</b> (típustól független kód, C++-ban template-ek, STL).</li></ul><p>További, ritkább irányok: generatív technológiák, aspektus-orientált, metaprogramozás, intencionális és feature-orientált programozás.</p></div><div class="cbody v-strict"><p class="src">dia: „Programozási paradigmák”</p><ul><li>Imperatív: Procedurális, Strukturált, Objektum-orientált</li><li>Deklaratív: Funkcionális, Logikai</li><li>Generikus</li><li>Generatív technológiák</li><li>Aspektus-orientált</li><li>Metaprogramozás</li><li>Intencionális</li><li>Feature-orientált</li></ul></div></details>
+<details class="concept def" id="ea1-a-c-multiparadigmas-nyelv" data-name="A C++ multiparadigmás nyelv Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">A C++ multiparadigmás nyelv</span></summary><div class="cbody v-simple"><p>A C++ nem kényszerít egyetlen stílusra: ugyanabban a programban használhatunk</p><ul><li><b>procedurális</b> kódot (a C-től örökölt alapok: függvények, ciklusok),</li><li><b>objektum-orientált</b> kódot (osztályok, öröklődés, virtuális függvények),</li><li><b>generikus</b> kódot (template-ek, a szabványkönyvtár STL része),</li><li><b>metaprogramozást</b> (a fordító fordítási időben számol, template-ekkel).</li></ul></div><div class="cbody v-strict"><p class="src">dia: „C++: multiparadigmás nyelv”</p><ul><li>Procedurális alapok (C)</li><li>Objektum-orientáltság</li><li>Generikus programozás (STL)</li><li>Metaprogramozás</li></ul></div></details>
+<details class="concept ex" id="ea1-a-c-tortenete" data-name="A C++ története Példa" open><summary><span class="ctype">Példa</span><span class="cname">A C++ története</span></summary><div class="cbody v-simple"><div class="tbl"><table><tr><td>1967</td><td>Simula-67: az első objektum-orientált nyelv, a C++ osztályainak ihletője</td></tr><tr><td>1970</td><td>Unix és a C nyelv</td></tr><tr><td>1980</td><td>Bjarne Stroustrup elkezd dolgozni a C++-on („C with Classes”)</td></tr><tr><td>1994</td><td>HP STL (szabványos konténerek és algoritmusok); Erwin Unruh első template-metaprogramja (prímszámokat írat ki fordítási hibaüzenetekben)</td></tr><tr><td>1998</td><td>az első ISO C++ szabvány (C++98)</td></tr><tr><td>2003</td><td>javítások (C++03)</td></tr><tr><td>2011–</td><td>modern C++: C++11, 14, 17, 20 (háromévente új szabvány)</td></tr></table></div></div><div class="cbody v-strict"><p class="src">dia: „C++ történelem”</p><ul><li>Simula-67</li><li>1970: Unix, C</li><li>1980: Stroustrup elkezd dolgozni a C++ nyelven</li><li>1994: HP STL</li><li>1994: Erwin Unruh metaprogram</li><li>1998: Első ISO C++ szabvány</li><li>2003: Javítások</li><li>C++11/14/17/20</li></ul></div></details>
+<details class="concept thm" id="ea1-a-c-alapkoncepcioi" data-name="A C++ alapkoncepciói Szabály" open><summary><span class="ctype">Szabály</span><span class="cname">A C++ alapkoncepciói</span></summary><div class="cbody v-simple"><ul><li><b>C-kompatibilitás:</b> (majdnem) minden C program C++ program is; ezért él tovább sok C-s csapda.</li><li><b>Jobb eszközök a C-s problémákra:</b> pl. <code>std::string</code> a <code>char*</code> helyett, <code>const</code> a <code>#define</code> helyett, referenciák, RAII.</li><li><b>Hatékonyság + magas szintű konstrukciók</b> egyszerre.</li><li><b>A fordító a barátunk:</b> minél több hibát fordítási időben fogjon meg (típusok, figyelmeztetések).</li><li><b>„Ne fizessünk azért, amit nem kérünk”</b> (zero-overhead): ami nyelvi eszközt nem használunk, az nem lassít (pl. nincs automatikus szemétgyűjtés vagy indexhatár-ellenőrzés).</li><li><b>Általános, hatékony és átfogó szabványkönyvtár.</b></li></ul></div><div class="cbody v-strict"><p class="src">dia: „A C++ alapkoncepciói”</p><ul><li>„C backward kompatibilitás”</li><li>Jobb eszközök a C-s problémákra</li><li>Hatékonyság és magas-szintű nyelvi konstrukciók</li><li>A fordítóprogram a „barátunk”</li><li>Ne fizessünk azért, amit nem kérünk</li><li>Általános, hatékony és átfogó szabványkönyvtár</li></ul></div></details>
+</div></section>
+<section id="ea2" class="lect"><div class="section-head"><span class="label">2. előadás · <a href="../Előadás/preproc.pdf" target="_blank" rel="noopener">dia PDF ↗</a></span><h2>Preprocesszor</h2></div><div class="concepts">
+<details class="concept def" id="ea2-forditas-forditoprogram" data-name="Fordítás, fordítóprogram Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">Fordítás, fordítóprogram</span></summary><div class="cbody v-simple"><p>A processzor csak <b>gépi kódot</b> ért, a C++ forrást előbb le kell fordítani (pl. <code>g++</code>-szal). A fordító közben <b>ellenőriz</b> (típusok, deklarációk): ez növeli az esélyét, hogy a program helyes, de <b>nem garantálja</b>. Emellett <b>optimalizálhat</b> is (gyorsabb kódot generál).</p></div><div class="cbody v-strict"><p class="src">dia: „Bevezetés”</p><ul><li>A processzor csak a gépi kódot érti, pl. C/C++ kódot nem tud egyből végrehajtani.</li><li>Futtatás előtt a C/C++ programokat le kell fordítani.</li><li>Fordítóprogramot használunk (pl. g++).</li><li>Fordítóprogramok a programok bizonyos tulajdonságait ellenőrzik, ez növeli a program helyességének esélyét, de nem garantálja azt.</li><li>A fordítóprogramok optimalizál(hat)ják a kódot.</li></ul></div></details>
+<details class="concept def" id="ea2-a-forditas-lepesei" data-name="A fordítás lépései Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">A fordítás lépései</span></summary><div class="cbody v-simple"><ol><li><b>Preprocesszálás</b> – szövegszintű előfeldolgozás (<code>#include</code>, <code>#define</code> …): <code>g++ -E a.cpp</code> mutatja az eredményt.</li><li><b>Nyelvi fordítás</b> (compiler) – a kifejtett C++ szövegből tárgykód (<code>.o</code>): <code>g++ -c a.cpp</code>.</li><li><b>Összeszerkesztés</b> (linker) – a tárgykódokból és könyvtárakból futtatható program: <code>g++ a.o b.o -o prog</code>.</li></ol><p>A <code>g++ a.cpp</code> mindhármat egyben elvégzi. A <code>-save-temps</code> kapcsoló megtartja a köztes fájlokat (<code>.ii</code> preprocesszált, <code>.s</code> assembly, <code>.o</code> tárgykód).</p></div><div class="cbody v-strict"><p class="src">dia: „Lépések”</p><ol><li>Preprocesszálási fázis (preprocessor)</li><li>Nyelvi fordítás (compiler)</li><li>Összeszerkesztés (linker)</li></ol></div></details>
+<details class="concept def" id="ea2-forditasi-egyseg-es-header-fajl" data-name="Fordítási egység és header fájl Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">Fordítási egység és header fájl</span></summary><div class="cbody v-simple"><p><b>Fordítási egység</b> = egy <code>.cpp</code> fájl a preprocesszálás után (minden <code>#include</code> bemásolva). A fordító <b>egyenként</b>, egymástól függetlenül fordítja őket. A <b>header fájlok</b> (<code>.h</code>) nem önálló egységek: arra valók, hogy közös deklarációkat több <code>.cpp</code> bemásolhasson.</p></div><div class="cbody v-strict"><p class="src">dia: „Forrás file-ok”</p><ul><li>Fordítási egység: .cpp</li><li>Header file-ok</li></ul></div></details>
+<details class="concept def" id="ea2-modularizalas" data-name="Modularizálás Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">Modularizálás</span></summary><div class="cbody v-simple"><p>Nagyobb programot <b>több fájlba</b> szervezünk: így többen dolgozhatnak rajta, könnyebb karbantartani, és módosításkor <b>csak a megváltozott fájlokat kell újrafordítani</b> (ezt automatizálja a <code>make</code> egy <code>Makefile</code> alapján).</p></div><div class="cbody v-strict"><p class="src">dia: „Modularizálás”</p><ul><li>Egy programot általában több (sok) file-ban írunk meg, modularizáljuk</li><li>Csapatmunka növelése</li><li>Karbantarthatóság</li><li>Csak a szükséges file-okat fordítsuk újra (make, Makefile)</li></ul></div></details>
+<details class="concept def" id="ea2-preprocesszor" data-name="Preprocesszor Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">Preprocesszor</span></summary><div class="cbody v-simple"><p><b>Szövegátalakító</b> eszköz, ami a fordító előtt fut: fájlokat másol be, szövegrészeket kivág vagy benntart, és keres-cserél. <b>Nem ismeri a C++-t</b> (bármilyen szövegen működne), ezért nem tud típusokról, hatókörről. Csak indokolt esetben használjuk; ahol lehet, helyette C++ nyelvi eszköz kell (<code>const</code>, <code>inline</code> függvény, template). Makrónév konvenció: CSUPA_NAGYBETŰ.</p></div><div class="cbody v-strict"><p class="src">dia: „Alapok”</p><ul><li>Szövegátalakító eszköz</li><li>File tartalmának beillesztése</li><li>Szövegrészek kivágása/benntartása</li><li>Search &amp; replace</li><li>Nyelv-független eszköz, nem foglalkozik azzal, hogy C/C++ kódot dolgoz-e fel</li><li>Csak a szükséges esetekben használjuk</li><li>Automatizálás bizonyos esetekben</li><li>C++ nyelvi konstrukciók</li><li>Azonosítók konvenciója</li></ul></div></details>
+<details class="concept def" id="ea2-direktiva" data-name="Direktíva Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">Direktíva</span></summary><div class="cbody v-simple"><p>A <code>#</code>-tel kezdődő sor a preprocesszornak szól. <b>Nem utasítás</b>: nem fut le a programban, nincs a végén <code>;</code>, hanem fordítás előtt átalakítja a forrásszöveget.</p></div><div class="cbody v-strict"><p class="src">dia: „Direktívák”</p><ul><li>#</li><li>Szövegátalakítás, nem végrehajtás</li><li>Direktívák, nem utasítások</li></ul></div></details>
+<details class="concept not" id="ea2-alapveto-direktivak" data-name="Alapvető direktívák Eszköz" open><summary><span class="ctype">Eszköz</span><span class="cname">Alapvető direktívák</span></summary><div class="cbody v-simple"><div class="tbl"><table><tr><th>direktíva</th><th>mit csinál</th></tr><tr><td><code>#include &lt;iostream&gt;</code></td><td>a rendszer/szabványos header bemásolása (a rendszerkönyvtárakban keresi)</td></tr><tr><td><code>#include "a.h"</code></td><td>saját header bemásolása (először az aktuális könyvtárban keresi)</td></tr><tr><td><code>#define N 20</code></td><td>makró: ezután minden <code>N</code> szövegesen <code>20</code>-ra cserélődik</td></tr><tr><td><code>#undef N</code></td><td>a makró törlése</td></tr><tr><td><code>#ifdef X</code> / <code>#ifndef X</code></td><td>a következő rész csak akkor marad, ha <code>X</code> definiált / nem definiált</td></tr><tr><td><code>#if</code> <code>#elif</code> <code>#else</code> <code>#endif</code></td><td>feltételes fordítás konstans kifejezés alapján</td></tr></table></div></div><div class="cbody v-strict"><p class="src">dia: „Alapvető direktívák”</p><ul><li>#include</li><li>#define, #undef</li><li>#ifdef, #ifndef,</li><li>#if, #else, #elif, #endif</li></ul></div></details>
+<details class="concept thm" id="ea2-deklaracio-kell-a-hasznalat-elott" data-name="Deklaráció kell a használat előtt Szabály" open><summary><span class="ctype">Szabály</span><span class="cname">Deklaráció kell a használat előtt</span></summary><div class="cbody v-simple"><p>A fordító fordítási egységenként dolgozik: <code>b.cpp</code> fordításakor <b>nem lát bele</b> <code>a.cpp</code>-be. Ha <code>b.cpp</code> hívja <code>f</code>-et, előtte kell egy <b>deklaráció</b> (<code>void f( int );</code>), különben: <i>„'f' was not declared in this scope”</i>. A deklaráció csak megígéri, hogy <code>f</code> létezik; a <b>definíciót</b> (a függvénytörzset) majd a <b>linker</b> keresi meg <code>a.o</code>-ban.</p><pre class="code">// a.cpp:                 // b.cpp:
+void f( int i )           void f( int );   // deklaráció
+{                         void g( int i )
+  // ...                  {
+}                           f( i );        // lefordul
+                          }</pre></div><div class="cbody v-strict"><p class="src">dia: „Példák”</p><p>A deklaráció nélküli <code>b.cpp</code>-re: <code>b.cpp:3:8: error: 'f' was not declared in this scope</code>. A <code>void f( int );</code> deklarációval kiegészítve: „Lefordul”.</p></div></details>
+<details class="concept def" id="ea2-header-fajl" data-name="Header fájl Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">Header fájl</span></summary><div class="cbody v-simple"><p>Ha sok <code>.cpp</code> hív sok függvényt, a deklarációkat kézzel bemásolgatni karbantarthatatlan. Ezért a deklarációkat egy <b>header fájlba</b> (<code>a.h</code>) írjuk, és a preprocesszor <code>#include "a.h"</code>-val automatikusan bemásolja oda, ahol kell.</p><pre class="code">// a.h:            // b.cpp:
+void f( int );     #include "a.h"
+                   void g( int i ) { f( i ); }</pre></div><div class="cbody v-strict"><p class="src">dia: „Header file-ok”</p><ul><li>Sok fordítási egység</li><li>Sok függvény</li><li>Karbantartás</li><li>Automatizálás</li><li>Függvények deklarációi header file-okban</li><li>Header file-ok automatikus bemásolása preprocesszorral</li></ul></div></details>
+<details class="concept ex" id="ea2-konstans-define-nal" data-name="Konstans #define-nal Példa" open><summary><span class="ctype">Példa</span><span class="cname">Konstans #define-nal</span></summary><div class="cbody v-simple"><p>Tömbméret paraméterezése: <code>#define N 20</code>, aztán <code>int x[ N ];</code> és <code>for( int i = 0; i &lt; N; ++i )</code>. Ha a méret változik, egy helyen írjuk át. <b>Modern C++-ban</b> inkább <code>const int N = 20;</code> (vagy <code>constexpr</code>): ennek van típusa és hatóköre, a makrónak nincs.</p></div><div class="cbody v-strict"><p class="src">dia: „Tömb méretének paraméterezése”</p><pre class="code">#define N 20
+#define M 30
+int x[ N ];
+int y[ N ];
+int z[ M ];
+for( int i = 0; i &lt; N; ++i )
+{
+  y[ i ] = x[ i ];
+}</pre></div></details>
+<details class="concept trap" id="ea2-fuggvenyszeru-makro" data-name="Függvényszerű makró Csapda" open><summary><span class="ctype">Csapda</span><span class="cname">Függvényszerű makró</span></summary><div class="cbody v-simple"><p>A makró <b>szövegcsere</b>, nem függvényhívás: a paraméter helyére a megadott <i>szöveg</i> kerül, kiértékelés nélkül.</p><ul><li><code>#define SQUARE( x ) x * x</code> → <code>SQUARE( 2 + 3 )</code> = <code>2 + 3 * 2 + 3</code> = <b>11</b>, nem 25.</li><li>Javítás: mindent zárójelezünk: <code>#define SQUARE( x ) ((x) * (x))</code> → 25.</li><li>De <code>SQUARE( i++ )</code> = <code>((i++) * (i++))</code>: <code>i</code> kétszer nő, ráadásul <b>nem definiált viselkedés</b>.</li></ul><p>Megoldás C++-ban: <code>inline int square( int x ) { return x * x; }</code> (vagy template).</p></div><div class="cbody v-strict"><p class="src">dia: „Makrók”</p><pre class="code">#define SQUARE( x ) x * x
+std::cout &lt;&lt; SQUARE( 5 );
+std::cout &lt;&lt; SQUARE( 2 + 3 );
+
+#define SQUARE( x ) ((x) * (x))
+std::cout &lt;&lt; SQUARE( 2 + 3 );
+int i = 5;
+std::cout &lt;&lt; SQUARE( i++ );</pre></div></details>
+<details class="concept def" id="ea2-include-guard-pragma-once" data-name="Include guard, #pragma once Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">Include guard, #pragma once</span></summary><div class="cbody v-simple"><p>Ha egy header (pl. egy osztálydefiníció) <b>kétszer</b> kerül be ugyanabba a fordítási egységbe (közvetve, más headereken át), a fordító <i>„redefinition of class Complex”</i> hibát ad. Az <b>include guard</b> ezt akadályozza meg: az első bemásoláskor definiál egy makrót, a másodiknál már kihagyja a tartalmat. Ugyanezt egy sorban: <code>#pragma once</code> (nem szabványos, de minden fordító ismeri).</p><pre class="code">#ifndef COMPLEX_H
+#define COMPLEX_H
+class Complex { /* ... */ };
+#endif</pre></div><div class="cbody v-strict"><p class="src">dia: „Include guard”</p><ul><li>Osztályok megosztása fordítási egységek között</li><li>Include guard</li><li>Pragma once</li></ul><pre class="code">// complex.h:
+#ifndef COMPLEX__H
+#define COMPLEX__H
+class Complex
+{
+private:
+  double re, im;
+public:
+  double abs();
+  // ...
+};
+#endif</pre></div></details>
+<details class="concept def" id="ea2-felteteles-forditas" data-name="Feltételes fordítás Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">Feltételes fordítás</span></summary><div class="cbody v-simple"><p>Az <code>#ifdef</code>/<code>#if</code> családdal a fordítás <b>előtt</b> dől el, mely kódrészek maradnak meg (pl. platformfüggő kód, debug kiírások). A fordító előre definiál makrókat; ezeket kilistázza: <code>g++ -dM -E -x c++ - &lt; /dev/null</code>. Pl. <code>__cplusplus</code> csak C++ fordításnál definiált, így egy header C-ből és C++-ból is használható:</p><pre class="code">#ifdef __cplusplus
+extern "C" {
+#endif
+// C függvények deklarációi
+#ifdef __cplusplus
+}
+#endif</pre><p>Az <code>extern "C"</code> kikapcsolja a C++ névdekorálást (name mangling), így a C-ben fordított függvények megtalálhatók.</p></div><div class="cbody v-strict"><p class="src">dia: „Feltételes fordítás – demo / C/C++ feltételes fordítás”</p><p><code>g++ -dM -E -x c++ - &lt; /dev/null</code></p><pre class="code">#ifdef __cplusplus
+extern "C" {
+#endif
+// ...
+#ifdef __cplusplus
+}
+#endif</pre></div></details>
+<details class="concept def" id="ea2-forditas-es-futtatas-mas-nyelvekben" data-name="Fordítás és futtatás más nyelvekben Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">Fordítás és futtatás más nyelvekben</span></summary><div class="cbody v-simple"><ul><li><b>Interpretált</b> nyelv (pl. Python, shell): nincs előzetes gépi kódra fordítás, egy értelmező program futtatja a forrást.</li><li><b>Bytecode</b> (pl. Java, C#): a fordító egy köztes, gépfüggetlen kódot készít, ezt egy virtuális gép (JVM) futtatja.</li><li><b>JIT</b> (just-in-time) compiler: a virtuális gép futás közben a gyakran futó részeket gépi kódra fordítja.</li></ul></div><div class="cbody v-strict"><p class="src">dia: „Fordítás, futtatás”</p><ul><li>Interpretált nyelvek</li><li>Byte code</li><li>JIT compiler</li></ul></div></details>
+</div></section>
+<section id="ea3" class="lect"><div class="section-head"><span class="label">3. előadás · <a href="../Előadás/cpplex.pdf" target="_blank" rel="noopener">dia PDF ↗</a></span><h2>Lexikális egységek</h2></div><div class="concepts">
+<details class="concept def" id="ea3-a-nyelvi-forditas-feladatai" data-name="A nyelvi fordítás feladatai Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">A nyelvi fordítás feladatai</span></summary><div class="cbody v-simple"><p>A compiler a preprocesszált C++ kódból „gépi nyelvet” (tárgykódot) készít, közben <b>ellenőriz</b> (hibák), <b>figyelmeztet</b> (gyanús, de szabályos kód), <b>optimalizál</b>, és statikus elemzéssel hibákat kereshet.</p></div><div class="cbody v-strict"><p class="src">dia: „Nyelvi fordítás”</p><ul><li>C++ → „gépi nyelv”</li><li>Fordítási ellenőrzések</li><li>Fordítási figyelmeztetések</li><li>Optimalizációk</li><li>(Hibakeresés statikus elemzéssel)</li></ul></div></details>
+<details class="concept def" id="ea3-forditasi-hiba-es-figyelmeztetes" data-name="Fordítási hiba és figyelmeztetés Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">Fordítási hiba és figyelmeztetés</span></summary><div class="cbody v-simple"><p><b>Hiba</b> (error): a kód nem felel meg a nyelvnek, nem készül program (pl. deklarálatlan változó: <i>„'i' was not declared in this scope”</i>). <b>Figyelmeztetés</b> (warning): a kód szabályos, lefordul, de gyanús, valószínűleg hibás (pl. signed–unsigned összehasonlítás). A figyelmeztetéseket <b>komolyan kell venni</b>.</p></div><div class="cbody v-strict"><p class="src">dia: „Fordítási hiba / Fordítási figyelmeztetés”</p><pre class="out">$ g++ -c -W -Wall -pedantic -ansi ex.cpp
+ex.cpp:5:8: error: 'i' was not declared in this scope
+$ g++ -c -W -Wall -pedantic -ansi warn.cpp
+warn.cpp:7:10: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]</pre></div></details>
+<details class="concept not" id="ea3-a-g-kapcsoloi-az-eloadasokon" data-name="A g++ kapcsolói az előadásokon Eszköz" open><summary><span class="ctype">Eszköz</span><span class="cname">A g++ kapcsolói az előadásokon</span></summary><div class="cbody v-simple"><div class="tbl"><table><tr><th>kapcsoló</th><th>jelentés</th></tr><tr><td><code>-W -Wall</code></td><td>(majdnem) minden hasznos figyelmeztetés bekapcsolása (<code>-W</code> = <code>-Wextra</code>)</td></tr><tr><td><code>-pedantic</code></td><td>szigorúan a szabványt kéri számon, a g++-bővítményekre (pl. VLA) is figyelmeztet</td></tr><tr><td><code>-ansi</code></td><td>C++-ban a C++98 szabvány szerinti fordítás (= <code>-std=c++98</code>)</td></tr><tr><td><code>-c</code></td><td>csak fordít (<code>.o</code>), nem szerkeszt</td></tr><tr><td><code>-E</code></td><td>csak preprocesszál, az eredményt kiírja</td></tr><tr><td><code>-save-temps</code></td><td>megtartja a köztes fájlokat (<code>.ii</code>, <code>.s</code>, <code>.o</code>)</td></tr><tr><td><code>-O0</code>, <code>-O3</code></td><td>optimalizálás nélkül / legerősebb optimalizálással</td></tr><tr><td><code>-o név</code></td><td>a kimeneti fájl neve</td></tr></table></div></div><div class="cbody v-strict"><p class="src">dia: „Fordítási hiba (parancssor)”</p><p><code>g++ -c -W -Wall -pedantic -ansi ex.cpp</code>, <code>g++ -W -Wall -pedantic -ansi -save-temps -O0 af.cpp</code>, <code>… -O3 af.cpp</code></p></div></details>
+<details class="concept trap" id="ea3-elojeles-es-elojel-nelkuli-osszehasonlitas" data-name="Előjeles és előjel nélküli összehasonlítás Csapda" open><summary><span class="ctype">Csapda</span><span class="cname">Előjeles és előjel nélküli összehasonlítás</span></summary><div class="cbody v-simple"><p><code>int i = -2; unsigned int j = 3;</code> esetén <code>i &lt; j</code> <b>hamis</b>! Vegyes összehasonlításnál az <code>int</code> átkonvertálódik <code>unsigned</code>-dá, és −2-ből egy óriási pozitív szám lesz (32 bites <code>int</code>-nél 4294967294). A program „WTF?”-ot ír ki; a fordító <code>-Wsign-compare</code> figyelmeztetést ad.</p></div><div class="cbody v-strict"><p class="src">dia: „Fordítási figyelmeztetés”</p><pre class="code">int i = -2;
+unsigned int j = 3;
+if ( i &lt; j )
+{
+  std::cout &lt;&lt; "OK";
+}
+else
+{
+  std::cout &lt;&lt; "WTF?";
+}</pre></div></details>
+<details class="concept trap" id="ea3-valtozo-hosszusagu-tomb-vla" data-name="Változó hosszúságú tömb (VLA) Csapda" open><summary><span class="ctype">Csapda</span><span class="cname">Változó hosszúságú tömb (VLA)</span></summary><div class="cbody v-simple"><p><code>int x[ i ];</code>, ahol <code>i</code> futás közben dől el: ez C99-ben szabályos, <b>szabványos C++-ban nem</b> (a tömbméretnek fordítási időben ismertnek kell lennie). A g++ bővítményként elfogadja, <code>-pedantic</code>-kal figyelmeztet: <i>„ISO C++ forbids variable length array”</i>. Helyette: <code>std::vector&lt;int&gt; x( i );</code>.</p></div><div class="cbody v-strict"><p class="src">dia: „Fordítási figyelmeztetés”</p><pre class="code">int f( int i )
+{
+  int x[ i ];
+  return x[ 0 ] + x[ 1 ];
+}</pre></div></details>
+<details class="concept def" id="ea3-statikus-elemzes" data-name="Statikus elemzés Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">Statikus elemzés</span></summary><div class="cbody v-simple"><p>A forráskód vizsgálata <b>futtatás nélkül</b>, tipikus hibaminták után kutatva (pl. inicializálatlan változó, null pointer, memóriaszivárgás). Eszközök: maga a fordító figyelmeztetései, clang-tidy, cppcheck, Clang Static Analyzer.</p></div><div class="cbody v-strict"><p class="src">dia: „Statikus elemzés”</p><p>A dián csak a cím és egy kép szerepel; a „Nyelvi fordítás” listájában: „(Hibakeresés statikus elemzéssel)”.</p></div></details>
+<details class="concept def" id="ea3-optimalizacio" data-name="Optimalizáció Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">Optimalizáció</span></summary><div class="cbody v-simple"><p>A fordító a jelentést megtartva <b>gyorsabb/kisebb kódot</b> generálhat. Az <code>array_fill</code> (6 elemet nulláz ciklusban) <code>-O0</code>-val szó szerinti ciklus lesz az assemblyben; <code>-O3</code>-mal a ciklus eltűnhet, helyette néhány nagy (vektoros) tárolás. A különbséget a <code>-save-temps</code> által megtartott <code>.s</code> fájlban láthatjuk.</p></div><div class="cbody v-strict"><p class="src">dia: „Optimalizációk”</p><pre class="code">// af.cpp:
+void array_fill( int* p )
+{
+  for( int i = 0; i &lt; 6; ++i )
+  {
+    p[ i ] = 0;
+  }
+}</pre></div></details>
+<details class="concept def" id="ea3-lexikalis-elemek" data-name="Lexikális elemek Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">Lexikális elemek</span></summary><div class="cbody v-simple"><p>A fordító először <b>tokenekre</b> bontja a szöveget. Hat fajta:</p><ul><li><b>kulcsszavak:</b> <code>for</code>, <code>int</code>, <code>virtual</code>, <code>static</code>, <code>const</code>, <code>namespace</code> …</li><li><b>azonosítók:</b> <code>main</code>, <code>std</code>, <code>cout</code>, <code>idx</code> …</li><li><b>konstans szövegliterálok:</b> <code>"Hello World!"</code></li><li><b>konstansok (literálok):</b> <code>0</code>, <code>42</code>, <code>12.34</code> …</li><li><b>operátorok:</b> <code>&lt;&lt;</code>, <code>::</code>, <code>+</code> …</li><li><b>szeparátorok:</b> <code>;</code>, <code>,</code>, <code>{ }</code>, <code>( )</code> …</li></ul><p>Pl. a <code>return 0;</code> három token: kulcsszó, konstans, szeparátor.</p></div><div class="cbody v-strict"><p class="src">dia: „Lexikális elemek”</p><ul><li>Kulcsszavak</li><li>Azonosítók</li><li>Konstans szövegliterálok</li><li>Konstansok</li><li>Operátorok</li><li>Szeparátorok</li></ul></div></details>
+<details class="concept def" id="ea3-kulcsszo-es-azonosito" data-name="Kulcsszó és azonosító Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">Kulcsszó és azonosító</span></summary><div class="cbody v-simple"><p><b>Kulcsszó:</b> a nyelv által lefoglalt szó (<code>for</code>, <code>int</code>, <code>class</code> …), nem lehet változónév. <b>Azonosító:</b> az általunk (vagy a könyvtár által) adott név: betűvel vagy <code>_</code>-sal kezdődik, betűkből, számjegyekből, <code>_</code>-ból áll, kis- és nagybetűérzékeny. A <code>vector</code>, <code>string</code>, <code>cout</code> nem kulcsszavak, hanem a szabványkönyvtár azonosítói. <b>A jól megválasztott azonosító fontos.</b></p></div><div class="cbody v-strict"><p class="src">dia: „Kulcsszavak, példák / Azonosítók, példák”</p><ul><li>Kulcsszavak: for, int, virtual, static, const, namespace, …</li><li>Azonosítók: Foo, List, f, _i, idx, vector, string, cout</li><li>A helyesen megválasztott azonosítók használata fontos!</li></ul></div></details>
+<details class="concept not" id="ea3-nevkonvenciok" data-name="Névkonvenciók Eszköz" open><summary><span class="ctype">Eszköz</span><span class="cname">Névkonvenciók</span></summary><div class="cbody v-simple"><ul><li><b>CamelCase:</b> <code>pushBack</code>, <code>LinkedList</code>;</li><li><b>snake_case:</b> <code>push_back</code>, <code>const_iterator</code> – a <b>C++ szabványkönyvtár</b> ezt használja (<code>dynamic_cast</code>, <code>equal_range</code>, <code>find_if</code>);</li><li><b>Hungarian notation:</b> a név elején a típus rövidítése (<code>bBusy</code>, <code>dwLightYears</code>, <code>g_nWheels</code>).</li></ul></div><div class="cbody v-strict"><p class="src">dia: „Névkonvenciók / C++ és a szabványkönyvtára”</p><ul><li>Hungarian notation</li><li>CamelCase</li><li>snake_case</li><li>dynamic_cast, push_back, equal_range, find_if, const_iterator, …</li></ul></div></details>
+<details class="concept def" id="ea3-hungarian-notation" data-name="Hungarian notation Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">Hungarian notation</span></summary><div class="cbody v-simple"><p>A változó típusát (vagy szerepét) előtagként a nevébe kódolja: <code>bBusy</code> (bool), <code>fpPrice</code> (floating point), <code>dwLightYears</code> (double word), <code>g_nWheels</code> (globális szám). Eredetileg típustalan környezetben segített, de C++-ban <b>ellenjavallt</b>: a fordító úgyis tudja a típust, a név félrevezetővé válik, ha a típus megváltozik, és generikus kódnál értelmetlen.</p></div><div class="cbody v-strict"><p class="src">dia: „Hungarian notation példák / Vélemények”</p><ul><li>bBusy, fBusy, fpPrice, dwLightYears, lpztName, g_nWheels, c_wheels, _crszkvc30LastNameCol</li><li>Bjarne Stroustrup: „is completely unsuitable for a language that supports generic programming and object-oriented programming”</li><li>Linus Torvalds: „Encoding the type of a function into the name is brain damaged”</li><li>Microsoft .NET naming conventions: „DO NOT use Hungarian notation.”</li></ul></div></details>
+<details class="concept thm" id="ea3-alahuzassal-kezdodo-azonositok" data-name="Aláhúzással kezdődő azonosítók Szabály" open><summary><span class="ctype">Szabály</span><span class="cname">Aláhúzással kezdődő azonosítók</span></summary><div class="cbody v-simple"><p>Az <code>_</code>-sal kezdődő nevek a <b>fordítónak és a szabványkönyvtárnak fenntartottak</b> (pontosabban: <code>_</code>+nagybetű vagy <code>__</code>-t tartalmazó név mindenhol, <code>_</code>-sal kezdődő név a globális névtérben). Ha mégis ilyet használunk, a névütközés elkerülése a <b>mi felelősségünk</b>. Egyszerű szabály: ne kezdjünk nevet aláhúzással.</p></div><div class="cbody v-strict"><p class="src">dia: „Underscore/aláhúzás azonosítók elején”</p><ul><li>Kell-e?</li><li>Jó-e?</li><li>Az aláhúzással kezdődő azonosítók fenntartottak!</li><li>Ilyen azonosítók esetében a mi feladatunk a névütközések elkerülése!</li></ul></div></details>
+<details class="concept def" id="ea3-konstans-szovegliteral" data-name="Konstans szövegliterál Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">Konstans szövegliterál</span></summary><div class="cbody v-simple"><p><code>"Hello"</code> egy <b>nullával lezárt karaktertömb</b>: a végére a fordító odarak egy <code>'\0'</code>-t, így 6 bájt. Típusa <code>const char[6]</code>. A C-örökség miatt sok a buktató: tömb és pointer keveredése, konverziók, összehasonlítás (<code>==</code>), tömbméret vs. szöveghossz, módosíthatóság.</p></div><div class="cbody v-strict"><p class="src">dia: „Konstans szövegliterálok”</p><ul><li>"Hello"</li><li>'\0'</li><li>Problémák: C backward kompatibilitás; Tömbök/pointerek; Konverziók; Összehasonlítás; Tömb mérete vs. string hossza; Módosíthatóság</li></ul></div></details>
+<details class="concept trap" id="ea3-literal-modositasa-char-literal" data-name="Literál módosítása, `char*` = literál Csapda" open><summary><span class="ctype">Csapda</span><span class="cname">Literál módosítása, <code>char*</code> = literál</span></summary><div class="cbody v-simple"><div class="tbl"><table><tr><th>deklaráció</th><th>módosítás</th><th>eredmény</th></tr><tr><td><code>const char a[] = "Hello";</code></td><td><code>a[ 0 ] = 'h';</code></td><td>fordítási hiba (const tömb)</td></tr><tr><td><code>char b[] = "Hello";</code></td><td><code>b[ 1 ] = 'a';</code></td><td><b>rendben</b>: <code>b</code> saját másolat a literálról</td></tr><tr><td><code>const char* p = ":-)";</code></td><td><code>p[ 2 ] = 'D';</code></td><td>fordítási hiba (const-ra mutat)</td></tr><tr><td><code>char* q = "WTF?";</code></td><td><code>q[ 3 ] = '!';</code></td><td>lefordul (figyelmeztetéssel), de <b>nem definiált viselkedés</b>: a literál csak olvasható memóriában van, tipikusan összeomlik</td></tr></table></div><p>A <code>char* q = "WTF?"</code> konverzió C++98-ban elavult (<i>deprecated</i>), C++11 óta nem is szabályos; a g++ figyelmeztet (<code>-Wwrite-strings</code>).</p></div><div class="cbody v-strict"><p class="src">dia: „Konstans szövegliterálok típusa”</p><pre class="code">const char a[] = "Hello"; // a[ 0 ] = 'h';
+char b[] = "Hello";       // b[ 1 ] = 'a';
+const char* p = ":-)";    // p[ 2 ] = 'D';
+char* q = "WTF?";         // q[ 3 ] = '!';</pre><pre class="out">warning: deprecated conversion from string constant to 'char*' [-Wwrite-strings]</pre></div></details>
+<details class="concept thm" id="ea3-sizeof-es-strlen" data-name="sizeof és strlen Szabály" open><summary><span class="ctype">Szabály</span><span class="cname">sizeof és strlen</span></summary><div class="cbody v-simple"><ul><li><code>sizeof( h )</code> – a <b>tömb mérete bájtban</b>, fordítási időben, a lezáró <code>'\0'</code>-val együtt: <code>char h[] = "Hello"</code> → <b>6</b>.</li><li><code>std::strlen( h )</code> – a <b>szöveg hossza</b> futás közben: az első <code>'\0'</code>-ig számol → <b>5</b>. (<code>&lt;cstring&gt;</code> kell hozzá.)</li><li><code>sizeof( p )</code> egy <code>char*</code>-ra a <b>pointer mérete</b> (64 biten 8), bármilyen hosszú szövegre mutat.</li></ul><p><code>h[ 2 ] = '\0';</code> után: <code>sizeof( h )</code> továbbra is 6, de <code>strlen( h )</code> már 2 ("He").</p></div><div class="cbody v-strict"><p class="src">dia: „Stringek hossza”</p><p>A dia a <code>sizeof</code>/<code>strlen</code> kiírását mutatja <code>char h[] = "Hello"</code>, <code>char w[] = "World"</code>, <code>char *p = h</code> esetén, majd <code>h[ 2 ] = '\0'</code> és <code>p = "It is a very very long string"</code> után.</p></div></details>
+<details class="concept trap" id="ea3-c-stringek-osszehasonlitasa" data-name="C-stringek összehasonlítása Csapda" open><summary><span class="ctype">Csapda</span><span class="cname">C-stringek összehasonlítása</span></summary><div class="cbody v-simple"><p><code>a == b</code> két tömbnél <b>a címeket</b> hasonlítja össze (a tömbök pointerré konvertálódnak), nem a tartalmat: két külön tömb címe sosem egyenlő → „WTF?”. Tartalmat így hasonlítunk: <code>std::strcmp( a, b ) == 0</code> (<code>&lt;cstring&gt;</code>), vagy <code>std::string</code>-et használunk, annak az <code>==</code> tartalmat hasonlít.</p></div><div class="cbody v-strict"><p class="src">dia: „Szövegtartalmak összehasonlítása”</p><pre class="code">const char a[] = "Hello";
+char b[] = "Hello";
+if ( a == b )                       // WTF?
+if ( 0 == std::strcmp( a, b ) )     // OK</pre></div></details>
+<details class="concept def" id="ea3-stringek-a-tipusrendszerben" data-name="Stringek a típusrendszerben Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">Stringek a típusrendszerben</span></summary><div class="cbody v-simple"><ul><li><b>literál</b>: <code>"Hello"</code>, típusa <code>const char[ 6 ]</code>;</li><li><b>C string</b>: nullával lezárt <code>char</code> tömb, pointerrel kezeljük: <code>char*</code>, <code>const char*</code>;</li><li><b><code>std::string</code></b>: a szabványkönyvtár szövegtípusa: maga kezeli a memóriát, a hosszát tudja, <code>==</code>, <code>+</code> működik rá. C++-ban ezt használjuk.</li></ul></div><div class="cbody v-strict"><p class="src">dia: „Stringek és típusrendszer”</p><ul><li>Literál: "Hello", típusa: const char[ 6 ]</li><li>C string</li><li>Szöveg</li><li>char<i>, const char</i></li><li>std::string</li></ul></div></details>
+<details class="concept rem" id="ea3-stringek-mas-nyelvekben" data-name="Stringek más nyelvekben Megjegyzés" open><summary><span class="ctype">Megjegyzés</span><span class="cname">Stringek más nyelvekben</span></summary><div class="cbody v-simple"><ul><li><b>Pascal:</b> a hossz a szöveg elején tárolódik (nem <code>'\0'</code> zárja).</li><li><b>Java:</b> <code>String</code> megváltoztathatatlan (immutable); <code>StringBuilder</code> módosítható, nem szálbiztos; <code>StringBuffer</code> módosítható és szálbiztos.</li></ul></div><div class="cbody v-strict"><p class="src">dia: „Stringek egyéb nyelvekben”</p><ul><li>Pascal</li><li>Java: String: immutable; StringBuilder: mutable, nem szál-biztos; StringBuffer: mutable, szál-biztos</li></ul></div></details>
+</div></section>
+<section id="ea4" class="lect"><div class="section-head"><span class="label">4. előadás · <a href="../Előadás/cppexpr.pdf" target="_blank" rel="noopener">dia PDF ↗</a></span><h2>Típusok és kifejezések</h2></div><div class="concepts">
+<details class="concept def" id="ea4-egesz-konstansok" data-name="Egész konstansok Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">Egész konstansok</span></summary><div class="cbody v-simple"><p>Ugyanaz az érték többféleképpen írható: <code>42</code> (decimális), <code>0x2A</code> (hexadecimális), <code>052</code> (<b>0-val kezdődik → oktális!</b>). Mindhárom típusa <code>int</code>, értéke 42. Utótagok: <code>42L</code> → <code>long</code>, <code>42U</code> → <code>unsigned int</code>, <code>42UL</code> → <code>unsigned long</code>.</p><div class="warn"><b>Csapda</b><code>010</code> értéke 8, nem 10!</div></div><div class="cbody v-strict"><p class="src">dia: „Konstansok”</p><div class="tbl"><table><tr><th></th><td>42</td><td>0x2A</td><td>052</td><td>42L</td><td>42U</td><td>42UL</td></tr><tr><th>Típus</th><td>int</td><td>int</td><td>int</td><td>long</td><td>unsigned int</td><td>unsigned long</td></tr><tr><th>Érték</th><td>42</td><td>42</td><td>42</td><td>42</td><td>42</td><td>42</td></tr></table></div></div></details>
+<details class="concept rem" id="ea4-a-processzor-szintje" data-name="A processzor szintje Megjegyzés" open><summary><span class="ctype">Megjegyzés</span><span class="cname">A processzor szintje</span></summary><div class="cbody v-simple"><p>A processzorban <b>regiszterek</b> vannak, nem változók, és nincs típus, csak méret: <code>RAX</code> 64 bit, <code>EAX</code> 32, <code>AX</code> 16, <code>AH</code>/<code>AL</code> 8 bit, plusz lebegőpontos és egyéb regiszterek. A típus a magas szintű nyelv absztrakciója.</p></div><div class="cbody v-strict"><p class="src">dia: „Processzor”</p><ul><li>Regiszterek, nem változók</li><li>Típustalanság, méretek: RAX, RBX, … – 64 bit; EAX, EBX, … – 32 bit; AX, BX, … – 16 bit; AH, AL – 8 bit</li><li>Lebegőpontos regiszterek</li><li>Egyéb specifikus regiszterek</li></ul></div></details>
+<details class="concept def" id="ea4-tipus" data-name="Típus Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">Típus</span></summary><div class="cbody v-simple"><p>A memóriában csak <b>bitsorozat</b> van (pl. <code>11001001…</code>). A típus adja meg a <b>jelentését</b>: hogyan értelmezzük, milyen műveletek értelmesek rajta és mi az eredményük. Ebből a fordító <b>hibákat jelez</b>, <b>optimalizál</b>, és <b>absztrakciókat</b> építhetünk.</p></div><div class="cbody v-strict"><p class="src">dia: „Típus”</p><ul><li>Bitsorozat: 11001001000100001011101</li><li>Jelentés megadása</li><li>Melyek az értelmes műveletek, mi az eredményük?</li><li>Fordítási visszajelzések</li><li>Optimalizációk</li><li>Absztrakciók</li></ul></div></details>
+<details class="concept def" id="ea4-int" data-name="int Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">int</span></summary><div class="cbody v-simple"><p>Az alapértelmezett egésztípus: <b>előjeles</b>, a gyakorlatban <b>kettes komplemens</b> ábrázolású. A mérete <b>implementációfüggő</b> (a gépnek legoptimálisabb, ma tipikusan 32 bit).</p></div><div class="cbody v-strict"><p class="src">dia: „int”</p><ul><li>int: alapértelmezett egésztípus</li><li>Előjeles</li><li>Kettes komplemens</li><li>sizeof( int ): implementáció-függő (legyen optimális)</li></ul></div></details>
+<details class="concept thm" id="ea4-a-tipusok-merete" data-name="A típusok mérete Szabály" open><summary><span class="ctype">Szabály</span><span class="cname">A típusok mérete</span></summary><div class="cbody v-simple"><p>A szabvány <b>csak sorrendet</b> ír elő, pontos méretet nem. A <code>char</code> a nyelv egységtípusa: <code>sizeof( char ) == 1</code> definíció szerint (a <code>sizeof</code> <code>char</code>-okban mér).</p><ul><li><code>1 = sizeof(char) ≤ sizeof(short) ≤ sizeof(int) ≤ sizeof(long)</code></li><li><code>sizeof(bool) ≤ sizeof(long)</code></li><li><code>sizeof(float) ≤ sizeof(double) ≤ sizeof(long double)</code></li></ul></div><div class="cbody v-strict"><p class="src">dia: „Típusok mérete”</p><ul><li>char: a nyelv egységtípusa</li><li>sizeof( char )</li><li>sizeof( char ) ≤ sizeof( short )</li><li>sizeof( short ) ≤ sizeof( int )</li><li>sizeof( int ) ≤ sizeof( long )</li><li>sizeof( bool ) ≤ sizeof( long )</li><li>sizeof( float ) ≤ sizeof( double )</li><li>sizeof( double ) ≤ sizeof( long double )</li></ul></div></details>
+<details class="concept def" id="ea4-lebegopontos-konstansok" data-name="Lebegőpontos konstansok Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">Lebegőpontos konstansok</span></summary><div class="cbody v-simple"><p>Tizedesponttal vagy kitevővel írt szám <b>alapból <code>double</code></b>; <code>f</code> utótaggal <code>float</code>, <code>L</code>-lel <code>long double</code>. A kitevő 10-hatvány: <code>88e-1</code> = 8,8; <code>1234e-2f</code> = 12,34 (<code>float</code>); <code>54e-1L</code> = 5,4 (<code>long double</code>). Ábrázolás: <b>IEEE 754</b>, ezért kerekítési hibák vannak: pl. <code>0.1 + 0.2 == 0.3</code> hamis.</p></div><div class="cbody v-strict"><p class="src">dia: „Lebegőpontos konstansok típusa”</p><div class="tbl"><table><tr><th></th><td>12.34</td><td>12.34f</td><td>12.34L</td><td>88e-1</td><td>1234e-2f</td><td>54e-1L</td></tr><tr><th>Típus</th><td>double</td><td>float</td><td>long double</td><td>double</td><td>float</td><td>long double</td></tr><tr><th>Érték</th><td>12.34</td><td>12.34</td><td>12.34</td><td>8.8</td><td>12.34</td><td>5.4</td></tr></table></div></div></details>
+<details class="concept def" id="ea4-char-signed-char-unsigned-char" data-name="char, signed char, unsigned char Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">char, signed char, unsigned char</span></summary><div class="cbody v-simple"><p><b>Három különböző</b> típus. Hogy a sima <code>char</code> előjeles-e, az <b>implementációfüggő</b> (x86-on általában előjeles, ARM-on nem). Ezért ha számolunk vele (pl. 128 feletti bájtok), írjuk ki, hogy <code>signed</code> vagy <code>unsigned</code>.</p></div><div class="cbody v-strict"><p class="src">dia: „char”</p><ul><li>char:</li><li>signed char</li><li>unsigned char</li><li>Implementáció-függő</li></ul></div></details>
+<details class="concept rem" id="ea4-tetszoleges-pontossagu-egeszek" data-name="Tetszőleges pontosságú egészek Megjegyzés" open><summary><span class="ctype">Megjegyzés</span><span class="cname">Tetszőleges pontosságú egészek</span></summary><div class="cbody v-simple"><p>A C++ beépített egészei rögzített méretűek, túlcsordulhatnak. Más nyelvekben van korlátlan méretű egész: Java <code>java.math.BigInteger</code>, Haskell <code>Integer</code>. C++-ban ehhez külső könyvtár kell.</p></div><div class="cbody v-strict"><p class="src">dia: „Több egész szám ábrázolása”</p><ul><li>java.math.BigInteger</li><li>Integer (Haskell)</li></ul></div></details>
+<details class="concept def" id="ea4-az-operatorok-jellemzoi" data-name="Az operátorok jellemzői Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">Az operátorok jellemzői</span></summary><div class="cbody v-simple"><ul><li><b>precedencia:</b> melyik köt erősebben (<code>*</code> erősebb, mint <code>+</code>);</li><li><b>asszociativitás (kötés):</b> azonos precedenciánál balról vagy jobbról zárójelezünk;</li><li><b>aritás:</b> hány operandusa van (unáris <code>-x</code>, bináris <code>a - b</code>, ternáris <code>?:</code>);</li><li><b>fixitás:</b> prefix (<code>++i</code>), infix (<code>a + b</code>), postfix (<code>i++</code>);</li><li><b>típus:</b> milyen típusú operandusokra értelmes, mi az eredmény típusa (<code>12 / 5</code> egész, <code>12. / 5</code> valós osztás);</li><li><b>mellékhatás és eredmény:</b> <code>x = 5</code> eredménye 5, mellékhatása, hogy <code>x</code> megváltozik.</li></ul></div><div class="cbody v-strict"><p class="src">dia: „Operátorok jellemzése”</p><ul><li>Precedencia</li><li>Asszociativitás, kötés</li><li>Aritás</li><li>Fixitás</li><li>Típus</li><li>Mellékhatás, eredmény</li></ul></div></details>
+<details class="concept def" id="ea4-precedencia-es-szintaxisfa" data-name="Precedencia és szintaxisfa Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">Precedencia és szintaxisfa</span></summary><div class="cbody v-simple"><p><code>1+2*3+4</code> = <code>1+(2*3)+4</code> = <b>11</b>, mert a <code>*</code> erősebben köt. A fordító a kifejezést <b>absztrakt szintaxisfává</b> (AST) alakítja: a gyökérben az utoljára elvégzett művelet áll.</p><pre class="code">     +
+   /   \
+  +     4          ((1 + (2 * 3)) + 4)
+ / \
+1   *
+   / \
+  2   3</pre></div><div class="cbody v-strict"><p class="src">dia: „Kiértékelés, példa / Absztrakt szintaxisfa (AST)”</p><p>„Mennyi az alábbi kifejezés értéke? 1+2<i>3+4” – „ugyanaz: 1+(2</i>3)+4” – „11”</p></div></details>
+<details class="concept def" id="ea4-kotes-asszociativitas" data-name="Kötés (asszociativitás) Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">Kötés (asszociativitás)</span></summary><div class="cbody v-simple"><p>Azonos precedenciájú operátorok sorozatánál: a legtöbb bináris operátor <b>balról</b> köt: <code>a + b + c + d</code> = <code>((a + b) + c) + d</code>. Az értékadás <b>jobbról</b>: <code>a = b = c = d = x</code> = <code>a = (b = (c = (d = x)))</code>, így mindegyik <code>x</code> értékét kapja.</p></div><div class="cbody v-strict"><p class="src">dia: „Kötés”</p><pre class="code">x = a + b + c + d; // balról
+a = b = c = d = x; // jobbról</pre></div></details>
+<details class="concept def" id="ea4-inkrementalas-i-es-i" data-name="Inkrementálás: ++i és i++ Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">Inkrementálás: ++i és i++</span></summary><div class="cbody v-simple"><p>Mindkettő <b>mellékhatása</b> ugyanaz: <code>i</code> eggyel nő. Az <b>eredményük</b> más: <code>++i</code> (prefix) az <b>új</b> értéket adja, <code>i++</code> (postfix) a <b>régit</b>. <code>int i = 1;</code> → <code>std::cout &lt;&lt; ++i;</code> 2-t ír, <code>std::cout &lt;&lt; i++;</code> 1-et (utána <code>i</code> mindkét esetben 2). Ha az eredményt nem használjuk (pl. <code>for</code> ciklus), a <code>++i</code> a megszokott: objektumoknál (iterátor) nem kell másolatot készíteni a régi értékről.</p></div><div class="cbody v-strict"><p class="src">dia: „Inkrementálás, dekrementálás”</p><pre class="code">int i = 1;                    int i = 1;
+std::cout &lt;&lt; ++i; // 2        std::cout &lt;&lt; i++; // 1</pre></div></details>
+<details class="concept trap" id="ea4-ertekadas-a-feltetelben" data-name="Értékadás a feltételben Csapda" open><summary><span class="ctype">Csapda</span><span class="cname">Értékadás a feltételben</span></summary><div class="cbody v-simple"><p><code>if ( x = 0 )</code> <b>nem összehasonlítás</b>, hanem értékadás: <code>x</code> 0 lesz, és a kifejezés értéke (0) hamis. <code>if ( x = 4 )</code> igaz (4 ≠ 0). Az összehasonlítás <code>==</code>. A g++ <code>-Wall</code>-lal figyelmeztet („suggest parentheses around assignment used as truth value”). Védekezés: „Yoda-stílus”: <code>if ( 0 == x )</code>: ha elírjuk <code>=</code>-re, fordítási hiba lesz.</p></div><div class="cbody v-strict"><p class="src">dia: „Értékadás – mit ír ki az alábbi kódrészlet?”</p><pre class="code">if ( x = 0 )
+{
+  std::cout &lt;&lt; 'A' &lt;&lt; std::endl;
+}
+if ( x = 4 )
+{
+  std::cout &lt;&lt; 'B' &lt;&lt; std::endl;
+}</pre></div></details>
+<details class="concept def" id="ea4-szekvenciapont" data-name="Szekvenciapont Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">Szekvenciapont</span></summary><div class="cbody v-simple"><p>A kiértékelés egy olyan pontja, ahol <b>minden addigi kiértékelés és mellékhatás garantáltan befejeződött</b>. Két szekvenciapont között a fordító szabadon választhat sorrendet. Ha két szekvenciapont között <b>ugyanazt a változót kétszer módosítjuk</b> (vagy módosítjuk és máshol olvassuk), a viselkedés <b>nem definiált</b>: <code>x = y++ * y++;</code>, <code>v[ i ] = i++;</code>, <code>f( x++, x++ );</code>. A hiányuk portabilitási problémákat és fordítónként eltérő működést okoz, cserébe teret ad az optimalizálásnak.</p></div><div class="cbody v-strict"><p class="src">dia: „Szekvenciapontok”</p><ul><li>Biztosítja: a kifejezések ki vannak értékelve</li><li>A mellékhatások végbementek</li><li>Hiánya: portabilitási problémák</li><li>Működési különbségek</li><li>Optimalizációs lehetőség</li></ul></div></details>
+<details class="concept thm" id="ea4-hol-van-szekvenciapont" data-name="Hol van szekvenciapont? Szabály" open><summary><span class="ctype">Szabály</span><span class="cname">Hol van szekvenciapont?</span></summary><div class="cbody v-simple"><ul><li>a teljes kifejezés végén (<code>;</code>);</li><li><code>&amp;&amp;</code> és <code>||</code> bal operandusa után (<b>lusta</b> kiértékelés);</li><li>a <b>vessző operátor</b> bal operandusa után (<code>a, b</code>)</li></ul><p>(Ezen kívül pl. a <code>?:</code> feltétele után és függvényhívás előtt, az argumentumok kiértékelése után.) Ezzel szemben a <code>==</code>, <code>+</code>, <code>*</code> operandusainak, illetve a függvényargumentumoknak a kiértékelési <b>sorrendje nem meghatározott</b>.</p></div><div class="cbody v-strict"><p class="src">dia: „Szekvenciapontok”</p><ul><li>;</li><li>&&, || – működési jellegzetesség, lusta kiértékelés</li><li>, – operátorként</li></ul></div></details>
+<details class="concept def" id="ea4-lusta-rovidzaras-kiertekeles" data-name="Lusta (rövidzáras) kiértékelés Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">Lusta (rövidzáras) kiértékelés</span></summary><div class="cbody v-simple"><p><code>a &amp;&amp; b</code>: ha <code>a</code> hamis, az eredmény biztosan hamis, ezért <b><code>b</code> ki sem értékelődik</b>. <code>a || b</code>: ha <code>a</code> igaz, <code>b</code> nem értékelődik ki. A bal oldal mindig előbb értékelődik ki. Hasznos: <code>if ( p != 0 &amp;&amp; p-&gt;ok() )</code> sosem dereferál null pointert.</p></div><div class="cbody v-strict"><p class="src">dia: „Szekvenciapontok”</p><p>„&&, || – működési jellegzetesség, lusta kiértékelés”</p><pre class="code">if ( f() &amp;&amp; g() ) // ...
+if ( f() || g() ) // ...</pre></div></details>
+<details class="concept def" id="ea4-vesszo-operator" data-name="Vessző operátor Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">Vessző operátor</span></summary><div class="cbody v-simple"><p><code>a, b</code>: kiértékeli <code>a</code>-t (eredményét eldobja), <b>utána</b> <code>b</code>-t, és <b><code>b</code> az eredmény</b>. Ezért <code>double d = (2,5);</code> értéke <b>5</b>, nem 2,5! Figyelem: függvényhívásban <code>f( x, y )</code> vesszője <b>nem</b> operátor, csak elválasztó; <code>f( ( x, y ) )</code> viszont egyparaméteres hívás az operátorral.</p></div><div class="cbody v-strict"><p class="src">dia: „Szekvenciapontok”</p><pre class="code">double d = (2,5);
+int x = 2;
+f( x++, x++ );
+f( ( x++, x++ ) );
+if ( f(), g() ) // ...
+if ( g(), f() ) // ...</pre></div></details>
+<details class="concept ex" id="ea4-egesz-es-valos-osztas" data-name="Egész és valós osztás Példa" open><summary><span class="ctype">Példa</span><span class="cname">Egész és valós osztás</span></summary><div class="cbody v-simple"><p><code>12 / 5</code> két <code>int</code> → <b>egész osztás</b>, az eredmény csonkolódik: <b>2</b>. <code>12. / 5</code>: a <code>12.</code> <code>double</code>, ezért a másik is <code>double</code>-lé konvertálódik → <b>2.4</b>. Az operátor jelentését az operandusok típusa dönti el.</p></div><div class="cbody v-strict"><p class="src">dia: „Példák”</p><pre class="code">7+x
+x++;
+x = 7 * a + 5 * b;
+x = y++ * y++;
+x += ( y == 3 );
+12 / 5
+12. / 5</pre></div></details>
+</div></section>
+<section id="ea5" class="lect"><div class="section-head"><span class="label">5. előadás · <a href="../Előadás/cppscope.pdf" target="_blank" rel="noopener">dia PDF ↗</a></span><h2>Láthatóság és memóriamodell</h2></div><div class="concepts">
+<details class="concept def" id="ea5-lathatosag-hatokor-scope" data-name="Láthatóság (hatókör, scope) Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">Láthatóság (hatókör, scope)</span></summary><div class="cbody v-simple"><p>Egy név <b>láthatósága</b> az a programrész, ahol a nevet használhatjuk. Blokkban deklarált (lokális) név a <b>deklarációjától a blokk végéig</b> látszik. Pl. az <code>if</code> blokkjában deklarált <code>t</code> a blokk után már nem érhető el. (C vs. C++: a régi C-ben a deklarációk csak a blokk elején állhattak, C++-ban bárhol.)</p></div><div class="cbody v-strict"><p class="src">dia: „Láthatóság fogalma”</p><pre class="code">void f()
+{
+  int y = 1;
+  int x;
+  std::cin &gt;&gt; x;
+  if ( x &gt; 10 )
+  {
+    ++x;
+    int t = y;   // t innentől a blokk végéig látszik
+    ++y;
+  }
+  ++x;
+  ++y;
+}</pre></div></details>
+<details class="concept def" id="ea5-lathatosag-elettartam-memoriamodell" data-name="Láthatóság, élettartam, memóriamodell Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">Láthatóság, élettartam, memóriamodell</span></summary><div class="cbody v-simple"><p>Három külön kérdés: <b>láthatóság</b> – <i>hol</i> hivatkozhatunk a névre (fordítási idejű, a szövegre vonatkozik); <b>élettartam</b> – <i>mikor</i> létezik az objektum futás közben; <b>memóriamodell</b> – <i>hol</i> tárolódik (verem, statikus terület, heap). Pl. egy lokális <code>static</code> változó csak a függvényben látszik, de a program végéig él.</p></div><div class="cbody v-strict"><p class="src">dia: „Fogalmak”</p><ul><li>Élettartam</li><li>Memória modell</li><li>Láthatósági szabályok</li></ul></div></details>
+<details class="concept thm" id="ea5-ujradeklaralas-ugyanabban-a-blokkban" data-name="Újradeklarálás ugyanabban a blokkban Szabály" open><summary><span class="ctype">Szabály</span><span class="cname">Újradeklarálás ugyanabban a blokkban</span></summary><div class="cbody v-simple"><p>Ugyanabban a blokkban egy nevet <b>kétszer nem deklarálhatunk</b>: <code>int i = 2; int i = 3;</code> → fordítási hiba: <i>„redeclaration of 'int i'”</i>.</p></div><div class="cbody v-strict"><p class="src">dia: „Azonos nevű változók”</p><pre class="out">a.cpp:4:7: error: redeclaration of 'int i'
+a.cpp:3:7: note: 'int i' previously declared here</pre></div></details>
+<details class="concept def" id="ea5-elfedes-shadowing" data-name="Elfedés (shadowing) Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">Elfedés (shadowing)</span></summary><div class="cbody v-simple"><p>Egy <b>belső blokkban</b> deklarálhatunk a külsővel azonos nevű változót: ettől a ponttól a blokk végéig a belső <b>elfedi</b> a külsőt. A belső deklaráció <b>előtt</b> a blokkban még a külső látszik! A blokk után újra a külső látszik.</p><pre class="code">int x;  std::cin &gt;&gt; x;
+if ( x &gt; 0 )
+{
+  std::cout &lt;&lt; x;  // a külső x
+  int x = 2;       // innentől a belső x
+  ++x;             // a belsőt növeli
+}
+++x;               // újra a külső</pre></div><div class="cbody v-strict"><p class="src">dia: „Azonos nevű változók”</p><p>A dián a kód mellett soronként jelölve, melyik <code>x</code> látszik.</p></div></details>
+<details class="concept def" id="ea5-globalis-valtozo" data-name="Globális változó Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">Globális változó</span></summary><div class="cbody v-simple"><p>Függvényeken kívül deklarált változó: a deklarációtól a <b>fájl végéig</b> minden függvényből látszik. <b>Statikus tárterületen</b> van, a program indulásakor jön létre, és ha nincs kezdőérték, <b>nullára inicializálódik</b> (a lokális nem!). Kerüljük: bárhonnan módosítható, nehéz követni.</p></div><div class="cbody v-strict"><p class="src">dia: „Globális változók”</p><pre class="code">int x;
+int y;
+void f() { int i = 0; ++i; }
+void g() { int i = x; int j = x + y; }</pre></div></details>
+<details class="concept def" id="ea5-extern-es-static-globalis-szinten" data-name="extern és static globális szinten Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">extern és static globális szinten</span></summary><div class="cbody v-simple"><ul><li><code>int x;</code> (globálisan) – <b>definíció</b>: itt jön létre a változó; más fordítási egységből is elérhető.</li><li><code>extern int y;</code> – csak <b>deklaráció</b>: „van valahol (másik fájlban) egy <code>int y</code>”. A linker köti össze a definícióval.</li><li><code>static int s;</code> – <b>belső szerkesztésű</b>: csak ebben a fordítási egységben látszik; másik fájlban lehet ugyanilyen nevű, nem ütköznek.</li></ul><p>Ha két fájl is definiálja ugyanazt a globális nevet, <b>linkelési hiba</b> (multiple definition).</p></div><div class="cbody v-strict"><p class="src">dia: „Globális változók több fordítási egységben”</p><pre class="code">// a.cpp:          // b.cpp:        // n.cpp:
+int x;             int y;           extern int y;
+extern int y;
+static int s;</pre></div></details>
+<details class="concept def" id="ea5-nevtelen-nevter" data-name="Névtelen névtér Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">Névtelen névtér</span></summary><div class="cbody v-simple"><p>A globális változók elérésének csökkentésére a <code>static</code> mellett (C++-ban ajánlottabban) <b>névtelen névteret</b> használunk: a <code>namespace { int q; }</code> tartalma is csak az adott fordítási egységben látszik.</p></div><div class="cbody v-strict"><p class="src">dia: „Globális változók elérésének csökkentése”</p><pre class="code">// x.cpp:
+static int k;
+namespace
+{
+  int q;
+}</pre></div></details>
+<details class="concept not" id="ea5-hatokor-feloldo-operator" data-name="Hatókör-feloldó operátor :: Eszköz" open><summary><span class="ctype">Eszköz</span><span class="cname">Hatókör-feloldó operátor ::</span></summary><div class="cbody v-simple"><p><code>::x</code> mindig a <b>globális</b> <code>x</code>-et jelenti, akkor is, ha egy lokális <code>x</code> elfedi. <code>A::x</code> az <code>A</code> névtér <code>x</code>-e, <code>std::cout</code> az <code>std</code> névtér <code>cout</code>-ja. (Lokálisan elfedett <b>külső lokális</b> változót viszont nem lehet elérni.)</p></div><div class="cbody v-strict"><p class="src">dia: „Globális/lokális”</p><pre class="code">int x = 0;
+void f()
+{
+  int x = 1;
+  if ( x &gt; 0 )
+  {
+    int x = 2;
+    ++x;
+    ::x = x;
+  }
+  ++x;
+}</pre></div></details>
+<details class="concept def" id="ea5-nevter-namespace" data-name="Névtér (namespace) Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">Névtér (namespace)</span></summary><div class="cbody v-simple"><p>Nevek csoportosítása a névütközések elkerülésére: <code>A::x</code> és <code>B::x</code> két külön változó. C-ben nincs névtér. A linker számára a fordító a névteret <b>belekódolja a szimbólumnévbe</b> (<i>name mangling</i>): <code>A::x</code> → <code>_ZN1A1xE</code> (az <code>nm</code> paranccsal látható).</p></div><div class="cbody v-strict"><p class="src">dia: „Névterek C vs C++”</p><pre class="code">namespace A { int x; } // A::x
+namespace B { int x; } // B::x</pre><pre class="out">$ nm ns.o
+0000000000000000 B _ZN1A1xE
+0000000000000004 B _ZN1B1xE</pre></div></details>
+<details class="concept ex" id="ea5-nevterbeli-fuggveny-definicioja-kivul" data-name="Névtérbeli függvény definíciója kívül Példa" open><summary><span class="ctype">Példa</span><span class="cname">Névtérbeli függvény definíciója kívül</span></summary><div class="cbody v-simple"><p><code>void A::f() { ++x; }</code> a névtéren kívül van leírva, de a törzsében a nevek keresése <b>az <code>A</code> névtérben kezdődik</b>: ezért <code>++x</code> az <code>A::x</code>-et növeli, nem a globális <code>x</code>-et.</p></div><div class="cbody v-strict"><p class="src">dia: „Névtér”</p><pre class="code">int x;
+namespace A
+{
+  int x;
+  void f();
+}
+void A::f()
+{
+  ++x;   // A::x
+}</pre></div></details>
+<details class="concept def" id="ea5-memoriaszegmensek" data-name="Memóriaszegmensek Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">Memóriaszegmensek</span></summary><div class="cbody v-simple"><ul><li><b>végrehajtási verem (stack):</b> lokális változók, függvényparaméterek, visszatérési címek;</li><li><b>statikus tárterület:</b> globális és statikus változók, a szövegliterálok (<code>"Hello"</code>);</li><li><b>kódszegmens:</b> maga a lefordított program;</li><li><b>heap (szabad tár):</b> <code>new</code>-val / <code>malloc</code>-kal futás közben foglalt memória.</li></ul></div><div class="cbody v-strict"><p class="src">dia: „Memória szegmensek”</p><ul><li>Végrehajtási verem, execution stack, stack</li><li>Statikus tárterület: Globális változók, "Hello";</li><li>Kódszegmens</li><li>Heap memória</li></ul></div></details>
+<details class="concept def" id="ea5-vegrehajtasi-verem" data-name="Végrehajtási verem Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">Végrehajtási verem</span></summary><div class="cbody v-simple"><p>Minden függvényhíváskor egy <b>stack frame</b> (aktivációs rekord) kerül a verem tetejére: paraméterek, lokális változók, visszatérési cím. Visszatéréskor lekerül. A verem tetejét az <code>SP</code> (stack pointer), a keret alját a <code>BP</code> (base pointer) regiszter jelzi (<code>ESP</code>/<code>EBP</code> 32, <code>RSP</code>/<code>RBP</code> 64 biten). <b>Előny:</b> nagyon gyors, automatikus felszabadítás. <b>Korlát:</b> kicsi (néhány MB), és az élettartam a blokkhoz kötött. A hívási láncot a hibakereső <b>stack trace</b>-ként mutatja.</p></div><div class="cbody v-strict"><p class="src">dia: „Végrehajtási verem működése”</p><ul><li>Stack frame, aktivációs rekord</li><li>BP, SP, EBP, ESP, RBP, RSP</li><li>Függvényhívások</li><li>Előnyök</li><li>Limitációk</li></ul></div></details>
+<details class="concept trap" id="ea5-stack-overflow" data-name="Stack overflow Csapda" open><summary><span class="ctype">Csapda</span><span class="cname">Stack overflow</span></summary><div class="cbody v-simple"><p>Ha a rekurziónak <b>nincs megállási feltétele</b>, minden hívás újabb keretet tesz a veremre, míg az el nem fogy: <i>„Segmentation fault (core dumped)”</i>. Javítás: <code>if ( n &lt;= 1 ) return 1;</code>.</p></div><div class="cbody v-strict"><p class="src">dia: „Stack overflow”</p><pre class="code">int fac( int n )
+{
+  return n * fac( n - 1 );
+}
+int main()
+{
+  fac( 3 );
+}</pre><pre class="out">Segmentation fault (core dumped)</pre></div></details>
+<details class="concept def" id="ea5-dinamikus-memoriakezeles" data-name="Dinamikus memóriakezelés Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">Dinamikus memóriakezelés</span></summary><div class="cbody v-simple"><p>Ha a verem kevés, vagy az objektumnak túl kell élnie a blokkot, a <b>heap</b>-en foglalunk. C-ben <code>malloc</code>/<code>free</code>, C++-ban <code>new</code>/<code>delete</code>. Párosítás szigorúan:</p><ul><li><code>int* p = new int( i );</code> → <code>delete p;</code> (egy <code>int</code>, kezdőértéke <code>i</code>)</li><li><code>int* q = new int[ i ];</code> → <code>delete [] q;</code> (<code>i</code> elemű tömb)</li></ul><p><code>new[]</code>-ra sima <code>delete</code> (vagy fordítva) nem definiált viselkedés. Csak szükség esetén használjuk.</p></div><div class="cbody v-strict"><p class="src">dia: „Dinamikus memóriakezelés C++-ban”</p><pre class="code">void f( int i )
+{
+  int *p = new int( i );
+  // ...
+  delete p;
+}
+void g( int i )
+{
+  int *q = new int[ i ];
+  // ...
+  delete [] q;
+}</pre></div></details>
+<details class="concept trap" id="ea5-memoriakezelesi-hibak" data-name="Memóriakezelési hibák Csapda" open><summary><span class="ctype">Csapda</span><span class="cname">Memóriakezelési hibák</span></summary><div class="cbody v-simple"><ul><li><b>memóriaszivárgás (memory leak):</b> a lefoglalt memóriát nem szabadítjuk fel (pl. kivétel miatt nem ér el a vezérlés a <code>delete</code>-ig);</li><li><b>dupla felszabadítás (double free):</b> kétszer hívunk <code>delete</code>-et ugyanarra (akár két különböző pointeren át);</li><li><b>lógó pointer (dangling pointer):</b> a pointer már felszabadított memóriára mutat, és használjuk.</li></ul><p>C++-ban <b>nincs szemétgyűjtés</b> (garbage collection). A hibák felderítésére: <code>valgrind</code>.</p></div><div class="cbody v-strict"><p class="src">dia: „Dinamikus memóriakezelés”</p><ul><li>Heap szerepe</li><li>malloc, new, new []</li><li>free, delete, delete []</li><li>Problémák: Memória-szivárgás, memory leak; Dupla free; Dangling pointerek</li><li>Garbage collection</li><li>valgrind (demo)</li><li>Szükség esetén használjuk</li></ul></div></details>
+<details class="concept thm" id="ea5-tipus-es-tarolasi-hely-fuggetlen" data-name="Típus és tárolási hely független Szabály" open><summary><span class="ctype">Szabály</span><span class="cname">Típus és tárolási hely független</span></summary><div class="cbody v-simple"><p>Hogy valami a veremre vagy a heapre kerül, az <b>nem a típusától</b> függ, hanem attól, hogyan hozzuk létre: beépített típusú adat is lehet a heapen (<code>new int</code>), és felhasználói típusú objektum is a vermen (<code>complex c( 1.2, 3.4 );</code>). A heapre a <b>verem korlátai</b> miatt (méret, élettartam) teszünk dolgokat.</p></div><div class="cbody v-strict"><p class="src">dia: „Mi kerül a heapre?”</p><ul><li>Stack limitáció</li><li>Alaptípus/beépített típusú adatot tárolhatunk a heap-en</li><li>Felhasználói típusú objektumot tárolhatunk a stack-en</li><li>Független kérdés: típus és memória</li></ul></div></details>
+<details class="concept def" id="ea5-raii" data-name="RAII Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">RAII</span></summary><div class="cbody v-simple"><p><b>Resource Acquisition Is Initialization</b>: az erőforrást (memória, fájl, zár) egy osztályba csomagoljuk; a <b>konstruktor</b> megszerzi, a <b>destruktor</b> felszabadítja. Ha az objektum lokális változó, a destruktor automatikusan lefut, amikor a vezérlés elhagyja a blokkot, akár kivétellel is, így nincs szivárgás. Pl. <code>std::vector&lt;int&gt; v( i );</code> a <code>new int[ i ]</code> + <code>delete [] </code> helyett.</p></div><div class="cbody v-strict"><p class="src">dia: „RAII”</p><ul><li>Erőforrás, resource</li><li>C++: csomagoljuk be ezeket egy osztályba</li><li>Konstruktor, destruktor</li><li>Használunk saját típusú lokális változó objektumokat</li><li>Élettartam szabályok</li><li>Stroustrup: „C++ is a resource-oriented programming language.”</li><li>Resource acquisition is initialization</li></ul><pre class="code">void f( int i )
+{
+  std::vector&lt;int&gt; v( i );
+  // ...
+}</pre></div></details>
+</div></section>
+<section id="ea6" class="lect"><div class="section-head"><span class="label">6. előadás · <a href="../Előadás/cpplife.pdf" target="_blank" rel="noopener">dia PDF ↗</a></span><h2>Élettartam szabályok</h2></div><div class="concepts">
+<details class="concept def" id="ea6-elettartam" data-name="Élettartam Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">Élettartam</span></summary><div class="cbody v-simple"><p>Egy objektum élettartama: <b>mikor jön létre</b> (mikortól használható) és <b>mikor szűnik meg</b> (meddig használható). C++-ban ez megfigyelhető: létrejöttkor lefut a <b>konstruktor</b>, megszűnéskor a <b>destruktor</b> (pl. az <code>std::string</code>, <code>std::vector</code> ilyenkor szabadítja fel a memóriáját). Javában a szemétgyűjtő miatt nem tudjuk, mikor szűnik meg egy objektum, ezért ott az erőforrásokat külön kell lezárni.</p></div><div class="cbody v-strict"><p class="src">dia: „Fogalmak”</p><ul><li>Élettartam: Mikor jön létre? Mikortól használható?</li><li>Mikor szűnik meg? Meddig használható?</li><li>C vs C++</li><li>Felhasználói típusok</li><li>Konstruktor, destruktor</li><li>std::string, std::vector</li></ul></div></details>
+<details class="concept not" id="ea6-elettartam-kategoriak" data-name="Élettartam-kategóriák Eszköz" open><summary><span class="ctype">Eszköz</span><span class="cname">Élettartam-kategóriák</span></summary><div class="cbody v-simple"><div class="tbl"><table><tr><th>fajta</th><th>létrejön</th><th>megszűnik</th></tr><tr><td>automatikus (lokális)</td><td>a vezérlés eléri a deklarációt</td><td>a vezérlés elhagyja a deklaráló blokkot</td></tr><tr><td>lokális statikus</td><td>a vezérlés <b>először</b> eléri a deklarációt</td><td>a program futásának végén</td></tr><tr><td>globális, névtérbeli, osztály statikus tag</td><td>a program indulásakor</td><td>a program futásának végén</td></tr><tr><td>dinamikus</td><td>a vezérlés eléri a <code>new</code>-t</td><td>a vezérlés eléri a <code>delete</code>-et</td></tr><tr><td>osztály adattag</td><td>a tartalmazó objektum létrejöttekor</td><td>a tartalmazó objektum megszűnésekor</td></tr><tr><td>tömbelem</td><td>a tartalmazó tömb létrejöttekor</td><td>a tartalmazó tömb megszűnésekor</td></tr><tr><td>temporális</td><td>a (rész)kifejezés kiértékelésekor</td><td>a teljes kifejezés kiértékelésének végén</td></tr></table></div></div><div class="cbody v-strict"><p class="src">dia: „Élettartam szabályok”</p><ul><li>Automatikus változók</li><li>Globális változók, névtérbeli, osztály statikus tagok</li><li>Lokális statikusok</li><li>Dinamikus változók</li><li>Tömbelemek</li><li>Osztály adattagok</li><li>Temporálisok</li></ul></div></details>
+<details class="concept thm" id="ea6-automatikus-valtozok" data-name="Automatikus változók Szabály" open><summary><span class="ctype">Szabály</span><span class="cname">Automatikus változók</span></summary><div class="cbody v-simple"><p>A blokkban deklarált (nem <code>static</code>) változó a <b>veremen</b> él: akkor jön létre, amikor a vezérlés <b>eléri a deklarációt</b>, és megszűnik, amikor <b>elhagyja a blokkot</b>. Ha egy függvény többször hívódik, minden híváskor új példány születik. Pl. egy <code>if</code> blokkban létrehozott <code>std::vector&lt;int&gt; x</code> a blokk végén megszűnik, a destruktora felszabadítja a memóriát.</p></div><div class="cbody v-strict"><p class="src">dia: „Automatikus változók”</p><ul><li>Létrejönnek: a vezérlés eléri a deklarációt</li><li>Megszűnnek: a vezérlés elhagyja a deklaráló blokkot</li></ul></div></details>
+<details class="concept thm" id="ea6-lokalis-statikus-valtozok" data-name="Lokális statikus változók Szabály" open><summary><span class="ctype">Szabály</span><span class="cname">Lokális statikus változók</span></summary><div class="cbody v-simple"><p><code>static int x = 1;</code> egy függvényben: <b>csak a függvényben látszik</b>, de <b>egyszer</b> jön létre (amikor a vezérlés először eléri; ekkor inicializálódik), és a <b>program végéig él</b>, megőrzi az értékét a hívások között. Így <code>f(); f();</code> először 1-et, aztán 2-t ír ki.</p></div><div class="cbody v-strict"><p class="src">dia: „Lokális statikus változók”</p><ul><li>Létrejönnek: a vezérlés először eléri a deklarációt</li><li>Megszűnnek: a program futásának a végén</li></ul></div></details>
+<details class="concept thm" id="ea6-globalis-nevterbeli-valtozok-es-osztaly-statikus-tagjai" data-name="Globális, névtérbeli változók és osztály statikus tagjai Szabály" open><summary><span class="ctype">Szabály</span><span class="cname">Globális, névtérbeli változók és osztály statikus tagjai</span></summary><div class="cbody v-simple"><p>Ezek a <b>statikus tárterületen</b> vannak: a program indulásakor (még a <code>main</code> előtt) jönnek létre, és a program végén szűnnek meg. Osztály statikus tagja (<code>static const char* filename;</code>) az osztályhoz tartozik, nem az egyes objektumokhoz: egy példány van belőle.</p></div><div class="cbody v-strict"><p class="src">dia: „Globális, osztály statikus tagok, névtérbeli változók”</p><ul><li>Létrejönnek: a program indulásakor</li><li>Megszűnnek: a program futásának a végén</li></ul><pre class="code">class Foo
+{
+  static const char* filename;
+};</pre></div></details>
+<details class="concept thm" id="ea6-dinamikus-valtozok" data-name="Dinamikus változók Szabály" open><summary><span class="ctype">Szabály</span><span class="cname">Dinamikus változók</span></summary><div class="cbody v-simple"><p>A heapen élnek: akkor jönnek létre, amikor a vezérlés <b>eléri a <code>new</code>-t</b>, és csak akkor szűnnek meg, ha <b>eléri a <code>delete</code>-et</b>: az élettartamukat nem a blokkszerkezet, hanem mi magunk határozzuk meg. Ebből jönnek a problémák (szivárgás, dupla <code>delete</code>, lógó pointer).</p></div><div class="cbody v-strict"><p class="src">dia: „Dinamikus változók”</p><ul><li>Létrejönnek: a vezérlés eléri a new-t</li><li>Megszűnnek: a vezérlés eléri a delete-et.</li><li>Problémák</li></ul></div></details>
+<details class="concept thm" id="ea6-osztaly-adattagjai-es-tombelemek" data-name="Osztály adattagjai és tömbelemek Szabály" open><summary><span class="ctype">Szabály</span><span class="cname">Osztály adattagjai és tömbelemek</span></summary><div class="cbody v-simple"><p>Az <b>adattag</b> a tartalmazó objektummal együtt jön létre és szűnik meg: <code>Statistics stat;</code> létrehozásakor a <code>stat.data</code> vektor is létrejön (üresen), <code>stat</code> megszűnésekor a vektor is. A <b>tömbelemek</b> ugyanígy a tartalmazó tömbbel: <code>Statistics arr[ 5 ];</code> 5 objektumot hoz létre (mindegyikben egy-egy vektorral).</p></div><div class="cbody v-strict"><p class="src">dia: „Osztály adattagok / Tömbelemek”</p><ul><li>Adattagok – Létrejönnek: a tartalmazó objektum létrejöttekor; Megszűnnek: a tartalmazó objektum megszűnésekor</li><li>Tömbelemek – Létrejönnek: a tartalmazó tömb létrejöttekor; Megszűnnek: a tartalmazó tömb megszűnésekor</li></ul></div></details>
+<details class="concept thm" id="ea6-temporalisok-ideiglenes-objektumok" data-name="Temporálisok (ideiglenes objektumok) Szabály" open><summary><span class="ctype">Szabály</span><span class="cname">Temporálisok (ideiglenes objektumok)</span></summary><div class="cbody v-simple"><p>Kifejezés kiértékelésekor névtelen köztes eredmények keletkeznek: <code>e = a + b + c + d;</code> esetén <code>a + b</code>, majd <code>(a + b) + c</code> … (pl. <code>Matrix</code> vagy <code>std::string</code> típusnál ezek valódi objektumok). Egy temporális a (rész)kifejezés kiértékelésekor jön létre, és <b>a teljes kifejezés végén</b> (a <code>;</code>-nél) megszűnik.</p><div class="warn"><b>Csapda</b><code>const char* p = (h + w).c_str();</code> – a <code>h + w</code> temporális string a sor végén megszűnik, <code>p</code> lógó pointer lesz.</div></div><div class="cbody v-strict"><p class="src">dia: „Temporálisok”</p><ul><li>Létrejönnek: a (rész)kifejezés kiértékelésekor</li><li>Megszűnnek: a teljes kifejezés kiértékelésének végén</li></ul><pre class="code">std::string h = "Hello";
+std::string w = "World";
+const char* p = (h + w).c_str();
+std::cout &lt;&lt; p;</pre></div></details>
+<details class="concept trap" id="ea6-lokalis-valtozo-cimenek-visszaadasa" data-name="Lokális változó címének visszaadása Csapda" open><summary><span class="ctype">Csapda</span><span class="cname">Lokális változó címének visszaadása</span></summary><div class="cbody v-simple"><p>Az <code>answer</code> függvény egy <b>lokális tömb</b> címét adja vissza; a tömb a függvény végén megszűnik, a hívó <b>lógó pointert</b> kap (a g++ figyelmeztet: <i>„address of local variable returned”</i>). Megoldások és gondjaik: globális vagy <code>static</code> tömb (működik, de <b>minden hívás ugyanazt a tömböt</b> írja felül); <code>new char[ 80 ]</code> (a hívónak kell <code>delete []</code>-elni, különben szivárog); a hívó adja a puffert (helyes, de kényelmetlen). <b>A jó megoldás: <code>std::string</code>-et visszaadni érték szerint.</b></p></div><div class="cbody v-strict"><p class="src">dia: „Feladat / Implementáció”</p><pre class="code">char* answer( const char* question )
+{
+  std::cout &lt;&lt; question &lt;&lt; std::endl;
+  char ans[ 80 ];
+  std::cin.getline( ans, sizeof( ans ) );
+  return ans;
+}</pre><p>A dián ehhez: „Every time you do this: … a kitten dies”.</p></div></details>
+<details class="concept def" id="ea6-visszateres-ertek-szerint-rvo-es-move" data-name="Visszatérés érték szerint: RVO és move Fogalom" open><summary><span class="ctype">Fogalom</span><span class="cname">Visszatérés érték szerint: RVO és move</span></summary><div class="cbody v-simple"><p>Ha egy függvény <code>std::string</code>-et ad vissza érték szerint, a jelentés tiszta (a hívó saját objektumot kap, nincs lógó pointer és szivárgás). Félhetnénk, hogy a másolás drága, de a fordító <b>RVO</b>-val (return value optimization) a visszaadott objektumot közvetlenül a hívó helyén hozza létre, ha pedig mégsem, C++11 óta <b>mozgatás</b> (move) történik: csak a belső pointer költözik át, a karakterek nem másolódnak.</p></div><div class="cbody v-strict"><p class="src">dia: „Válasz”</p><ul><li>Jelentés</li><li>Hatékonyság</li><li>Optimalizációk, RVO</li><li>Move</li></ul></div></details>
+</div></section>
+<p class="empty" id="empty" hidden>Nincs találat.</p>
+
+<footer>Forrás: Pataki Norbert C++ előadásdiái (Előadás mappa: cppintro, preproc, cpplex, cppexpr, cppscope, cpplife). A diák szövege vázlatos; az „Egyszerű” nézet magyarázatai és példái saját kiegészítések. A diákon néhol tipográfiai (görbe) idézőjelek szerepelnek a kódban (’ ’), itt szabványos <code>'</code> áll.</footer>
+</div>
+<script>
+(function () {
+  var cards = Array.prototype.slice.call(document.querySelectorAll('details.concept'));
+  var quiz = document.getElementById('quiz');
+  function fold(s) { return s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); }
+  quiz.addEventListener('click', function () {
+    var on = quiz.getAttribute('aria-pressed') !== 'true';
+    quiz.setAttribute('aria-pressed', String(on));
+    cards.forEach(function (d) { d.open = !on; });
+  });
+  document.getElementById('openall').addEventListener('click', function () {
+    quiz.setAttribute('aria-pressed', 'false');
+    cards.forEach(function (d) { d.open = true; });
+  });
+  var segs = document.querySelectorAll('.seg button');
+  function setView(v) {
+    document.body.dataset.view = v;
+    segs.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.view === v)); });
+    try { localStorage.setItem('cpp-fogalmak-view', v); } catch (e) {}
+  }
+  segs.forEach(function (b) { b.addEventListener('click', function () { setView(b.dataset.view); }); });
+  try { var saved = localStorage.getItem('cpp-fogalmak-view'); if (saved === 'simple' || saved === 'strict') setView(saved); } catch (e) {}
+  var q = document.getElementById('q');
+  q.addEventListener('input', function () {
+    var v = fold(q.value.trim()), any = false;
+    cards.forEach(function (d) { d.hidden = v !== '' && fold(d.dataset.name).indexOf(v) === -1; });
+    document.querySelectorAll('section.lect').forEach(function (s) {
+      var vis = !!s.querySelector('details.concept:not([hidden])');
+      s.hidden = !vis; if (vis) any = true;
+      var chip = document.querySelector('nav.bar a[href="#' + s.id + '"]');
+      if (chip) chip.parentElement.hidden = !vis;
+    });
+    document.getElementById('empty').hidden = any;
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === '/' && document.activeElement !== q) { e.preventDefault(); q.focus(); }
+  });
+})();
+</script>
+<script>
+(function () {
+  var KW = 'alignas alignof asm auto bool break case catch char char16_t char32_t class const constexpr const_cast continue decltype default delete do double dynamic_cast else enum explicit export extern false float for friend goto if inline int long mutable namespace new noexcept nullptr operator private protected public register reinterpret_cast return short signed sizeof static static_assert static_cast struct switch template this throw true try typedef typeid typename union unsigned using virtual void volatile wchar_t while';
+  var kw = {}; KW.split(' ').forEach(function (k) { kw[k] = 1; });
+  var re = /(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*')|(#[ \t]*(?:include|define|undef|ifdef|ifndef|if|else|elif|endif|pragma)\b(?:[ \t]*<[^>\n]*>)?)|(\b0[xX][0-9a-fA-F]+[uUlL]*|\b\d+(?:\.\d*)?(?:[eE][+-]?\d+)?[fFlLuU]*)|([A-Za-z_]\w*)/g;
+  function esc(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  document.querySelectorAll('pre.code').forEach(function (pre) {
+    var src = pre.textContent, outp = '', last = 0, m;
+    re.lastIndex = 0;
+    while ((m = re.exec(src))) {
+      outp += esc(src.slice(last, m.index));
+      var t = m[0], cls = null;
+      if (m[1]) cls = 'com'; else if (m[2]) cls = 'str'; else if (m[3]) cls = 'pp'; else if (m[4]) cls = 'num'; else if (kw[t]) cls = 'kw';
+      outp += cls ? '<span class="tk-' + cls + '">' + esc(t) + '</span>' : esc(t);
+      last = re.lastIndex;
+    }
+    pre.innerHTML = outp + esc(src.slice(last));
+  });
+})();
+</script>
+<script>
+(function () {
+  var nav = document.querySelector('nav.bar');
+  if (!nav) return;
+  var links = Array.prototype.filter.call(nav.querySelectorAll('a[href^="#"]'), function (a) {
+    return a.getAttribute('href').length > 1 && document.getElementById(a.getAttribute('href').slice(1));
+  });
+  var current = null, ticking = false;
+  function sectionOf(a) { return document.getElementById(a.getAttribute('href').slice(1)); }
+  function update() {
+    ticking = false;
+    var line = nav.getBoundingClientRect().bottom + 12, active = null;
+    var visible = links.filter(function (a) { return sectionOf(a).offsetParent !== null; });
+    visible.forEach(function (a) { if (sectionOf(a).getBoundingClientRect().top <= line) active = a; });
+    // a lap alján az utolsó szakasz az aktuális akkor is, ha rövid
+    if (visible.length && window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) active = visible[visible.length - 1];
+    if (active === current) return;
+    if (current) { current.classList.remove('active'); current.removeAttribute('aria-current'); }
+    current = active;
+    if (!active) return;
+    active.classList.add('active');
+    active.setAttribute('aria-current', 'location');
+    var ul = active.closest('ul'), ur = ul.getBoundingClientRect(), ar = active.getBoundingClientRect();
+    var left = ar.left - ur.left + ul.scrollLeft, right = left + ar.width;
+    if (left < ul.scrollLeft || right > ul.scrollLeft + ul.clientWidth) ul.scrollTo({ left: Math.max(0, left - 16), behavior: 'smooth' });
+  }
+  function schedule() { if (!ticking) { ticking = true; setTimeout(update, 40); } }
+  window.addEventListener('scroll', schedule, { passive: true });
+  window.addEventListener('resize', schedule);
+  document.addEventListener('input', schedule);
+  document.addEventListener('toggle', schedule, true);
+  update();
+})();
+</script>
+</body>
+</html>

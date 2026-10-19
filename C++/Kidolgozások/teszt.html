@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="hu" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>C++ · gyakorló teszt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+/* C++ practice test: multiple choice with instant feedback, grouped by lecture */
+:root {
+  --paper: #f5f7fa; --grid: rgba(13, 122, 114, 0.06); --card: #ffffff; --ink: #1b2430; --muted: #5a6574; --rule: #d7dde6;
+  --accent: #0d7a72; --accent-soft: #e0f4f1; --mark: #b8352a; --mark-soft: #fbe9e6; --ok: #2c7a4b; --ok-soft: #e3f3e9;
+  --warm: #9a5b00; --warm-soft: #fbf0dc; --blue: #2346a8; --blue-soft: #e6ecfb; --vio: #6b46c1; --vio-soft: #efe9fb;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-label: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f141b; --grid: rgba(95, 208, 195, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5; --rule: #2a3442;
+    --accent: #5fd0c3; --accent-soft: #13302d; --mark: #ff8b7b; --mark-soft: #3a1f1c; --ok: #74d39c; --ok-soft: #173225;
+    --warm: #f2c46d; --warm-soft: #33291a; --blue: #93abff; --blue-soft: #1d2846; --vio: #c4a7ff; --vio-soft: #261f3d; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f141b; --grid: rgba(95, 208, 195, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5; --rule: #2a3442;
+  --accent: #5fd0c3; --accent-soft: #13302d; --mark: #ff8b7b; --mark-soft: #3a1f1c; --ok: #74d39c; --ok-soft: #173225;
+  --warm: #f2c46d; --warm-soft: #33291a; --blue: #93abff; --blue-soft: #1d2846; --vio: #c4a7ff; --vio-soft: #261f3d; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; background-color: var(--paper); background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 22px 22px; color: var(--ink); font-family: var(--f-body); font-size: 1.06rem; line-height: 1.6; }
+.wrap { max-width: 900px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 80px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2rem, 6vw, 3.1rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.65rem; font-weight: 700; letter-spacing: -0.01em; }
+p { margin: 0; }
+a { color: var(--accent); }
+code { font-family: var(--f-label); font-size: 0.86em; background: var(--accent-soft); padding: 0 4px; border-radius: 3px; overflow-wrap: anywhere; }
+.label { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+
+.back { justify-self: start; display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px 9px 12px; border: 1.5px solid var(--accent); border-radius: 8px; background: var(--accent-soft); color: var(--ink); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 1.02rem; line-height: 1; white-space: nowrap; transition: background .15s, color .15s; }
+.back .arr { color: var(--accent); font-size: 1.25rem; transition: transform .15s, color .15s; }
+.back:hover, .back:focus-visible { background: var(--accent); color: var(--paper); outline: none; }
+.back:hover .arr, .back:focus-visible .arr { color: var(--paper); transform: translateX(-3px); }
+header.hero { display: grid; gap: 14px; padding-block: 0 26px; border-bottom: 2px solid var(--accent); }
+.hero .sub { color: var(--muted); max-width: 66ch; }
+.facts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.fact { display: flex; flex-direction: column; gap: 2px; padding: 8px 14px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; min-width: 120px; }
+.fact b { font-family: var(--f-display); font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+
+nav.bar { position: sticky; top: 0; z-index: 5; background: var(--paper); border-bottom: 1px solid var(--rule); margin-inline: -16px; padding-inline: 16px; }
+nav.bar ul { list-style: none; margin: 0; padding: 10px 0; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin; }
+nav.bar li[hidden] { display: none; }
+nav.bar a { display: block; white-space: nowrap; text-decoration: none; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.04em; color: var(--ink); padding: 6px 10px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); }
+nav.bar a:hover, nav.bar a:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+nav.bar a.nav-back { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+nav.bar a.active, nav.bar a.active:hover, nav.bar a.active:focus-visible { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+
+.tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 18px; }
+.tools input { flex: 1 1 240px; min-width: 0; font: inherit; font-size: 0.98rem; padding: 8px 12px; border: 1px solid var(--rule); border-radius: 6px; background: var(--card); color: var(--ink); }
+.tools input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+button { font-family: var(--f-label); font-size: 0.78rem; padding: 8px 12px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); color: var(--ink); cursor: pointer; }
+button:hover, button:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+button[aria-pressed="true"] { background: var(--accent); color: var(--paper); border-color: var(--accent); }
+.seg { display: inline-flex; border: 1px solid var(--accent); border-radius: 6px; overflow: hidden; }
+.seg button { border: 0; border-radius: 0; padding: 8px 14px; }
+.seg button + button { border-left: 1px solid var(--accent); }
+.seg button[aria-pressed="false"] { background: var(--card); color: var(--ink); }
+
+section.lect { padding-top: 40px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; scroll-margin-top: 56px; }
+section.lect[hidden] { display: none; }
+.section-head { display: grid; gap: 6px; }
+.section-head p { color: var(--muted); max-width: 68ch; }
+
+/* code: highlighted by the script below; .out = terminal / program output */
+pre.code, pre.out { margin: 0; padding: 10px 14px; border: 1px solid var(--rule); border-radius: 6px; font-family: var(--f-label); font-size: 0.84rem; line-height: 1.5; overflow-x: auto; tab-size: 4; }
+pre.code { background: var(--paper); }
+pre.out { background: #0a0d12; color: #cfd6e0; border-color: #222b37; }
+pre.out::before { content: "kimenet / terminál"; display: block; font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase; color: #7d8898; margin-bottom: 4px; }
+.cr { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-start; }
+.cr > pre { flex: 1 1 260px; min-width: 0; }
+.tk-kw { color: var(--vio); font-weight: 500; }
+.tk-str { color: var(--ok); }
+.tk-num { color: var(--warm); }
+.tk-com { color: var(--muted); font-style: italic; }
+.tk-pp { color: var(--blue); }
+
+.warn, .tip, .own, .note { max-width: 74ch; font-size: 0.95rem; }
+.warn { background: var(--mark-soft); border-left: 3px solid var(--mark); padding: 8px 12px; border-radius: 0 4px 4px 0; }
+.tip { background: var(--accent-soft); border-left: 3px solid var(--accent); padding: 8px 12px; border-radius: 0 4px 4px 0; }
+.note { background: var(--warm-soft); border-left: 3px solid var(--warm); padding: 8px 12px; border-radius: 0 4px 4px 0; }
+.own { border: 1px dashed var(--ok); padding: 8px 12px; border-radius: 4px; }
+.own > b:first-child, .tip > b:first-child, .warn > b:first-child, .note > b:first-child { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; display: block; margin-bottom: 2px; }
+.own > b:first-child { color: var(--ok); }
+.warn > b:first-child { color: var(--mark); }
+.tip > b:first-child { color: var(--accent); }
+.note > b:first-child { color: var(--warm); }
+.ans { display: inline-block; background: var(--ok-soft); color: var(--ok); font-weight: 600; padding: 1px 9px; border-radius: 4px; }
+.ans code { background: transparent; color: inherit; }
+
+.tbl { overflow-x: auto; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; max-width: 100%; }
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+th, td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--f-label); font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+tr:last-child td { border-bottom: 0; }
+td code, th code { white-space: nowrap; }
+
+footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.88rem; }
+.empty { color: var(--muted); padding-top: 24px; }
+
+.qs { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.q { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 14px 18px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; min-width: 0; scroll-margin-top: 60px; }
+.q.right { border-color: var(--ok); }
+.q.wrong { border-color: var(--mark); }
+.qhead { display: flex; gap: 10px; align-items: baseline; }
+.qhead .no { font-family: var(--f-display); font-weight: 700; color: var(--accent); }
+.opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px; }
+button.opt { display: flex; gap: 10px; align-items: baseline; text-align: left; font-family: var(--f-body); font-size: 0.98rem; padding: 9px 12px; border-radius: 6px; }
+button.opt .ol { font-family: var(--f-label); font-size: 0.75rem; color: var(--muted); }
+button.opt:disabled { cursor: default; opacity: 0.6; }
+button.opt.is-ok { opacity: 1; border-color: var(--ok); background: var(--ok-soft); color: var(--ink); }
+button.opt.is-bad { opacity: 1; border-color: var(--mark); background: var(--mark-soft); color: var(--ink); }
+.expl { font-size: 0.95rem; padding: 8px 12px; border-radius: 0 4px 4px 0; border-left: 3px solid var(--accent); background: var(--accent-soft); max-width: 80ch; }
+.q.right .verdict { color: var(--ok); }
+.q.wrong .verdict { color: var(--mark); }
+.scorebar { position: sticky; bottom: 0; z-index: 4; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-top: 28px; padding: 10px 14px; background: var(--card); border: 1px solid var(--accent); border-radius: 8px; }
+.scorebar b { font-family: var(--f-display); font-size: 1.25rem; font-variant-numeric: tabular-nums; }
+.scorebar .grade { font-family: var(--f-label); font-size: 0.8rem; color: var(--muted); }
+.scorebar button { margin-left: auto; }
+@media (max-width: 520px) { body { font-size: 1rem; } .q { padding: 12px; } }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="hero">
+  <a class="back" href="../../index.html#/cpp"><span class="arr" aria-hidden="true">←</span>Vissza: Programozási nyelvek (C++)</a>
+  <span class="label">Programozási nyelvek (C++) · elméleti vizsga gyakorlása</span>
+  <h1>Gyakorló teszt</h1>
+  <p class="sub">Az elméleti vizsga 15 tesztkérdésből áll. Itt 28 feleletválasztós kérdés van az előadások anyagából; kattints a válaszra, és azonnal látod, jó-e, és miért.</p>
+  <div class="own"><b>Saját kérdések</b>Ezek nem a tárgy hivatalos tesztkérdései, hanem az előadásdiák anyagából írt gyakorló kérdések. A vizsga formátumát nem ismerjük pontosan.</div>
+</header>
+
+<nav class="bar" aria-label="Előadások">
+  <ul>
+    <li><a class="nav-back" href="../../index.html#/cpp" aria-label="Vissza: Programozási nyelvek (C++)">← C++</a></li><li><a href="#ea1">1. Bevezetés</a></li><li><a href="#ea2">2. Preprocesszor</a></li><li><a href="#ea3">3. Lexikális</a></li><li><a href="#ea4">4. Kifejezések</a></li><li><a href="#ea5">5. Láthatóság</a></li><li><a href="#ea6">6. Élettartam</a></li>
+  </ul>
+</nav>
+
+<section id="ea1" class="lect"><div class="section-head"><span class="label">1. előadás · 2 kérdés</span><h2>Bevezetés</h2></div><div class="qs"><article class="q" id="q1"><div class="qhead"><span class="no">1.</span><p>Melyik a C++ egyik alapelve az előadás szerint?</p></div><div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">a</span><span>Minden objektum a heapen jön létre.</span></button><button type="button" class="opt" data-ok="1"><span class="ol">b</span><span>„Ne fizessünk azért, amit nem kérünk.”</span></button><button type="button" class="opt" data-ok="0"><span class="ol">c</span><span>A memóriát szemétgyűjtő szabadítja fel.</span></button><button type="button" class="opt" data-ok="0"><span class="ol">d</span><span>Csak objektum-orientált kód írható benne.</span></button></div><div class="expl" hidden><b class="verdict"></b> Zero-overhead elv: amit nem használunk, az nem lassítja a programot. C++-ban nincs szemétgyűjtés, és a nyelv multiparadigmás.</div></article>
+<article class="q" id="q2"><div class="qhead"><span class="no">2.</span><p>Melyik paradigmát <b>nem</b> sorolja az előadás a C++ által támogatottak közé?</p></div><div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">a</span><span>generikus</span></button><button type="button" class="opt" data-ok="0"><span class="ol">b</span><span>procedurális</span></button><button type="button" class="opt" data-ok="1"><span class="ol">c</span><span>logikai</span></button><button type="button" class="opt" data-ok="0"><span class="ol">d</span><span>metaprogramozás</span></button></div><div class="expl" hidden><b class="verdict"></b> A dia szerint a C++ multiparadigmás: procedurális alapok (C), objektum-orientáltság, generikus programozás (STL), metaprogramozás. A logikai paradigma (pl. Prolog) a deklaratív ágba tartozik.</div></article></div></section>
+<section id="ea2" class="lect"><div class="section-head"><span class="label">2. előadás · 4 kérdés</span><h2>Preprocesszor</h2></div><div class="qs"><article class="q" id="q3"><div class="qhead"><span class="no">3.</span><p>Mi a fordítás lépéseinek helyes sorrendje?</p></div><div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">a</span><span>compiler → preprocesszor → linker</span></button><button type="button" class="opt" data-ok="0"><span class="ol">b</span><span>preprocesszor → linker → compiler</span></button><button type="button" class="opt" data-ok="1"><span class="ol">c</span><span>preprocesszor → compiler → linker</span></button><button type="button" class="opt" data-ok="0"><span class="ol">d</span><span>linker → preprocesszor → compiler</span></button></div><div class="expl" hidden><b class="verdict"></b> Előbb a preprocesszor kifejti a direktívákat, aztán a compiler tárgykódot készít, végül a linker összeszerkeszti a futtatható programot.</div></article>
+<article class="q" id="q4"><div class="qhead"><span class="no">4.</span><p>Mennyi <code>SQUARE( 1 + 2 )</code> értéke?</p></div><pre class="code">#define SQUARE( x ) x * x</pre><div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">a</span><span>9</span></button><button type="button" class="opt" data-ok="1"><span class="ol">b</span><span>5</span></button><button type="button" class="opt" data-ok="0"><span class="ol">c</span><span>7</span></button><button type="button" class="opt" data-ok="0"><span class="ol">d</span><span>fordítási hiba</span></button></div><div class="expl" hidden><b class="verdict"></b> Szövegcsere: <code>1 + 2 * 1 + 2</code> = 1 + 2 + 2 = 5. Zárójelezve (<code>((x) * (x))</code>) lenne 9.</div></article>
+<article class="q" id="q5"><div class="qhead"><span class="no">5.</span><p>Melyik eszköz akadályozza meg, hogy egy header kétszer kerüljön be ugyanabba a fordítási egységbe?</p></div><div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">a</span><span>include guard (<code>#ifndef</code> … <code>#define</code> … <code>#endif</code>)</span></button><button type="button" class="opt" data-ok="0"><span class="ol">b</span><span><code>extern</code></span></button><button type="button" class="opt" data-ok="0"><span class="ol">c</span><span><code>static</code></span></button><button type="button" class="opt" data-ok="0"><span class="ol">d</span><span>névtér</span></button></div><div class="expl" hidden><b class="verdict"></b> Az include guard az első bemásoláskor definiál egy makrót, és ha az már definiált, a tartalmat kihagyja. Ugyanezt teszi a <code>#pragma once</code>.</div></article>
+<article class="q" id="q6"><div class="qhead"><span class="no">6.</span><p>Melyik fázisban keletkezik az <i>„undefined reference to <code>f(int)</code>”</i> hiba?</p></div><div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">a</span><span>preprocesszálás</span></button><button type="button" class="opt" data-ok="0"><span class="ol">b</span><span>nyelvi fordítás</span></button><button type="button" class="opt" data-ok="0"><span class="ol">c</span><span>futás</span></button><button type="button" class="opt" data-ok="1"><span class="ol">d</span><span>összeszerkesztés (linker)</span></button></div><div class="expl" hidden><b class="verdict"></b> A fordító a deklaráció alapján elfogadta a hívást, de a linker egyik tárgykódban sem találja <code>f</code> definícióját.</div></article></div></section>
+<section id="ea3" class="lect"><div class="section-head"><span class="label">3. előadás · 5 kérdés</span><h2>Lexikális egységek</h2></div><div class="qs"><article class="q" id="q7"><div class="qhead"><span class="no">7.</span><p>Mennyi <code>sizeof( h )</code>?</p></div><pre class="code">char h[] = "Hello";</pre><div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">a</span><span>5</span></button><button type="button" class="opt" data-ok="1"><span class="ol">b</span><span>6</span></button><button type="button" class="opt" data-ok="0"><span class="ol">c</span><span>8</span></button><button type="button" class="opt" data-ok="0"><span class="ol">d</span><span>4</span></button></div><div class="expl" hidden><b class="verdict"></b> A tömb a lezáró <code>'\0'</code>-t is tartalmazza: 5 + 1 = 6. (<code>strlen( h )</code> lenne 5; egy <code>char*</code> pointer mérete 64 biten 8.)</div></article>
+<article class="q" id="q8"><div class="qhead"><span class="no">8.</span><p>Mi a feltétel értéke?</p></div><pre class="code">int i = -2;
+unsigned int j = 3;
+if ( i &lt; j ) // ...</pre><div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">a</span><span>igaz</span></button><button type="button" class="opt" data-ok="1"><span class="ol">b</span><span>hamis</span></button><button type="button" class="opt" data-ok="0"><span class="ol">c</span><span>fordítási hiba</span></button><button type="button" class="opt" data-ok="0"><span class="ol">d</span><span>nem definiált</span></button></div><div class="expl" hidden><b class="verdict"></b> Az <code>int</code> <code>unsigned</code>-dá konvertálódik: −2-ből 4294967294 lesz, ami nem kisebb 3-nál. A fordító <code>-Wsign-compare</code> figyelmeztetést ad.</div></article>
+<article class="q" id="q9"><div class="qhead"><span class="no">9.</span><p>Mi a <code>"Hello"</code> literál típusa?</p></div><div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">a</span><span><code>char*</code></span></button><button type="button" class="opt" data-ok="0"><span class="ol">b</span><span><code>std::string</code></span></button><button type="button" class="opt" data-ok="1"><span class="ol">c</span><span><code>const char[ 6 ]</code></span></button><button type="button" class="opt" data-ok="0"><span class="ol">d</span><span><code>const char[ 5 ]</code></span></button></div><div class="expl" hidden><b class="verdict"></b> Konstans karaktertömb, a lezáró nullával együtt 6 elemű.</div></article>
+<article class="q" id="q10"><div class="qhead"><span class="no">10.</span><p>Melyik azonosítót <b>kerüljük</b>, mert fenntartott?</p></div><div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">a</span><span><code>count_</code></span></button><button type="button" class="opt" data-ok="1"><span class="ol">b</span><span><code>_Count</code></span></button><button type="button" class="opt" data-ok="0"><span class="ol">c</span><span><code>Count</code></span></button><button type="button" class="opt" data-ok="0"><span class="ol">d</span><span><code>count2</code></span></button></div><div class="expl" hidden><b class="verdict"></b> Az aláhúzással (főleg aláhúzás + nagybetűvel) kezdődő nevek a fordítónak és a szabványkönyvtárnak fenntartottak.</div></article>
+<article class="q" id="q11"><div class="qhead"><span class="no">11.</span><p>Mit ír ki?</p></div><pre class="code">const char a[] = "Hi";
+char b[] = "Hi";
+std::cout &lt;&lt; ( a == b ? "egyenlő" : "különböző" );</pre><div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">a</span><span>egyenlő</span></button><button type="button" class="opt" data-ok="1"><span class="ol">b</span><span>különböző</span></button><button type="button" class="opt" data-ok="0"><span class="ol">c</span><span>fordítási hiba</span></button><button type="button" class="opt" data-ok="0"><span class="ol">d</span><span>nem definiált</span></button></div><div class="expl" hidden><b class="verdict"></b> Tömböknél az <code>==</code> a címeket hasonlítja össze, és két külön tömb címe különbözik. Tartalmat <code>std::strcmp</code>-pal vagy <code>std::string</code>-gel hasonlítunk.</div></article></div></section>
+<section id="ea4" class="lect"><div class="section-head"><span class="label">4. előadás · 8 kérdés</span><h2>Típusok és kifejezések</h2></div><div class="qs"><article class="q" id="q12"><div class="qhead"><span class="no">12.</span><p>Mennyi <code>052</code> értéke?</p></div><div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">a</span><span>52</span></button><button type="button" class="opt" data-ok="1"><span class="ol">b</span><span>42</span></button><button type="button" class="opt" data-ok="0"><span class="ol">c</span><span>82</span></button><button type="button" class="opt" data-ok="0"><span class="ol">d</span><span>fordítási hiba</span></button></div><div class="expl" hidden><b class="verdict"></b> A vezető 0 oktális (8-as számrendszerbeli) számot jelöl: 5·8 + 2 = 42.</div></article>
+<article class="q" id="q13"><div class="qhead"><span class="no">13.</span><p>Mi a <code>12.34f</code> konstans típusa?</p></div><div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">a</span><span><code>double</code></span></button><button type="button" class="opt" data-ok="0"><span class="ol">b</span><span><code>long double</code></span></button><button type="button" class="opt" data-ok="1"><span class="ol">c</span><span><code>float</code></span></button><button type="button" class="opt" data-ok="0"><span class="ol">d</span><span><code>int</code></span></button></div><div class="expl" hidden><b class="verdict"></b> Az <code>f</code> utótag <code>float</code>-ot jelent; utótag nélkül <code>double</code>, <code>L</code>-lel <code>long double</code> lenne.</div></article>
+<article class="q" id="q14"><div class="qhead"><span class="no">14.</span><p>Mennyi <code>sizeof( char )</code>?</p></div><div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">a</span><span>mindig 1</span></button><button type="button" class="opt" data-ok="0"><span class="ol">b</span><span>implementációfüggő</span></button><button type="button" class="opt" data-ok="0"><span class="ol">c</span><span>8</span></button><button type="button" class="opt" data-ok="0"><span class="ol">d</span><span>2</span></button></div><div class="expl" hidden><b class="verdict"></b> A <code>char</code> a nyelv egységtípusa, a <code>sizeof</code> <code>char</code>-okban mér, ezért <code>sizeof( char ) == 1</code> definíció szerint. A többi típus mérete implementációfüggő.</div></article>
+<article class="q" id="q15"><div class="qhead"><span class="no">15.</span><p>Mennyi <code>i</code> és <code>j</code> értéke?</p></div><pre class="code">int i = 5;
+int j = ++i * 2;</pre><div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">a</span><span>i = 5, j = 10</span></button><button type="button" class="opt" data-ok="0"><span class="ol">b</span><span>i = 6, j = 10</span></button><button type="button" class="opt" data-ok="1"><span class="ol">c</span><span>i = 6, j = 12</span></button><button type="button" class="opt" data-ok="0"><span class="ol">d</span><span>i = 5, j = 12</span></button></div><div class="expl" hidden><b class="verdict"></b> A prefix <code>++i</code> előbb növel, és az új értéket (6) adja; 6 · 2 = 12.</div></article>
+<article class="q" id="q16"><div class="qhead"><span class="no">16.</span><p>Mennyi <code>d</code>?</p></div><pre class="code">double d = (2,5);</pre><div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">a</span><span>2.5</span></button><button type="button" class="opt" data-ok="0"><span class="ol">b</span><span>2</span></button><button type="button" class="opt" data-ok="1"><span class="ol">c</span><span>5</span></button><button type="button" class="opt" data-ok="0"><span class="ol">d</span><span>fordítási hiba</span></button></div><div class="expl" hidden><b class="verdict"></b> A zárójelben a vessző operátor: a 2-t kiértékeli és eldobja, az eredmény az 5.</div></article>
+<article class="q" id="q17"><div class="qhead"><span class="no">17.</span><p><code>f()</code> hamisat ad vissza. Meghívódik-e <code>g()</code>?</p></div><pre class="code">if ( f() &amp;&amp; g() ) // ...</pre><div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">a</span><span>igen, mindig</span></button><button type="button" class="opt" data-ok="1"><span class="ol">b</span><span>nem</span></button><button type="button" class="opt" data-ok="0"><span class="ol">c</span><span>a fordítótól függ</span></button><button type="button" class="opt" data-ok="0"><span class="ol">d</span><span>csak ha <code>g</code> <code>bool</code>-t ad vissza</span></button></div><div class="expl" hidden><b class="verdict"></b> Az <code>&amp;&amp;</code> lusta: ha a bal oldal hamis, az eredmény biztosan hamis, a jobb oldal ki sem értékelődik.</div></article>
+<article class="q" id="q18"><div class="qhead"><span class="no">18.</span><p>Melyik sor <b>nem definiált viselkedés</b> (C++98 szerint)?</p></div><div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">a</span><span><code>x = y++ * 2;</code></span></button><button type="button" class="opt" data-ok="0"><span class="ol">b</span><span><code>f(), g();</code></span></button><button type="button" class="opt" data-ok="1"><span class="ol">c</span><span><code>x = y++ * y++;</code></span></button><button type="button" class="opt" data-ok="0"><span class="ol">d</span><span><code>a &amp;&amp; b++;</code></span></button></div><div class="expl" hidden><b class="verdict"></b> Két szekvenciapont között <code>y</code> kétszer módosul. A többi esetben vagy csak egy módosítás van, vagy a vessző operátor / <code>&amp;&amp;</code> szekvenciapontot ad.</div></article>
+<article class="q" id="q19"><div class="qhead"><span class="no">19.</span><p>Mit ír ki?</p></div><pre class="code">int x = 3;
+if ( x = 0 )
+  std::cout &lt;&lt; 'A';
+else
+  std::cout &lt;&lt; 'B';</pre><div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">a</span><span>A</span></button><button type="button" class="opt" data-ok="1"><span class="ol">b</span><span>B</span></button><button type="button" class="opt" data-ok="0"><span class="ol">c</span><span>AB</span></button><button type="button" class="opt" data-ok="0"><span class="ol">d</span><span>fordítási hiba</span></button></div><div class="expl" hidden><b class="verdict"></b> <code>x = 0</code> értékadás, értéke 0, ami hamis → <code>B</code>. (Utána <code>x</code> is 0.)</div></article></div></section>
+<section id="ea5" class="lect"><div class="section-head"><span class="label">5. előadás · 5 kérdés</span><h2>Láthatóság és memóriamodell</h2></div><div class="qs"><article class="q" id="q20"><div class="qhead"><span class="no">20.</span><p>Mennyi a globális <code>x</code> értéke <code>f()</code> után?</p></div><pre class="code">int x = 0;
+void f()
+{
+  int x = 1;
+  {
+    int x = 2;
+    ::x = x;
+  }
+}</pre><div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">a</span><span>0</span></button><button type="button" class="opt" data-ok="0"><span class="ol">b</span><span>1</span></button><button type="button" class="opt" data-ok="1"><span class="ol">c</span><span>2</span></button><button type="button" class="opt" data-ok="0"><span class="ol">d</span><span>fordítási hiba</span></button></div><div class="expl" hidden><b class="verdict"></b> <code>::x</code> a globális <code>x</code>; a jobb oldali <code>x</code> a legbelső (2).</div></article>
+<article class="q" id="q21"><div class="qhead"><span class="no">21.</span><p>Hol jön létre a <code>new int[ 10 ]</code> által foglalt tömb?</p></div><div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">a</span><span>a vermen</span></button><button type="button" class="opt" data-ok="1"><span class="ol">b</span><span>a heapen</span></button><button type="button" class="opt" data-ok="0"><span class="ol">c</span><span>a statikus tárterületen</span></button><button type="button" class="opt" data-ok="0"><span class="ol">d</span><span>a kódszegmensben</span></button></div><div class="expl" hidden><b class="verdict"></b> A <code>new</code> a szabad tárból (heap) foglal. Maga a pointerváltozó, amiben a címet tároljuk, lehet a vermen.</div></article>
+<article class="q" id="q22"><div class="qhead"><span class="no">22.</span><p>Mit jelent globális szinten a <code>static int s;</code>?</p></div><div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">a</span><span><code>s</code> értéke nem változtatható</span></button><button type="button" class="opt" data-ok="1"><span class="ol">b</span><span><code>s</code> csak ebben a fordítási egységben látszik</span></button><button type="button" class="opt" data-ok="0"><span class="ol">c</span><span><code>s</code> minden fordítási egységben látszik</span></button><button type="button" class="opt" data-ok="0"><span class="ol">d</span><span><code>s</code> a heapen jön létre</span></button></div><div class="expl" hidden><b class="verdict"></b> Belső szerkesztés (internal linkage): más fájlok nem érik el. Ugyanerre való a névtelen névtér.</div></article>
+<article class="q" id="q23"><div class="qhead"><span class="no">23.</span><p>Mi a hiba?</p></div><pre class="code">int* p = new int[ n ];
+// ...
+delete p;</pre><div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">a</span><span>nincs hiba</span></button><button type="button" class="opt" data-ok="0"><span class="ol">b</span><span>memóriaszivárgás</span></button><button type="button" class="opt" data-ok="1"><span class="ol">c</span><span><code>delete [] p;</code> kellene, így nem definiált a viselkedés</span></button><button type="button" class="opt" data-ok="0"><span class="ol">d</span><span>fordítási hiba</span></button></div><div class="expl" hidden><b class="verdict"></b> <code>new[]</code>-hoz <code>delete []</code>, <code>new</code>-hoz <code>delete</code> tartozik; a keverésük nem definiált viselkedés.</div></article>
+<article class="q" id="q24"><div class="qhead"><span class="no">24.</span><p>Mi a RAII lényege?</p></div><div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">a</span><span>Az erőforrást a konstruktor szerzi meg, a destruktor szabadítja fel.</span></button><button type="button" class="opt" data-ok="0"><span class="ol">b</span><span>Minden objektumot a heapen hozunk létre.</span></button><button type="button" class="opt" data-ok="0"><span class="ol">c</span><span>A felszabadítást a szemétgyűjtő végzi.</span></button><button type="button" class="opt" data-ok="0"><span class="ol">d</span><span>Globális változókban tároljuk az erőforrásokat.</span></button></div><div class="expl" hidden><b class="verdict"></b> Resource Acquisition Is Initialization: lokális objektum destruktora a blokk elhagyásakor (kivételnél is) automatikusan lefut, így nincs szivárgás.</div></article></div></section>
+<section id="ea6" class="lect"><div class="section-head"><span class="label">6. előadás · 4 kérdés</span><h2>Élettartam szabályok</h2></div><div class="qs"><article class="q" id="q25"><div class="qhead"><span class="no">25.</span><p>Mikor jön létre egy lokális statikus változó?</p></div><div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">a</span><span>a program indulásakor</span></button><button type="button" class="opt" data-ok="0"><span class="ol">b</span><span>minden függvényhíváskor</span></button><button type="button" class="opt" data-ok="1"><span class="ol">c</span><span>amikor a vezérlés először eléri a deklarációt</span></button><button type="button" class="opt" data-ok="0"><span class="ol">d</span><span>a <code>main</code> vége előtt</span></button></div><div class="expl" hidden><b class="verdict"></b> És a program futásának végén szűnik meg; ezért őrzi meg az értékét a hívások között.</div></article>
+<article class="q" id="q26"><div class="qhead"><span class="no">26.</span><p>Meddig él egy temporális objektum (pl. <code>h + w</code> két stringre)?</p></div><div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">a</span><span>a blokk végéig</span></button><button type="button" class="opt" data-ok="1"><span class="ol">b</span><span>a teljes kifejezés kiértékelésének végéig</span></button><button type="button" class="opt" data-ok="0"><span class="ol">c</span><span>a program végéig</span></button><button type="button" class="opt" data-ok="0"><span class="ol">d</span><span>amíg van rá pointer</span></button></div><div class="expl" hidden><b class="verdict"></b> Ezért lógó pointer a <code>const char* p = (h + w).c_str();</code>: a sor végén a temporális megszűnik.</div></article>
+<article class="q" id="q27"><div class="qhead"><span class="no">27.</span><p>Mi a gond ezzel a függvénnyel?</p></div><pre class="code">char* f()
+{
+  char buf[ 80 ];
+  std::cin.getline( buf, 80 );
+  return buf;
+}</pre><div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">a</span><span>memóriaszivárgás</span></button><button type="button" class="opt" data-ok="1"><span class="ol">b</span><span>lógó pointert ad vissza</span></button><button type="button" class="opt" data-ok="0"><span class="ol">c</span><span>dupla felszabadítás</span></button><button type="button" class="opt" data-ok="0"><span class="ol">d</span><span>nincs gond</span></button></div><div class="expl" hidden><b class="verdict"></b> <code>buf</code> automatikus változó, a függvény végén megszűnik; a hívó egy már nem létező tömbre mutató pointert kap.</div></article>
+<article class="q" id="q28"><div class="qhead"><span class="no">28.</span><p>Mikor szűnik meg egy osztály adattagja?</p></div><div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">a</span><span>a tartalmazó objektum megszűnésekor</span></button><button type="button" class="opt" data-ok="0"><span class="ol">b</span><span>a program végén</span></button><button type="button" class="opt" data-ok="0"><span class="ol">c</span><span>a <code>delete</code> hívásakor, külön</span></button><button type="button" class="opt" data-ok="0"><span class="ol">d</span><span>a konstruktor végén</span></button></div><div class="expl" hidden><b class="verdict"></b> Az adattag a tartalmazó objektummal együtt jön létre és szűnik meg.</div></article></div></section>
+
+<div class="scorebar" role="status" aria-live="polite"><span>Eredmény: <b id="score">0 / 0</b></span><span class="grade" id="grade">még nincs megválaszolt kérdés</span><button type="button" id="reset">Újrakezdés</button></div>
+
+<footer>Forrás: Pataki Norbert C++ előadásdiái (Előadás mappa). A részletesebb magyarázatok a Fogalomtárban és a Kódpéldák oldalon vannak.</footer>
+</div>
+<script>
+(function () {
+  var qs = Array.prototype.slice.call(document.querySelectorAll('.q'));
+  var total = qs.length;
+  function update() {
+    var answered = qs.filter(function (q) { return q.classList.contains('right') || q.classList.contains('wrong'); }).length;
+    var right = qs.filter(function (q) { return q.classList.contains('right'); }).length;
+    document.getElementById('score').textContent = right + ' / ' + answered;
+    var g = document.getElementById('grade');
+    if (!answered) { g.textContent = 'még nincs megválaszolt kérdés'; return; }
+    // a vizsga 15 kérdéses skálájára vetítve
+    var pts = Math.round(right / answered * 15), mark = pts < 8 ? 1 : pts < 10 ? 2 : pts < 12 ? 3 : pts < 14 ? 4 : 5;
+    g.textContent = answered + ' / ' + total + ' megválaszolva · 15 kérdésre vetítve ≈ ' + pts + ' pont → ' + mark + '-es';
+  }
+  qs.forEach(function (q) {
+    var opts = q.querySelectorAll('button.opt');
+    opts.forEach(function (b) {
+      b.addEventListener('click', function () {
+        var ok = b.dataset.ok === '1';
+        opts.forEach(function (o) {
+          o.disabled = true;
+          if (o.dataset.ok === '1') o.classList.add('is-ok');
+        });
+        if (!ok) b.classList.add('is-bad');
+        q.classList.add(ok ? 'right' : 'wrong');
+        var ex = q.querySelector('.expl');
+        ex.querySelector('.verdict').textContent = ok ? 'Helyes!' : 'Nem jó.';
+        ex.hidden = false;
+        update();
+      });
+    });
+  });
+  document.getElementById('reset').addEventListener('click', function () {
+    qs.forEach(function (q) {
+      q.classList.remove('right', 'wrong');
+      q.querySelector('.expl').hidden = true;
+      q.querySelectorAll('button.opt').forEach(function (o) { o.disabled = false; o.classList.remove('is-ok', 'is-bad'); });
+    });
+    update();
+    window.scrollTo(0, 0);
+  });
+})();
+</script>
+<script>
+(function () {
+  var KW = 'alignas alignof asm auto bool break case catch char char16_t char32_t class const constexpr const_cast continue decltype default delete do double dynamic_cast else enum explicit export extern false float for friend goto if inline int long mutable namespace new noexcept nullptr operator private protected public register reinterpret_cast return short signed sizeof static static_assert static_cast struct switch template this throw true try typedef typeid typename union unsigned using virtual void volatile wchar_t while';
+  var kw = {}; KW.split(' ').forEach(function (k) { kw[k] = 1; });
+  var re = /(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*')|(#[ \t]*(?:include|define|undef|ifdef|ifndef|if|else|elif|endif|pragma)\b(?:[ \t]*<[^>\n]*>)?)|(\b0[xX][0-9a-fA-F]+[uUlL]*|\b\d+(?:\.\d*)?(?:[eE][+-]?\d+)?[fFlLuU]*)|([A-Za-z_]\w*)/g;
+  function esc(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  document.querySelectorAll('pre.code').forEach(function (pre) {
+    var src = pre.textContent, outp = '', last = 0, m;
+    re.lastIndex = 0;
+    while ((m = re.exec(src))) {
+      outp += esc(src.slice(last, m.index));
+      var t = m[0], cls = null;
+      if (m[1]) cls = 'com'; else if (m[2]) cls = 'str'; else if (m[3]) cls = 'pp'; else if (m[4]) cls = 'num'; else if (kw[t]) cls = 'kw';
+      outp += cls ? '<span class="tk-' + cls + '">' + esc(t) + '</span>' : esc(t);
+      last = re.lastIndex;
+    }
+    pre.innerHTML = outp + esc(src.slice(last));
+  });
+})();
+</script>
+<script>
+(function () {
+  var nav = document.querySelector('nav.bar');
+  if (!nav) return;
+  var links = Array.prototype.filter.call(nav.querySelectorAll('a[href^="#"]'), function (a) {
+    return a.getAttribute('href').length > 1 && document.getElementById(a.getAttribute('href').slice(1));
+  });
+  var current = null, ticking = false;
+  function sectionOf(a) { return document.getElementById(a.getAttribute('href').slice(1)); }
+  function update() {
+    ticking = false;
+    var line = nav.getBoundingClientRect().bottom + 12, active = null;
+    var visible = links.filter(function (a) { return sectionOf(a).offsetParent !== null; });
+    visible.forEach(function (a) { if (sectionOf(a).getBoundingClientRect().top <= line) active = a; });
+    // a lap alján az utolsó szakasz az aktuális akkor is, ha rövid
+    if (visible.length && window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) active = visible[visible.length - 1];
+    if (active === current) return;
+    if (current) { current.classList.remove('active'); current.removeAttribute('aria-current'); }
+    current = active;
+    if (!active) return;
+    active.classList.add('active');
+    active.setAttribute('aria-current', 'location');
+    var ul = active.closest('ul'), ur = ul.getBoundingClientRect(), ar = active.getBoundingClientRect();
+    var left = ar.left - ur.left + ul.scrollLeft, right = left + ar.width;
+    if (left < ul.scrollLeft || right > ul.scrollLeft + ul.clientWidth) ul.scrollTo({ left: Math.max(0, left - 16), behavior: 'smooth' });
+  }
+  function schedule() { if (!ticking) { ticking = true; setTimeout(update, 40); } }
+  window.addEventListener('scroll', schedule, { passive: true });
+  window.addEventListener('resize', schedule);
+  document.addEventListener('input', schedule);
+  document.addEventListener('toggle', schedule, true);
+  update();
+})();
+</script>
+</body>
+</html>

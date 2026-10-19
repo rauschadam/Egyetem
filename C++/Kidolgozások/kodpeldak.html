@@ -1,0 +1,791 @@
+<!doctype html>
+<html lang="hu" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>C++ · kódpéldák kidolgozva</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+/* C++ lecture code examples as tasks: statement, collapsible solution and detailed explanation */
+:root {
+  --paper: #f5f7fa; --grid: rgba(13, 122, 114, 0.06); --card: #ffffff; --ink: #1b2430; --muted: #5a6574; --rule: #d7dde6;
+  --accent: #0d7a72; --accent-soft: #e0f4f1; --mark: #b8352a; --mark-soft: #fbe9e6; --ok: #2c7a4b; --ok-soft: #e3f3e9;
+  --warm: #9a5b00; --warm-soft: #fbf0dc; --blue: #2346a8; --blue-soft: #e6ecfb; --vio: #6b46c1; --vio-soft: #efe9fb;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-label: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f141b; --grid: rgba(95, 208, 195, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5; --rule: #2a3442;
+    --accent: #5fd0c3; --accent-soft: #13302d; --mark: #ff8b7b; --mark-soft: #3a1f1c; --ok: #74d39c; --ok-soft: #173225;
+    --warm: #f2c46d; --warm-soft: #33291a; --blue: #93abff; --blue-soft: #1d2846; --vio: #c4a7ff; --vio-soft: #261f3d; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f141b; --grid: rgba(95, 208, 195, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5; --rule: #2a3442;
+  --accent: #5fd0c3; --accent-soft: #13302d; --mark: #ff8b7b; --mark-soft: #3a1f1c; --ok: #74d39c; --ok-soft: #173225;
+  --warm: #f2c46d; --warm-soft: #33291a; --blue: #93abff; --blue-soft: #1d2846; --vio: #c4a7ff; --vio-soft: #261f3d; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; background-color: var(--paper); background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 22px 22px; color: var(--ink); font-family: var(--f-body); font-size: 1.06rem; line-height: 1.6; }
+.wrap { max-width: 900px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 80px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2rem, 6vw, 3.1rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.65rem; font-weight: 700; letter-spacing: -0.01em; }
+p { margin: 0; }
+a { color: var(--accent); }
+code { font-family: var(--f-label); font-size: 0.86em; background: var(--accent-soft); padding: 0 4px; border-radius: 3px; overflow-wrap: anywhere; }
+.label { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+
+.back { justify-self: start; display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px 9px 12px; border: 1.5px solid var(--accent); border-radius: 8px; background: var(--accent-soft); color: var(--ink); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 1.02rem; line-height: 1; white-space: nowrap; transition: background .15s, color .15s; }
+.back .arr { color: var(--accent); font-size: 1.25rem; transition: transform .15s, color .15s; }
+.back:hover, .back:focus-visible { background: var(--accent); color: var(--paper); outline: none; }
+.back:hover .arr, .back:focus-visible .arr { color: var(--paper); transform: translateX(-3px); }
+header.hero { display: grid; gap: 14px; padding-block: 0 26px; border-bottom: 2px solid var(--accent); }
+.hero .sub { color: var(--muted); max-width: 66ch; }
+.facts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.fact { display: flex; flex-direction: column; gap: 2px; padding: 8px 14px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; min-width: 120px; }
+.fact b { font-family: var(--f-display); font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+
+nav.bar { position: sticky; top: 0; z-index: 5; background: var(--paper); border-bottom: 1px solid var(--rule); margin-inline: -16px; padding-inline: 16px; }
+nav.bar ul { list-style: none; margin: 0; padding: 10px 0; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin; }
+nav.bar li[hidden] { display: none; }
+nav.bar a { display: block; white-space: nowrap; text-decoration: none; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.04em; color: var(--ink); padding: 6px 10px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); }
+nav.bar a:hover, nav.bar a:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+nav.bar a.nav-back { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+nav.bar a.active, nav.bar a.active:hover, nav.bar a.active:focus-visible { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+
+.tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 18px; }
+.tools input { flex: 1 1 240px; min-width: 0; font: inherit; font-size: 0.98rem; padding: 8px 12px; border: 1px solid var(--rule); border-radius: 6px; background: var(--card); color: var(--ink); }
+.tools input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+button { font-family: var(--f-label); font-size: 0.78rem; padding: 8px 12px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); color: var(--ink); cursor: pointer; }
+button:hover, button:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+button[aria-pressed="true"] { background: var(--accent); color: var(--paper); border-color: var(--accent); }
+.seg { display: inline-flex; border: 1px solid var(--accent); border-radius: 6px; overflow: hidden; }
+.seg button { border: 0; border-radius: 0; padding: 8px 14px; }
+.seg button + button { border-left: 1px solid var(--accent); }
+.seg button[aria-pressed="false"] { background: var(--card); color: var(--ink); }
+
+section.lect { padding-top: 40px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; scroll-margin-top: 56px; }
+section.lect[hidden] { display: none; }
+.section-head { display: grid; gap: 6px; }
+.section-head p { color: var(--muted); max-width: 68ch; }
+
+/* code: highlighted by the script below; .out = terminal / program output */
+pre.code, pre.out { margin: 0; padding: 10px 14px; border: 1px solid var(--rule); border-radius: 6px; font-family: var(--f-label); font-size: 0.84rem; line-height: 1.5; overflow-x: auto; tab-size: 4; }
+pre.code { background: var(--paper); }
+pre.out { background: #0a0d12; color: #cfd6e0; border-color: #222b37; }
+pre.out::before { content: "kimenet / terminál"; display: block; font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase; color: #7d8898; margin-bottom: 4px; }
+.cr { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-start; }
+.cr > pre { flex: 1 1 260px; min-width: 0; }
+.tk-kw { color: var(--vio); font-weight: 500; }
+.tk-str { color: var(--ok); }
+.tk-num { color: var(--warm); }
+.tk-com { color: var(--muted); font-style: italic; }
+.tk-pp { color: var(--blue); }
+
+.warn, .tip, .own, .note { max-width: 74ch; font-size: 0.95rem; }
+.warn { background: var(--mark-soft); border-left: 3px solid var(--mark); padding: 8px 12px; border-radius: 0 4px 4px 0; }
+.tip { background: var(--accent-soft); border-left: 3px solid var(--accent); padding: 8px 12px; border-radius: 0 4px 4px 0; }
+.note { background: var(--warm-soft); border-left: 3px solid var(--warm); padding: 8px 12px; border-radius: 0 4px 4px 0; }
+.own { border: 1px dashed var(--ok); padding: 8px 12px; border-radius: 4px; }
+.own > b:first-child, .tip > b:first-child, .warn > b:first-child, .note > b:first-child { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; display: block; margin-bottom: 2px; }
+.own > b:first-child { color: var(--ok); }
+.warn > b:first-child { color: var(--mark); }
+.tip > b:first-child { color: var(--accent); }
+.note > b:first-child { color: var(--warm); }
+.ans { display: inline-block; background: var(--ok-soft); color: var(--ok); font-weight: 600; padding: 1px 9px; border-radius: 4px; }
+.ans code { background: transparent; color: inherit; }
+
+.tbl { overflow-x: auto; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; max-width: 100%; }
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+th, td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--f-label); font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+tr:last-child td { border-bottom: 0; }
+td code, th code { white-space: nowrap; }
+
+footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.88rem; }
+.empty { color: var(--muted); padding-top: 24px; }
+
+h3 { font-size: 1.08rem; font-weight: 600; }
+.taskgroup { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.task { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 18px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; min-width: 0; scroll-margin-top: 60px; }
+.task-head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.task-head .no { font-family: var(--f-label); font-weight: 500; font-size: 0.82rem; color: var(--accent); border: 1px solid var(--accent); border-radius: 3px; padding: 0 6px; }
+.task-head .kind { margin-left: auto; font-family: var(--f-label); font-size: 0.7rem; padding: 2px 8px; border-radius: 3px; background: var(--accent-soft); color: var(--accent); }
+.stmt, .sol { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; min-width: 0; }
+.stmt > p, .sol > p { max-width: 74ch; }
+.sol ol, .sol ul, .stmt ol, .stmt ul { margin: 0; padding-left: 22px; display: grid; gap: 4px; max-width: 76ch; }
+details { border-top: 1px dashed var(--rule); padding-top: 8px; min-width: 0; }
+summary { cursor: pointer; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); list-style: none; display: inline-flex; gap: 8px; align-items: center; padding: 4px 0; }
+summary::-webkit-details-marker { display: none; }
+summary::before { content: "+"; display: inline-grid; place-items: center; width: 18px; height: 18px; border: 1px solid currentColor; border-radius: 3px; font-size: 0.8rem; }
+details[open] > summary::before { content: "−"; }
+summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sol { padding-top: 6px; }
+@media (max-width: 520px) { body { font-size: 1rem; } .task { padding: 14px; } .task-head .kind { margin-left: 0; } }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="hero">
+  <a class="back" href="../../index.html#/cpp"><span class="arr" aria-hidden="true">←</span>Vissza: Programozási nyelvek (C++)</a>
+  <span class="label">Programozási nyelvek (C++) · előadások</span>
+  <h1>Az előadások kódpéldái kidolgozva</h1>
+  <p class="sub">Minden kódrészlet és kérdés a diákról („mit ír ki?”, „mi a hiba?”, ellenőrző kérdések), előadásonként. Előbb gondold végig, aztán nyisd le a <b>Megoldást</b>; a <b>Részletes magyarázat</b> a miértet és a csapdákat mutatja.</p>
+  <div class="facts">
+    <div class="fact"><span class="label">Előadás</span><b>6</b></div>
+    <div class="fact"><span class="label">Feladat</span><b>38</b></div>
+  </div>
+  <div class="own"><b>Saját megoldások</b>A diákon a válaszok többnyire csak élőben hangzottak el, ezért minden megoldás saját kidolgozás, a C++ szabvány alapján. Ahol a régi (C++98, a diák <code>-ansi</code> kapcsolója) és a mai szabvány (C++17) mást mond, mindkettő szerepel. A „saját feladat” jelölésűek nem a diákról valók, hanem a diák anyagát gyakoroltatják.</div>
+</header>
+
+<nav class="bar" aria-label="Előadások">
+  <ul>
+    <li><a class="nav-back" href="../../index.html#/cpp" aria-label="Vissza: Programozási nyelvek (C++)">← C++</a></li><li><a href="#ea1">1. Bevezetés</a></li><li><a href="#ea2">2. Preprocesszor</a></li><li><a href="#ea3">3. Lexikális</a></li><li><a href="#ea4">4. Kifejezések</a></li><li><a href="#ea5">5. Láthatóság</a></li><li><a href="#ea6">6. Élettartam</a></li>
+  </ul>
+</nav>
+
+<section id="ea1" class="lect"><div class="section-head"><span class="label">1. előadás · 1 feladat · <a href="../Előadás/cppintro.pdf" target="_blank" rel="noopener">dia PDF ↗</a></span><h2>Bevezetés</h2></div>
+<div class="taskgroup">
+<article class="task" id="t1-1">
+<div class="task-head"><span class="no">1.1</span><h3>Vizsgajegy kiszámítása</h3><span class="kind">saját feladat</span></div>
+<div class="stmt"><p>Számold ki a vizsgajegyet!</p><ol><li>elmélet: 12 pont, gyakorlat: 3-as</li><li>elmélet: 9 pont, gyakorlat: 5-ös</li><li>elmélet: 7 pont, gyakorlat: 5-ös</li><li>elmélet: 14 pont, gyakorlat: 4-es</li></ol></div>
+<details><summary>Megoldás</summary><div class="sol"><ol><li>12 pont → 4-es; (4 + 3) / 2 = 3,5 → a gyakorlat (3) felé kerekítve: <span class="ans">3</span></li><li>9 pont → 2-es; (2 + 5) / 2 = 3,5 → a gyakorlat (5) felé: <span class="ans">4</span></li><li>7 pont → 1-es elmélet, így a vizsga <span class="ans">nem sikerült</span> (mindkét résznek legalább 2-esnek kell lennie)</li><li>14 pont → 5-ös; (5 + 4) / 2 = 4,5 → a gyakorlat (4) felé: <span class="ans">4</span></li></ol></div></details>
+<details><summary>Részletes magyarázat</summary><div class="sol"><ul><li>Ponthatárok: 8 alatt 1, 8–9: 2, 10–11: 3, 12–13: 4, 14-től 5.</li><li>Ha az átlag egész, nincs kerekítés; ha ,5-re jön ki, mindig a <b>gyakorlati</b> jegy felé kerekítünk, tehát a gyakorlat súlya nagyobb.</li></ul><div class="note"><b>Megjegyzés</b>A dián a képlet így szerepel: „elmélet + gyakorlat / 2.0”. C++-ban olvasva ez a precedencia miatt <code>elmélet + (gyakorlat / 2.0)</code> lenne (a <code>/</code> erősebben köt, ld. 4. előadás); a szándék nyilván <code>(elmélet + gyakorlat) / 2.0</code>.</div></div></details>
+</article>
+</div></section>
+<section id="ea2" class="lect"><div class="section-head"><span class="label">2. előadás · 4 feladat · <a href="../Előadás/preproc.pdf" target="_blank" rel="noopener">dia PDF ↗</a></span><h2>Preprocesszor</h2></div>
+<div class="taskgroup">
+<article class="task" id="t2-1">
+<div class="task-head"><span class="no">2.1</span><h3>Miért nem fordul le b.cpp?</h3><span class="kind">dia: Példák</span></div>
+<div class="stmt"><p>A két fájlt külön fordítjuk. Mi a hiba, és hogyan javítható?</p><pre class="code">// a.cpp:              // b.cpp:
+void f( int i )        void g( int i )
+{                      {
+  // ...                 f( i );
+}                      }</pre></div>
+<details><summary>Megoldás</summary><div class="sol"><p><code>b.cpp</code> fordításakor a fordító nem ismeri <code>f</code>-et:</p><pre class="out">b.cpp:3:8: error: 'f' was not declared in this scope</pre><p>Javítás: <code>b.cpp</code>-ben a hívás előtt <b>deklaráljuk</b> a függvényt (<code>void f( int );</code>), vagy (jobb) a deklarációt egy <code>a.h</code> headerbe tesszük, és <code>#include "a.h"</code>-val emeljük be. Ezután mindkettőt lefordítjuk és összeszerkesztjük:</p><pre class="out">$ g++ -c a.cpp
+$ g++ -c b.cpp
+$ g++ a.o b.o -o prog</pre></div></details>
+<details><summary>Részletes magyarázat</summary><div class="sol"><ul><li>A fordító <b>fordítási egységenként</b> dolgozik: <code>b.cpp</code> fordításakor <code>a.cpp</code> tartalmáról nem tud semmit.</li><li>A deklaráció (<code>void f( int );</code>) csak azt ígéri, hogy van ilyen függvény; a fordító ebből ellenőrzi a hívást (paraméter típusa, száma).</li><li>A <b>definíciót</b> (a törzset) a <b>linker</b> keresi meg. Ha <code>a.o</code>-t kihagyjuk a szerkesztésből, a hiba már linkelési: <i>„undefined reference to <code>f(int)</code>”</i>.</li><li>Header nélkül minden hívó fájlba kézzel kellene beírni a deklarációt, és ha <code>f</code> paraméterei változnak, mindenhol javítani kellene.</li></ul></div></details>
+</article>
+<article class="task" id="t2-2">
+<div class="task-head"><span class="no">2.2</span><h3>A SQUARE makró</h3><span class="kind">dia: Makrók</span></div>
+<div class="stmt"><p>Mit ír ki a négy kiírás?</p><pre class="code">#define SQUARE( x ) x * x
+std::cout &lt;&lt; SQUARE( 5 );        // (1)
+std::cout &lt;&lt; SQUARE( 2 + 3 );    // (2)
+
+#define SQUARE( x ) ((x) * (x))
+std::cout &lt;&lt; SQUARE( 2 + 3 );    // (3)
+int i = 5;
+std::cout &lt;&lt; SQUARE( i++ );      // (4)</pre></div>
+<details><summary>Megoldás</summary><div class="sol"><div class="tbl"><table><tr><th></th><th>kifejtés</th><th>eredmény</th></tr><tr><td>(1)</td><td><code>5 * 5</code></td><td><b>25</b></td></tr><tr><td>(2)</td><td><code>2 + 3 * 2 + 3</code></td><td><b>11</b> (nem 25!)</td></tr><tr><td>(3)</td><td><code>((2 + 3) * (2 + 3))</code></td><td><b>25</b></td></tr><tr><td>(4)</td><td><code>((i++) * (i++))</code></td><td><b>nem definiált</b> (pl. 30 vagy 25), <code>i</code> kétszer nő</td></tr></table></div><p>(A négy szám elválasztó nélkül kerül egymás után a kimenetre.)</p></div></details>
+<details><summary>Részletes magyarázat</summary><div class="sol"><ul><li>A makró <b>szövegcsere</b>: a preprocesszor a paraméter szövegét bemásolja, nem számolja ki előre. A (2)-nél a <code>*</code> erősebben köt, mint a <code>+</code>.</li><li>A zárójelezett változat a precedencia-problémát megoldja, de a <b>mellékhatásosat nem</b>: az <code>i++</code> szövegesen kétszer szerepel, és két szekvenciapont között kétszer módosítja <code>i</code>-t → nem definiált viselkedés.</li><li>A második <code>#define SQUARE</code> újradefiniálás; a g++ figyelmeztet („SQUARE redefined”). Szabályosan előtte <code>#undef SQUARE</code> kellene.</li><li>C++-os megoldás: <code>inline int square( int x ) { return x * x; }</code>: ez valódi függvény, a paraméter egyszer értékelődik ki, és van típusellenőrzés.</li></ul></div></details>
+</article>
+<article class="task" id="t2-3">
+<div class="task-head"><span class="no">2.3</span><h3>Include guard</h3><span class="kind">dia: Include guard</span></div>
+<div class="stmt"><p>Mi történik, ha egy fordítási egységbe (közvetve, két másik headeren keresztül) kétszer kerül be a <code>complex.h</code>, ha nincs benne include guard? És ha van?</p><pre class="code">// complex.h:
+#ifndef COMPLEX__H
+#define COMPLEX__H
+class Complex
+{
+private:
+  double re, im;
+public:
+  double abs();
+};
+#endif</pre></div>
+<details><summary>Megoldás</summary><div class="sol"><p>Guard nélkül az osztálydefiníció kétszer szerepel a fordítási egységben → fordítási hiba:</p><pre class="out">error: redefinition of 'class Complex'</pre><p>Guarddal: az első bemásoláskor <code>COMPLEX__H</code> még nem definiált, ezért a tartalom bekerül, és definiálódik a makró. A másodiknál az <code>#ifndef</code> hamis, így az egész <code>#endif</code>-ig kimarad → <span class="ans">a definíció csak egyszer szerepel</span></p></div></details>
+<details><summary>Részletes magyarázat</summary><div class="sol"><ul><li>Az include guard <b>egy fordítási egységen belül</b> véd. Különböző <code>.cpp</code>-kbe ugyanaz a header bekerülhet (és be is kell kerülnie), mert azokat külön fordítjuk.</li><li><code>#pragma once</code> ugyanezt egy sorban csinálja; nem szabványos, de minden elterjedt fordító ismeri.</li><li>A makró nevének egyedinek kell lennie (szokás: fájlnév nagybetűvel).</li></ul><div class="note"><b>Megjegyzés</b>A dián a makró neve <code>COMPLEX__H</code>. A dupla aláhúzást tartalmazó azonosítók szigorúan véve <b>fenntartottak</b> (ld. 3. előadás, aláhúzásos azonosítók), ezért biztonságosabb a <code>COMPLEX_H</code> név.</div></div></details>
+</article>
+<article class="task" id="t2-4">
+<div class="task-head"><span class="no">2.4</span><h3>Mire jó ez a header-részlet?</h3><span class="kind">dia: C/C++ feltételes fordítás</span></div>
+<div class="stmt"><pre class="code">#ifdef __cplusplus
+extern "C" {
+#endif
+int add( int a, int b );
+#ifdef __cplusplus
+}
+#endif</pre></div>
+<details><summary>Megoldás</summary><div class="sol"><p>Ugyanazt a headert <b>C-ből és C++-ból is</b> be lehet emelni. C++ fordításkor (<code>__cplusplus</code> definiált) a deklaráció <code>extern "C" { … }</code> blokkba kerül, így a függvény <b>C-s szerkesztésű</b> lesz; C fordításkor a blokk nyitó és záró sora kimarad (a C nem ismeri az <code>extern "C"</code>-t).</p></div></details>
+<details><summary>Részletes magyarázat</summary><div class="sol"><ul><li>A C++ fordító a szimbólumnevekbe belekódolja a névteret és a paramétertípusokat (<i>name mangling</i>, pl. <code>_Z3addii</code>); a C fordító nem (<code>add</code>).</li><li>Ha egy C-ben fordított <code>add</code>-ot C++-ból hívunk <code>extern "C"</code> nélkül, a linker <code>_Z3addii</code>-t keresne, és nem találná: <i>undefined reference</i>.</li><li>A <code>__cplusplus</code> egyike a fordító által előre definiált makróknak; a listát a <code>g++ -dM -E -x c++ - &lt; /dev/null</code> írja ki.</li></ul></div></details>
+</article>
+</div></section>
+<section id="ea3" class="lect"><div class="section-head"><span class="label">3. előadás · 7 feladat · <a href="../Előadás/cpplex.pdf" target="_blank" rel="noopener">dia PDF ↗</a></span><h2>Lexikális egységek</h2></div>
+<div class="taskgroup">
+<article class="task" id="t3-1">
+<div class="task-head"><span class="no">3.1</span><h3>Fordítási hiba</h3><span class="kind">dia: Fordítási hiba</span></div>
+<div class="stmt"><p>Mi a hiba? Javítsd, és add meg, mit ír ki a javított függvény az <code>f( 1, 5 )</code> hívásra!</p><pre class="code">#include &lt;iostream&gt;
+void f( int a, int b )
+{
+  for( i = a; i &lt;= b; ++i )
+  {
+    std::cout &lt;&lt; i &lt;&lt; ' ';
+  }
+}</pre></div>
+<details><summary>Megoldás</summary><div class="sol"><pre class="out">ex.cpp:5:8: error: 'i' was not declared in this scope</pre><p>Javítás: <code>for( int i = a; i &lt;= b; ++i )</code>. Kimenet: <span class="ans"><code>1 2 3 4 5 </code></span> (a végén is van szóköz).</p></div></details>
+<details><summary>Részletes magyarázat</summary><div class="sol"><ul><li>A ciklusváltozót deklarálni kell; a <code>for</code> fejében deklarált <code>i</code> csak a ciklusban látszik.</li><li>Ez <b>hiba</b>, nem figyelmeztetés: nem készül tárgykód.</li><li>A dián a <code>' '</code> görbe idézőjelekkel (’ ’) szerepel: ez csak a diakészítő program tipográfiája, a kódban egyenes <code>'</code> kell.</li></ul></div></details>
+</article>
+<article class="task" id="t3-2">
+<div class="task-head"><span class="no">3.2</span><h3>Előjeles–előjel nélküli összehasonlítás</h3><span class="kind">dia: Fordítási figyelmeztetés</span></div>
+<div class="stmt"><p>Mit ír ki? Miért figyelmeztet a fordító?</p><pre class="code">int i = -2;
+unsigned int j = 3;
+if ( i &lt; j )
+{
+  std::cout &lt;&lt; "OK";
+}
+else
+{
+  std::cout &lt;&lt; "WTF?";
+}</pre></div>
+<details><summary>Megoldás</summary><div class="sol"><p>Kiírás: <span class="ans">WTF?</span></p><pre class="out">warning: comparison between signed and unsigned integer expressions [-Wsign-compare]</pre></div></details>
+<details><summary>Részletes magyarázat</summary><div class="sol"><ul><li>Ha egy <code>int</code> és egy <code>unsigned int</code> egy műveletben találkozik, az <code>int</code> <b><code>unsigned int</code>-té konvertálódik</b> (szokásos aritmetikai konverziók).</li><li>−2 kettes komplemensben <code>0xFFFFFFFE</code>, előjel nélkül olvasva <b>4 294 967 294</b> (32 bites <code>int</code>-nél). Ez nem kisebb 3-nál.</li><li>Javítás: azonos előjelű típusokkal hasonlítsunk (pl. <code>if ( i &lt; static_cast&lt;int&gt;( j ) )</code>), vagy előbb nézzük meg, hogy <code>i &lt; 0</code>.</li><li>Tipikus előfordulás: <code>for( int k = 0; k &lt; v.size(); ++k )</code>: a <code>size()</code> előjel nélküli.</li></ul></div></details>
+</article>
+<article class="task" id="t3-3">
+<div class="task-head"><span class="no">3.3</span><h3>VLA: változó hosszúságú tömb</h3><span class="kind">dia: Fordítási figyelmeztetés</span></div>
+<div class="stmt"><p>Szabályos C++ ez? Mi a gond még vele?</p><pre class="code">int f( int i )
+{
+  int x[ i ];
+  return x[ 0 ] + x[ 1 ];
+}</pre></div>
+<details><summary>Megoldás</summary><div class="sol"><pre class="out">warning: ISO C++ forbids variable length array 'x' [-Wvla]</pre><p><span class="ans">Nem szabványos</span>: C++-ban a tömbméretnek fordítási idejű konstansnak kell lennie; a g++ csak bővítményként fogadja el, <code>-pedantic</code>-kal figyelmeztet.</p></div></details>
+<details><summary>Részletes magyarázat</summary><div class="sol"><ul><li>A VLA C99-ben szabályos, onnan „szivárgott át” a g++-ba.</li><li>További hibák: a tömbelemek <b>inicializálatlanok</b>, így <code>x[ 0 ] + x[ 1 ]</code> szemét; ha <code>i &lt; 2</code>, a tömbön <b>kívülre</b> olvasunk (nem definiált viselkedés); nagy <code>i</code>-re a verem túlcsordulhat.</li><li>C++-os megoldás: <code>std::vector&lt;int&gt; x( i );</code> (a heapen foglal, az elemek 0-ra inicializálódnak).</li></ul></div></details>
+</article>
+<article class="task" id="t3-4">
+<div class="task-head"><span class="no">3.4</span><h3>Melyik módosítás szabályos?</h3><span class="kind">dia: Konstans szövegliterálok típusa</span></div>
+<div class="stmt"><p>Melyik kommentben lévő értékadás fordul le, és melyik fut helyesen?</p><pre class="code">const char a[] = "Hello"; // a[ 0 ] = 'h';
+char b[] = "Hello";       // b[ 1 ] = 'a';
+const char* p = ":-)";    // p[ 2 ] = 'D';
+char* q = "WTF?";         // q[ 3 ] = '!';</pre></div>
+<details><summary>Megoldás</summary><div class="sol"><div class="tbl"><table><tr><th></th><th>lefordul?</th><th>fut?</th></tr><tr><td><code>a[ 0 ] = 'h';</code></td><td>nem: <code>a</code> elemei <code>const</code>-ok</td><td>–</td></tr><tr><td><code>b[ 1 ] = 'a';</code></td><td>igen</td><td><b>igen</b>: <code>b</code> saját tömb, a literál másolata → "Hallo"</td></tr><tr><td><code>p[ 2 ] = 'D';</code></td><td>nem: <code>p</code> <code>const char</code>-ra mutat</td><td>–</td></tr><tr><td><code>char* q = "WTF?";</code> + <code>q[ 3 ] = '!';</code></td><td>igen, figyelmeztetéssel</td><td><b>nem definiált</b>: a literált írnánk, ami csak olvasható memóriában van → tipikusan <i>Segmentation fault</i></td></tr></table></div></div></details>
+<details><summary>Részletes magyarázat</summary><div class="sol"><ul><li>A literál típusa <code>const char[ N ]</code>; a statikus tárterületen, gyakran <b>csak olvasható</b> lapon van.</li><li><code>char b[] = "Hello";</code> egy <b>új, 6 elemű tömböt</b> hoz létre a veremen, és belemásolja a literált: ez szabadon írható.</li><li><code>const char* p = ":-)";</code> nem másol: <code>p</code> magára a literálra mutat; a <code>const</code> miatt a fordító nem enged írni.</li><li><code>char* q = "WTF?";</code> a <code>const</code> elhagyása: C-kompatibilitás miatt C++98-ban még elfogadott volt (elavultként), C++11 óta nem szabályos; a g++ figyelmeztet:</li></ul><pre class="out">warning: deprecated conversion from string constant to 'char*' [-Wwrite-strings]</pre></div></details>
+</article>
+<article class="task" id="t3-5">
+<div class="task-head"><span class="no">3.5</span><h3>sizeof és strlen</h3><span class="kind">dia: Stringek hossza</span></div>
+<div class="stmt"><p>Mit ír ki a program 64 bites rendszeren?</p><pre class="code">#include &lt;iostream&gt;
+#include &lt;cstring&gt;
+int main()
+{
+  char h[] = "Hello";
+  char w[] = "World";
+  char *p = h;
+  std::cout &lt;&lt; sizeof( h ) &lt;&lt; ' ' &lt;&lt; std::strlen( h ) &lt;&lt; std::endl;
+  std::cout &lt;&lt; sizeof( w ) &lt;&lt; ' ' &lt;&lt; std::strlen( w ) &lt;&lt; std::endl;
+  std::cout &lt;&lt; sizeof( p ) &lt;&lt; std::endl;
+  h[ 2 ] = '\0';
+  std::cout &lt;&lt; sizeof( h ) &lt;&lt; ' ' &lt;&lt; std::strlen( h ) &lt;&lt; std::endl;
+  std::cout &lt;&lt; sizeof( p ) &lt;&lt; std::endl;
+  p = "It is a very very long string";
+  std::cout &lt;&lt; sizeof( p ) &lt;&lt; std::endl;
+}</pre></div>
+<details><summary>Megoldás</summary><div class="sol"><div class="cr"><pre class="out">6 5
+6 5
+8
+6 2
+8
+8</pre></div></div></details>
+<details><summary>Részletes magyarázat</summary><div class="sol"><ul><li><code>sizeof( h )</code>: a <b>tömb</b> mérete bájtban, a lezáró <code>'\0'</code>-val: 5 + 1 = 6. Fordítási időben dől el, ezért a <code>h[ 2 ] = '\0'</code> után sem változik.</li><li><code>strlen( h )</code>: az első <code>'\0'</code>-ig számol: először 5, a <code>h[ 2 ] = '\0'</code> után 2 ("He").</li><li><code>sizeof( p )</code>: <code>p</code> egy <b>pointer</b>, a mérete a pointer mérete (64 biten 8, 32 biten 4), függetlenül attól, mire mutat: a hosszú szövegnél is 8.</li><li>A dián a <code>#include &lt;cstring&gt;</code> hiányzik; a <code>std::strlen</code> ehhez a headerhez tartozik (néha az <code>&lt;iostream&gt;</code> véletlenül behúzza, de erre nem szabad építeni).</li><li>A <code>p = "It is …";</code> sor ismét <code>const</code>-ot hagy el (<code>char*</code>-ba literál), erre a fordító figyelmeztet.</li></ul></div></details>
+</article>
+<article class="task" id="t3-6">
+<div class="task-head"><span class="no">3.6</span><h3>Szövegek összehasonlítása</h3><span class="kind">dia: Szövegtartalmak összehasonlítása</span></div>
+<div class="stmt"><p>Mit írnak ki a változatok?</p><pre class="code">const char a[] = "Hello";
+char b[] = "Hello";
+if ( a == b )                       // (1)
+  std::cout &lt;&lt; "OK";
+else
+  std::cout &lt;&lt; "WTF?";
+
+if ( 0 == std::strcmp( a, b ) )     // (2)
+  std::cout &lt;&lt; "OK";
+else
+  std::cout &lt;&lt; "WTF?";</pre></div>
+<details><summary>Megoldás</summary><div class="sol"><p>(1): <span class="ans">WTF?</span>, (2): <span class="ans">OK</span></p></div></details>
+<details><summary>Részletes magyarázat</summary><div class="sol"><ul><li>Az <code>==</code> két tömbnél a tömbök <b>első elemének címét</b> hasonlítja össze (a tömb pointerré konvertálódik). <code>a</code> és <code>b</code> két külön tömb, a címük biztosan különbözik.</li><li><code>std::strcmp</code> karakterenként hasonlít, és 0-t ad, ha a tartalom azonos (negatívat/pozitívat, ha az első kisebb/nagyobb).</li><li>A <code>0 == …</code> „Yoda-sorrend” miatt egy elírt <code>=</code> fordítási hibát okozna.</li><li>Újabb g++ már erre is figyelmeztet (<code>-Warray-compare</code>). <code>std::string</code>-nél az <code>==</code> tartalmat hasonlít, ott ez a csapda nincs.</li></ul></div></details>
+</article>
+<article class="task" id="t3-7">
+<div class="task-head"><span class="no">3.7</span><h3>Tokenekre bontás</h3><span class="kind">saját feladat</span></div>
+<div class="stmt"><p>Bontsd lexikális elemekre és osztályozd a következő sort!</p><pre class="code">std::cout &lt;&lt; "Hello World!" &lt;&lt; std::endl;</pre></div>
+<details><summary>Megoldás</summary><div class="sol"><div class="tbl"><table><tr><th>token</th><th>fajta</th></tr><tr><td><code>std</code></td><td>azonosító</td></tr><tr><td><code>::</code></td><td>operátor</td></tr><tr><td><code>cout</code></td><td>azonosító</td></tr><tr><td><code>&lt;&lt;</code></td><td>operátor</td></tr><tr><td><code>"Hello World!"</code></td><td>konstans szövegliterál</td></tr><tr><td><code>&lt;&lt;</code></td><td>operátor</td></tr><tr><td><code>std</code></td><td>azonosító</td></tr><tr><td><code>::</code></td><td>operátor</td></tr><tr><td><code>endl</code></td><td>azonosító</td></tr><tr><td><code>;</code></td><td>szeparátor</td></tr></table></div><p>Összesen <span class="ans">10 token</span>. A szóközök nem tokenek, csak elválasztanak.</p></div></details>
+<details><summary>Részletes magyarázat</summary><div class="sol"><ul><li>A <code>std</code>, <code>cout</code>, <code>endl</code> <b>nem kulcsszavak</b>, hanem a szabványkönyvtár azonosítói (lehetne saját <code>cout</code> nevű változónk is egy másik névtérben).</li><li>A szövegliterál egyetlen token, a benne lévő szóközzel együtt.</li><li>Hasonlóan <code>return 0;</code> = kulcsszó + konstans + szeparátor; <code>int main()</code> = kulcsszó + azonosító + két szeparátor.</li></ul></div></details>
+</article>
+</div></section>
+<section id="ea4" class="lect"><div class="section-head"><span class="label">4. előadás · 9 feladat · <a href="../Előadás/cppexpr.pdf" target="_blank" rel="noopener">dia PDF ↗</a></span><h2>Típusok és kifejezések</h2></div>
+<div class="taskgroup">
+<article class="task" id="t4-1">
+<div class="task-head"><span class="no">4.1</span><h3>Konstansok típusa és értéke</h3><span class="kind">dia: Konstansok / Lebegőpontos konstansok típusa</span></div>
+<div class="stmt"><p>Add meg a típusát és az értékét!</p><p><code>42</code>, <code>0x2A</code>, <code>052</code>, <code>010</code>, <code>0x10</code>, <code>42L</code>, <code>42U</code>, <code>42UL</code>, <code>12.34</code>, <code>12.34f</code>, <code>88e-1</code>, <code>1234e-2f</code>, <code>54e-1L</code></p></div>
+<details><summary>Megoldás</summary><div class="sol"><div class="tbl"><table><tr><th>konstans</th><th>típus</th><th>érték</th></tr><tr><td><code>42</code>, <code>0x2A</code>, <code>052</code></td><td><code>int</code></td><td>42</td></tr><tr><td><code>010</code></td><td><code>int</code></td><td><b>8</b> (oktális)</td></tr><tr><td><code>0x10</code></td><td><code>int</code></td><td>16</td></tr><tr><td><code>42L</code></td><td><code>long</code></td><td>42</td></tr><tr><td><code>42U</code></td><td><code>unsigned int</code></td><td>42</td></tr><tr><td><code>42UL</code></td><td><code>unsigned long</code></td><td>42</td></tr><tr><td><code>12.34</code></td><td><code>double</code></td><td>12,34</td></tr><tr><td><code>12.34f</code></td><td><code>float</code></td><td>12,34</td></tr><tr><td><code>88e-1</code></td><td><code>double</code></td><td>8,8</td></tr><tr><td><code>1234e-2f</code></td><td><code>float</code></td><td>12,34</td></tr><tr><td><code>54e-1L</code></td><td><code>long double</code></td><td>5,4</td></tr></table></div></div></details>
+<details><summary>Részletes magyarázat</summary><div class="sol"><ul><li>Egész literál: <code>0x</code> → 16-os, vezető <code>0</code> → <b>8-as</b> számrendszer. Utótag nélkül <code>int</code> (ha belefér).</li><li>Lebegőpontos literál utótag nélkül mindig <b><code>double</code></b>; <code>f</code> → <code>float</code>, <code>L</code> → <code>long double</code>. Az <code>e</code> utáni szám 10-es kitevő.</li><li>A <code>12.34f</code> értéke a <code>float</code> pontatlansága miatt csak közelítőleg 12,34 (ahogy a <code>12.34</code> is).</li></ul></div></details>
+</article>
+<article class="task" id="t4-2">
+<div class="task-head"><span class="no">4.2</span><h3>Kifejezések eredménye és mellékhatása</h3><span class="kind">dia: Példák</span></div>
+<div class="stmt"><p>Legyen <code>int x = 1, y = 3, a = 2, b = 4;</code>. Mindegyik sort ebből az állapotból kiindulva értékeld ki: mi az eredmény, és mi a mellékhatás?</p><pre class="code">7+x
+x++;
+x = 7 * a + 5 * b;
+x = y++ * y++;
+x += ( y == 3 );
+12 / 5
+12. / 5</pre></div>
+<details><summary>Megoldás</summary><div class="sol"><div class="tbl"><table><tr><th>kifejezés</th><th>eredmény</th><th>mellékhatás</th></tr><tr><td><code>7+x</code></td><td>8</td><td>nincs</td></tr><tr><td><code>x++</code></td><td>1 (a régi érték)</td><td><code>x</code> = 2</td></tr><tr><td><code>x = 7 * a + 5 * b</code></td><td>34</td><td><code>x</code> = 34</td></tr><tr><td><code>x = y++ * y++</code></td><td><b>nem definiált</b></td><td><code>y</code> kétszer módosul szekvenciapont nélkül</td></tr><tr><td><code>x += ( y == 3 )</code></td><td>2</td><td><code>x</code> = 2 (<code>true</code> → 1)</td></tr><tr><td><code>12 / 5</code></td><td>2 (<code>int</code>)</td><td>nincs</td></tr><tr><td><code>12. / 5</code></td><td>2.4 (<code>double</code>)</td><td>nincs</td></tr></table></div></div></details>
+<details><summary>Részletes magyarázat</summary><div class="sol"><ul><li>Az értékadás is kifejezés: az eredménye az új érték, a mellékhatása a változó módosítása.</li><li><code>y++ * y++</code>: a <code>*</code> operandusainak kiértékelési sorrendje nem rögzített, és nincs köztük szekvenciapont → a szabvány semmit nem garantál (lehet 9, 12, …, vagy bármi más).</li><li><code>y == 3</code> típusa <code>bool</code>; aritmetikában <code>true</code> → 1, <code>false</code> → 0.</li><li><code>12 / 5</code>: két <code>int</code> → egész osztás, a tört rész levágódik. <code>12.</code> már <code>double</code>, így a <code>5</code> is <code>double</code>-lé konvertálódik.</li></ul></div></details>
+</article>
+<article class="task" id="t4-3">
+<div class="task-head"><span class="no">4.3</span><h3>Precedencia és kötés</h3><span class="kind">dia: Kiértékelés, példa / AST / Kötés</span></div>
+<div class="stmt"><p>Mennyi <code>1+2*3+4</code>? Rajzold fel a szintaxisfáját! Hogyan zárójelezi a fordító az <code>x = a + b + c + d;</code> és az <code>a = b = c = d = x;</code> sorokat?</p></div>
+<details><summary>Megoldás</summary><div class="sol"><p><span class="ans">11</span></p><pre class="code">     +
+   /   \
+  +     4
+ / \
+1   *
+   / \
+  2   3</pre><ul><li><code>x = a + b + c + d;</code> → <code>x = (((a + b) + c) + d);</code> (a <code>+</code> balról köt)</li><li><code>a = b = c = d = x;</code> → <code>a = (b = (c = (d = x)));</code> (az <code>=</code> jobbról köt)</li></ul></div></details>
+<details><summary>Részletes magyarázat</summary><div class="sol"><ul><li>A precedencia dönti el, melyik operátor köt erősebben: a <code>*</code> előbb, mint a <code>+</code>.</li><li>Azonos precedenciánál a kötés (asszociativitás) dönt. A fa gyökerében az <b>utoljára</b> elvégzett művelet áll: itt a második <code>+</code>.</li><li>Az értékadás jobbról köt, és értéke az új érték, ezért a láncolt értékadás mind a négy változónak <code>x</code>-et adja.</li><li>Figyelem: a precedencia és a kötés a <b>zárójelezést</b> határozza meg, nem a <b>kiértékelési sorrendet</b>! <code>f() + g()</code> esetén nem garantált, hogy <code>f</code> hívódik előbb.</li></ul></div></details>
+</article>
+<article class="task" id="t4-4">
+<div class="task-head"><span class="no">4.4</span><h3>Prefix és postfix inkrementálás</h3><span class="kind">dia: Inkrementálás, dekrementálás</span></div>
+<div class="stmt"><pre class="code">int i = 1;
+std::cout &lt;&lt; ++i;   // (1)
+
+int j = 1;
+std::cout &lt;&lt; j++;   // (2)
+std::cout &lt;&lt; j;     // (3)</pre></div>
+<details><summary>Megoldás</summary><div class="sol"><p>(1): <span class="ans">2</span>, (2): <span class="ans">1</span>, (3): <span class="ans">2</span></p></div></details>
+<details><summary>Részletes magyarázat</summary><div class="sol"><ul><li>Mellékhatás mindkét esetben: a változó eggyel nő.</li><li>Eredmény: <code>++i</code> az <b>új</b> értéket, <code>j++</code> a <b>régit</b> adja vissza.</li><li>A <code>for( int i = 0; i &lt; n; ++i )</code> fejlécben az eredményt nem használjuk, ott mindegy; objektumoknál (iterátor) a <code>++i</code> hatékonyabb, mert a postfix változatnak másolatot kell készítenie a régi értékről.</li></ul></div></details>
+</article>
+<article class="task" id="t4-5">
+<div class="task-head"><span class="no">4.5</span><h3>Értékadás a feltételben</h3><span class="kind">dia: Értékadás – mit ír ki az alábbi kódrészlet?</span></div>
+<div class="stmt"><p>Mit ír ki, és mennyi lesz <code>x</code> értéke?</p><pre class="code">if ( x = 0 )
+{
+  std::cout &lt;&lt; 'A' &lt;&lt; std::endl;
+}
+if ( x = 4 )
+{
+  std::cout &lt;&lt; 'B' &lt;&lt; std::endl;
+}</pre></div>
+<details><summary>Megoldás</summary><div class="sol"><p>Kimenet: <span class="ans">B</span>, és <code>x == 4</code>.</p></div></details>
+<details><summary>Részletes magyarázat</summary><div class="sol"><ul><li><code>x = 0</code> értékadás: <code>x</code> 0 lesz, a kifejezés értéke 0 → hamis, az <code>A</code> nem íródik ki.</li><li><code>x = 4</code>: értéke 4 → igaz (minden nem nulla érték igaz), kiíródik a <code>B</code>.</li><li>A <code>-Wall</code> figyelmeztet: <i>„suggest parentheses around assignment used as truth value”</i>. Ha tényleg értékadást akarunk a feltételben, dupla zárójellel jelezzük: <code>if ( ( x = f() ) )</code>.</li></ul></div></details>
+</article>
+<article class="task" id="t4-6">
+<div class="task-head"><span class="no">4.6</span><h3>f() == g() == h()</h3><span class="kind">dia: Példa (szekvenciapontok)</span></div>
+<div class="stmt"><p>Mit ír ki?</p><pre class="code">bool f() { std::cout &lt;&lt; 'f'; return false; }
+bool g() { std::cout &lt;&lt; 'g'; return true; }
+bool h() { std::cout &lt;&lt; 'h'; return false; }
+
+if ( f() == g() == h() )
+  std::cout &lt;&lt; ":-)";
+else
+  std::cout &lt;&lt; ":-(";</pre></div>
+<details><summary>Megoldás</summary><div class="sol"><p>A feltétel <span class="ans">igaz</span>, így a vége <span class="ans">:-)</span>. Az <code>f</code>, <code>g</code>, <code>h</code> betűk <b>sorrendje nem meghatározott</b>; a g++ tipikusan <code>fgh:-)</code>-t ír ki.</p></div></details>
+<details><summary>Részletes magyarázat</summary><div class="sol"><ul><li>Az <code>==</code> balról köt: <code>( f() == g() ) == h()</code>.</li><li><code>f() == g()</code>: <code>false == true</code> → <code>false</code>. Utána <code>false == h()</code>: <code>false == false</code> → <code>true</code>.</li><li>A <code>==</code> operandusainak kiértékelési sorrendje nincs rögzítve, és nincs köztük szekvenciapont: a fordító hívhatja előbb <code>h</code>-t, vagy <code>g</code>-t <code>f</code> előtt. Az <b>eredmény</b> ettől nem függ, csak a kiírt betűk sorrendje.</li><li>A tanulság: ne írjunk olyan kifejezést, amelynek eredménye a mellékhatások sorrendjén múlik. A <code>a == b == c</code> ráadásul nem azt jelenti, hogy „mind egyenlő”.</li></ul></div></details>
+</article>
+<article class="task" id="t4-7">
+<div class="task-head"><span class="no">4.7</span><h3>v[ i ] = i++</h3><span class="kind">dia: Példa (szekvenciapontok)</span></div>
+<div class="stmt"><p>Mi a gond ezzel a ciklussal?</p><pre class="code">const int s = 5;
+int v[ s ];
+for( int i = 0; i &lt; s; )
+{
+  v[ i ] = i++;
+}</pre></div>
+<details><summary>Megoldás</summary><div class="sol"><p>Az <code>i</code> egy kifejezésen belül módosul (<code>i++</code>) és olvasódik (<code>v[ i ]</code>) is, köztük nincs szekvenciapont: C++98-ban (a diák <code>-ansi</code> módjában) <span class="ans">nem definiált viselkedés</span>.</p></div></details>
+<details><summary>Részletes magyarázat</summary><div class="sol"><ul><li>Ha a fordító előbb a bal oldalt értékeli ki: <code>v[0]=0, v[1]=1, …</code> (amire a szerző gondolt). Ha előbb a jobb oldalt: <code>v[1]=0, v[2]=1, …, v[5]=4</code>: ez már <b>a tömbön kívülre ír</b>, <code>v[0]</code> pedig kimarad.</li><li>C++17 óta az értékadás jobb oldala garantáltan a bal oldal előtt értékelődik ki: így éppen a második, <b>hibás</b> eset a kötelező (<code>v[5]</code>-be is ír).</li><li>Helyesen: <code>v[ i ] = i; ++i;</code>, vagy egyszerűen <code>for( int i = 0; i &lt; s; ++i ) v[ i ] = i;</code>.</li></ul></div></details>
+</article>
+<article class="task" id="t4-8">
+<div class="task-head"><span class="no">4.8</span><h3>Vessző operátor és függvényargumentumok</h3><span class="kind">dia: Szekvenciapontok</span></div>
+<div class="stmt"><p>Mennyi <code>d</code>, és mit ír ki <code>g()</code>?</p><pre class="code">void f( int a )        { std::cout &lt;&lt; a &lt;&lt; ' ' &lt;&lt; 1; }
+void f( int a, int b ) { std::cout &lt;&lt; a &lt;&lt; ' ' &lt;&lt; b &lt;&lt; ' ' &lt;&lt; 2; }
+
+void g()
+{
+  double d = (2,5);
+  int x = 2;
+  f( x++, x++ );
+  f( ( x++, x++ ) );
+}</pre></div>
+<details><summary>Megoldás</summary><div class="sol"><ul><li><code>d</code> = <span class="ans">5</span> (nem 2,5!)</li><li><code>f( x++, x++ )</code> a kétparaméteres <code>f</code>-et hívja. C++98–14-ben <b>nem definiált viselkedés</b>; C++17 óta az argumentumok sorrendje csak nem meghatározott, így <code>2 3 2</code> vagy <code>3 2 2</code> (a g++ jellemzően jobbról balra értékel, így <code>3 2 2</code>). Utána <code>x</code> = 4.</li><li><code>f( ( x++, x++ ) )</code> az egyparaméteres <code>f</code>-et hívja: az első <code>x++</code> után <code>x</code> = 5, a második <code>x++</code> értéke 5 (utána <code>x</code> = 6) → <code>5 1</code>.</li></ul><p>Mivel nincs sortörés, a teljes kimenet pl.: <span class="ans"><code>3 2 25 1</code></span></p></div></details>
+<details><summary>Részletes magyarázat</summary><div class="sol"><ul><li>A <code>(2,5)</code> zárójelben a vessző <b>operátor</b>: kiértékeli a 2-t, eldobja, az eredmény az 5. (Magyar tizedesvessző-szokás itt nem működik!) A g++ figyelmeztet: <i>„left operand of comma operator has no effect”</i>.</li><li>Függvényhívásban a vessző <b>elválasztó</b>, nem operátor, nincs utána szekvenciapont. A két <code>x++</code> ugyanazt a változót módosítja: régi szabvány szerint ez UB.</li><li>A dupla zárójel <code>( x++, x++ )</code> egyetlen argumentum, benne vessző operátor, ami szekvenciapont: előbb az első <code>x++</code> teljesen lezajlik, utána a második.</li><li>A két <code>f</code> túlterhelés (overload): a fordító az argumentumok száma alapján választ.</li></ul></div></details>
+</article>
+<article class="task" id="t4-9">
+<div class="task-head"><span class="no">4.9</span><h3>Szekvenciapontok, kérdések</h3><span class="kind">dia: Szekvenciapontok, kérdések</span></div>
+<div class="stmt"><p>Az előző <code>f</code> (kiírja <code>f</code>, <code>false</code>-t ad) és <code>g</code> (kiírja <code>g</code>, <code>true</code>-t ad) függvényekkel mit ír ki és mi a feltétel értéke?</p><pre class="code">if ( f() &amp;&amp; g() ) // (1)
+if ( f() || g() ) // (2)
+if ( f(), g() )   // (3)
+if ( g(), f() )   // (4)</pre></div>
+<details><summary>Megoldás</summary><div class="sol"><div class="tbl"><table><tr><th></th><th>kiírás</th><th>feltétel</th></tr><tr><td>(1)</td><td><code>f</code></td><td>hamis</td></tr><tr><td>(2)</td><td><code>fg</code></td><td>igaz</td></tr><tr><td>(3)</td><td><code>fg</code></td><td>igaz</td></tr><tr><td>(4)</td><td><code>gf</code></td><td>hamis</td></tr></table></div></div></details>
+<details><summary>Részletes magyarázat</summary><div class="sol"><ul><li>(1) <code>&amp;&amp;</code> <b>lusta</b>: <code>f()</code> hamis, így az eredmény biztosan hamis, <code>g()</code> meg sem hívódik.</li><li>(2) <code>||</code>: <code>f()</code> hamis, ezért ki kell értékelni <code>g()</code>-t is, ami igaz.</li><li>(3)–(4) vessző operátor: mindkét oldal kiértékelődik, <b>balról jobbra</b> (szekvenciapont), az eredmény a <b>jobb</b> oldal értéke.</li><li>Itt a sorrend mindenhol garantált, mert <code>&amp;&amp;</code>, <code>||</code> és a vessző operátor után szekvenciapont van (szemben az előző <code>==</code>-s példával).</li></ul></div></details>
+</article>
+</div></section>
+<section id="ea5" class="lect"><div class="section-head"><span class="label">5. előadás · 11 feladat · <a href="../Előadás/cppscope.pdf" target="_blank" rel="noopener">dia PDF ↗</a></span><h2>Láthatóság és memóriamodell</h2></div>
+<div class="taskgroup">
+<article class="task" id="t5-1">
+<div class="task-head"><span class="no">5.1</span><h3>Mi látszik hol?</h3><span class="kind">dia: Láthatóság fogalma</span></div>
+<div class="stmt"><p>Mely változók láthatók a megjelölt pontokon? Lehetne-e a (3)-as helyen <code>++t;</code>?</p><pre class="code">void f()
+{
+  int y = 1;
+  int x;
+  std::cin &gt;&gt; x;          // (1)
+  if ( x &gt; 10 )
+  {
+    ++x;                  // (2)
+    int t = y;
+    ++y;                  // (3)
+  }
+  ++x;                    // (4)
+  ++y;
+}</pre></div>
+<details><summary>Megoldás</summary><div class="sol"><div class="tbl"><table><tr><th>pont</th><th>látható</th></tr><tr><td>(1)</td><td><code>y</code>, <code>x</code></td></tr><tr><td>(2)</td><td><code>y</code>, <code>x</code> (a <code>t</code> még nem!)</td></tr><tr><td>(3)</td><td><code>y</code>, <code>x</code>, <code>t</code></td></tr><tr><td>(4)</td><td><code>y</code>, <code>x</code></td></tr></table></div><p>A (3)-as helyen <code>++t;</code> <span class="ans">lehetne</span>; a (4)-es helyen viszont már fordítási hiba lenne: <i>„'t' was not declared in this scope”</i>.</p></div></details>
+<details><summary>Részletes magyarázat</summary><div class="sol"><ul><li>Egy lokális név a <b>deklarációja után</b> kezd látszani, és a <b>tartalmazó blokk végéig</b> látszik.</li><li>A <code>t</code> az <code>if</code> blokkjában születik; a <code>}</code> után megszűnik a láthatósága (és az élettartama is).</li></ul></div></details>
+</article>
+<article class="task" id="t5-2">
+<div class="task-head"><span class="no">5.2</span><h3>Újradeklarálás</h3><span class="kind">dia: Azonos nevű változók</span></div>
+<div class="stmt"><pre class="code">void f()
+{
+  int i = 2;
+  int i = 3;
+}</pre></div>
+<details><summary>Megoldás</summary><div class="sol"><p><span class="ans">Fordítási hiba</span>:</p><pre class="out">a.cpp:4:7: error: redeclaration of 'int i'
+a.cpp:3:7: note: 'int i' previously declared here</pre></div></details>
+<details><summary>Részletes magyarázat</summary><div class="sol"><ul><li>Ugyanabban a blokkban egy név csak egyszer deklarálható.</li><li>Ha a második <code>int i</code> egy <b>belső</b> blokkban (<code>{ int i = 3; }</code>) lenne, az szabályos: elfedné a külsőt.</li></ul></div></details>
+</article>
+<article class="task" id="t5-3">
+<div class="task-head"><span class="no">5.3</span><h3>Elfedés</h3><span class="kind">dia: Azonos nevű változók</span></div>
+<div class="stmt"><p>Mit ír ki, ha a bemenet <code>5</code>? És ha <code>-3</code>?</p><pre class="code">void f()
+{
+  int x;
+  std::cin &gt;&gt; x;
+  if ( x &gt; 0 )
+  {
+    std::cout &lt;&lt; x &lt;&lt; std::endl;
+    int x = 2;
+    ++x;
+  }
+  ++x;
+  std::cout &lt;&lt; x &lt;&lt; std::endl;
+}</pre></div>
+<details><summary>Megoldás</summary><div class="sol"><ul><li>bemenet <code>5</code>: <span class="ans">5, majd 6</span> (két sorban)</li><li>bemenet <code>-3</code>: <span class="ans">-2</span></li></ul></div></details>
+<details><summary>Részletes magyarázat</summary><div class="sol"><ul><li>A blokkon belüli első kiírásnál a belső <code>x</code> <b>még nincs deklarálva</b>, ezért a külső <code>x</code> (5) íródik ki.</li><li><code>int x = 2; ++x;</code> egy új, belső változót hoz létre és növel (3 lesz); a blokk végén megszűnik, a külsőt nem érinti.</li><li>A blokk után ismét a külső <code>x</code> látszik: 5 → 6.</li><li>A g++ <code>-Wshadow</code> kapcsolóval figyelmeztet az ilyen elfedésre.</li></ul></div></details>
+</article>
+<article class="task" id="t5-4">
+<div class="task-head"><span class="no">5.4</span><h3>Globális és lokális x, ::x</h3><span class="kind">saját feladat</span></div>
+<div class="stmt"><p>Mennyi lesz a globális <code>x</code> értéke <code>f()</code> lefutása után?</p><pre class="code">int x = 0;
+void f()
+{
+  int x = 1;
+  if ( x &gt; 0 )
+  {
+    int x = 2;
+    ++x;
+    ::x = x;
+  }
+  ++x;
+}</pre></div>
+<details><summary>Megoldás</summary><div class="sol"><p>A globális <code>x</code> = <span class="ans">3</span></p></div></details>
+<details><summary>Részletes magyarázat</summary><div class="sol"><div class="tbl"><table><tr><th>sor</th><th>melyik x</th><th>érték utána</th></tr><tr><td><code>int x = 1;</code></td><td>f lokális x-e</td><td>1</td></tr><tr><td><code>if ( x &gt; 0 )</code></td><td>f lokális x-e (1 > 0)</td><td>igaz</td></tr><tr><td><code>int x = 2; ++x;</code></td><td>a blokk belső x-e</td><td>3</td></tr><tr><td><code>::x = x;</code></td><td>globális ← belső</td><td>globális = 3</td></tr><tr><td><code>++x;</code></td><td>f lokális x-e</td><td>2 (aztán megszűnik)</td></tr></table></div></div></details>
+</article>
+<article class="task" id="t5-5">
+<div class="task-head"><span class="no">5.5</span><h3>Egymásba ágyazott elfedések</h3><span class="kind">dia: Azonos nevű változók</span></div>
+<div class="stmt"><p>Mi történik <code>f()</code> hívásakor? És ha a globális deklaráció <code>int x = 5;</code> lenne?</p><pre class="code">int x;
+void f()
+{
+  if ( x &gt; 0 )
+  {
+    ++x;
+    int x = 2;
+    ++x;
+    if ( x != 0 )
+    {
+      int x = 1;
+      ++x;
+    }
+  }
+}</pre></div>
+<details><summary>Megoldás</summary><div class="sol"><ul><li><code>int x;</code>: a globális változó <b>0-ra inicializálódik</b>, ezért <code>x &gt; 0</code> hamis → <span class="ans">semmi nem történik</span>.</li><li><code>int x = 5;</code> esetén: az első <code>++x</code> még a <b>globálist</b> növeli (6); utána egy belső <code>x</code> (2 → 3); a legbelső blokkban egy harmadik <code>x</code> (1 → 2). A végén a globális <span class="ans">6</span>, a két belső megszűnt.</li></ul></div></details>
+<details><summary>Részletes magyarázat</summary><div class="sol"><ul><li>A globális (statikus tárolású) változók kezdőérték nélkül nullák; a lokálisak viszont inicializálatlanok (szemét).</li><li>Mindhárom <code>++x</code> más-más változóra vonatkozik: mindig a legbelső, <b>már deklarált</b> <code>x</code>-re.</li></ul></div></details>
+</article>
+<article class="task" id="t5-6">
+<div class="task-head"><span class="no">5.6</span><h3>Több fordítási egység</h3><span class="kind">saját feladat</span></div>
+<div class="stmt"><pre class="code">// a.cpp:              // b.cpp:          // n.cpp:
+int x;                 int y;             extern int y;
+extern int y;
+static int s;
+void f() { /* ... */ }
+void g() { /* ... */ }</pre></div>
+<details><summary>Megoldás</summary><div class="sol"><p>Melyik sor definíció és melyik deklaráció? Használhatja <code>n.cpp</code> az <code>x</code>-et, illetve az <code>s</code>-et?</p></div></details>
+<details><summary>Részletes magyarázat</summary><div class="sol"><div class="tbl"><table><tr><th>név</th><th>definíció</th><th>deklaráció</th><th>elérhető</th></tr><tr><td><code>x</code></td><td><code>a.cpp</code>: <code>int x;</code></td><td>–</td><td>bárhonnan, ahol <code>extern int x;</code> deklarálja</td></tr><tr><td><code>y</code></td><td><code>b.cpp</code>: <code>int y;</code></td><td><code>a.cpp</code>, <code>n.cpp</code>: <code>extern int y;</code></td><td>mindhárom fájlból</td></tr><tr><td><code>s</code></td><td><code>a.cpp</code>: <code>static int s;</code></td><td>–</td><td><b>csak <code>a.cpp</code>-ből</b></td></tr></table></div><p><code>n.cpp</code> az <code>x</code>-et <span class="ans">használhatja</span>, ha előtte <code>extern int x;</code>-et ír; az <code>s</code>-et <span class="ans">nem</span>: egy <code>extern int s;</code> deklaráció lefordulna, de a linker nem találná (<i>undefined reference to <code>s</code></i>).</p></div></details>
+</article>
+<article class="task" id="t5-7">
+<div class="task-head"><span class="no">5.7</span><h3>Melyik x-et növeli A::f?</h3><span class="kind">dia: Névtér</span></div>
+<div class="stmt"><pre class="code">int x;
+namespace A
+{
+  int x;
+  void f();
+}
+void A::f()
+{
+  ++x;
+}</pre></div>
+<details><summary>Megoldás</summary><div class="sol"><p>Az <span class="ans"><code>A::x</code></span>-et.</p></div></details>
+<details><summary>Részletes magyarázat</summary><div class="sol"><ul><li><code>A::f</code> törzse az <code>A</code> névtér része (akkor is, ha a definíció a névtéren kívül van), ezért a névkeresés az <code>A</code>-ban kezdődik, és ott talál <code>x</code>-et.</li><li>A globálist így érné el: <code>++::x;</code>.</li><li>A két változó a tárgykódban is külön szimbólum: a globális <code>x</code> neve <code>x</code>, az <code>A::x</code>-é <code>_ZN1A1xE</code>.</li></ul></div></details>
+</article>
+<article class="task" id="t5-8">
+<div class="task-head"><span class="no">5.8</span><h3>Hol tárolódik?</h3><span class="kind">saját feladat</span></div>
+<div class="stmt"><p>Melyik memóriaszegmensben van?</p><pre class="code">int g;
+void f( int x )
+{
+  static int c = 0;
+  int y = 0;
+  const char* s = "Hello";
+  int* p = new int( 5 );
+  // ...
+  delete p;
+}</pre></div>
+<details><summary>Megoldás</summary><div class="sol"><div class="tbl"><table><tr><th>mi</th><th>hol</th></tr><tr><td><code>g</code></td><td>statikus tárterület</td></tr><tr><td><code>c</code></td><td>statikus tárterület (lokális statikus)</td></tr><tr><td><code>x</code>, <code>y</code></td><td>verem (f stack frame-je)</td></tr><tr><td><code>s</code> (a pointer)</td><td>verem</td></tr><tr><td><code>"Hello"</code> (a karakterek)</td><td>statikus tárterület (csak olvasható)</td></tr><tr><td><code>p</code> (a pointer)</td><td>verem</td></tr><tr><td><code>*p</code> (az 5-ös <code>int</code>)</td><td>heap</td></tr><tr><td><code>f</code> gépi kódja</td><td>kódszegmens</td></tr></table></div></div></details>
+<details><summary>Részletes magyarázat</summary><div class="sol"><ul><li>Fontos különbség: a <b>pointer</b> maga lokális változó (verem), de amire <b>mutat</b>, az lehet a heapen vagy a statikus területen.</li><li>A tárolási helyet nem a típus, hanem a létrehozás módja dönti el.</li></ul></div></details>
+</article>
+<article class="task" id="t5-9">
+<div class="task-head"><span class="no">5.9</span><h3>Stack overflow</h3><span class="kind">saját feladat</span></div>
+<div class="stmt"><pre class="code">int fac( int n )
+{
+  return n * fac( n - 1 );
+}
+int main()
+{
+  fac( 3 );
+}</pre></div>
+<details><summary>Megoldás</summary><div class="sol"><p>Mi történik futtatáskor, és hogyan javítható?</p></div></details>
+<details><summary>Részletes magyarázat</summary><div class="sol"><pre class="out">Segmentation fault (core dumped)</pre><p>Javítás: megállási feltétel: <code>if ( n &lt;= 1 ) return 1;</code>.</p></div></details>
+</article>
+<article class="task" id="t5-10">
+<div class="task-head"><span class="no">5.10</span><h3>Ellenőrző kérdések: question0–2</h3><span class="kind">dia: Ellenőrző kérdések</span></div>
+<div class="stmt"><p>Mi a hiba (ha van)?</p><pre class="code">void question0( int i )
+{
+  int *p = new int[ i ];
+  int *q = p;
+  delete [] q;
+  delete [] p;
+}
+
+void question1( int i )
+{
+  int *p = new int[ i ];
+  int *q = p;
+  delete [] q;
+  p = 0;
+}
+
+void question2( int i )
+{
+  int *p = new int[ i ];
+  int *q = p;
+  delete [] p;
+  q[ 0 ] = 123;
+}</pre></div>
+<details><summary>Megoldás</summary><div class="sol"><div class="tbl"><table><tr><th></th><th>hiba</th></tr><tr><td>question0</td><td><b>dupla felszabadítás</b> (double free): <code>p</code> és <code>q</code> ugyanarra a tömbre mutat, kétszer szabadítjuk fel → nem definiált viselkedés, tipikusan összeomlás</td></tr><tr><td>question1</td><td><b>nincs hiba</b>: egyszer szabadítunk fel (<code>q</code>-n át), utána <code>p</code>-t nullázzuk; nincs szivárgás</td></tr><tr><td>question2</td><td><b>lógó pointer</b> (use after free): a tömb felszabadítása után <code>q</code>-n keresztül írunk bele → nem definiált viselkedés</td></tr></table></div></div></details>
+<details><summary>Részletes magyarázat</summary><div class="sol"><ul><li>A <code>delete []</code> a <b>memóriát</b> szabadítja fel, nem a pointert; a pointerváltozó értéke (a cím) nem változik. Minden pointer, ami oda mutatott, lógóvá válik.</li><li>question1: <code>p = 0</code> (C++11-ben <code>nullptr</code>) után egy esetleges <code>delete [] p</code> sem lenne baj, a null pointer törlése megengedett, nem csinál semmit. <code>q</code> lógó marad, de nem használjuk.</li><li>Az ilyen hibák fordításkor nem derülnek ki; <code>valgrind ./prog</code> futás közben jelzi őket („Invalid free”, „Invalid write of size 4”).</li></ul></div></details>
+</article>
+<article class="task" id="t5-11">
+<div class="task-head"><span class="no">5.11</span><h3>Kivétel és szivárgás</h3><span class="kind">dia: Problémák / RAII</span></div>
+<div class="stmt"><p>Mi a gond ezzel a kóddal? Írd át RAII-val!</p><pre class="code">void f( int i )
+{
+  int *p = new int[ i ];
+  complex* c = new complex( 1.2, 3.4 );
+  f( ... );
+  g( ... );
+  // ...
+  delete [] p;
+  delete c;
+}</pre></div>
+<details><summary>Megoldás</summary><div class="sol"><p>Ha <code>f( … )</code> vagy <code>g( … )</code> <b>kivételt dob</b> (vagy a kódba később egy korai <code>return</code> kerül), a vezérlés nem ér el a <code>delete</code>-ekig → <span class="ans">memóriaszivárgás</span>. RAII-val:</p><pre class="code">void f( int i )
+{
+  std::vector&lt;int&gt; p( i );       // a vector destruktora felszabadít
+  complex c( 1.2, 3.4 );         // egyszerűen a veremen
+  f( ... );
+  g( ... );
+}                                // minden automatikusan megszűnik</pre></div></details>
+<details><summary>Részletes magyarázat</summary><div class="sol"><ul><li>A lokális objektumok destruktora <b>minden</b> kilépéskor lefut (normál visszatérés, <code>return</code>, kivétel).</li><li>A <code>complex</code>-et semmi nem indokolja a heapen: felhasználói típusú objektum is lehet a vermen.</li><li>Ha mégis heap kell egy objektumnak: <code>std::unique_ptr&lt;complex&gt; c( new complex( 1.2, 3.4 ) );</code> (C++14-től <code>std::make_unique</code>).</li></ul></div></details>
+</article>
+</div></section>
+<section id="ea6" class="lect"><div class="section-head"><span class="label">6. előadás · 6 feladat · <a href="../Előadás/cpplife.pdf" target="_blank" rel="noopener">dia PDF ↗</a></span><h2>Élettartam szabályok</h2></div>
+<div class="taskgroup">
+<article class="task" id="t6-1">
+<div class="task-head"><span class="no">6.1</span><h3>Láthatóság és élettartam</h3><span class="kind">dia: Láthatóság, élettartam</span></div>
+<div class="stmt"><p>Kövesd végig az <code>f( 3 )</code> hívást: melyik <code>x</code> mikor jön létre, mikor szűnik meg, és mennyi az értéke?</p><pre class="code">void f( int s )
+{
+  int x = s;
+  ++x;
+  if ( s &gt; 0 )
+  {
+    ++s;
+    int x = s;
+    ++x;
+  }
+  ++x;
+}</pre></div>
+<details><summary>Megoldás</summary><div class="sol"><div class="tbl"><table><tr><th>sor</th><th>s</th><th>külső x</th><th>belső x</th></tr><tr><td><code>int x = s;</code></td><td>3</td><td>3 (létrejön)</td><td>–</td></tr><tr><td><code>++x;</code></td><td>3</td><td>4</td><td>–</td></tr><tr><td><code>++s;</code></td><td>4</td><td>4</td><td>–</td></tr><tr><td><code>int x = s;</code></td><td>4</td><td>4 (elfedve)</td><td>4 (létrejön)</td></tr><tr><td><code>++x;</code></td><td>4</td><td>4</td><td>5</td></tr><tr><td><code>}</code></td><td>4</td><td>4</td><td>megszűnik</td></tr><tr><td><code>++x;</code></td><td>4</td><td>5</td><td>–</td></tr><tr><td>függvény vége</td><td>megszűnik</td><td>megszűnik</td><td>–</td></tr></table></div></div></details>
+<details><summary>Részletes magyarázat</summary><div class="sol"><ul><li>Mindkét <code>x</code> automatikus változó: a deklarációnál jön létre, a deklaráló blokk végén szűnik meg.</li><li>A paraméter (<code>s</code>) is automatikus változó, a függvény blokkjához tartozik; a módosítása nem hat vissza a hívóra (érték szerinti átadás).</li></ul></div></details>
+</article>
+<article class="task" id="t6-2">
+<div class="task-head"><span class="no">6.2</span><h3>Vektorok élettartama</h3><span class="kind">dia: Élettartam szabályok (vector)</span></div>
+<div class="stmt"><p>Mi lesz a külső <code>v</code> tartalma a függvény végén <code>s = 3</code>, <code>s = 1</code> és <code>s = 0</code> esetén?</p><pre class="code">void f( int s )
+{
+  std::vector&lt;int&gt; v( s );
+  v.push_back( s );
+  if ( v[ 0 ] &lt; v[ 1 ] )
+  {
+    ++s;
+    std::vector&lt;int&gt; v( s );
+    v.push_back( s );
+  }
+  v.push_back( s );
+}</pre></div>
+<details><summary>Megoldás</summary><div class="sol"><ul><li><code>s = 3</code>: <code>v</code> = {0,0,0} → push → {0,0,0,3}; <code>v[0] &lt; v[1]</code> → 0 < 0 hamis → push → <span class="ans">{0,0,0,3,3}</span></li><li><code>s = 1</code>: <code>v</code> = {0} → {0,1}; 0 < 1 igaz → <code>s</code> = 2, a belső <code>v</code> = {0,0} → {0,0,2}, és a <code>}</code>-nél megszűnik → a külső kap egy 2-t: <span class="ans">{0,1,2}</span></li><li><code>s = 0</code>: <code>v</code> = {} → {0}; <code>v[ 1 ]</code> a vektoron <b>kívülre</b> olvas → <span class="ans">nem definiált viselkedés</span></li></ul></div></details>
+<details><summary>Részletes magyarázat</summary><div class="sol"><ul><li><code>std::vector&lt;int&gt; v( s )</code> <code>s</code> darab <b>nullát</b> tartalmazó vektort hoz létre.</li><li>A belső <code>v</code> egy teljesen új objektum: létrejöttekor a konstruktora foglal memóriát, a blokk végén a destruktora felszabadítja. A külső <code>v</code>-t nem érinti.</li><li>A <code>v[ i ]</code> nem ellenőrzi az indexet; <code>v.at( i )</code> kivételt dobna (<code>std::out_of_range</code>).</li></ul></div></details>
+</article>
+<article class="task" id="t6-3">
+<div class="task-head"><span class="no">6.3</span><h3>Lokális statikus változó</h3><span class="kind">dia: Példa: lokális statikus</span></div>
+<div class="stmt"><p>Mit ír ki? Mit írna ki <code>static</code> nélkül?</p><pre class="code">#include &lt;iostream&gt;
+void f()
+{
+  static int x = 1;
+  std::cout &lt;&lt; x &lt;&lt; std::endl;
+  ++x;
+}
+int main()
+{
+  f();
+  f();
+}</pre></div>
+<details><summary>Megoldás</summary><div class="sol"><p><code>static</code>-kal: <span class="ans">1, majd 2</span>; nélküle: <span class="ans">1, majd 1</span></p></div></details>
+<details><summary>Részletes magyarázat</summary><div class="sol"><ul><li>A lokális statikus változó <b>egyszer</b> jön létre és inicializálódik: amikor a vezérlés először eléri. A program végéig él, így a második hívás a megnövelt értéket látja.</li><li>Láthatósága ettől még lokális: <code>main</code>-ből nem érhető el.</li><li><code>static</code> nélkül <code>x</code> automatikus: minden hívásnál újra létrejön 1-gyel, és a függvény végén megszűnik.</li></ul></div></details>
+</article>
+<article class="task" id="t6-4">
+<div class="task-head"><span class="no">6.4</span><h3>Adattagok és tömbelemek</h3><span class="kind">saját feladat</span></div>
+<div class="stmt"><pre class="code">class Statistics
+{
+public:
+  std::vector&lt;double&gt; data;
+};
+
+void f()
+{
+  Statistics stat;
+  std::cout &lt;&lt; stat.data.size();
+  stat.data.push_back( 1.23 );
+}
+
+void g()
+{
+  Statistics arr[ 5 ];
+  arr[ 2 ].data.push_back( 4.44 );
+}</pre></div>
+<details><summary>Megoldás</summary><div class="sol"><p>Mit ír ki <code>f()</code>? Hány <code>std::vector</code> jön létre <code>g()</code>-ben, és mikor szűnnek meg?</p></div></details>
+<details><summary>Részletes magyarázat</summary><div class="sol"><ul><li><code>f()</code> kiírja: <span class="ans">0</span> (az adattag a <code>stat</code>-tal együtt, üresen jön létre).</li><li><code>g()</code>-ben <span class="ans">5 vektor</span> jön létre (minden tömbelem egy <code>Statistics</code>, mindegyikben egy vektor); mind a <code>g</code> végén szűnik meg, a tömbbel együtt.</li></ul></div></details>
+</article>
+<article class="task" id="t6-5">
+<div class="task-head"><span class="no">6.5</span><h3>Temporális és c_str()</h3><span class="kind">dia: Temporálisok / Példa</span></div>
+<div class="stmt"><p>Mi a hiba?</p><pre class="code">std::string h = "Hello";
+std::string w = "World";
+const char* p = (h + w).c_str();
+std::cout &lt;&lt; p;</pre></div>
+<details><summary>Megoldás</summary><div class="sol"><p><code>h + w</code> egy <b>temporális</b> <code>std::string</code>; a <code>c_str()</code> az ő belső tárára mutató pointert ad. A temporális a <b>teljes kifejezés végén</b> (a 3. sor <code>;</code>-jénél) megszűnik, így <code>p</code> <span class="ans">lógó pointer</span>, a kiírás nem definiált viselkedés.</p></div></details>
+<details><summary>Részletes magyarázat</summary><div class="sol"><ul><li>Rövid szövegnél gyakran „véletlenül működik” (kiírja, hogy <code>HelloWorld</code>), mert a felszabadított memória még nem íródott felül, de ez nem garantált.</li><li>Javítás: tegyük el az eredményt egy változóba: <code>std::string hw = h + w; const char* p = hw.c_str();</code>, vagy közvetlenül írjuk ki: <code>std::cout &lt;&lt; h + w;</code>.</li><li>Ugyanabban a kifejezésben szabad használni: <code>std::cout &lt;&lt; (h + w).c_str();</code> helyes, mert a temporális a <code>;</code>-ig él.</li></ul></div></details>
+</article>
+<article class="task" id="t6-6">
+<div class="task-head"><span class="no">6.6</span><h3>Az answer függvény változatai</h3><span class="kind">dia: Feladat / Implementáció / Válasz</span></div>
+<div class="stmt"><p>Feladat: az <code>answer</code> függvény kiírja a kapott kérdést, beolvassa a választ, és visszaadja a hívónak: <code>std::cout &lt;&lt; answer( "Hogy vagy?" );</code>. Értékeld az előadás változatait!</p><pre class="code">// (1)
+char* answer( const char* question )
+{
+  std::cout &lt;&lt; question &lt;&lt; std::endl;
+  char ans[ 80 ];
+  std::cin &gt;&gt; ans;
+  return ans;
+}
+// (2) mint (1), de: std::cin.getline( ans, sizeof( ans ) );
+// (3) char ans[ 80 ];  a függvényen kívül (globális)
+// (4) static char ans[ 80 ];  a függvényen belül
+// (5) char* ans = new char[ 80 ];  std::cin.getline( ans, 80 );
+// (6)
+char* answer( const char* question, char* ans, int s )
+{
+  std::cout &lt;&lt; question &lt;&lt; std::endl;
+  std::cin.getline( ans, s );
+  return ans;
+}
+// (7)
+std::string answer( const char* question )
+{
+  std::cout &lt;&lt; question &lt;&lt; std::endl;
+  std::string ans;
+  std::getline( std::cin, ans );
+  return ans;
+}</pre></div>
+<details><summary>Megoldás</summary><div class="sol"><div class="tbl"><table><tr><th></th><th>működik?</th><th>probléma</th></tr><tr><td>(1)</td><td><b>nem</b></td><td>lokális tömb címét adja vissza → lógó pointer; a <code>&gt;&gt;</code> ráadásul csak egy szót olvas ("Jól vagyok" → "Jól"), és 79 karakternél hosszabb szónál túlírja a tömböt</td></tr><tr><td>(2)</td><td><b>nem</b></td><td>a <code>getline</code> már egész sort olvas, méretkorláttal, de a lógó pointer megmaradt</td></tr><tr><td>(3)</td><td>részben</td><td>él a tömb, de <b>minden hívás ugyanazt a tömböt</b> írja felül; globális változó</td></tr><tr><td>(4)</td><td>részben</td><td>mint (3), csak a tömb a függvényen kívülről nem látszik</td></tr><tr><td>(5)</td><td>igen</td><td>a hívónak kell <code>delete []</code>-et hívnia; a <code>std::cout &lt;&lt; answer( … )</code> mintában ezt senki nem teszi → <b>szivárgás</b></td></tr><tr><td>(6)</td><td>igen</td><td>helyes, de kényelmetlen: a hívó foglal puffert és adja át a méretet</td></tr><tr><td>(7)</td><td><b>igen</b></td><td>a jó megoldás: a hívó saját <code>std::string</code>-et kap, nincs méretkorlát, nincs kézi memóriakezelés</td></tr></table></div></div></details>
+<details><summary>Részletes magyarázat</summary><div class="sol"><ul><li>(1)–(2): a g++ figyelmeztet: <i>„address of local variable 'ans' returned”</i>. Futáskor bármi lehet: szemét, üres kiírás vagy összeomlás (újabb g++ a lógó cím helyett null pointert is visszaadhat).</li><li>(3)–(4) problémája: <code>std::cout &lt;&lt; answer( "Hogy vagy?" ) &lt;&lt; std::endl &lt;&lt; answer( "Biztos?" ) &lt;&lt; std::endl;</code>. Régi szabvány szerint a fordító előbb mindkét <code>answer</code>-t meghívhatja, és csak utána ír ki: ilyenkor mindkét pointer ugyanarra a tömbre mutat, így <b>a második választ írja ki kétszer</b>. (C++17 óta a <code>&lt;&lt;</code> lánc balról jobbra értékelődik ki, így ez a konkrét kiírás jó lenne, de pl. <code>const char* a = answer( … ); const char* b = answer( … );</code> után <code>a</code> és <code>b</code> ugyanazt mutatja.)</li><li>(4) a lokális statikus élettartam miatt működik: a tömb a program végéig él.</li><li>(7): a visszaadás nem drága: a fordító RVO-val a hívó helyén hozza létre a stringet, vagy (C++11 óta) <b>mozgatja</b>.</li></ul><div class="note"><b>Megjegyzés</b>A dián a (7)-es változatban <code>ans.getline( std::cin );</code> szerepel. Ilyen tagfüggvénye az <code>std::string</code>-nek nincs; a helyes alak a szabad függvény: <code>std::getline( std::cin, ans );</code> (itt így szerepel).</div></div></details>
+</article>
+</div></section>
+
+<footer>Forrás: Pataki Norbert C++ előadásdiái (Előadás mappa). A kimenetek 64 bites rendszert (8 bájtos pointer, 32 bites <code>int</code>) és g++ fordítót feltételeznek.</footer>
+</div>
+<script></script>
+<script>
+(function () {
+  var KW = 'alignas alignof asm auto bool break case catch char char16_t char32_t class const constexpr const_cast continue decltype default delete do double dynamic_cast else enum explicit export extern false float for friend goto if inline int long mutable namespace new noexcept nullptr operator private protected public register reinterpret_cast return short signed sizeof static static_assert static_cast struct switch template this throw true try typedef typeid typename union unsigned using virtual void volatile wchar_t while';
+  var kw = {}; KW.split(' ').forEach(function (k) { kw[k] = 1; });
+  var re = /(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*')|(#[ \t]*(?:include|define|undef|ifdef|ifndef|if|else|elif|endif|pragma)\b(?:[ \t]*<[^>\n]*>)?)|(\b0[xX][0-9a-fA-F]+[uUlL]*|\b\d+(?:\.\d*)?(?:[eE][+-]?\d+)?[fFlLuU]*)|([A-Za-z_]\w*)/g;
+  function esc(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  document.querySelectorAll('pre.code').forEach(function (pre) {
+    var src = pre.textContent, outp = '', last = 0, m;
+    re.lastIndex = 0;
+    while ((m = re.exec(src))) {
+      outp += esc(src.slice(last, m.index));
+      var t = m[0], cls = null;
+      if (m[1]) cls = 'com'; else if (m[2]) cls = 'str'; else if (m[3]) cls = 'pp'; else if (m[4]) cls = 'num'; else if (kw[t]) cls = 'kw';
+      outp += cls ? '<span class="tk-' + cls + '">' + esc(t) + '</span>' : esc(t);
+      last = re.lastIndex;
+    }
+    pre.innerHTML = outp + esc(src.slice(last));
+  });
+})();
+</script>
+<script>
+(function () {
+  var nav = document.querySelector('nav.bar');
+  if (!nav) return;
+  var links = Array.prototype.filter.call(nav.querySelectorAll('a[href^="#"]'), function (a) {
+    return a.getAttribute('href').length > 1 && document.getElementById(a.getAttribute('href').slice(1));
+  });
+  var current = null, ticking = false;
+  function sectionOf(a) { return document.getElementById(a.getAttribute('href').slice(1)); }
+  function update() {
+    ticking = false;
+    var line = nav.getBoundingClientRect().bottom + 12, active = null;
+    var visible = links.filter(function (a) { return sectionOf(a).offsetParent !== null; });
+    visible.forEach(function (a) { if (sectionOf(a).getBoundingClientRect().top <= line) active = a; });
+    // a lap alján az utolsó szakasz az aktuális akkor is, ha rövid
+    if (visible.length && window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) active = visible[visible.length - 1];
+    if (active === current) return;
+    if (current) { current.classList.remove('active'); current.removeAttribute('aria-current'); }
+    current = active;
+    if (!active) return;
+    active.classList.add('active');
+    active.setAttribute('aria-current', 'location');
+    var ul = active.closest('ul'), ur = ul.getBoundingClientRect(), ar = active.getBoundingClientRect();
+    var left = ar.left - ur.left + ul.scrollLeft, right = left + ar.width;
+    if (left < ul.scrollLeft || right > ul.scrollLeft + ul.clientWidth) ul.scrollTo({ left: Math.max(0, left - 16), behavior: 'smooth' });
+  }
+  function schedule() { if (!ticking) { ticking = true; setTimeout(update, 40); } }
+  window.addEventListener('scroll', schedule, { passive: true });
+  window.addEventListener('resize', schedule);
+  document.addEventListener('input', schedule);
+  document.addEventListener('toggle', schedule, true);
+  update();
+})();
+</script>
+</body>
+</html>

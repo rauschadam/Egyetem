@@ -1,4 +1,4 @@
-# Egyelőre csak a weboldal és a DIMAT II / ANAL II / Prog Elmélet / ALGO II tárgy kerül a repóba.
+# Egyelőre csak a weboldal és a DIMAT II / ANAL II / Prog Elmélet / ALGO II / C++ tárgy kerül a repóba.
 # Minden mást kizárunk; új tárgyat egy újabb "!/<mappa>/" sorral lehet felvenni.
 /*
 !/.gitignore
@@ -7,10 +7,13 @@
 !/ANAL II/
 !/Prog Elmélet/
 !/ALGO II/
+!/C++/
 # ALGO II-ből egyelőre csak a gyakorlat (az előadásdiák nagyok, még nincsenek feldolgozva)
 /ALGO II/Előadás/
 # A plusz pontos (szorgalmi) beadandók nem kerülnek a repóba
 /ALGO II/Plusz pont feladatok/
+# C++-ból csak az előadásdiák és a kidolgozások; a saját gyakorlati kódok nem
+/C++/*Gyak*/
 
 # Build-szemét
 bin/
