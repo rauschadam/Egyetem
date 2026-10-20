@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="hu" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Analízis II · röpZH kérdések kidolgozva</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['\\(', '\\)']],
+      displayMath: [['\\[', '\\]']],
+      macros: {
+        arcsin: '\\operatorname{arc\\,sin}', arccos: '\\operatorname{arc\\,cos}',
+        arctg: '\\operatorname{arc\\,tg}', arcctg: '\\operatorname{arc\\,ctg}',
+        tg: '\\operatorname{tg}', ctg: '\\operatorname{ctg}', R: '\\mathbb{R}'
+      }
+    },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js" async></script>
+<style>
+/* Layout: same exam-paper look as the DIMAT prep, in the Analysis orange; every task = statement + folded solution + folded walkthrough */
+:root {
+  --paper: #f5f7fa;
+  --grid: rgba(180, 80, 11, 0.06);
+  --card: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6574;
+  --rule: #d7dde6;
+  --accent: #b4500b;
+  --accent-soft: #fcefe4;
+  --mark: #b8352a;
+  --mark-soft: #fbe9e6;
+  --ok: #2c7a4b;
+  --ok-soft: #e3f3e9;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-label: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f141b; --grid: rgba(242, 162, 94, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+    --rule: #2a3442; --accent: #f2a25e; --accent-soft: #33241a; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+    --ok: #74d39c; --ok-soft: #173225; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f141b; --grid: rgba(242, 162, 94, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+  --rule: #2a3442; --accent: #f2a25e; --accent-soft: #33241a; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+  --ok: #74d39c; --ok-soft: #173225; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background-color: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 1.06rem;
+  line-height: 1.6;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 80px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2rem, 6vw, 3.1rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.65rem; font-weight: 700; letter-spacing: -0.01em; }
+h3 { font-size: 1.1rem; font-weight: 600; }
+p { margin: 0; }
+a { color: var(--accent); }
+.label { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding: 2px 0; margin: 6px 0 !important; min-width: 0; max-width: 100%; }
+/* grid children must be allowed to shrink, otherwise wide formulas push the page sideways */
+.task, .sol, .step, .rule-card, .sheet > * { grid-template-columns: minmax(0, 1fr); min-width: 0; }
+.rule-card li, .rule-card p, .sol p, .sol li, .step p, .stmt, .tip, .warn, .mistake p, td { overflow-x: auto; overflow-y: hidden; }
+
+/* back to subject page */
+.back { justify-self: start; display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px 9px 12px; border: 1.5px solid var(--accent); border-radius: 8px; background: var(--accent-soft); color: var(--ink); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 1.02rem; line-height: 1; white-space: nowrap; transition: background .15s, color .15s; }
+.back .arr { color: var(--accent); font-size: 1.25rem; transition: transform .15s, color .15s; }
+.back:hover, .back:focus-visible { background: var(--accent); color: var(--paper); outline: none; }
+.back:hover .arr, .back:focus-visible .arr { color: var(--paper); transform: translateX(-3px); }
+
+/* header */
+header.hero { display: grid; gap: 14px; padding-block: 0 26px; border-bottom: 2px solid var(--accent); }
+.hero .sub { color: var(--muted); max-width: 62ch; }
+.facts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.fact { display: flex; flex-direction: column; gap: 2px; padding: 8px 14px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; min-width: 120px; }
+.fact b { font-family: var(--f-display); font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+
+nav.bar { position: sticky; top: 0; z-index: 5; background: var(--paper); border-bottom: 1px solid var(--rule); margin-inline: -16px; padding-inline: 16px; }
+nav.bar ul { list-style: none; margin: 0; padding: 10px 0; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin; }
+nav.bar a { display: block; white-space: nowrap; text-decoration: none; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.04em; color: var(--ink); padding: 6px 10px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); }
+nav.bar a:hover, nav.bar a:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+nav.bar a.nav-back { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+
+section { padding-top: 44px; display: grid; gap: 18px; scroll-margin-top: 56px; }
+.section-head { display: grid; gap: 6px; }
+.section-head p { color: var(--muted); max-width: 64ch; }
+
+/* reminder cards */
+.sheet { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; }
+.rule-card { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 14px 16px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.rule-card h3 { font-size: 1rem; }
+.rule-card p, .rule-card li { font-size: 0.95rem; }
+.rule-card ul, .rule-card ol { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.rule-card.wide { grid-column: 1 / -1; }
+
+/* tables (sign charts, value tables) */
+.tbl { overflow-x: auto; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--rule); vertical-align: middle; }
+th { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+tr:last-child td, tr:last-child th { border-bottom: 0; }
+table.sgn { width: auto; min-width: 100%; }
+table.sgn th, table.sgn td { text-align: center; white-space: nowrap; border-left: 1px solid var(--rule); }
+table.sgn th:first-child { border-left: 0; text-transform: none; letter-spacing: 0; font-family: var(--f-body); font-size: 1rem; color: var(--ink); background: var(--accent-soft); }
+table.sgn td.pt { background: color-mix(in srgb, var(--accent-soft) 55%, transparent); }
+.p { color: var(--ok); font-weight: 600; }
+.n { color: var(--mark); font-weight: 600; }
+.note { font-size: 0.82rem; color: var(--muted); }
+.tag { font-family: var(--f-label); font-size: 0.72rem; color: var(--accent); }
+
+/* exercises */
+.task { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 18px; display: grid; gap: 10px; min-width: 0; scroll-margin-top: 60px; }
+.task-head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.task-head .no { font-family: var(--f-display); font-weight: 700; font-size: 1.05rem; }
+.task-head .src { font-family: var(--f-label); font-size: 0.72rem; color: var(--muted); }
+.task-head .kind { margin-left: auto; font-family: var(--f-label); font-size: 0.75rem; color: var(--accent); }
+.stmt { max-width: 70ch; }
+details { border-top: 1px dashed var(--rule); padding-top: 8px; min-width: 0; }
+summary { cursor: pointer; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); list-style: none; display: inline-flex; gap: 8px; align-items: center; padding: 4px 0; }
+summary::-webkit-details-marker { display: none; }
+summary::before { content: "+"; display: inline-grid; place-items: center; width: 18px; height: 18px; border: 1px solid currentColor; border-radius: 3px; font-size: 0.8rem; }
+details[open] > summary::before { content: "−"; }
+summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sol { display: grid; gap: 10px; padding-top: 6px; max-width: 74ch; min-width: 0; }
+.sol ol, .sol ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.step { display: grid; gap: 8px; min-width: 0; }
+.step > b:first-child { font-family: var(--f-display); font-weight: 600; }
+.ans { display: inline-block; background: var(--ok-soft); color: var(--ok); font-weight: 600; padding: 2px 9px; border-radius: 4px; }
+.warn { background: var(--mark-soft); border-left: 3px solid var(--mark); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 0.95rem; }
+.tip { background: var(--accent-soft); border-left: 3px solid var(--accent); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 0.95rem; }
+.taskgroup { display: grid; gap: 12px; }
+
+/* graphs */
+figure.graph { margin: 0; background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 8px 8px 6px; display: grid; gap: 6px; }
+figure.graph svg { width: 100%; height: auto; display: block; }
+figure.graph figcaption { display: flex; flex-wrap: wrap; gap: 4px 16px; font-family: var(--f-label); font-size: 0.72rem; color: var(--muted); padding: 0 4px; }
+.lg::before { content: ""; display: inline-block; width: 16px; height: 0; vertical-align: middle; margin-right: 6px; border-top: 2.5px solid var(--accent); }
+.lg.asy::before { border-top: 1.5px dashed var(--muted); }
+.lg.ext::before { width: 9px; height: 9px; border: 0; border-radius: 50%; background: var(--ok); }
+.lg.inf::before { width: 9px; height: 9px; border: 2px solid var(--mark); border-radius: 50%; box-sizing: border-box; }
+svg .gl { stroke: var(--rule); stroke-width: 1; opacity: .55; }
+svg .ax { stroke: var(--muted); stroke-width: 1.3; }
+svg .tk { fill: var(--muted); font-family: var(--f-label); font-size: 11px; }
+svg .cv { fill: none; stroke: var(--accent); stroke-width: 2.6; stroke-linejoin: round; stroke-linecap: round; }
+svg .as { stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 6 5; fill: none; }
+svg .pe { fill: var(--ok); stroke: var(--paper); stroke-width: 1.5; }
+svg .pi { fill: var(--paper); stroke: var(--mark); stroke-width: 2.2; }
+svg .pz { fill: var(--ink); }
+svg .po { fill: var(--paper); stroke: var(--accent); stroke-width: 2; }
+svg .pl { fill: var(--ink); font-family: var(--f-label); font-size: 12px; paint-order: stroke; stroke: var(--paper); stroke-width: 4px; stroke-linejoin: round; }
+
+/* mistakes */
+.mistakes { display: grid; gap: 10px; }
+.mistake { display: grid; grid-template-columns: auto 1fr; gap: 12px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 12px 14px; }
+.mistake .x { font-family: var(--f-display); font-weight: 700; color: var(--mark); font-size: 1.2rem; line-height: 1.3; }
+
+footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.88rem; }
+
+@media (max-width: 520px) {
+  body { font-size: 1rem; }
+  .task { padding: 14px; }
+  th, td { padding: 6px 8px; }
+}
+
+/* Szigorú / Egyszerű toggle */
+.seg { justify-self: start; display: inline-flex; border: 1px solid var(--accent); border-radius: 6px; overflow: hidden; }
+.seg button { font-family: var(--f-label); font-size: 0.8rem; padding: 8px 14px; border: 0; cursor: pointer; background: var(--accent); color: var(--paper); }
+.seg button + button { border-left: 1px solid var(--accent); }
+.seg button[aria-pressed="false"] { background: var(--card); color: var(--ink); }
+.seg button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+body[data-view="simple"] .v-strict, body[data-view="strict"] .v-simple { display: none; }
+</style>
+</head>
+<body data-view="strict">
+<div class="wrap">
+
+<header class="hero">
+  <a class="back" href="../../index.html#/anal2"><span class="arr" aria-hidden="true">←</span>Vissza: Analízis II.</a>
+  <span class="label">Analízis II. · röpZH kérdések</span>
+  <h1>RöpZH kérdések kidolgozva</h1>
+  <p class="sub">A gyakorlatonkénti röpZH kérdések válaszai. Minden válasz kétféle: <b>Szigorú (előadás)</b> = a 6. előadás diáinak megfogalmazása, ezt kell leírni a röpZH-n; <b>Egyszerű</b> = ugyanez köznyelven, rövid példával, a megértéshez. Előbb próbáld fejből, utána nyisd le a választ.</p>
+  <div class="facts">
+    <div class="fact"><span class="label">Kidolgozva</span><b>7. röpZH</b></div>
+    <div class="fact"><span class="label">Kérdés</span><b>7 db</b></div>
+    <div class="fact"><span class="label">Anyag</span><b>6. előadás</b></div>
+  </div>
+  <div class="seg" role="group" aria-label="Válasz típusa"><button type="button" data-view="strict" aria-pressed="true">Szigorú (előadás)</button><button type="button" data-view="simple" aria-pressed="false">Egyszerű</button></div>
+</header>
+
+<nav class="bar" aria-label="Fejezetek">
+  <ul>
+    <li><a class="nav-back" href="../../index.html#/anal2" aria-label="Vissza: Analízis II.">← ANAL II</a></li>
+    <li><a href="#rz7">7. röpZH</a></li>
+  </ul>
+</nav>
+
+<!-- ================= 7. RÖPZH ================= -->
+<section id="rz7">
+  <div class="section-head">
+    <span class="label">7. gyakorlat · <a href="../An2_rop_kerdesek.pdf" target="_blank" rel="noopener">kérdéssor PDF ↗</a> · <a href="../El%C5%91ad%C3%A1s%20anyagok/06_ea_An_II_A_B.pdf" target="_blank" rel="noopener">6. előadás PDF ↗</a></span>
+    <h2>Primitív függvény, határozatlan integrál</h2>
+    <p>A kérdéssorban a „7. gyakorlat” alatti kérdések. Az anyaguk a 6. előadás (A határozatlan integrál).</p>
+  </div>
+
+  <div class="taskgroup">
+
+  <article class="task" id="rz7-1">
+    <div class="task-head"><span class="no">1.</span><span class="kind">definíció</span></div>
+    <p class="stmt">Definiálja a primitív függvényt!</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol v-strict">
+        <p><b>Definíció.</b> Legyen \(I \subset \R\) nyílt intervallum és \(f : I \to \R\) egy adott függvény. Azt mondjuk, hogy az \(F : I \to \R\) függvény az \(f\) <b>primitív függvénye</b>, ha</p>
+        \[F \in D(I) \quad\text{és}\quad F'(x) = f(x) \quad (\forall x \in I).\]
+      </div>
+      <div class="sol v-simple">
+        <p>\(F\) primitív függvénye \(f\)-nek, ha <b>\(F\) deriváltja \(f\)</b>, az intervallum minden pontjában. A primitív függvény keresése a deriválás „visszafelé”.</p>
+        <p>Példa: \(f(x) = \sin x\)-nek \(F(x) = -\cos x\) primitív függvénye, mert \((-\cos x)' = \sin x\).</p>
+        <div class="tip">Két kötelező kellék: <b>nyílt intervallum</b> (nem akármilyen halmaz), és \(F\) <b>mindenhol</b> deriválható \(I\)-n.</div>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz7-2">
+    <div class="task-head"><span class="no">2.</span><span class="kind">példa</span></div>
+    <p class="stmt">Adjon meg olyan függvényt, amelyiknek nincs primitív függvénye!</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol v-strict">
+        <p><b>Példa.</b> Legyen</p>
+        \[f(x) := \begin{cases} 0, & \text{ha } x \le 0,\\ 1, & \text{ha } x \gt 0.\end{cases}\]
+        <p>Tegyük fel, hogy \(F\) az \(f\) primitív függvénye. Ekkor \(x \lt 0\) esetén \(F'(x) = 0\), tehát \(F(x) = c\), ha \(x \le 0\). Ha \(x \gt 0\), akkor \(F'(x) = 1\), tehát \(F(x) = x + a\), ha \(x \ge 0\). Így \(F'_-(0) = 0\) és \(F'_+(0) = 1\), tehát \(F \notin D\{0\}\), ezért \(f\)-nek nincs primitív függvénye.</p>
+      </div>
+      <div class="sol v-simple">
+        <p>Az <b>ugró</b> lépcsőfüggvény: \(x \le 0\)-ra 0, \(x \gt 0\)-ra 1.</p>
+        <p>Miért nincs primitív függvénye? Bal oldalon a primitív függvény konstans (meredeksége 0), jobb oldalon \(x + a\) alakú (meredeksége 1). A 0-ban „megtörik”, mint az \(|x|\), ezért ott nem deriválható. Primitív függvénynek viszont mindenhol deriválhatónak kell lennie.</p>
+        <div class="tip">Általános ok: a deriváltfüggvény Darboux-tulajdonságú (nem „ugorhat át” értékeket). Egy ugrásos függvény ezért nem lehet derivált. Szükséges feltétel tehát a Darboux-tulajdonság, elégséges pedig a folytonosság.</div>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz7-3">
+    <div class="task-head"><span class="no">3.</span><span class="kind">definíció</span></div>
+    <p class="stmt">Mit jelent egy függvény határozatlan integrálja?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol v-strict">
+        <p><b>Definíció.</b> Az \(I\) nyílt intervallumon értelmezett \(f\) függvény primitív függvényeinek a halmazát \(f\) <b>határozatlan integráljának</b> nevezzük, és így jelöljük:</p>
+        \[\int f := \int f(x)\,dx := \big\{F : I \to \R \;\big|\; F \in D \text{ és } F' = f\big\}.\]
+        <p>\(f\) az <b>integrandus</b>, ill. az <b>integrálandó függvény</b>.</p>
+        <p>Ha \(F \in \int f\), akkor az \(\int f = \{F + c \mid c \in \R\}\) egyenlőséget rövidebben (és kevésbé precízen) így jelöljük:</p>
+        \[\int f(x)\,dx = F(x) + c \quad (x \in I).\]
+      </div>
+      <div class="sol v-simple">
+        <p>A határozatlan integrál nem egy függvény, hanem az <b>összes</b> primitív függvény <b>halmaza</b>.</p>
+        <p>Intervallumon a primitív függvények csak konstansban különböznek, ezért ha egyet ismerünk (\(F\)), az összeset megkapjuk: \(F + c\). Ezért írjuk a „\(+\,c\)”-t.</p>
+        <p>Példa: \(\displaystyle\int \frac{1}{1+x^2}\,dx = \arctg x + c\) \((x \in \R)\).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz7-4">
+    <div class="task-head"><span class="no">4.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Mit ért a határozatlan integrál linearitásán?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol v-strict">
+        <p><b>Tétel.</b> Legyen \(I\) nyílt intervallum. Ha az \(f, g : I \to \R\) függvényeknek létezik primitív függvénye, akkor tetszőleges \(\alpha, \beta \in \R\) mellett \((\alpha f + \beta g)\)-nek is létezik primitív függvénye és</p>
+        \[\int \big(\alpha f(x) + \beta g(x)\big)\,dx = \alpha\int f(x)\,dx + \beta\int g(x)\,dx \quad (x \in I).\]
+      </div>
+      <div class="sol v-simple">
+        <p>Összeget tagonként integrálhatunk, a konstans szorzót pedig kiemelhetjük, ugyanúgy, mint deriválásnál.</p>
+        <p>Példa: \(\displaystyle\int (6x^2 - 8x + 3)\,dx = 6\cdot\frac{x^3}{3} - 8\cdot\frac{x^2}{2} + 3x + c = 2x^3 - 4x^2 + 3x + c\).</p>
+        <div class="warn">Szorzatra és hányadosra nincs ilyen szabály: \(\int fg \ne \int f \cdot \int g\). Szorzatra a parciális integrálás való.</div>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz7-5">
+    <div class="task-head"><span class="no">5.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Mit mond ki a primitív függvényekkel kapcsolatos parciális integrálás tétele?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol v-strict">
+        <p><b>Tétel.</b> Legyen \(I\) nyílt intervallum. Tegyük fel, hogy \(f, g \in D(I)\) és az \(f'g\) függvénynek létezik primitív függvénye \(I\)-n. Ekkor az \(fg'\) függvénynek is van primitív függvénye és</p>
+        \[\int f(x)g'(x)\,dx = f(x)g(x) - \int f'(x)g(x)\,dx \quad (x \in I).\]
+      </div>
+      <div class="sol v-simple">
+        <p>Ez a szorzatszabály \((fg)' = f'g + fg'\) „visszafelé”. Egy szorzat integrálját átírja egy <b>másik</b> szorzat integráljára, ami remélhetőleg egyszerűbb.</p>
+        <p>Példa (\(f = x\), \(g' = \sin x\), \(g = -\cos x\)):</p>
+        \[\int x\sin x\,dx = -x\cos x + \int\cos x\,dx = -x\cos x + \sin x + c.\]
+        <div class="tip">Az \(f\) legyen az, ami deriválva egyszerűsödik (pl. \(x\), \(\ln x\)), a \(g'\) az, aminek ismerjük a primitív függvényét.</div>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz7-6">
+    <div class="task-head"><span class="no">6.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Hogyan szól a primitív függvényekkel kapcsolatos első helyettesítési szabály?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol v-strict">
+        <p><b>Tétel.</b> Legyenek adottak az \(I, J\) nyílt intervallumok és a \(g : I \to \R\), \(f : J \to \R\) függvények. Tegyük fel, hogy \(g \in D(I)\), \(\mathcal{R}_g \subset J\) és az \(f\) függvénynek van primitív függvénye. Ekkor az \((f \circ g)\cdot g'\) függvénynek is van primitív függvénye és</p>
+        \[\int f\big(g(x)\big)\cdot g'(x)\,dx = F\big(g(x)\big) + c \quad (x \in I),\]
+        <p>ahol \(F\) az \(f\) függvény egy primitív függvénye.</p>
+        <p><b>Speciális esetek:</b></p>
+        <ul>
+          <li>Ha \(f : I \to \R\), \(f \gt 0\) és \(f \in D(I)\), akkor \(\displaystyle\int\frac{f'(x)}{f(x)}\,dx = \ln f(x) + c\).</li>
+          <li>Ha \(f : I \to \R\), \(f \gt 0\), \(f \in D(I)\) és \(\alpha \in \R\setminus\{-1\}\), akkor \(\displaystyle\int f^\alpha(x)f'(x)\,dx = \frac{f^{\alpha+1}(x)}{\alpha+1} + c\).</li>
+          <li>Ha \(f\)-nek \(F\) primitív függvénye, \(a, b \in \R\) és \(a \ne 0\), akkor \(\displaystyle\int f(ax+b)\,dx = \frac{F(ax+b)}{a} + c\).</li>
+        </ul>
+      </div>
+      <div class="sol v-simple">
+        <p>Ez a láncszabály \(\big(F(g(x))\big)' = f(g(x))\cdot g'(x)\) „visszafelé”. Ha az integrandusban egy összetett függvény áll, <b>szorozva a belső függvény deriváltjával</b>, akkor a primitív függvény a külső függvény primitív függvénye a belső függvénnyel.</p>
+        <p>Példa: \(\displaystyle\int 2x\cos(x^2)\,dx = \sin(x^2) + c\), mert \(g(x) = x^2\), \(g'(x) = 2x\), \(f = \cos\), \(F = \sin\).</p>
+        <p>Leggyakoribb alakok: \(\int\frac{f'}{f} = \ln f\) (pl. \(\int\frac{2x}{x^2+1}\,dx = \ln(x^2+1) + c\)) és \(\int f(ax+b) = \frac{F(ax+b)}{a}\) (pl. \(\int e^{3x}\,dx = \frac{e^{3x}}{3} + c\)).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz7-7">
+    <div class="task-head"><span class="no">7.</span><span class="kind">alapintegrálok</span></div>
+    <p class="stmt">Adja meg a következő függvények egy primitív függvényét: \(\exp\); \(x^a\) \((x \gt 0,\ a \in \R\setminus\{-1\})\); \(\frac1x\) \((x \gt 0)\); \(\sin\) \((x \in \R)\); \(\cos\); \(\frac{1}{1+x^2}\).</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol v-strict">
+        <div class="tbl"><table>
+          <thead><tr><th>\(f(x)\)</th><th>Egy primitív függvény \(F(x)\)</th><th>Ahol</th></tr></thead>
+          <tbody>
+            <tr><td>\(e^x\)</td><td>\(e^x\)</td><td>\(x \in \R\)</td></tr>
+            <tr><td>\(x^a\) \((a \ne -1)\)</td><td>\(\dfrac{x^{a+1}}{a+1}\)</td><td>\(x \in (0, +\infty)\)</td></tr>
+            <tr><td>\(\dfrac1x\)</td><td>\(\ln x\)</td><td>\(x \in (0, +\infty)\)</td></tr>
+            <tr><td>\(\sin x\)</td><td>\(-\cos x\)</td><td>\(x \in \R\)</td></tr>
+            <tr><td>\(\cos x\)</td><td>\(\sin x\)</td><td>\(x \in \R\)</td></tr>
+            <tr><td>\(\dfrac{1}{1+x^2}\)</td><td>\(\arctg x\)</td><td>\(x \in \R\)</td></tr>
+          </tbody>
+        </table></div>
+        <p>Határozatlan integrálként mindegyikhez \(+\,c\) jár, pl. \(\displaystyle\int\frac1x\,dx = \ln x + c\) \(\big(x \in (0,+\infty)\big)\).</p>
+      </div>
+      <div class="sol v-simple">
+        <p>Mindegyik ellenőrizhető deriválással, és röpZH-n érdemes is:</p>
+        <ul>
+          <li>\((e^x)' = e^x\)</li>
+          <li>\(\left(\frac{x^{a+1}}{a+1}\right)' = \frac{(a+1)x^a}{a+1} = x^a\). Az \(a = -1\) azért kivétel, mert ott 0-val osztanánk; az az eset a \(\ln x\).</li>
+          <li>\((\ln x)' = \frac1x\). Negatív \(x\)-re \(\ln(-x)\) a primitív függvény.</li>
+          <li>\((-\cos x)' = \sin x\). Az előjelre figyelj!</li>
+          <li>\((\sin x)' = \cos x\)</li>
+          <li>\((\arctg x)' = \frac{1}{1+x^2}\)</li>
+        </ul>
+        <div class="warn">A leggyakoribb röpZH-hiba a \(\sin\) primitív függvényének előjele: \(\int\sin x\,dx = -\cos x + c\), nem \(\cos x + c\).</div>
+      </div>
+    </details>
+  </article>
+
+  </div>
+</section>
+
+<footer>Forrás: <a href="../An2_rop_kerdesek.pdf" target="_blank" rel="noopener">RöpZH kérdések (PDF)</a> és <a href="../El%C5%91ad%C3%A1s%20anyagok/06_ea_An_II_A_B.pdf" target="_blank" rel="noopener">6. előadás: A határozatlan integrál (PDF)</a>. A „Szigorú” válaszok az előadásdiák megfogalmazását követik.</footer>
+</div>
+
+<script>
+(function () {
+  // Szigorú / Egyszerű nézet; a választás megmarad (ha a böngésző engedi)
+  var KEY = 'anal2-ropzh-view';
+  var btns = document.querySelectorAll('.seg button');
+  function set(v) {
+    document.body.setAttribute('data-view', v);
+    btns.forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-view') === v)); });
+    try { localStorage.setItem(KEY, v); } catch (e) {}
+  }
+  var saved = null;
+  try { saved = localStorage.getItem(KEY); } catch (e) {}
+  set(saved === 'simple' ? 'simple' : 'strict');
+  btns.forEach(function (b) { b.addEventListener('click', function () { set(b.getAttribute('data-view')); }); });
+})();
+</script>
+<!-- Fejezetsáv: az éppen olvasott szakasz gombja kiemelve -->
+<style>
+nav.bar a.active, nav.bar a.active:hover, nav.bar a.active:focus-visible { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+</style>
+<script>
+(function () {
+  var nav = document.querySelector('nav.bar');
+  if (!nav) return;
+  var links = Array.prototype.filter.call(nav.querySelectorAll('a[href^="#"]'), function (a) {
+    return a.getAttribute('href').length > 1 && document.getElementById(a.getAttribute('href').slice(1));
+  });
+  var current = null, ticking = false;
+  function sectionOf(a) { return document.getElementById(a.getAttribute('href').slice(1)); }
+  function update() {
+    ticking = false;
+    var line = nav.getBoundingClientRect().bottom + 12, active = null;
+    var visible = links.filter(function (a) { return sectionOf(a).offsetParent !== null; });
+    visible.forEach(function (a) { if (sectionOf(a).getBoundingClientRect().top <= line) active = a; });
+    // a lap alján az utolsó szakasz az aktuális akkor is, ha rövid
+    if (visible.length && window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) active = visible[visible.length - 1];
+    if (active === current) return;
+    if (current) { current.classList.remove('active'); current.removeAttribute('aria-current'); }
+    current = active;
+    if (!active) return;
+    active.classList.add('active');
+    active.setAttribute('aria-current', 'location');
+    var ul = active.closest('ul'), ur = ul.getBoundingClientRect(), ar = active.getBoundingClientRect();
+    var left = ar.left - ur.left + ul.scrollLeft, right = left + ar.width;
+    if (left < ul.scrollLeft || right > ul.scrollLeft + ul.clientWidth) ul.scrollTo({ left: Math.max(0, left - 16), behavior: 'smooth' });
+  }
+  function schedule() { if (!ticking) { ticking = true; setTimeout(update, 40); } }
+  window.addEventListener('scroll', schedule, { passive: true });
+  window.addEventListener('resize', schedule);
+  document.addEventListener('input', schedule);   // a keresés elrejthet szakaszokat
+  document.addEventListener('toggle', schedule, true);
+  update();
+})();
+</script>
+</body>
+</html>

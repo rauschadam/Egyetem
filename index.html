@@ -183,7 +183,7 @@ a.item:hover .open, a.item:focus-visible .open { color: var(--hue); }
           title: 'Felkészítők',
           items: [
             { kind: 'prep', n: '1', title: '1. ZH felkészítő', desc: 'Tématérkép, képletlap, a minta ZH megoldva, az 1–4. feladatsor kidolgozva, 2 gyakorló ZH órával és pontszámolóval.', href: 'DIMAT II/felkeszites/zh1_felkeszito.html', tags: ['60 perc', '30 pont', 'min. 12 pont'] },
-            { kind: 'soon', n: '2', title: '2. ZH felkészítő', desc: 'Később készül el.' }
+            { kind: 'prep', n: '2', title: '2. ZH felkészítő', desc: 'Tématérkép, képletlap, az 5–6. feladatsor (polinomok) kidolgozva, 2 gyakorló ZH órával és pontszámolóval.', href: 'DIMAT II/felkeszites/zh2_felkeszito.html', tags: ['5–6. sor', '30 pont', 'min. 12 pont'] }
           ]
         },
         {
@@ -193,7 +193,8 @@ a.item:hover .open, a.item:focus-visible .open { color: var(--hue); }
             { kind: 'pdf', n: '2', title: '2. feladatsor', desc: 'Euklideszi algoritmus, lnko-bizonyítások · 09.14–18.', href: 'DIMAT II/dm2gy02.pdf', tags: ['1. ZH'] },
             { kind: 'pdf', n: '3', title: '3. feladatsor', desc: 'Lineáris diofantikus egyenletek, kongruenciák · 09.21–25.', href: 'DIMAT II/dm2gy03.pdf', tags: ['1. ZH'] },
             { kind: 'pdf', n: '4', title: '4. feladatsor', desc: 'Kongruenciarendszerek, Euler–Fermat-tétel · 09.28–10.02.', href: 'DIMAT II/dm2gy04.pdf', tags: ['1. ZH'] },
-            { kind: 'pdf', n: '5', title: '5. feladatsor', desc: 'Zp műveletei, inverz, polinomok · 10.05–09.', href: 'DIMAT II/dm2gy05.pdf' }
+            { kind: 'pdf', n: '5', title: '5. feladatsor', desc: 'Zp műveletei, inverz, polinomszorzás, maradékos osztás · 10.05–09.', href: 'DIMAT II/dm2gy05.pdf', tags: ['2. ZH'] },
+            { kind: 'pdf', n: '6', title: '6. feladatsor', desc: 'Maradék modulo polinom, polinomok lnko-ja · 10.12–16.', href: 'DIMAT II/dm2gy06.pdf', tags: ['2. ZH'] }
           ]
         },
         {
@@ -211,7 +212,10 @@ a.item:hover .open, a.item:focus-visible .open { color: var(--hue); }
         {
           title: 'Kidolgozások',
           items: [
+            { kind: 'html', featured: true, icon: 'ZH', title: '1. ZH bizonyítások', desc: 'A megajánlott jegyhez bizonyítással kért 12 tétel az előadásdiák alapján: kiírt kérdés, lenyitható tétel és lenyitható bizonyítás.', href: 'ANAL II/Kidolgozások/zh1_bizonyitasok.html', tags: ['1. ZH', '12 tétel'] },
             { kind: 'html', featured: true, n: '5', title: '5. gyakorlat kidolgozva', desc: 'Inverz trigonometrikus függvények és teljes függvényvizsgálat: 4 órai és 4 házi feladat, lenyitható megoldással, részletes magyarázattal és grafikonokkal.', href: 'ANAL II/Kidolgozások/05_gyakorlat_kidolgozas.html', tags: ['4 órai', '4 házi', '6 grafikon'] },
+            { kind: 'html', featured: true, n: '6', title: '6. gyakorlat kidolgozva', desc: "L'Hospital-szabály és Taylor-polinomok hibabecsléssel: 3 órai (7 rész) és 2 házi feladat (5 rész), lenyitható megoldással, részletes magyarázattal és grafikonokkal.", href: 'ANAL II/Kidolgozások/06_gyakorlat_kidolgozas.html', tags: ['3 órai', '2 házi', '2 grafikon'] },
+            { kind: 'html', featured: true, icon: 'RÖPZH', title: 'RöpZH kérdések kidolgozva', desc: 'A 7. röpZH (primitív függvény, határozatlan integrál) 7 kérdése, előadás szerinti és egyszerű válasszal.', href: 'ANAL II/Kidolgozások/ropzh_kidolgozas.html', tags: ['7. röpZH'] },
             { kind: 'html', icon: 'KIDOLG', title: 'Taylor-sor mértani sorból', desc: '5. előadás · 1/(1+x) és 1/(1+x²) Taylor-sora, interaktív ábrával', href: 'ANAL II/Kidolgozások/taylor_mertani_sor.html' }
           ]
         },
@@ -226,7 +230,7 @@ a.item:hover .open, a.item:focus-visible .open { color: var(--hue); }
               { kind: 'pdf', n: '5', title: 'Taylor-polinomok és Taylor-sorok', desc: 'Differenciálszámítás 5. · függvények közelítése polinomokkal, hatványsorok', href: 'ANAL II/Előadás anyagok/05_ea_An_II_A_B.pdf', tags: ['van kidolgozás'] }
             ]},
             { title: 'Integrálszámítás', items: [
-              { kind: 'pdf', n: '6', title: 'Határozatlan integrál', desc: 'Primitív függvény, alapintegrálok, linearitás, első és második helyettesítési szabály, parciális integrálás', href: 'ANAL II/Előadás anyagok/06_ea_An_II_A_B.pdf' },
+              { kind: 'pdf', n: '6', title: 'Határozatlan integrál', desc: 'Primitív függvény, alapintegrálok, linearitás, első és második helyettesítési szabály, parciális integrálás', href: 'ANAL II/Előadás anyagok/06_ea_An_II_A_B.pdf', tags: ['7. röpZH'] },
               { kind: 'pdf', n: '7', title: 'A határozott integrál 1.', desc: 'Motiváció, értelmezés, az integrálhatóság ekvivalens átfogalmazásai', href: 'ANAL II/Előadás anyagok/07_ea_An_II_A_B.pdf' },
               { kind: 'pdf', n: '8', title: 'A határozott integrál 2.', desc: 'Riemann-függvény, műveletek integrálható függvényekkel, egyenlőtlenségek', href: 'ANAL II/Előadás anyagok/08_ea_An_II_A_B.pdf' },
               { kind: 'pdf', n: '9', title: 'A határozott integrál 3.', desc: 'Monoton és folytonos függvények integrálhatósága, egyenletes folytonosság', href: 'ANAL II/Előadás anyagok/09_ea_An_II_A_B.pdf' },
@@ -248,7 +252,7 @@ a.item:hover .open, a.item:focus-visible .open { color: var(--hue); }
               { kind: 'pdf', n: '3', title: '3. gyakorlat', desc: 'Differenciálszámítás 2.', href: 'ANAL II/Gyakorlat anyagok/03_Gy_An_II_A_B.pdf' },
               { kind: 'pdf', n: '4', title: '4. gyakorlat', desc: 'Differenciálszámítás 3.', href: 'ANAL II/Gyakorlat anyagok/04_Gy_An_II_A_B.pdf' },
               { kind: 'pdf', n: '5', title: '5. gyakorlat', desc: 'Differenciálszámítás 4. · inverz trig. függvények, teljes függvényvizsgálat', href: 'ANAL II/Gyakorlat anyagok/05_Gy_An_II_A_B.pdf', tags: ['van kidolgozás'] },
-              { kind: 'pdf', n: '6', title: '6. gyakorlat', desc: 'Differenciálszámítás 5.', href: 'ANAL II/Gyakorlat anyagok/06_Gy_An_II_A_B.pdf' },
+              { kind: 'pdf', n: '6', title: '6. gyakorlat', desc: "Differenciálszámítás 5. · L'Hospital-szabály, Taylor-polinomok", href: 'ANAL II/Gyakorlat anyagok/06_Gy_An_II_A_B.pdf', tags: ['van kidolgozás'] },
               { kind: 'pdf', n: '7', title: '7. gyakorlat', desc: 'Primitív függvény, határozatlan integrál 1.', href: 'ANAL II/Gyakorlat anyagok/07_Gy_An_II_A_B.pdf' },
               { kind: 'pdf', n: '8', title: '8. gyakorlat', desc: 'Primitív függvény, határozatlan integrál 2.', href: 'ANAL II/Gyakorlat anyagok/08_Gy_An_II_A_B.pdf' },
               { kind: 'pdf', n: '9', title: '9. gyakorlat', desc: 'Primitív függvény, határozatlan integrál 3.', href: 'ANAL II/Gyakorlat anyagok/09_Gy_An_II_A_B.pdf' },
@@ -264,7 +268,8 @@ a.item:hover .open, a.item:focus-visible .open { color: var(--hue); }
           title: 'Kérdéssorok',
           items: [
             { kind: 'pdf', icon: 'VIZSGA', title: 'Vizsgakérdések', desc: 'Definíciók és tételek a vizsgára, A és B szakirány', href: 'ANAL II/vizsgakerdesek.pdf' },
-            { kind: 'pdf', icon: 'RÖPZH', title: 'RöpZH kérdések', desc: 'Gyakorlatonkénti elméleti kérdések', href: 'ANAL II/An2_rop_kerdesek.pdf' }
+            { kind: 'pdf', icon: 'ZH', title: '1. ZH tételek', desc: 'Bizonyítással kért tételek a megajánlott vizsgajegyhez', href: 'ANAL II/1_zh_tetelek_An_II_A_B.pdf', tags: ['van kidolgozás'] },
+            { kind: 'pdf', icon: 'RÖPZH', title: 'RöpZH kérdések', desc: 'Gyakorlatonkénti elméleti kérdések', href: 'ANAL II/An2_rop_kerdesek.pdf', tags: ['7. kidolgozva'] }
           ]
         }
       ]

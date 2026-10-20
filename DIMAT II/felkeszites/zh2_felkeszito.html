@@ -1,0 +1,871 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.setAttribute("data-theme", "dark");</script>
+<title>DIMAT II 2. Zh felkészítő</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=STIX+Two+Text:ital,wght@0,400;0,600;1,400&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+
+/* Layout: one reading column on squared exam paper; sticky section bar; solutions fold open like a turned page */
+:root {
+  --paper: #f5f7fa;
+  --grid: rgba(35, 70, 168, 0.06);
+  --card: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6574;
+  --rule: #d7dde6;
+  --accent: #2346a8;
+  --accent-soft: #e6ecfb;
+  --mark: #b8352a;
+  --mark-soft: #fbe9e6;
+  --ok: #2c7a4b;
+  --ok-soft: #e3f3e9;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-math: "STIX Two Text", "Cambria Math", "Times New Roman", serif;
+  --f-label: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f141b; --grid: rgba(143, 168, 255, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+    --rule: #2a3442; --accent: #93abff; --accent-soft: #1d2846; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+    --ok: #74d39c; --ok-soft: #173225; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f141b; --grid: rgba(143, 168, 255, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+  --rule: #2a3442; --accent: #93abff; --accent-soft: #1d2846; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+  --ok: #74d39c; --ok-soft: #173225; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background-color: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 1.06rem;
+  line-height: 1.6;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 80px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2rem, 6vw, 3.1rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.65rem; font-weight: 700; letter-spacing: -0.01em; }
+h3 { font-size: 1.15rem; font-weight: 600; }
+p { margin: 0; }
+a { color: var(--accent); }
+.label { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+
+/* math */
+.m { font-family: var(--f-math); font-size: 1.04em; white-space: nowrap; }
+.m i { font-style: italic; }
+.mb { font-family: var(--f-math); font-size: 1.08em; display: block; padding: 6px 0 6px 14px; border-left: 2px solid var(--rule); margin: 8px 0; overflow-x: auto; }
+.mb i, .m i { font-style: italic; }
+sup, sub { line-height: 0; }
+
+/* header */
+header.hero { display: grid; gap: 14px; padding-block: 10px 26px; border-bottom: 2px solid var(--ink); }
+.hero .sub { color: var(--muted); max-width: 62ch; }
+.facts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.fact { display: flex; flex-direction: column; gap: 2px; padding: 8px 14px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; min-width: 120px; }
+.fact b { font-family: var(--f-display); font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+
+nav.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--paper); border-bottom: 1px solid var(--rule); margin-inline: -18px; padding-inline: 18px; }
+nav.bar ul { list-style: none; margin: 0; padding: 10px 0; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin; }
+nav.bar a { display: block; white-space: nowrap; text-decoration: none; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.04em; color: var(--ink); padding: 6px 10px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); }
+nav.bar a:hover, nav.bar a:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+
+section { padding-top: 44px; display: grid; gap: 18px; scroll-margin-top: 56px; }
+.section-head { display: grid; gap: 6px; }
+.section-head p { color: var(--muted); max-width: 64ch; }
+
+/* topic map table */
+.tbl { overflow-x: auto; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+tr:last-child td { border-bottom: 0; }
+td.num, th.num { font-variant-numeric: tabular-nums; text-align: right; }
+.pri { display: inline-block; font-family: var(--f-label); font-size: 0.7rem; padding: 2px 7px; border-radius: 3px; white-space: nowrap; }
+.pri.hi { background: var(--mark-soft); color: var(--mark); }
+.pri.mid { background: var(--accent-soft); color: var(--accent); }
+.pri.lo { background: var(--ok-soft); color: var(--ok); }
+
+/* cheat sheet */
+.sheet { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; }
+.rule-card { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 14px 16px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.rule-card h3 { font-size: 1rem; }
+.rule-card p, .rule-card li { font-size: 0.95rem; }
+.rule-card ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+
+/* exercises */
+.task { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 18px; display: grid; gap: 10px; min-width: 0; }
+.task-head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.task-head .no { font-family: var(--f-display); font-weight: 700; font-size: 1.05rem; }
+.task-head .src { font-family: var(--f-label); font-size: 0.72rem; color: var(--muted); }
+.task-head .pts { margin-left: auto; font-family: var(--f-label); font-size: 0.75rem; color: var(--accent); }
+.stmt { max-width: 70ch; }
+details { border-top: 1px dashed var(--rule); padding-top: 8px; }
+summary { cursor: pointer; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); list-style: none; display: inline-flex; gap: 8px; align-items: center; padding: 4px 0; }
+summary::-webkit-details-marker { display: none; }
+summary::before { content: "+"; display: inline-grid; place-items: center; width: 18px; height: 18px; border: 1px solid currentColor; border-radius: 3px; font-size: 0.8rem; }
+details[open] > summary::before { content: "−"; }
+summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sol { display: grid; gap: 8px; padding-top: 6px; max-width: 72ch; }
+.sol ol, .sol ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.ans { display: inline-block; background: var(--ok-soft); color: var(--ok); font-weight: 600; padding: 2px 9px; border-radius: 4px; }
+.warn { background: var(--mark-soft); border-left: 3px solid var(--mark); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 0.95rem; }
+.tip { background: var(--accent-soft); border-left: 3px solid var(--accent); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 0.95rem; }
+.sheetgroup { display: grid; gap: 12px; }
+.sheetgroup > h3 { padding-top: 10px; display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.sheetgroup > h3 .label { font-weight: 400; }
+
+/* euclid tables */
+.eu { overflow-x: auto; }
+.eu table { width: auto; font-family: var(--f-math); font-size: 1rem; background: transparent; }
+.eu td, .eu th { padding: 3px 12px; text-align: right; font-variant-numeric: tabular-nums; }
+
+/* cayley tables */
+.cay { display: flex; flex-wrap: wrap; gap: 14px; }
+.cay table { width: auto; font-family: var(--f-math); border: 1px solid var(--rule); }
+.cay td, .cay th { padding: 2px 9px; text-align: center; border: 1px solid var(--rule); }
+.cay th { font-family: var(--f-math); font-size: 0.95rem; text-transform: none; letter-spacing: 0; color: var(--ink); background: var(--accent-soft); }
+
+/* practice exam */
+.exam { display: grid; gap: 12px; }
+.exam-bar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 12px 16px; }
+.clock { font-family: var(--f-display); font-size: 2rem; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
+.clock.low { color: var(--mark); }
+.btns { display: flex; gap: 8px; flex-wrap: wrap; }
+button { font-family: var(--f-label); font-size: 0.8rem; padding: 7px 12px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); color: var(--ink); cursor: pointer; }
+button.primary { background: var(--accent); color: var(--card); border-color: var(--accent); }
+button:hover { border-color: var(--accent); }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.score { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; font-size: 0.95rem; }
+.score label { display: inline-flex; gap: 6px; align-items: center; font-family: var(--f-label); font-size: 0.75rem; color: var(--muted); }
+.score input { width: 3.4em; font-family: var(--f-math); font-size: 1rem; padding: 3px 5px; border: 1px solid var(--rule); border-radius: 4px; background: var(--paper); color: var(--ink); }
+.verdict { font-family: var(--f-label); font-size: 0.8rem; padding: 4px 10px; border-radius: 4px; }
+.verdict.pass { background: var(--ok-soft); color: var(--ok); }
+.verdict.fail { background: var(--mark-soft); color: var(--mark); }
+
+.mistakes { display: grid; gap: 10px; counter-reset: none; }
+.mistake { display: grid; grid-template-columns: auto 1fr; gap: 12px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 12px 14px; }
+.mistake .x { font-family: var(--f-display); font-weight: 700; color: var(--mark); font-size: 1.2rem; line-height: 1.3; }
+
+.plan { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
+.day { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 12px 14px; display: grid; gap: 6px; align-content: start; }
+.day ul { margin: 0; padding-left: 18px; font-size: 0.95rem; display: grid; gap: 3px; }
+
+footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.88rem; }
+
+
+/* back to subject page */
+.back { justify-self: start; display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px 9px 12px; border: 1.5px solid var(--accent); border-radius: 8px; background: var(--accent-soft); color: var(--ink); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 1.02rem; line-height: 1; white-space: nowrap; transition: background .15s, color .15s; }
+.back .arr { color: var(--accent); font-size: 1.25rem; transition: transform .15s, color .15s; }
+.back:hover, .back:focus-visible { background: var(--accent); color: var(--paper); outline: none; }
+.back:hover .arr, .back:focus-visible .arr { color: var(--paper); transform: translateX(-3px); }
+nav.bar a.nav-back { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+
+@media (max-width: 520px) {
+  body { font-size: 1rem; }
+  .task { padding: 14px; }
+  .task-head .pts { margin-left: 0; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+html { scroll-behavior: smooth; }
+
+/* polynomial long division: one column per power of x */
+.pd { overflow-x: auto; }
+.pd table { width: auto; font-family: var(--f-math); font-size: 1rem; background: transparent; }
+.pd th, .pd td { padding: 2px 9px; text-align: right; font-variant-numeric: tabular-nums; border-bottom: 0; white-space: nowrap; }
+.pd th { font-family: var(--f-math); font-size: 0.88rem; text-transform: none; letter-spacing: 0; color: var(--muted); }
+.pd td.lab { text-align: left; color: var(--muted); font-size: 0.9rem; padding-right: 18px; }
+.pd tr.prod td { color: var(--muted); }
+.pd tr.rem td { border-top: 1px solid var(--rule); }
+.pd tr.rem td.lab { border-top: 0; }
+.pd tr.fin td { color: var(--ok); font-weight: 600; }
+.sol { grid-template-columns: minmax(0, 1fr); }
+.sol .m { white-space: normal; }
+.caygroup { display: grid; gap: 4px; }
+.cays { display: flex; flex-wrap: wrap; gap: 18px; }
+.steps { display: grid; gap: 2px; }
+.note { background: var(--card); border: 1px dashed var(--mark); padding: 8px 12px; border-radius: 4px; font-size: 0.95rem; }
+.note b:first-child { color: var(--mark); font-family: var(--f-label); font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; margin-right: 6px; }
+</style>
+
+<div class="wrap">
+<header class="hero">
+  <a class="back" href="../../index.html#/dimat2"><span class="arr" aria-hidden="true">←</span>Vissza: Diszkrét matematika II.</a>
+  <span class="label">Diszkrét matematika II. · 2. zárthelyi</span>
+  <h1>Felkészítő a 2. Zh-ra</h1>
+  <p class="sub">A 2. Zh anyaga az 5. és a 6. feladatsor: számolás <span class="m">ℤ<sub><i>p</i></sub></span>-ben, polinomok szorzása és maradékos osztása, maradékszámítás modulo polinom és a polinomok legnagyobb közös osztója. Az 1. Zh-n mind a négy feladat szó szerint a feladatsorokból jött, ezért itt a két sor összes feladata ki van dolgozva. Van két gyakorló Zh is, órával.</p>
+  <div class="facts">
+    <div class="fact"><span class="label">Anyag</span><b>5–6. sor</b></div>
+    <div class="fact"><span class="label">Idő</span><b>60 perc</b></div>
+    <div class="fact"><span class="label">Max pont</span><b>30</b></div>
+    <div class="fact"><span class="label">Minimum</span><b>12 pont</b></div>
+  </div>
+</header>
+
+<nav class="bar" aria-label="Fejezetek">
+  <ul>
+    <li><a class="nav-back" href="../../index.html#/dimat2" aria-label="Vissza: Diszkrét matematika II.">← DIMAT II</a></li>
+    <li><a href="#terkep">Témák</a></li>
+    <li><a href="#keplet">Képletlap</a></li>
+    <li><a href="#sor5">5. feladatsor</a></li>
+    <li><a href="#sor6">6. feladatsor</a></li>
+    <li><a href="#gyakorlo">Gyakorló Zh-k</a></li>
+    <li><a href="#hibak">Gyakori hibák</a></li>
+  </ul>
+</nav>
+
+<!-- ================= TÉMATÉRKÉP ================= -->
+<section id="terkep">
+  <div class="section-head">
+    <span class="label">Mi lesz a Zh-ban</span>
+    <h2>Tématérkép</h2>
+    <p>A 2. Zh-hoz még nincs minta. Az idő és a pontszám az 1. Zh alapján van megadva (60 perc, 30 pont, legalább 12 pont kell). Ha kijön a minta, ez az oldal frissül.</p>
+  </div>
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Típus</th><th>Feladat</th><th>Prioritás</th></tr></thead>
+      <tbody>
+        <tr><td>Maradékos osztás <span class="m">ℚ</span> és <span class="m">ℤ<sub><i>p</i></sub></span> felett</td><td>5/3</td><td><span class="pri hi">kötelező</span></td></tr>
+        <tr><td>Polinomok lnko-ja euklideszi algoritmussal</td><td>6/4</td><td><span class="pri hi">kötelező</span></td></tr>
+        <tr><td>Maradék modulo polinom: redukció, összeg, szorzat</td><td>5/6, 6/1–3</td><td><span class="pri hi">kötelező</span></td></tr>
+        <tr><td>Paraméteres oszthatóság (<span class="m"><i>a</i></span>, <span class="m"><i>b</i></span>, <span class="m"><i>m</i></span> meghatározása)</td><td>5/4, 5/5</td><td><span class="pri hi">kötelező</span></td></tr>
+        <tr><td>Nagy hatvány maradéka modulo polinom</td><td>6/5</td><td><span class="pri hi">kötelező</span></td></tr>
+        <tr><td>Szorzatpolinom foka, adott együtthatója</td><td>5/2</td><td><span class="pri mid">valószínű</span></td></tr>
+        <tr><td><span class="m">ℤ<sub><i>p</i></sub></span> műveleti táblái, multiplikatív inverz</td><td>5/1</td><td><span class="pri mid">mindenhol eszköz</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ================= KÉPLETLAP ================= -->
+<section id="keplet">
+  <div class="section-head">
+    <span class="label">Egy oldalon</span>
+    <h2>Képletlap</h2>
+    <p>Amit fejből kell tudni. Az előadásjegyzet (Mérai) még nem tartalmazza a polinomokat, ezért itt a szokásos definíciók szerepelnek.</p>
+  </div>
+  <div class="sheet">
+    <div class="rule-card">
+      <span class="label">5/1</span>
+      <h3><span class="m">ℤ<sub><i>p</i></sub></span> és az inverz</h3>
+      <p><span class="m">ℤ<sub><i>m</i></sub> = {0, 1, …, <i>m</i> − 1}</span>, a műveletek eredményét mod <span class="m"><i>m</i></span> vesszük.</p>
+      <p><span class="m"><i>a</i></span>-nak akkor van inverze mod <span class="m"><i>m</i></span>, ha <span class="m">(<i>a</i>, <i>m</i>) = 1</span>. Ha <span class="m"><i>p</i></span> prím, minden <span class="m"><i>a</i> ≠ 0</span> invertálható, vagyis <span class="m">ℤ<sub><i>p</i></sub></span> <b>test</b>.</p>
+      <p>Keresés: kis <span class="m"><i>p</i></span>-nél próbálgatás (<span class="m"><i>a</i> · <i>b</i> ≡ 1</span>), nagynál bővített euklideszi algoritmus, vagy Fermat: <span class="m"><i>a</i><sup>−1</sup> ≡ <i>a</i><sup><i>p</i>−2</sup></span>.</p>
+    </div>
+    <div class="rule-card">
+      <span class="label">5/2</span>
+      <h3>Szorzat foka, együtthatói</h3>
+      <p>Ha <span class="m"><i>f</i> = Σ <i>a</i><sub><i>i</i></sub> <i>x</i><sup><i>i</i></sup></span>, <span class="m"><i>g</i> = Σ <i>b</i><sub><i>j</i></sub> <i>x</i><sup><i>j</i></sup></span>, akkor <span class="m"><i>f</i><i>g</i></span>-ben</p>
+      <p class="mb"><i>c<sub>k</sub></i> = Σ<sub><i>i</i>+<i>j</i>=<i>k</i></sub> <i>a<sub>i</sub></i><i>b<sub>j</sub></i></p>
+      <p>Test felett (pl. <span class="m">ℚ</span>, <span class="m">ℤ<sub><i>p</i></sub></span>) <span class="m">deg(<i>f</i><i>g</i>) = deg <i>f</i> + deg <i>g</i></span>, mert a főegyütthatók szorzata nem 0. <span class="m">ℤ<sub>4</sub></span>-ben ez nem igaz: <span class="m">(2<i>x</i> + 1)<sup>2</sup> = 1</span>.</p>
+    </div>
+    <div class="rule-card">
+      <span class="label">5/3</span>
+      <h3>Maradékos osztás</h3>
+      <p>Test feletti <span class="m"><i>f</i></span>, <span class="m"><i>g</i> ≠ 0</span> polinomhoz egyértelműen létezik <span class="m"><i>q</i></span>, <span class="m"><i>r</i></span>, hogy</p>
+      <p class="mb"><i>f</i> = <i>q</i>·<i>g</i> + <i>r</i>,&nbsp;&nbsp; <i>r</i> = 0 vagy deg <i>r</i> &lt; deg <i>g</i></p>
+      <p>Egy lépés: <span class="m"><i>f</i></span> főtagja osztva <span class="m"><i>g</i></span> főtagjával, ez a hányados következő tagja. Kivonjuk a tag <span class="m"><i>g</i></span>-szeresét, és addig folytatjuk, amíg a maradék foka <span class="m">≥ deg <i>g</i></span>.</p>
+      <p><span class="m">ℤ<sub><i>p</i></sub></span>-ben az osztás a főegyüttható <b>inverzével</b> való szorzás.</p>
+    </div>
+    <div class="rule-card">
+      <span class="label">5/4–5/6</span>
+      <h3>Oszthatóság, gyökök</h3>
+      <ul>
+        <li><span class="m"><i>g</i> | <i>f</i></span> ⇔ a maradék 0. Paraméteresen: a maradék <b>minden</b> együtthatója 0 (több egyenlet).</li>
+        <li>Gyorsabb: írd fel <span class="m"><i>f</i></span>-et (ismeretlen hányados) · <span class="m"><i>g</i></span> alakban, bontsd ki, és hasonlítsd össze az együtthatókat.</li>
+        <li><span class="m"><i>f</i></span> maradéka <span class="m"><i>x</i> − <i>c</i></span>-vel <span class="m"><i>f</i>(<i>c</i>)</span>. Ha <span class="m"><i>g</i></span> gyökei különbözők, <span class="m"><i>r</i>(<i>c</i>) = <i>f</i>(<i>c</i>)</span> minden <span class="m"><i>g</i>(<i>c</i>) = 0</span> gyökre.</li>
+      </ul>
+    </div>
+    <div class="rule-card">
+      <span class="label">6/1–6/3</span>
+      <h3>Számolás mod <span class="m"><i>m</i></span></h3>
+      <p><span class="m"><i>f</i> ≡ <i>g</i> mod <i>m</i></span> ⇔ <span class="m"><i>m</i> | <i>f</i> − <i>g</i></span>. Összeadás, szorzás, hatványozás után is megmarad, ezért <b>előbb redukálj, utána számolj</b>.</p>
+      <p>Redukció: <span class="m"><i>m</i></span> főtagját kifejezzük. Pl. <span class="m"><i>m</i> = <i>x</i><sup>2</sup> + 1</span>: <span class="m"><i>x</i><sup>2</sup> ≡ −1</span>; <span class="m"><i>m</i> = <i>x</i><sup>3</sup> + 1</span>: <span class="m"><i>x</i><sup>3</sup> ≡ −1</span>, <span class="m"><i>x</i><sup>4</sup> ≡ −<i>x</i></span>.</p>
+      <p>A végeredmény foka mindig <span class="m">&lt; deg <i>m</i></span>.</p>
+    </div>
+    <div class="rule-card">
+      <span class="label">6/4</span>
+      <h3>Polinomok lnko-ja</h3>
+      <p>Euklideszi algoritmus, mint egészeknél: <span class="m"><i>f</i> = <i>q</i><sub>1</sub> <i>g</i> + <i>r</i><sub>1</sub></span>, <span class="m"><i>g</i> = <i>q</i><sub>2</sub> <i>r</i><sub>1</sub> + <i>r</i><sub>2</sub></span>, … Az utolsó nem nulla maradék az lnko.</p>
+      <p>Menet közben bármelyik maradék szorozható nem nulla konstanssal, ez az lnko-t nem változtatja meg. A végén legyen a főegyüttható 1.</p>
+    </div>
+    <div class="rule-card">
+      <span class="label">6/5</span>
+      <h3>Nagy hatványok</h3>
+      <p>Keress kis <span class="m"><i>k</i></span>-t, amire <span class="m"><i>x</i><sup><i>k</i></sup> ≡ 1</span> (vagy konstans) mod <span class="m"><i>m</i></span>. Ekkor <span class="m"><i>n</i> = <i>k</i><i>q</i> + <i>s</i></span> esetén <span class="m"><i>x</i><sup><i>n</i></sup> ≡ <i>x</i><sup><i>s</i></sup></span>. Ha <span class="m"><i>x</i><sup><i>k</i></sup> ≡ −1</span>, akkor <span class="m"><i>x</i><sup>2<i>k</i></sup> ≡ 1</span>.</p>
+      <p><span class="m">ℤ<sub><i>p</i></sub></span>-ben <span class="m">(<i>a</i> + <i>b</i>)<sup><i>p</i></sup> = <i>a</i><sup><i>p</i></sup> + <i>b</i><sup><i>p</i></sup></span>. Pl. <span class="m">ℤ<sub>2</sub></span>-ben <span class="m">(<i>x</i><sup>2</sup> + <i>x</i> + 1)<sup>2</sup> = <i>x</i><sup>4</sup> + <i>x</i><sup>2</sup> + 1</span>.</p>
+      <p>Ha nincs szabályosság: ismételt négyzetre emelés (a kitevő kettes számrendszerben).</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 5. FELADATSOR ================= -->
+<section id="sor5">
+  <div class="section-head">
+    <span class="label">5. feladatsor · 10.05–09.</span>
+    <h2><span class="m">ℤ<sub><i>p</i></sub></span>, polinomszorzás, maradékos osztás</h2>
+    <p>Minden feladat alatt lenyitható a megoldás. A számszerű eredményeket programmal is ellenőriztem. Az osztásoknál a táblázat oszlopai az <span class="m"><i>x</i></span> hatványai, a zöld sor a maradék.</p>
+  </div>
+
+  <article class="task" id="f5-1">
+    <div class="task-head"><span class="no">5/1</span><span class="src">bemelegítő</span></div>
+    <p class="stmt">Írja fel <span class="m">ℤ<sub>2</sub></span>, <span class="m">ℤ<sub>3</sub></span>, <span class="m">ℤ<sub>5</sub></span> összeadó- és szorzótábláját! Adja meg az <span class="m"><i>a</i> ∈ ℤ<sub><i>p</i></sub></span> elem <span class="m"><i>a</i><sup>−1</sup></span> reciprokát (multiplikatív inverzét): a) <span class="m"><i>a</i> = 2</span>, <span class="m">ℤ<sub>3</sub></span>-ban; b) <span class="m"><i>a</i> = 2</span>, <span class="m">ℤ<sub>5</sub></span>-ben; c) <span class="m"><i>a</i> = 4</span>, <span class="m">ℤ<sub>5</sub></span>-ben; d) <span class="m"><i>a</i> = 4</span>, <span class="m">ℤ<sub>7</sub></span>-ben!</p>
+    <details><summary>Megoldás</summary><div class="sol">
+      <div class="cays"><div class="caygroup"><span class="label">ℤ<sub>2</sub></span><div class="cay"><table><tr><th>+</th><th>0</th><th>1</th></tr><tr><th>0</th><td>0</td><td>1</td></tr><tr><th>1</th><td>1</td><td>0</td></tr></table><table><tr><th>·</th><th>0</th><th>1</th></tr><tr><th>0</th><td>0</td><td>0</td></tr><tr><th>1</th><td>0</td><td>1</td></tr></table></div></div><div class="caygroup"><span class="label">ℤ<sub>3</sub></span><div class="cay"><table><tr><th>+</th><th>0</th><th>1</th><th>2</th></tr><tr><th>0</th><td>0</td><td>1</td><td>2</td></tr><tr><th>1</th><td>1</td><td>2</td><td>0</td></tr><tr><th>2</th><td>2</td><td>0</td><td>1</td></tr></table><table><tr><th>·</th><th>0</th><th>1</th><th>2</th></tr><tr><th>0</th><td>0</td><td>0</td><td>0</td></tr><tr><th>1</th><td>0</td><td>1</td><td>2</td></tr><tr><th>2</th><td>0</td><td>2</td><td>1</td></tr></table></div></div><div class="caygroup"><span class="label">ℤ<sub>5</sub></span><div class="cay"><table><tr><th>+</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th></tr><tr><th>0</th><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td></tr><tr><th>1</th><td>1</td><td>2</td><td>3</td><td>4</td><td>0</td></tr><tr><th>2</th><td>2</td><td>3</td><td>4</td><td>0</td><td>1</td></tr><tr><th>3</th><td>3</td><td>4</td><td>0</td><td>1</td><td>2</td></tr><tr><th>4</th><td>4</td><td>0</td><td>1</td><td>2</td><td>3</td></tr></table><table><tr><th>·</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th></tr><tr><th>0</th><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><th>1</th><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td></tr><tr><th>2</th><td>0</td><td>2</td><td>4</td><td>1</td><td>3</td></tr><tr><th>3</th><td>0</td><td>3</td><td>1</td><td>4</td><td>2</td></tr><tr><th>4</th><td>0</td><td>4</td><td>3</td><td>2</td><td>1</td></tr></table></div></div></div>
+      <ul>
+        <li>a) <span class="m">2 · 2 = 4 ≡ 1 mod 3</span> → <span class="ans"><span class="m">2<sup>−1</sup> = 2</span> ℤ<sub>3</sub>-ban</span></li>
+        <li>b) <span class="m">2 · 3 = 6 ≡ 1 mod 5</span> → <span class="ans"><span class="m">2<sup>−1</sup> = 3</span> ℤ<sub>5</sub>-ben</span></li>
+        <li>c) <span class="m">4 · 4 = 16 ≡ 1 mod 5</span> → <span class="ans"><span class="m">4<sup>−1</sup> = 4</span> ℤ<sub>5</sub>-ben</span></li>
+        <li>d) <span class="m">4 · 2 = 8 ≡ 1 mod 7</span> → <span class="ans"><span class="m">4<sup>−1</sup> = 2</span> ℤ<sub>7</sub>-ben</span></li>
+      </ul>
+    </div></details>
+    <details><summary>Részletes magyarázat</summary><div class="sol">
+      <p><b>Tábla olvasása.</b> Az inverz a szorzótáblából leolvasható: az <span class="m"><i>a</i></span> sorában keresd meg az 1-est, annak oszlopa <span class="m"><i>a</i><sup>−1</sup></span>. <span class="m">ℤ<sub>5</sub></span>-ben: <span class="m">1<sup>−1</sup> = 1</span>, <span class="m">2<sup>−1</sup> = 3</span>, <span class="m">3<sup>−1</sup> = 2</span>, <span class="m">4<sup>−1</sup> = 4</span>. Ezt a négy párt érdemes fejből tudni, mert az osztásoknál folyamatosan kell.</p>
+      <p><b><span class="m">−1</span> trükk.</b> <span class="m"><i>p</i> − 1 ≡ −1</span>, és <span class="m">(−1)(−1) = 1</span>, ezért <span class="m"><i>p</i> − 1</span> mindig a saját inverze (c: <span class="m">4 = −1</span> ℤ<sub>5</sub>-ben).</p>
+      <p><b>Fermat.</b> <span class="m"><i>a</i><sup><i>p</i>−1</sup> ≡ 1</span>, így <span class="m"><i>a</i> · <i>a</i><sup><i>p</i>−2</sup> ≡ 1</span>. Pl. d): <span class="m">4<sup>5</sup> = 1024 = 146 · 7 + 2</span>, tehát <span class="m">4<sup>−1</sup> = 2</span> ✓.</p>
+      <p><b>Miért prím?</b> <span class="m">ℤ<sub>4</sub></span>-ben a 2 sorában <span class="m">0, 2, 0, 2</span> áll, nincs 1-es: a 2-nek nincs inverze, mert <span class="m">(2, 4) ≠ 1</span>. Ezért csak <span class="m">ℤ<sub><i>p</i></sub></span> felett osztunk maradékosan.</p>
+    </div></details>
+  </article>
+
+  <article class="task" id="f5-2">
+    <div class="task-head"><span class="no">5/2</span><span class="src">bemelegítő</span></div>
+    <p class="stmt">Mennyi lesz az <span class="m"><i>f</i> · <i>g</i></span> szorzatpolinom foka, és mennyi a 0-ad, 2-od, 6-od és 7-ed fokú tag együtthatója?<br>
+      a) <span class="m"><i>f</i> = 3<i>x</i><sup>3</sup> + 5<i>x</i><sup>2</sup> + 1</span>, <span class="m"><i>g</i> = −<i>x</i><sup>4</sup> + 5<i>x</i><sup>3</sup> − 9</span>, <span class="m">ℚ[<i>x</i>]</span>;<br>
+      b) <span class="m"><i>f</i> = 3<i>x</i><sup>4</sup> + 3<i>x</i><sup>4</sup> + 3<i>x</i> + 1</span>, <span class="m"><i>g</i> = 4<i>x</i><sup>3</sup> + 3<i>x</i><sup>4</sup> + 1</span>, <span class="m">ℤ<sub>5</sub>[<i>x</i>]</span>;<br>
+      c) <span class="m"><i>f</i> = <i>x</i><sup>3</sup> + <i>x</i><sup>2</sup> + 1</span>, <span class="m"><i>g</i> = <i>x</i><sup>4</sup> + <i>x</i><sup>3</sup> + 1</span>, <span class="m">ℤ<sub>2</sub>[<i>x</i>]</span>.</p>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p>Képlet: <span class="m"><i>c</i><sub><i>k</i></sub> = Σ<sub><i>i</i>+<i>j</i>=<i>k</i></sub> <i>a</i><sub><i>i</i></sub> <i>b</i><sub><i>j</i></sub></span>. Csak azokat a párokat kell összeszedni, ahol mindkét együttható létezik.</p>
+      <p><b>a)</b> <span class="m">deg = 3 + 4 = 7</span>.</p>
+      <ul>
+        <li><span class="m"><i>c</i><sub>0</sub> = <i>a</i><sub>0</sub> <i>b</i><sub>0</sub> = 1 · (−9) = −9</span></li>
+        <li><span class="m"><i>c</i><sub>2</sub> = <i>a</i><sub>2</sub> <i>b</i><sub>0</sub> + <i>a</i><sub>1</sub> <i>b</i><sub>1</sub> + <i>a</i><sub>0</sub> <i>b</i><sub>2</sub> = 5 · (−9) + 0 + 0 = −45</span></li>
+        <li><span class="m"><i>c</i><sub>6</sub> = <i>a</i><sub>3</sub> <i>b</i><sub>3</sub> + <i>a</i><sub>2</sub> <i>b</i><sub>4</sub> = 3 · 5 + 5 · (−1) = 10</span></li>
+        <li><span class="m"><i>c</i><sub>7</sub> = <i>a</i><sub>3</sub> <i>b</i><sub>4</sub> = 3 · (−1) = −3</span></li>
+      </ul>
+      <p>A teljes szorzat: <span class="m">−3<i>x</i><sup>7</sup> + 10<i>x</i><sup>6</sup> + 25<i>x</i><sup>5</sup> − <i>x</i><sup>4</sup> − 22<i>x</i><sup>3</sup> − 45<i>x</i><sup>2</sup> − 9</span>. <span class="ans">fok 7; −9, −45, 10, −3</span></p>
+      <p><b>b)</b> Előbb vonjuk össze és rendezzük: <span class="m"><i>f</i> = 6<i>x</i><sup>4</sup> + 3<i>x</i> + 1 = <i>x</i><sup>4</sup> + 3<i>x</i> + 1</span> (mert <span class="m">6 ≡ 1</span>), <span class="m"><i>g</i> = 3<i>x</i><sup>4</sup> + 4<i>x</i><sup>3</sup> + 1</span>.</p>
+      <p><span class="m">deg = 4 + 4 = 8</span>, a főegyüttható <span class="m">1 · 3 = 3 ≠ 0</span>.</p>
+      <ul>
+        <li><span class="m"><i>c</i><sub>0</sub> = 1 · 1 = 1</span></li>
+        <li><span class="m"><i>c</i><sub>2</sub> = <i>a</i><sub>2</sub> <i>b</i><sub>0</sub> + <i>a</i><sub>1</sub> <i>b</i><sub>1</sub> + <i>a</i><sub>0</sub> <i>b</i><sub>2</sub> = 0 + 3 · 0 + 1 · 0 = 0</span></li>
+        <li><span class="m"><i>c</i><sub>6</sub> = <i>a</i><sub>4</sub> <i>b</i><sub>2</sub> + <i>a</i><sub>3</sub> <i>b</i><sub>3</sub> + <i>a</i><sub>2</sub> <i>b</i><sub>4</sub> = 0 + 0 + 0 = 0</span></li>
+        <li><span class="m"><i>c</i><sub>7</sub> = <i>a</i><sub>4</sub> <i>b</i><sub>3</sub> + <i>a</i><sub>3</sub> <i>b</i><sub>4</sub> = 1 · 4 + 0 = 4</span></li>
+      </ul>
+      <p>Teljes szorzat: <span class="m">3<i>x</i><sup>8</sup> + 4<i>x</i><sup>7</sup> + 4<i>x</i><sup>5</sup> + <i>x</i><sup>4</sup> + 4<i>x</i><sup>3</sup> + 3<i>x</i> + 1</span>. <span class="ans">fok 8; 1, 0, 0, 4</span></p>
+      <div class="note"><b>Megjegyzés</b>A feladatlapon <span class="m"><i>f</i></span>-ben kétszer szerepel a <span class="m">3<i>x</i><sup>4</sup></span>, ez valószínűleg elírás (például <span class="m">3<i>x</i><sup>5</sup> + 3<i>x</i><sup>4</sup> + 3<i>x</i> + 1</span> lehetett). Fent a szó szerinti változat van. A <span class="m">3<i>x</i><sup>5</sup> + 3<i>x</i><sup>4</sup> + 3<i>x</i> + 1</span> változatnál: fok <span class="m">5 + 4 = 9</span>, és <span class="m"><i>c</i><sub>0</sub> = 1</span>, <span class="m"><i>c</i><sub>2</sub> = 0</span>, <span class="m"><i>c</i><sub>6</sub> = 0</span>, <span class="m"><i>c</i><sub>7</sub> = <i>a</i><sub>5</sub> <i>b</i><sub>2</sub> + <i>a</i><sub>4</sub> <i>b</i><sub>3</sub> + <i>a</i><sub>3</sub> <i>b</i><sub>4</sub> = 0 + 3 · 4 + 0 = 12 ≡ 2</span>.</div>
+      <p><b>c)</b> <span class="m">deg = 3 + 4 = 7</span>, és <span class="m">ℤ<sub>2</sub></span>-ben <span class="m">1 + 1 = 0</span>.</p>
+      <ul>
+        <li><span class="m"><i>c</i><sub>0</sub> = 1 · 1 = 1</span></li>
+        <li><span class="m"><i>c</i><sub>2</sub> = <i>a</i><sub>2</sub> <i>b</i><sub>0</sub> + <i>a</i><sub>1</sub> <i>b</i><sub>1</sub> + <i>a</i><sub>0</sub> <i>b</i><sub>2</sub> = 1 + 0 + 0 = 1</span></li>
+        <li><span class="m"><i>c</i><sub>6</sub> = <i>a</i><sub>3</sub> <i>b</i><sub>3</sub> + <i>a</i><sub>2</sub> <i>b</i><sub>4</sub> = 1 + 1 = 2 ≡ 0</span></li>
+        <li><span class="m"><i>c</i><sub>7</sub> = <i>a</i><sub>3</sub> <i>b</i><sub>4</sub> = 1</span></li>
+      </ul>
+      <p>Teljes szorzat: <span class="m"><i>x</i><sup>7</sup> + <i>x</i><sup>5</sup> + <i>x</i><sup>4</sup> + <i>x</i><sup>2</sup> + 1</span>. <span class="ans">fok 7; 1, 1, 0, 1</span></p>
+    </div></details>
+    <details><summary>Részletes magyarázat</summary><div class="sol">
+      <p><b>Hogyan szedd össze a párokat?</b> A <span class="m"><i>c</i><sub><i>k</i></sub></span>-hoz azok az <span class="m">(<i>i</i>, <i>j</i>)</span> párok kellenek, ahol <span class="m"><i>i</i> + <i>j</i> = <i>k</i></span>, <span class="m"><i>i</i> ≤ deg <i>f</i></span>, <span class="m"><i>j</i> ≤ deg <i>g</i></span>. A <span class="m"><i>c</i><sub>6</sub></span>-nál a): <span class="m"><i>i</i></span> legfeljebb 3, ezért <span class="m"><i>j</i> ≥ 3</span>, és <span class="m"><i>j</i> ≤ 4</span>: csak <span class="m">(3, 3)</span> és <span class="m">(2, 4)</span> jöhet szóba.</p>
+      <p><b>Miért elég a főegyütthatók szorzata a fokhoz?</b> A <span class="m"><i>x</i><sup>deg <i>f</i> + deg <i>g</i></sup></span> tag csak egyféleképpen jön létre: főtag szor főtag. Ha ez a szorzat nem 0, ez a fok. Test felett ez mindig így van, <span class="m">ℤ<sub>6</sub></span>-ban például <span class="m">2 · 3 = 0</span> miatt nem.</p>
+      <p><b>Ellenőrzés.</b> <span class="m"><i>x</i> = 1</span>-et behelyettesítve <span class="m"><i>f</i>(1) · <i>g</i>(1) = (<i>f</i><i>g</i>)(1)</span>. a): <span class="m">9 · (−5) = −45</span>, és a szorzat együtthatóinak összege <span class="m">−3 + 10 + 25 − 1 − 22 − 45 − 9 = −45</span> ✓.</p>
+    </div></details>
+  </article>
+
+  <article class="task" id="f5-3">
+    <div class="task-head"><span class="no">5/3</span><span class="src">gyakorló</span></div>
+    <p class="stmt">Ossza el maradékosan <span class="m"><i>f</i></span>-et <span class="m"><i>g</i></span>-vel!<br>
+      a) <span class="m"><i>f</i> = 6<i>x</i><sup>6</sup> − 4<i>x</i><sup>5</sup> + 11<i>x</i><sup>4</sup> + 15<i>x</i><sup>3</sup> − 20<i>x</i><sup>2</sup> + 18<i>x</i> − 14</span>, <span class="m"><i>g</i> = 2<i>x</i><sup>4</sup> + 3<i>x</i><sup>2</sup> + 7<i>x</i> − 3</span>, <span class="m">ℚ[<i>x</i>]</span>;<br>
+      b) <span class="m"><i>f</i> = <i>x</i><sup>4</sup> − <i>x</i> + 2</span>, <span class="m"><i>g</i> = −2<i>x</i><sup>2</sup> + <i>x</i> + 1</span>, <span class="m">ℚ[<i>x</i>]</span>;<br>
+      c) <span class="m"><i>f</i> = <i>x</i><sup>7</sup> + <i>x</i><sup>6</sup> + 2<i>x</i><sup>5</sup> + 2<i>x</i><sup>4</sup> + <i>x</i><sup>3</sup> + <i>x</i></span>, <span class="m"><i>g</i> = <i>x</i><sup>5</sup> + <i>x</i><sup>4</sup> + 2<i>x</i><sup>2</sup> + 2</span>, <span class="m">ℤ<sub>5</sub>[<i>x</i>]</span>;<br>
+      d) <span class="m"><i>f</i> = 3<i>x</i><sup>6</sup> + <i>x</i><sup>5</sup> + 3<i>x</i><sup>3</sup> + <i>x</i><sup>2</sup> + 4<i>x</i> + 1</span>, <span class="m"><i>g</i> = 2<i>x</i><sup>4</sup> + <i>x</i><sup>3</sup> + <i>x</i> + 3</span>, <span class="m">ℤ<sub>5</sub>[<i>x</i>]</span>;<br>
+      e) <span class="m"><i>f</i> = <i>x</i><sup>8</sup> + <i>x</i><sup>6</sup> + <i>x</i><sup>5</sup> + <i>x</i><sup>4</sup> + <i>x</i><sup>3</sup> + <i>x</i></span>, <span class="m"><i>g</i> = <i>x</i><sup>5</sup> + <i>x</i><sup>3</sup> + <i>x</i></span>, <span class="m">ℤ<sub>2</sub>[<i>x</i>]</span>.</p>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p><b>a)</b> A hányados tagjai: <span class="m">6<i>x</i><sup>6</sup> / 2<i>x</i><sup>4</sup> = 3<i>x</i><sup>2</sup></span>, majd <span class="m">−4<i>x</i><sup>5</sup> / 2<i>x</i><sup>4</sup> = −2<i>x</i></span>, végül <span class="m">2<i>x</i><sup>4</sup> / 2<i>x</i><sup>4</sup> = 1</span>.</p>
+      <div class="pd"><table><tr><th></th><th><i>x</i><sup>6</sup></th><th><i>x</i><sup>5</sup></th><th><i>x</i><sup>4</sup></th><th><i>x</i><sup>3</sup></th><th><i>x</i><sup>2</sup></th><th><i>x</i></th><th>1</th></tr><tr class="top"><td class="lab"><i>f</i></td><td>6</td><td>−4</td><td>11</td><td>15</td><td>−20</td><td>18</td><td>−14</td></tr><tr class="prod"><td class="lab">− (3<i>x</i><sup>2</sup>)·<i>g</i></td><td>6</td><td>0</td><td>9</td><td>21</td><td>−9</td><td></td><td></td></tr><tr class="rem"><td class="lab">=</td><td></td><td>−4</td><td>2</td><td>−6</td><td>−11</td><td>18</td><td>−14</td></tr><tr class="prod"><td class="lab">− (−2<i>x</i>)·<i>g</i></td><td></td><td>−4</td><td>0</td><td>−6</td><td>−14</td><td>6</td><td></td></tr><tr class="rem"><td class="lab">=</td><td></td><td></td><td>2</td><td>0</td><td>3</td><td>12</td><td>−14</td></tr><tr class="prod"><td class="lab">− (1)·<i>g</i></td><td></td><td></td><td>2</td><td>0</td><td>3</td><td>7</td><td>−3</td></tr><tr class="rem fin"><td class="lab">=</td><td></td><td></td><td></td><td>0</td><td>0</td><td>5</td><td>−11</td></tr></table></div>
+      <p><span class="ans"><span class="m"><i>q</i> = 3<i>x</i><sup>2</sup> − 2<i>x</i> + 1</span>, <span class="m"><i>r</i> = 5<i>x</i> − 11</span></span></p>
+      <p><b>b)</b> A főegyüttható <span class="m">−2</span>, minden lépésben <span class="m">−2</span>-vel osztunk: <span class="m"><i>x</i><sup>4</sup> / (−2<i>x</i><sup>2</sup>) = −½<i>x</i><sup>2</sup></span>, aztán <span class="m">½<i>x</i><sup>3</sup> / (−2<i>x</i><sup>2</sup>) = −¼<i>x</i></span>, végül <span class="m">¾<i>x</i><sup>2</sup> / (−2<i>x</i><sup>2</sup>) = −⅜</span>.</p>
+      <div class="pd"><table><tr><th></th><th><i>x</i><sup>4</sup></th><th><i>x</i><sup>3</sup></th><th><i>x</i><sup>2</sup></th><th><i>x</i></th><th>1</th></tr><tr class="top"><td class="lab"><i>f</i></td><td>1</td><td>0</td><td>0</td><td>−1</td><td>2</td></tr><tr class="prod"><td class="lab">− (−½<i>x</i><sup>2</sup>)·<i>g</i></td><td>1</td><td>−½</td><td>−½</td><td></td><td></td></tr><tr class="rem"><td class="lab">=</td><td></td><td>½</td><td>½</td><td>−1</td><td>2</td></tr><tr class="prod"><td class="lab">− (−¼<i>x</i>)·<i>g</i></td><td></td><td>½</td><td>−¼</td><td>−¼</td><td></td></tr><tr class="rem"><td class="lab">=</td><td></td><td></td><td>¾</td><td>−¾</td><td>2</td></tr><tr class="prod"><td class="lab">− (−⅜)·<i>g</i></td><td></td><td></td><td>¾</td><td>−⅜</td><td>−⅜</td></tr><tr class="rem fin"><td class="lab">=</td><td></td><td></td><td></td><td>−⅜</td><td>19/8</td></tr></table></div>
+      <p><span class="ans"><span class="m"><i>q</i> = −½<i>x</i><sup>2</sup> − ¼<i>x</i> − ⅜</span>, <span class="m"><i>r</i> = −⅜<i>x</i> + 19/8</span></span></p>
+      <p><b>c)</b> <span class="m"><i>g</i></span> főegyütthatója 1, nem kell inverz. Negatív számok helyett mindig a mod 5 maradékot írjuk (<span class="m">−2 = 3</span>, <span class="m">−4 = 1</span>).</p>
+      <div class="pd"><table><tr><th></th><th><i>x</i><sup>7</sup></th><th><i>x</i><sup>6</sup></th><th><i>x</i><sup>5</sup></th><th><i>x</i><sup>4</sup></th><th><i>x</i><sup>3</sup></th><th><i>x</i><sup>2</sup></th><th><i>x</i></th><th>1</th></tr><tr class="top"><td class="lab"><i>f</i></td><td>1</td><td>1</td><td>2</td><td>2</td><td>1</td><td>0</td><td>1</td><td>0</td></tr><tr class="prod"><td class="lab">− (<i>x</i><sup>2</sup>)·<i>g</i></td><td>1</td><td>1</td><td>0</td><td>2</td><td>0</td><td>2</td><td></td><td></td></tr><tr class="rem"><td class="lab">=</td><td></td><td>0</td><td>2</td><td>0</td><td>1</td><td>3</td><td>1</td><td>0</td></tr><tr class="prod"><td class="lab">− (2)·<i>g</i></td><td></td><td></td><td>2</td><td>2</td><td>0</td><td>4</td><td>0</td><td>4</td></tr><tr class="rem fin"><td class="lab">=</td><td></td><td></td><td></td><td>3</td><td>1</td><td>4</td><td>1</td><td>1</td></tr></table></div>
+      <p><span class="ans"><span class="m"><i>q</i> = <i>x</i><sup>2</sup> + 2</span>, <span class="m"><i>r</i> = 3<i>x</i><sup>4</sup> + <i>x</i><sup>3</sup> + 4<i>x</i><sup>2</sup> + <i>x</i> + 1</span></span></p>
+      <p><b>d)</b> <span class="m"><i>g</i></span> főegyütthatója 2, <span class="m">2<sup>−1</sup> = 3</span> ℤ<sub>5</sub>-ben. Hányadostagok: <span class="m">3 · 3 = 9 ≡ 4</span> → <span class="m">4<i>x</i><sup>2</sup></span>; <span class="m">2 · 3 = 6 ≡ 1</span> → <span class="m"><i>x</i></span>; <span class="m">4 · 3 = 12 ≡ 2</span> → <span class="m">2</span>.</p>
+      <div class="pd"><table><tr><th></th><th><i>x</i><sup>6</sup></th><th><i>x</i><sup>5</sup></th><th><i>x</i><sup>4</sup></th><th><i>x</i><sup>3</sup></th><th><i>x</i><sup>2</sup></th><th><i>x</i></th><th>1</th></tr><tr class="top"><td class="lab"><i>f</i></td><td>3</td><td>1</td><td>0</td><td>3</td><td>1</td><td>4</td><td>1</td></tr><tr class="prod"><td class="lab">− (4<i>x</i><sup>2</sup>)·<i>g</i></td><td>3</td><td>4</td><td>0</td><td>4</td><td>2</td><td></td><td></td></tr><tr class="rem"><td class="lab">=</td><td></td><td>2</td><td>0</td><td>4</td><td>4</td><td>4</td><td>1</td></tr><tr class="prod"><td class="lab">− (<i>x</i>)·<i>g</i></td><td></td><td>2</td><td>1</td><td>0</td><td>1</td><td>3</td><td></td></tr><tr class="rem"><td class="lab">=</td><td></td><td></td><td>4</td><td>4</td><td>3</td><td>1</td><td>1</td></tr><tr class="prod"><td class="lab">− (2)·<i>g</i></td><td></td><td></td><td>4</td><td>2</td><td>0</td><td>2</td><td>1</td></tr><tr class="rem fin"><td class="lab">=</td><td></td><td></td><td></td><td>2</td><td>3</td><td>4</td><td>0</td></tr></table></div>
+      <p><span class="ans"><span class="m"><i>q</i> = 4<i>x</i><sup>2</sup> + <i>x</i> + 2</span>, <span class="m"><i>r</i> = 2<i>x</i><sup>3</sup> + 3<i>x</i><sup>2</sup> + 4<i>x</i></span></span></p>
+      <p><b>e)</b> <span class="m">ℤ<sub>2</sub></span>-ben a kivonás azonos az összeadással.</p>
+      <div class="pd"><table><tr><th></th><th><i>x</i><sup>8</sup></th><th><i>x</i><sup>7</sup></th><th><i>x</i><sup>6</sup></th><th><i>x</i><sup>5</sup></th><th><i>x</i><sup>4</sup></th><th><i>x</i><sup>3</sup></th><th><i>x</i><sup>2</sup></th><th><i>x</i></th><th>1</th></tr><tr class="top"><td class="lab"><i>f</i></td><td>1</td><td>0</td><td>1</td><td>1</td><td>1</td><td>1</td><td>0</td><td>1</td><td>0</td></tr><tr class="prod"><td class="lab">− (<i>x</i><sup>3</sup>)·<i>g</i></td><td>1</td><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td><td></td><td></td><td></td></tr><tr class="rem"><td class="lab">=</td><td></td><td>0</td><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td></tr><tr class="prod"><td class="lab">− (1)·<i>g</i></td><td></td><td></td><td></td><td>1</td><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td></tr><tr class="rem fin"><td class="lab">=</td><td></td><td></td><td></td><td></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr></table></div>
+      <p><span class="ans"><span class="m"><i>q</i> = <i>x</i><sup>3</sup> + 1</span>, <span class="m"><i>r</i> = 0</span></span>, tehát <span class="m"><i>g</i> | <i>f</i></span>. Valóban <span class="m"><i>f</i> = (<i>x</i><sup>3</sup> + 1)(<i>x</i><sup>5</sup> + <i>x</i><sup>3</sup> + <i>x</i>)</span>.</p>
+    </div></details>
+    <details><summary>Részletes magyarázat: egy <span class="m">ℤ<sub>5</sub></span>-ös lépés (d)</summary><div class="sol">
+      <ol>
+        <li><b>Hányadostag.</b> A maradék főtagja <span class="m">3<i>x</i><sup>6</sup></span>, <span class="m"><i>g</i></span> főtagja <span class="m">2<i>x</i><sup>4</sup></span>. Kitevők: <span class="m">6 − 4 = 2</span>. Együttható: <span class="m">3 / 2 = 3 · 2<sup>−1</sup> = 3 · 3 = 9 ≡ 4</span>. A tag <span class="m">4<i>x</i><sup>2</sup></span>.</li>
+        <li><b>Szorzás.</b> <span class="m">4<i>x</i><sup>2</sup> · <i>g</i> = 8<i>x</i><sup>6</sup> + 4<i>x</i><sup>5</sup> + 4<i>x</i><sup>3</sup> + 12<i>x</i><sup>2</sup> ≡ 3<i>x</i><sup>6</sup> + 4<i>x</i><sup>5</sup> + 4<i>x</i><sup>3</sup> + 2<i>x</i><sup>2</sup></span>.</li>
+        <li><b>Kivonás.</b> <span class="m"><i>f</i> − 4<i>x</i><sup>2</sup> <i>g</i></span>: az <span class="m"><i>x</i><sup>6</sup></span> kiesik, <span class="m"><i>x</i><sup>5</sup></span>: <span class="m">1 − 4 = −3 ≡ 2</span>; <span class="m"><i>x</i><sup>3</sup></span>: <span class="m">3 − 4 = −1 ≡ 4</span>; <span class="m"><i>x</i><sup>2</sup></span>: <span class="m">1 − 2 = −1 ≡ 4</span>; a többi marad. Eredmény: <span class="m">2<i>x</i><sup>5</sup> + 4<i>x</i><sup>3</sup> + 4<i>x</i><sup>2</sup> + 4<i>x</i> + 1</span>.</li>
+        <li><b>Ismétlés,</b> amíg a maradék foka legalább <span class="m">deg <i>g</i> = 4</span>.</li>
+      </ol>
+      <div class="tip">Ellenőrzés: <span class="m"><i>q</i> · <i>g</i> + <i>r</i></span>-nek vissza kell adnia <span class="m"><i>f</i></span>-et. d)-ben <span class="m">(4<i>x</i><sup>2</sup> + <i>x</i> + 2)(2<i>x</i><sup>4</sup> + <i>x</i><sup>3</sup> + <i>x</i> + 3) = 3<i>x</i><sup>6</sup> + <i>x</i><sup>5</sup> + <i>x</i><sup>3</sup> + 3<i>x</i><sup>2</sup> + 0<i>x</i> + 1</span>, ehhez hozzáadva <span class="m">2<i>x</i><sup>3</sup> + 3<i>x</i><sup>2</sup> + 4<i>x</i></span>-et <span class="m">3<i>x</i><sup>6</sup> + <i>x</i><sup>5</sup> + 3<i>x</i><sup>3</sup> + <i>x</i><sup>2</sup> + 4<i>x</i> + 1</span> jön ki ✓.</div>
+      <div class="warn">Gyakori hiba, hogy a kivonásnál csak a vezető tagot vonják ki. A tag <span class="m"><i>g</i></span>-szeresének minden tagját ki kell vonni, és a kimaradó tagokat (amelyek <span class="m"><i>g</i></span>-szeresében nem szerepelnek) le kell hozni.</div>
+    </div></details>
+  </article>
+
+  <article class="task" id="f5-4">
+    <div class="task-head"><span class="no">5/4</span><span class="src">érdekes</span></div>
+    <p class="stmt">Hogyan kell megválasztani az <span class="m"><i>a</i></span>, <span class="m"><i>b</i></span>, <span class="m"><i>m</i></span> értékeket, hogy az <span class="m"><i>x</i><sup>3</sup> + <i>a</i><i>x</i> + <i>b</i></span> polinom <span class="m">ℂ</span> felett osztható legyen az <span class="m"><i>x</i><sup>2</sup> + <i>m</i><i>x</i> − 1</span> polinommal?</p>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p><b>1. út: maradékos osztás paraméterrel.</b> <span class="m"><i>x</i><sup>3</sup> / <i>x</i><sup>2</sup> = <i>x</i></span>: kivonjuk <span class="m"><i>x</i>(<i>x</i><sup>2</sup> + <i>m</i><i>x</i> − 1) = <i>x</i><sup>3</sup> + <i>m</i><i>x</i><sup>2</sup> − <i>x</i></span>-et, marad <span class="m">−<i>m</i><i>x</i><sup>2</sup> + (<i>a</i> + 1)<i>x</i> + <i>b</i></span>. Következő tag <span class="m">−<i>m</i></span>: kivonjuk <span class="m">−<i>m</i>(<i>x</i><sup>2</sup> + <i>m</i><i>x</i> − 1) = −<i>m</i><i>x</i><sup>2</sup> − <i>m</i><sup>2</sup> <i>x</i> + <i>m</i></span>-et:</p>
+      <p class="mb"><i>r</i> = (<i>a</i> + 1 + <i>m</i><sup>2</sup>) <i>x</i> + (<i>b</i> − <i>m</i>)</p>
+      <p>Oszthatóság ⇔ <span class="m"><i>r</i> = 0</span> ⇔ mindkét együttható 0: <span class="m"><i>a</i> = −<i>m</i><sup>2</sup> − 1</span> és <span class="m"><i>b</i> = <i>m</i></span>.</p>
+      <p><b>2. út: együttható-összehasonlítás.</b> A hányados elsőfokú és főegyütthatója 1: <span class="m"><i>x</i><sup>3</sup> + <i>a</i><i>x</i> + <i>b</i> = (<i>x</i> + <i>c</i>)(<i>x</i><sup>2</sup> + <i>m</i><i>x</i> − 1) = <i>x</i><sup>3</sup> + (<i>m</i> + <i>c</i>)<i>x</i><sup>2</sup> + (<i>c</i><i>m</i> − 1)<i>x</i> − <i>c</i></span>. Összevetve: <span class="m"><i>m</i> + <i>c</i> = 0</span>, <span class="m"><i>a</i> = <i>c</i><i>m</i> − 1</span>, <span class="m"><i>b</i> = −<i>c</i></span>, ebből ugyanaz jön ki.</p>
+      <p><span class="ans"><span class="m"><i>m</i> ∈ ℂ</span> tetszőleges, <span class="m"><i>a</i> = −(<i>m</i><sup>2</sup> + 1)</span>, <span class="m"><i>b</i> = <i>m</i></span></span></p>
+      <p>Ellenőrzés <span class="m"><i>m</i> = 0</span>-ra: <span class="m"><i>x</i><sup>3</sup> − <i>x</i> = <i>x</i>(<i>x</i><sup>2</sup> − 1)</span> ✓. <span class="m"><i>m</i> = 2</span>-re: <span class="m"><i>x</i><sup>3</sup> − 5<i>x</i> + 2 = (<i>x</i> − 2)(<i>x</i><sup>2</sup> + 2<i>x</i> − 1)</span> ✓.</p>
+    </div></details>
+    <details><summary>Részletes magyarázat</summary><div class="sol">
+      <p>Három ismeretlen van, de az oszthatóság csak két feltételt ad (a maradék két együtthatóját). Ezért az egyik paraméter szabadon választható, a válasz egy paraméteres család. Ezt így kell leírni: „bármely <span class="m"><i>m</i></span>-re, <span class="m"><i>a</i> = …</span>, <span class="m"><i>b</i> = …</span>”.</p>
+      <p>Az együttható-összehasonlítás akkor gyorsabb, ha a hányados alakja rögtön látszik: a fok <span class="m">3 − 2 = 1</span>, a főegyüttható <span class="m">1/1 = 1</span>, tehát <span class="m"><i>x</i> + <i>c</i></span>. Paraméteres osztásnál könnyű elrontani az előjeleket, ezt a módszert érdemes ellenőrzésre használni.</p>
+    </div></details>
+  </article>
+
+  <article class="task" id="f5-5">
+    <div class="task-head"><span class="no">5/5</span><span class="src">érdekes</span></div>
+    <p class="stmt">Határozza meg <span class="m"><i>a</i>, <i>b</i> ∈ ℤ<sub>5</sub></span> értékét úgy, hogy <span class="m"><i>x</i><sup>4</sup> + 3<i>x</i><sup>2</sup> + <i>a</i><i>x</i> + <i>b</i></span> osztható legyen <span class="m"><i>x</i><sup>2</sup> + 3<i>a</i><i>x</i> + 2</span>-vel <span class="m">ℤ<sub>5</sub></span> felett!</p>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p>A hányados másodfokú és főegyütthatója 1: <span class="m">(<i>x</i><sup>2</sup> + <i>c</i><i>x</i> + <i>d</i>)(<i>x</i><sup>2</sup> + 3<i>a</i><i>x</i> + 2)</span>. Kibontva:</p>
+      <p class="mb"><i>x</i><sup>4</sup> + (3<i>a</i> + <i>c</i>)<i>x</i><sup>3</sup> + (2 + 3<i>a</i><i>c</i> + <i>d</i>)<i>x</i><sup>2</sup> + (2<i>c</i> + 3<i>a</i><i>d</i>)<i>x</i> + 2<i>d</i></p>
+      <p>Együtthatók összevetése <span class="m"><i>x</i><sup>4</sup> + 0<i>x</i><sup>3</sup> + 3<i>x</i><sup>2</sup> + <i>a</i><i>x</i> + <i>b</i></span>-vel (mod 5):</p>
+      <ul>
+        <li><span class="m"><i>x</i><sup>3</sup></span>: <span class="m">3<i>a</i> + <i>c</i> = 0</span> → <span class="m"><i>c</i> = −3<i>a</i> = 2<i>a</i></span></li>
+        <li><span class="m"><i>x</i><sup>2</sup></span>: <span class="m">2 + 3<i>a</i><i>c</i> + <i>d</i> = 3</span> → <span class="m"><i>d</i> = 1 − 3<i>a</i> · 2<i>a</i> = 1 − 6<i>a</i><sup>2</sup> = 1 − <i>a</i><sup>2</sup></span></li>
+        <li><span class="m"><i>x</i><sup>1</sup></span>: <span class="m">2<i>c</i> + 3<i>a</i><i>d</i> = <i>a</i></span> → <span class="m">4<i>a</i> + 3<i>a</i>(1 − <i>a</i><sup>2</sup>) − <i>a</i> = 0</span> → <span class="m">6<i>a</i> − 3<i>a</i><sup>3</sup> = <i>a</i> − 3<i>a</i><sup>3</sup> = <i>a</i>(1 − 3<i>a</i><sup>2</sup>) = 0</span></li>
+        <li><span class="m"><i>x</i><sup>0</sup></span>: <span class="m"><i>b</i> = 2<i>d</i></span></li>
+      </ul>
+      <p><span class="m">ℤ<sub>5</sub></span> test, így <span class="m"><i>a</i> = 0</span> vagy <span class="m">3<i>a</i><sup>2</sup> = 1</span>, azaz <span class="m"><i>a</i><sup>2</sup> = 3<sup>−1</sup> = 2</span>. A négyzetek ℤ<sub>5</sub>-ben <span class="m">0, 1, 4, 4, 1</span>, a 2 nincs köztük, tehát csak <span class="m"><i>a</i> = 0</span> jó.</p>
+      <p>Ekkor <span class="m"><i>c</i> = 0</span>, <span class="m"><i>d</i> = 1</span>, <span class="m"><i>b</i> = 2</span>. Ellenőrzés: <span class="m">(<i>x</i><sup>2</sup> + 1)(<i>x</i><sup>2</sup> + 2) = <i>x</i><sup>4</sup> + 3<i>x</i><sup>2</sup> + 2</span> ✓.</p>
+      <p><span class="ans"><span class="m"><i>a</i> = 0</span>, <span class="m"><i>b</i> = 2</span></span></p>
+    </div></details>
+    <details><summary>Részletes magyarázat: maradékos osztással</summary><div class="sol">
+      <p>Jelölje <span class="m"><i>c</i> = 3<i>a</i></span>. Az osztás három lépése után a maradék:</p>
+      <p class="mb"><i>r</i> = (<i>a</i> + 2<i>c</i> − <i>c</i>(1 + <i>c</i><sup>2</sup>)) <i>x</i> + (<i>b</i> − 2(1 + <i>c</i><sup>2</sup>))</p>
+      <p><span class="m"><i>c</i> = 3<i>a</i></span> beírásával az <span class="m"><i>x</i></span> együtthatója <span class="m"><i>a</i> + 6<i>a</i> − 3<i>a</i> − 27<i>a</i><sup>3</sup> = 4<i>a</i> − 27<i>a</i><sup>3</sup> ≡ 4<i>a</i> − 2<i>a</i><sup>3</sup> = 2<i>a</i>(2 − <i>a</i><sup>2</sup>)</span>. Ez ugyanaz a feltétel: <span class="m"><i>a</i> = 0</span> vagy <span class="m"><i>a</i><sup>2</sup> = 2</span> (nincs). A konstans: <span class="m"><i>b</i> = 2(1 + 0) = 2</span>.</p>
+      <p>Mivel <span class="m">ℤ<sub>5</sub></span>-nek csak 5 eleme van, végső ellenőrzésként az <span class="m"><i>a</i></span> mind az 5 értéke kipróbálható. Ezt programmal meg is tettem, és csak <span class="m">(<i>a</i>, <i>b</i>) = (0, 2)</span> jó.</p>
+    </div></details>
+  </article>
+
+  <article class="task" id="f5-6">
+    <div class="task-head"><span class="no">5/6</span><span class="src">érdekes</span></div>
+    <p class="stmt">Mi a maradék, ha az <span class="m"><i>x</i><sup>64</sup> + <i>x</i><sup>54</sup> + <i>x</i><sup>14</sup> + 1 ∈ ℂ[<i>x</i>]</span> polinomot maradékosan elosztjuk az <span class="m"><i>x</i><sup>2</sup> − 1</span> polinommal?</p>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p><b>Redukcióval.</b> <span class="m"><i>x</i><sup>2</sup> ≡ 1 mod (<i>x</i><sup>2</sup> − 1)</span>, így minden páros kitevőjű hatvány: <span class="m"><i>x</i><sup>2<i>k</i></sup> = (<i>x</i><sup>2</sup>)<sup><i>k</i></sup> ≡ 1</span>. Tehát <span class="m"><i>x</i><sup>64</sup> + <i>x</i><sup>54</sup> + <i>x</i><sup>14</sup> + 1 ≡ 1 + 1 + 1 + 1 = 4</span>.</p>
+      <p><b>Gyökökkel.</b> A maradék <span class="m"><i>r</i> = <i>c</i><i>x</i> + <i>d</i></span> alakú (foka <span class="m">&lt; 2</span>). <span class="m"><i>x</i><sup>2</sup> − 1</span> gyökei <span class="m">±1</span>, és ezekben <span class="m"><i>f</i></span> és <span class="m"><i>r</i></span> megegyezik: <span class="m"><i>f</i>(1) = 4 = <i>c</i> + <i>d</i></span>, <span class="m"><i>f</i>(−1) = 4 = −<i>c</i> + <i>d</i></span>. Így <span class="m"><i>c</i> = 0</span>, <span class="m"><i>d</i> = 4</span>.</p>
+      <p><span class="ans"><span class="m"><i>r</i> = 4</span></span></p>
+    </div></details>
+  </article>
+</section>
+
+<!-- ================= 6. FELADATSOR ================= -->
+<section id="sor6">
+  <div class="section-head">
+    <span class="label">6. feladatsor · 10.12–16.</span>
+    <h2>Maradék modulo polinom, lnko</h2>
+    <p>Az „<span class="m"><i>f</i> mod <i>m</i></span>” azt a maradékot jelenti, amit <span class="m"><i>f</i></span>-nek <span class="m"><i>m</i></span>-mel való maradékos osztásakor kapunk. Minden ilyen feladatban az első lépés: írd fel, mivel helyettesíthető <span class="m"><i>m</i></span> főtagja.</p>
+  </div>
+
+  <article class="task" id="f6-1">
+    <div class="task-head"><span class="no">6/1</span><span class="src">bemelegítő</span></div>
+    <p class="stmt">Legyen <span class="m"><i>f</i> = <i>x</i><sup>2</sup> + 1 ∈ ℝ[<i>x</i>]</span>. Számolja ki: a) <span class="m"><i>x</i><sup>2</sup> mod <i>f</i></span>; b) <span class="m"><i>x</i><sup>3</sup> + <i>x</i> + 1 mod <i>f</i></span>; c) <span class="m"><i>x</i><sup>4</sup> mod <i>f</i></span>!</p>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p><span class="m"><i>x</i><sup>2</sup> + 1 ≡ 0</span>, vagyis <span class="m"><i>x</i><sup>2</sup> ≡ −1 mod <i>f</i></span>.</p>
+      <ul>
+        <li>a) <span class="ans"><span class="m"><i>x</i><sup>2</sup> mod <i>f</i> = −1</span></span></li>
+        <li>b) <span class="m"><i>x</i><sup>3</sup> = <i>x</i> · <i>x</i><sup>2</sup> ≡ −<i>x</i></span>, így <span class="m"><i>x</i><sup>3</sup> + <i>x</i> + 1 ≡ −<i>x</i> + <i>x</i> + 1</span> → <span class="ans">1</span></li>
+        <li>c) <span class="m"><i>x</i><sup>4</sup> = (<i>x</i><sup>2</sup>)<sup>2</sup> ≡ (−1)<sup>2</sup></span> → <span class="ans">1</span></li>
+      </ul>
+      <div class="tip">Ez pontosan a komplex számok számolása: <span class="m"><i>x</i></span> úgy viselkedik, mint az <span class="m"><i>i</i></span> (<span class="m"><i>i</i><sup>2</sup> = −1</span>, <span class="m"><i>i</i><sup>4</sup> = 1</span>). Pl. b) <span class="m"><i>i</i><sup>3</sup> + <i>i</i> + 1 = −<i>i</i> + <i>i</i> + 1 = 1</span>.</div>
+    </div></details>
+  </article>
+
+  <article class="task" id="f6-2">
+    <div class="task-head"><span class="no">6/2</span><span class="src">bemelegítő</span></div>
+    <p class="stmt">Legyen <span class="m"><i>f</i> = <i>x</i><sup>2</sup> + 2</span>, <span class="m"><i>g</i> = 2<i>x</i><sup>2</sup> + <i>x</i> + 1</span>, <span class="m"><i>h</i> = <i>x</i><sup>3</sup> + <i>x</i> + 1 ∈ ℤ<sub>3</sub>[<i>x</i>]</span>. Számítsa ki modulo <span class="m"><i>x</i><sup>2</sup> + 2<i>x</i> + 2</span>:<br>
+      a) <span class="m">(<i>f</i> + <i>g</i>)<sup>2</sup></span>; b) <span class="m"><i>g</i> · <i>h</i></span>; c) <span class="m">(<i>f</i> − <i>g</i>)(<i>g</i> − <i>h</i>)(<i>f</i> − <i>h</i>)</span>; d) <span class="m">(<i>f</i> − <i>g</i>)<sup>3</sup></span>.</p>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p><b>Redukciós szabály.</b> <span class="m"><i>x</i><sup>2</sup> + 2<i>x</i> + 2 ≡ 0</span> → <span class="m"><i>x</i><sup>2</sup> ≡ −2<i>x</i> − 2 = <i>x</i> + 1</span> (mod 3: <span class="m">−2 = 1</span>). Ebből <span class="m"><i>x</i><sup>3</sup> = <i>x</i> · <i>x</i><sup>2</sup> ≡ <i>x</i><sup>2</sup> + <i>x</i> ≡ 2<i>x</i> + 1</span>.</p>
+      <p><b>Először a három polinomot redukáljuk:</b></p>
+      <ul>
+        <li><span class="m"><i>f</i> = <i>x</i><sup>2</sup> + 2 ≡ (<i>x</i> + 1) + 2 = <i>x</i> + 3 = <i>x</i></span></li>
+        <li><span class="m"><i>g</i> = 2<i>x</i><sup>2</sup> + <i>x</i> + 1 ≡ 2(<i>x</i> + 1) + <i>x</i> + 1 = 3<i>x</i> + 3 = 0</span> (valóban <span class="m"><i>g</i> = 2(<i>x</i><sup>2</sup> + 2<i>x</i> + 2)</span>)</li>
+        <li><span class="m"><i>h</i> = <i>x</i><sup>3</sup> + <i>x</i> + 1 ≡ (2<i>x</i> + 1) + <i>x</i> + 1 = 3<i>x</i> + 2 = 2</span></li>
+      </ul>
+      <p>Ezután már csak <span class="m"><i>f</i> ≡ <i>x</i></span>, <span class="m"><i>g</i> ≡ 0</span>, <span class="m"><i>h</i> ≡ 2</span> értékekkel számolunk:</p>
+      <ul>
+        <li>a) <span class="m">(<i>f</i> + <i>g</i>)<sup>2</sup> ≡ <i>x</i><sup>2</sup> ≡</span> <span class="ans"><span class="m"><i>x</i> + 1</span></span></li>
+        <li>b) <span class="m"><i>g</i> · <i>h</i> ≡ 0 · 2 =</span> <span class="ans">0</span></li>
+        <li>c) <span class="m">(<i>x</i> − 0)(0 − 2)(<i>x</i> − 2) = <i>x</i> · 1 · (<i>x</i> + 1) = <i>x</i><sup>2</sup> + <i>x</i> ≡ (<i>x</i> + 1) + <i>x</i> =</span> <span class="ans"><span class="m">2<i>x</i> + 1</span></span></li>
+        <li>d) <span class="m">(<i>f</i> − <i>g</i>)<sup>3</sup> ≡ <i>x</i><sup>3</sup> ≡</span> <span class="ans"><span class="m">2<i>x</i> + 1</span></span></li>
+      </ul>
+    </div></details>
+    <details><summary>Részletes magyarázat</summary><div class="sol">
+      <p><b>Miért szabad előbb redukálni?</b> Ha <span class="m"><i>f</i> ≡ <i>f</i>'</span> és <span class="m"><i>g</i> ≡ <i>g</i>' mod <i>m</i></span>, akkor <span class="m"><i>f</i> + <i>g</i> ≡ <i>f</i>' + <i>g</i>'</span> és <span class="m"><i>f</i><i>g</i> ≡ <i>f</i>'<i>g</i>'</span>. Ugyanaz a szabály, mint az egész számoknál: a végeredmény ugyanaz, csak sokkal kisebb polinomokkal kell számolni.</p>
+      <p><b>Kerülőút összehasonlításul (a).</b> <span class="m"><i>f</i> + <i>g</i> = 3<i>x</i><sup>2</sup> + <i>x</i> + 3 = <i>x</i></span> ℤ<sub>3</sub>-ban, <span class="m"><i>x</i><sup>2</sup></span>-et elosztva <span class="m"><i>x</i><sup>2</sup> + 2<i>x</i> + 2</span>-vel a maradék <span class="m">−2<i>x</i> − 2 = <i>x</i> + 1</span>. Ugyanaz.</p>
+      <p><b>c) részletesen.</b> <span class="m">−2 ≡ 1 mod 3</span>, és <span class="m"><i>x</i> − 2 = <i>x</i> + 1</span>. A szorzat <span class="m"><i>x</i>(<i>x</i> + 1) = <i>x</i><sup>2</sup> + <i>x</i></span>, aminek a foka még 2, tehát még egyszer redukálni kell: <span class="m"><i>x</i><sup>2</sup> + <i>x</i> ≡ (<i>x</i> + 1) + <i>x</i> = 2<i>x</i> + 1</span>.</p>
+      <div class="warn">A végeredmény foka mindig kisebb a modulus fokánál (itt: legfeljebb 1). Ha <span class="m"><i>x</i><sup>2</sup></span> marad a válaszban, még nem vagy kész.</div>
+    </div></details>
+  </article>
+
+  <article class="task" id="f6-3">
+    <div class="task-head"><span class="no">6/3</span><span class="src">bemelegítő</span></div>
+    <p class="stmt">Legyen <span class="m"><i>f</i> = <i>x</i><sup>2</sup> + <i>x</i> + 1</span>, <span class="m"><i>g</i> = 3<i>x</i><sup>2</sup> + 4<i>x</i> + 1</span>, <span class="m"><i>h</i> = <i>x</i><sup>3</sup> + <i>x</i> + 4 ∈ ℤ<sub>5</sub>[<i>x</i>]</span>. Számítsa ki modulo <span class="m"><i>x</i><sup>3</sup> + 1</span>:<br>
+      a) <span class="m">(<i>f</i> + <i>g</i>)<sup>2</sup></span>; b) <span class="m"><i>f</i> · <i>g</i> + <i>g</i> · <i>h</i> + <i>f</i> · <i>h</i></span>; c) <span class="m">(<i>f</i> − <i>g</i>)(<i>g</i> − <i>h</i>)(<i>f</i> − <i>h</i>)</span>.</p>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p><b>Redukciós szabály.</b> <span class="m"><i>x</i><sup>3</sup> ≡ −1 = 4</span>, <span class="m"><i>x</i><sup>4</sup> ≡ −<i>x</i> = 4<i>x</i></span>. <span class="m"><i>f</i></span> és <span class="m"><i>g</i></span> már másodfokú, <span class="m"><i>h</i> ≡ 4 + <i>x</i> + 4 = <i>x</i> + 3</span>.</p>
+      <p><b>a)</b> <span class="m"><i>f</i> + <i>g</i> = 4<i>x</i><sup>2</sup> + 2</span>. <span class="m">(4<i>x</i><sup>2</sup> + 2)<sup>2</sup> = 16<i>x</i><sup>4</sup> + 16<i>x</i><sup>2</sup> + 4 = <i>x</i><sup>4</sup> + <i>x</i><sup>2</sup> + 4 ≡ 4<i>x</i> + <i>x</i><sup>2</sup> + 4</span>.</p>
+      <p><span class="ans"><span class="m"><i>x</i><sup>2</sup> + 4<i>x</i> + 4</span></span></p>
+      <p><b>b)</b> Tagonként, <span class="m"><i>h</i></span> helyett <span class="m"><i>x</i> + 3</span>-mal:</p>
+      <ul>
+        <li><span class="m"><i>f</i><i>g</i> = 3<i>x</i><sup>4</sup> + 2<i>x</i><sup>3</sup> + 3<i>x</i><sup>2</sup> + 1 ≡ 3 · 4<i>x</i> + 2 · 4 + 3<i>x</i><sup>2</sup> + 1 = 3<i>x</i><sup>2</sup> + 2<i>x</i> + 4</span></li>
+        <li><span class="m"><i>g</i><i>h</i> ≡ (3<i>x</i><sup>2</sup> + 4<i>x</i> + 1)(<i>x</i> + 3) = 3<i>x</i><sup>3</sup> + 3<i>x</i><sup>2</sup> + 3<i>x</i> + 3 ≡ 3 · 4 + 3<i>x</i><sup>2</sup> + 3<i>x</i> + 3 = 3<i>x</i><sup>2</sup> + 3<i>x</i></span></li>
+        <li><span class="m"><i>f</i><i>h</i> ≡ (<i>x</i><sup>2</sup> + <i>x</i> + 1)(<i>x</i> + 3) = <i>x</i><sup>3</sup> + 4<i>x</i><sup>2</sup> + 4<i>x</i> + 3 ≡ 4 + 4<i>x</i><sup>2</sup> + 4<i>x</i> + 3 = 4<i>x</i><sup>2</sup> + 4<i>x</i> + 2</span></li>
+      </ul>
+      <p>Összeg: <span class="m">(3 + 3 + 4)<i>x</i><sup>2</sup> + (2 + 3 + 4)<i>x</i> + (4 + 0 + 2) = 10<i>x</i><sup>2</sup> + 9<i>x</i> + 6 ≡</span> <span class="ans"><span class="m">4<i>x</i> + 1</span></span></p>
+      <p><b>c)</b> <span class="m"><i>f</i> − <i>g</i> = −2<i>x</i><sup>2</sup> − 3<i>x</i> = 3<i>x</i><sup>2</sup> + 2<i>x</i></span>; <span class="m"><i>g</i> − <i>h</i> ≡ 3<i>x</i><sup>2</sup> + 3<i>x</i> − 2 = 3<i>x</i><sup>2</sup> + 3<i>x</i> + 3</span>; <span class="m"><i>f</i> − <i>h</i> ≡ <i>x</i><sup>2</sup> − 2 = <i>x</i><sup>2</sup> + 3</span>.</p>
+      <p>Két lépésben, minden szorzás után redukálva:</p>
+      <ul>
+        <li><span class="m">(3<i>x</i><sup>2</sup> + 2<i>x</i>)(3<i>x</i><sup>2</sup> + 3<i>x</i> + 3) = 9<i>x</i><sup>4</sup> + 15<i>x</i><sup>3</sup> + 15<i>x</i><sup>2</sup> + 6<i>x</i> = 4<i>x</i><sup>4</sup> + <i>x</i> ≡ 4 · 4<i>x</i> + <i>x</i> = 17<i>x</i> ≡ 2<i>x</i></span></li>
+        <li><span class="m">2<i>x</i> · (<i>x</i><sup>2</sup> + 3) = 2<i>x</i><sup>3</sup> + 6<i>x</i> ≡ 2 · 4 + <i>x</i> = <i>x</i> + 3</span></li>
+      </ul>
+      <p><span class="ans"><span class="m"><i>x</i> + 3</span></span></p>
+    </div></details>
+  </article>
+
+  <article class="task" id="f6-4">
+    <div class="task-head"><span class="no">6/4</span><span class="src">gyakorló</span></div>
+    <p class="stmt">Számolja ki <span class="m"><i>f</i></span> és <span class="m"><i>g</i></span> legnagyobb közös osztóját!<br>
+      a) <span class="m"><i>f</i> = <i>x</i><sup>4</sup> + <i>x</i><sup>3</sup> − <i>x</i> − 1</span>, <span class="m"><i>g</i> = <i>x</i><sup>4</sup> + 2<i>x</i><sup>3</sup> − 2<i>x</i> − 1</span>, <span class="m">ℚ[<i>x</i>]</span>;<br>
+      b) <span class="m"><i>f</i> = <i>x</i><sup>4</sup> + 2<i>x</i><sup>3</sup> + 3<i>x</i> + 4</span>, <span class="m"><i>g</i> = <i>x</i><sup>4</sup> + 4</span>, <span class="m">ℤ<sub>5</sub>[<i>x</i>]</span>;<br>
+      c) <span class="m"><i>f</i> = <i>x</i><sup>5</sup> + <i>x</i><sup>4</sup> + 4<i>x</i><sup>3</sup> + 4<i>x</i><sup>2</sup></span>, <span class="m"><i>g</i> = <i>x</i><sup>4</sup> + <i>x</i><sup>3</sup> + 4<i>x</i> + 4</span>, <span class="m">ℤ<sub>5</sub>[<i>x</i>]</span>.</p>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p><b>a)</b> Euklideszi algoritmus, a maradékot <span class="m">−1</span>-gyel szorozva:</p>
+      <div class="steps">
+        <p class="mb"><i>f</i> = 1 · <i>g</i> + (−<i>x</i><sup>3</sup> + <i>x</i>)  →  <i>r</i><sub>1</sub> = <i>x</i><sup>3</sup> − <i>x</i></p>
+        <p class="mb"><i>g</i> = (<i>x</i> + 2)(<i>x</i><sup>3</sup> − <i>x</i>) + (<i>x</i><sup>2</sup> − 1)</p>
+        <p class="mb"><i>x</i><sup>3</sup> − <i>x</i> = <i>x</i> · (<i>x</i><sup>2</sup> − 1) + 0</p>
+      </div>
+      <p>Az utolsó nem nulla maradék: <span class="ans"><span class="m">(<i>f</i>, <i>g</i>) = <i>x</i><sup>2</sup> − 1</span></span></p>
+      <p>Ellenőrzés szorzattá bontással: <span class="m"><i>f</i> = (<i>x</i><sup>3</sup> − 1)(<i>x</i> + 1) = (<i>x</i> − 1)(<i>x</i><sup>2</sup> + <i>x</i> + 1)(<i>x</i> + 1)</span>, <span class="m"><i>g</i> = (<i>x</i> − 1)(<i>x</i> + 1)<sup>3</sup></span>. Közös: <span class="m">(<i>x</i> − 1)(<i>x</i> + 1)</span> ✓.</p>
+      <p><b>b)</b> <span class="m"><i>f</i> − <i>g</i> = 2<i>x</i><sup>3</sup> + 3<i>x</i></span>, ezt <span class="m">2<sup>−1</sup> = 3</span>-mal szorozva: <span class="m"><i>r</i><sub>1</sub> = <i>x</i><sup>3</sup> + 4<i>x</i></span>.</p>
+      <div class="steps">
+        <p class="mb"><i>f</i> = 1 · <i>g</i> + (2<i>x</i><sup>3</sup> + 3<i>x</i>)  →  <i>r</i><sub>1</sub> = <i>x</i><sup>3</sup> + 4<i>x</i></p>
+        <p class="mb"><i>g</i> = <i>x</i> · (<i>x</i><sup>3</sup> + 4<i>x</i>) + (−4<i>x</i><sup>2</sup> + 4) = <i>x</i>(<i>x</i><sup>3</sup> + 4<i>x</i>) + (<i>x</i><sup>2</sup> + 4)</p>
+        <p class="mb"><i>x</i><sup>3</sup> + 4<i>x</i> = <i>x</i> · (<i>x</i><sup>2</sup> + 4) + 0</p>
+      </div>
+      <p><span class="ans"><span class="m">(<i>f</i>, <i>g</i>) = <i>x</i><sup>2</sup> + 4</span></span> <span class="m">= (<i>x</i> − 1)(<i>x</i> + 1)</span>. Ellenőrzés: <span class="m"><i>g</i> = <i>x</i><sup>4</sup> − 1</span> gyökei ℤ<sub>5</sub>-ben <span class="m">1, 2, 3, 4</span>; <span class="m"><i>f</i>(1) = 10 ≡ 0</span>, <span class="m"><i>f</i>(4) = 256 + 128 + 12 + 4 = 400 ≡ 0</span>, de <span class="m"><i>f</i>(2) = 42 ≡ 2</span>, <span class="m"><i>f</i>(3) = 148 ≡ 3</span> ✓.</p>
+      <p><b>c)</b> <span class="m"><i>f</i> − <i>x</i> · <i>g</i> = (<i>x</i><sup>5</sup> + <i>x</i><sup>4</sup> + 4<i>x</i><sup>3</sup> + 4<i>x</i><sup>2</sup>) − (<i>x</i><sup>5</sup> + <i>x</i><sup>4</sup> + 4<i>x</i><sup>2</sup> + 4<i>x</i>) = 4<i>x</i><sup>3</sup> − 4<i>x</i> = 4<i>x</i><sup>3</sup> + <i>x</i></span>. Szorozva <span class="m">4<sup>−1</sup> = 4</span>-gyel: <span class="m"><i>r</i><sub>1</sub> = <i>x</i><sup>3</sup> + 4<i>x</i></span>.</p>
+      <div class="steps">
+        <p class="mb"><i>f</i> = <i>x</i> · <i>g</i> + (4<i>x</i><sup>3</sup> + <i>x</i>)  →  <i>r</i><sub>1</sub> = <i>x</i><sup>3</sup> + 4<i>x</i></p>
+        <p class="mb"><i>g</i> = (<i>x</i> + 1)(<i>x</i><sup>3</sup> + 4<i>x</i>) + (<i>x</i><sup>2</sup> + 4)</p>
+        <p class="mb"><i>x</i><sup>3</sup> + 4<i>x</i> = <i>x</i> · (<i>x</i><sup>2</sup> + 4) + 0</p>
+      </div>
+      <p><span class="ans"><span class="m">(<i>f</i>, <i>g</i>) = <i>x</i><sup>2</sup> + 4</span></span> Ellenőrzés: <span class="m"><i>f</i> = <i>x</i><sup>2</sup>(<i>x</i> + 1)(<i>x</i><sup>2</sup> + 4)</span>, <span class="m"><i>g</i> = (<i>x</i> + 1)(<i>x</i><sup>3</sup> + 4) = (<i>x</i> + 1)(<i>x</i> − 1)(<i>x</i><sup>2</sup> + <i>x</i> + 1)</span>, közös <span class="m">(<i>x</i> + 1)(<i>x</i> − 1) = <i>x</i><sup>2</sup> − 1 = <i>x</i><sup>2</sup> + 4</span> ✓.</p>
+    </div></details>
+    <details><summary>Részletes magyarázat</summary><div class="sol">
+      <p><b>Miért szabad konstanssal szorozni?</b> Test felett a nem nulla konstans egység (van inverze), ezért <span class="m">(<i>f</i>, <i>g</i>) = (<i>f</i>, <i>c</i> · <i>g</i>)</span>. Az lnko csak konstansszoros erejéig egyértelmű, a megállapodás szerint a <b>normált</b> (főegyütthatója 1) alakot adjuk meg. Ezért a végén is normálni kell: ha <span class="m">2<i>x</i><sup>2</sup> + 3</span> jönne ki ℤ<sub>5</sub>-ben, a válasz <span class="m">3 · (2<i>x</i><sup>2</sup> + 3) = <i>x</i><sup>2</sup> + 4</span>.</p>
+      <p><b>b) második lépése részletesen.</b> <span class="m"><i>g</i> = <i>x</i><sup>4</sup> + 4</span> osztva <span class="m"><i>x</i><sup>3</sup> + 4<i>x</i></span>-szel: hányadostag <span class="m"><i>x</i></span>, <span class="m"><i>x</i>(<i>x</i><sup>3</sup> + 4<i>x</i>) = <i>x</i><sup>4</sup> + 4<i>x</i><sup>2</sup></span>, kivonva <span class="m">−4<i>x</i><sup>2</sup> + 4 ≡ <i>x</i><sup>2</sup> + 4</span> (mod 5: <span class="m">−4 = 1</span>).</p>
+      <p><b>Ha a maradékot nem normálod,</b> akkor is jó az eredmény, csak törtekkel vagy inverzekkel kell dolgozni. A program a normálás nélküli úton is <span class="m"><i>x</i><sup>2</sup> + 4</span>-et adott (a: <span class="m"><i>x</i><sup>2</sup> − 1</span>).</p>
+      <div class="tip">Ha a Zh csak az lnko-t kéri, szorzattá bontással is ellenőrizhetsz: ℤ<sub>p</sub>-ben a gyököket a <span class="m">0, 1, …, <i>p</i> − 1</span> behelyettesítésével találod meg.</div>
+    </div></details>
+  </article>
+
+  <article class="task" id="f6-5">
+    <div class="task-head"><span class="no">6/5</span><span class="src">érdekes</span></div>
+    <p class="stmt">Számítsa ki a következő maradékokat!<br>
+      a) <span class="m"><i>x</i><sup>100</sup> mod <i>x</i><sup>2</sup> + <i>x</i> + 1</span>, <span class="m">ℤ<sub>2</sub></span> fölött;<br>
+      b) <span class="m">(<i>x</i><sup>2</sup> + <i>x</i> + 1)<sup>100</sup> mod <i>x</i><sup>4</sup> + <i>x</i> + 1</span>, <span class="m">ℤ<sub>2</sub></span> fölött;<br>
+      c) <span class="m"><i>x</i><sup>1012</sup> mod <i>x</i><sup>3</sup> + <i>x</i> + 2</span>, <span class="m">ℤ<sub>3</sub></span> fölött.</p>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p><b>a)</b> <span class="m"><i>x</i><sup>3</sup> − 1 = (<i>x</i> − 1)(<i>x</i><sup>2</sup> + <i>x</i> + 1)</span>, tehát <span class="m"><i>x</i><sup>3</sup> ≡ 1</span>. <span class="m">100 = 33 · 3 + 1</span>, így <span class="m"><i>x</i><sup>100</sup> = (<i>x</i><sup>3</sup>)<sup>33</sup> · <i>x</i> ≡ <i>x</i></span>.</p>
+      <p><span class="ans"><span class="m"><i>x</i></span></span></p>
+      <p><b>b)</b> <span class="m"><i>x</i><sup>4</sup> ≡ <i>x</i> + 1</span>. Legyen <span class="m"><i>u</i> = <i>x</i><sup>2</sup> + <i>x</i> + 1</span>. <span class="m">ℤ<sub>2</sub></span>-ben <span class="m">(<i>a</i> + <i>b</i>)<sup>2</sup> = <i>a</i><sup>2</sup> + <i>b</i><sup>2</sup></span>, ezért</p>
+      <ul>
+        <li><span class="m"><i>u</i><sup>2</sup> = <i>x</i><sup>4</sup> + <i>x</i><sup>2</sup> + 1 ≡ (<i>x</i> + 1) + <i>x</i><sup>2</sup> + 1 = <i>x</i><sup>2</sup> + <i>x</i></span></li>
+        <li><span class="m"><i>u</i><sup>3</sup> = <i>u</i> · <i>u</i><sup>2</sup> = (<i>x</i><sup>2</sup> + <i>x</i> + 1)(<i>x</i><sup>2</sup> + <i>x</i>) = <i>x</i><sup>4</sup> + 2<i>x</i><sup>3</sup> + 2<i>x</i><sup>2</sup> + <i>x</i> = <i>x</i><sup>4</sup> + <i>x</i> ≡ (<i>x</i> + 1) + <i>x</i> = 1</span></li>
+      </ul>
+      <p><span class="m"><i>u</i><sup>3</sup> ≡ 1</span> és <span class="m">100 = 33 · 3 + 1</span>, így <span class="m"><i>u</i><sup>100</sup> ≡ <i>u</i></span>.</p>
+      <p><span class="ans"><span class="m"><i>x</i><sup>2</sup> + <i>x</i> + 1</span></span></p>
+      <p><b>c)</b> <span class="m"><i>x</i><sup>3</sup> ≡ −<i>x</i> − 2 = 2<i>x</i> + 1</span> (mod 3). Hatványozzuk tovább:</p>
+      <ul>
+        <li><span class="m"><i>x</i><sup>4</sup> = <i>x</i> · <i>x</i><sup>3</sup> ≡ 2<i>x</i><sup>2</sup> + <i>x</i></span></li>
+        <li><span class="m"><i>x</i><sup>8</sup> = (<i>x</i><sup>4</sup>)<sup>2</sup> ≡ (2<i>x</i><sup>2</sup> + <i>x</i>)<sup>2</sup> = 4<i>x</i><sup>4</sup> + 4<i>x</i><sup>3</sup> + <i>x</i><sup>2</sup> = <i>x</i><sup>4</sup> + <i>x</i><sup>3</sup> + <i>x</i><sup>2</sup> ≡ (2<i>x</i><sup>2</sup> + <i>x</i>) + (2<i>x</i> + 1) + <i>x</i><sup>2</sup> = 3<i>x</i><sup>2</sup> + 3<i>x</i> + 1 = 1</span></li>
+      </ul>
+      <p><span class="m"><i>x</i><sup>8</sup> ≡ 1</span>, és <span class="m">1012 = 126 · 8 + 4</span>, így <span class="m"><i>x</i><sup>1012</sup> ≡ <i>x</i><sup>4</sup> ≡ 2<i>x</i><sup>2</sup> + <i>x</i></span>.</p>
+      <p><span class="ans"><span class="m">2<i>x</i><sup>2</sup> + <i>x</i></span></span></p>
+    </div></details>
+    <details><summary>Részletes magyarázat: honnan tudod, hogy meddig hatványozz?</summary><div class="sol">
+      <p>Nem tudod előre. A recept: számold sorban <span class="m"><i>x</i><sup>3</sup>, <i>x</i><sup>4</sup>, …</span> maradékát (mindig redukálva), és figyeld, mikor jön ki 1 vagy egy konstans. c)-ben a teljes sor:</p>
+      <div class="tbl"><table>
+        <thead><tr><th><span class="m"><i>k</i></span></th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr></thead>
+        <tbody><tr><td><span class="m"><i>x</i><sup><i>k</i></sup> mod <i>m</i></span></td><td><span class="m">2<i>x</i> + 1</span></td><td><span class="m">2<i>x</i><sup>2</sup> + <i>x</i></span></td><td><span class="m"><i>x</i><sup>2</sup> + <i>x</i> + 2</span></td><td><span class="m"><i>x</i><sup>2</sup> + <i>x</i> + 1</span></td><td><span class="m"><i>x</i><sup>2</sup> + 1</span></td><td><b>1</b></td></tr></tbody>
+      </table></div>
+      <p>Négyzetre emeléssel gyorsabb: <span class="m"><i>x</i><sup>4</sup></span>-ből egy lépésben megvan <span class="m"><i>x</i><sup>8</sup></span>.</p>
+      <p><b>Ha konstans jön ki, például <span class="m"><i>x</i><sup><i>k</i></sup> ≡ −1</span>,</b> az is elég: <span class="m"><i>x</i><sup>2<i>k</i></sup> ≡ 1</span>. A B gyakorló Zh 4. feladata ilyen.</p>
+      <p><b>Ha semmi nem jön ki gyorsan:</b> ismételt négyzetre emelés. <span class="m">1012 = 512 + 256 + 128 + 64 + 32 + 16 + 4</span>, kiszámolod <span class="m"><i>x</i><sup>2</sup>, <i>x</i><sup>4</sup>, <i>x</i><sup>8</sup>, …, <i>x</i><sup>512</sup></span> maradékát, és összeszorzod a szükségeseket. Ez hosszabb, de mindig működik.</p>
+      <div class="tip">b)-ben a „tankönyvi” út: <span class="m">ℤ<sub>2</sub></span>-ben <span class="m"><i>x</i><sup>4</sup> + <i>x</i> + 1</span> irreducibilis, a maradékok nem nulla elemei 15-ös ciklikus csoportot alkotnak. Zh-n nem kell, elég, ha kiszámolod, hogy <span class="m"><i>u</i><sup>3</sup> ≡ 1</span>.</div>
+    </div></details>
+  </article>
+</section>
+
+<!-- ================= GYAKORLÓ ZH-K ================= -->
+<section id="gyakorlo">
+  <div class="section-head">
+    <span class="label">Új feladatok, a feladatsorok mintájára</span>
+    <h2>Gyakorló Zh-k</h2>
+    <p>Mindkettő 4 feladat, 30 pont. Indítsd az órát, papíron dolgozz, és csak a végén nyisd le a megoldásokat. Utána írd be a pontjaidat. Minden eredményt programmal ellenőriztem.</p>
+  </div>
+
+  <div class="exam" data-exam="A">
+    <div class="exam-bar">
+      <div><span class="label">A változat</span><div class="clock" id="clockA">60:00</div></div>
+      <div class="btns">
+        <button type="button" class="primary" id="startA">Indítás</button>
+        <button type="button" id="resetA">Újra</button>
+      </div>
+    </div>
+
+    <article class="task">
+      <div class="task-head"><span class="no">A1.</span><span class="src">az 5/3 rokona</span><span class="pts">7 pont</span></div>
+      <p class="stmt">Ossza el maradékosan az <span class="m"><i>f</i> = 2<i>x</i><sup>5</sup> + <i>x</i><sup>4</sup> + 3<i>x</i><sup>2</sup> + 4</span> polinomot a <span class="m"><i>g</i> = 3<i>x</i><sup>2</sup> + <i>x</i> + 2</span> polinommal <span class="m">ℤ<sub>5</sub></span> felett!</p>
+      <details><summary>Megoldás</summary><div class="sol">
+        <p><span class="m"><i>g</i></span> főegyütthatója 3, <span class="m">3<sup>−1</sup> = 2</span> ℤ<sub>5</sub>-ben. Hányadostagok: <span class="m">2 · 2 = 4</span> → <span class="m">4<i>x</i><sup>3</sup></span>; <span class="m">2 · 2 = 4</span> → <span class="m">4<i>x</i><sup>2</sup></span>; <span class="m">3 · 2 = 6 ≡ 1</span> → <span class="m"><i>x</i></span>; <span class="m">4 · 2 = 8 ≡ 3</span> → <span class="m">3</span>.</p>
+        <div class="pd"><table><tr><th></th><th><i>x</i><sup>5</sup></th><th><i>x</i><sup>4</sup></th><th><i>x</i><sup>3</sup></th><th><i>x</i><sup>2</sup></th><th><i>x</i></th><th>1</th></tr><tr class="top"><td class="lab"><i>f</i></td><td>2</td><td>1</td><td>0</td><td>3</td><td>0</td><td>4</td></tr><tr class="prod"><td class="lab">− (4<i>x</i><sup>3</sup>)·<i>g</i></td><td>2</td><td>4</td><td>3</td><td></td><td></td><td></td></tr><tr class="rem"><td class="lab">=</td><td></td><td>2</td><td>2</td><td>3</td><td>0</td><td>4</td></tr><tr class="prod"><td class="lab">− (4<i>x</i><sup>2</sup>)·<i>g</i></td><td></td><td>2</td><td>4</td><td>3</td><td></td><td></td></tr><tr class="rem"><td class="lab">=</td><td></td><td></td><td>3</td><td>0</td><td>0</td><td>4</td></tr><tr class="prod"><td class="lab">− (<i>x</i>)·<i>g</i></td><td></td><td></td><td>3</td><td>1</td><td>2</td><td></td></tr><tr class="rem"><td class="lab">=</td><td></td><td></td><td></td><td>4</td><td>3</td><td>4</td></tr><tr class="prod"><td class="lab">− (3)·<i>g</i></td><td></td><td></td><td></td><td>4</td><td>3</td><td>1</td></tr><tr class="rem fin"><td class="lab">=</td><td></td><td></td><td></td><td></td><td>0</td><td>3</td></tr></table></div>
+        <p><span class="ans"><span class="m"><i>q</i> = 4<i>x</i><sup>3</sup> + 4<i>x</i><sup>2</sup> + <i>x</i> + 3</span>, <span class="m"><i>r</i> = 3</span></span></p>
+      </div></details>
+    </article>
+
+    <article class="task">
+      <div class="task-head"><span class="no">A2.</span><span class="src">a 6/4 rokona</span><span class="pts">8 pont</span></div>
+      <p class="stmt">Határozza meg <span class="m"><i>f</i> = <i>x</i><sup>4</sup> + <i>x</i><sup>3</sup> + 2<i>x</i><sup>2</sup> + <i>x</i> + 1</span> és <span class="m"><i>g</i> = <i>x</i><sup>4</sup> + 2<i>x</i><sup>3</sup> + 2<i>x</i><sup>2</sup> + 2<i>x</i> + 1</span> legnagyobb közös osztóját <span class="m">ℚ[<i>x</i>]</span>-ben!</p>
+      <details><summary>Megoldás</summary><div class="sol">
+        <div class="steps">
+          <p class="mb"><i>f</i> = 1 · <i>g</i> + (−<i>x</i><sup>3</sup> − <i>x</i>)  →  <i>r</i><sub>1</sub> = <i>x</i><sup>3</sup> + <i>x</i></p>
+          <p class="mb"><i>g</i> = (<i>x</i> + 2)(<i>x</i><sup>3</sup> + <i>x</i>) + (<i>x</i><sup>2</sup> + 1)</p>
+          <p class="mb"><i>x</i><sup>3</sup> + <i>x</i> = <i>x</i> · (<i>x</i><sup>2</sup> + 1) + 0</p>
+        </div>
+        <p>Második sor ellenőrzése: <span class="m">(<i>x</i> + 2)(<i>x</i><sup>3</sup> + <i>x</i>) = <i>x</i><sup>4</sup> + 2<i>x</i><sup>3</sup> + <i>x</i><sup>2</sup> + 2<i>x</i></span>, <span class="m"><i>g</i></span>-ből kivonva <span class="m"><i>x</i><sup>2</sup> + 1</span> ✓.</p>
+        <p><span class="ans"><span class="m">(<i>f</i>, <i>g</i>) = <i>x</i><sup>2</sup> + 1</span></span> (valóban <span class="m"><i>f</i> = (<i>x</i><sup>2</sup> + 1)(<i>x</i><sup>2</sup> + <i>x</i> + 1)</span>, <span class="m"><i>g</i> = (<i>x</i><sup>2</sup> + 1)(<i>x</i> + 1)<sup>2</sup></span>)</p>
+      </div></details>
+    </article>
+
+    <article class="task">
+      <div class="task-head"><span class="no">A3.</span><span class="src">a 6/2 rokona</span><span class="pts">7 pont (2 + 2 + 3)</span></div>
+      <p class="stmt">Legyen <span class="m"><i>f</i> = <i>x</i><sup>2</sup> + <i>x</i> + 2</span>, <span class="m"><i>g</i> = 2<i>x</i><sup>3</sup> + <i>x</i> + 1 ∈ ℤ<sub>3</sub>[<i>x</i>]</span>. Számítsa ki modulo <span class="m"><i>x</i><sup>2</sup> + 1</span>: a) <span class="m"><i>f</i> · <i>g</i></span>; b) <span class="m">(<i>f</i> + <i>g</i>)<sup>2</sup></span>; c) <span class="m">(<i>f</i> − <i>g</i>)<sup>3</sup></span>!</p>
+      <details><summary>Megoldás</summary><div class="sol">
+        <p><span class="m"><i>x</i><sup>2</sup> ≡ −1 = 2</span>, <span class="m"><i>x</i><sup>3</sup> ≡ −<i>x</i> = 2<i>x</i></span>. Redukálva: <span class="m"><i>f</i> ≡ 2 + <i>x</i> + 2 = <i>x</i> + 1</span>, <span class="m"><i>g</i> ≡ 2 · 2<i>x</i> + <i>x</i> + 1 = 5<i>x</i> + 1 = 2<i>x</i> + 1</span>.</p>
+        <ul>
+          <li>a) <span class="m">(<i>x</i> + 1)(2<i>x</i> + 1) = 2<i>x</i><sup>2</sup> + 3<i>x</i> + 1 = 2<i>x</i><sup>2</sup> + 1 ≡ 2 · 2 + 1 = 5 ≡</span> <span class="ans">2</span></li>
+          <li>b) <span class="m"><i>f</i> + <i>g</i> ≡ 3<i>x</i> + 2 = 2</span>, <span class="m">2<sup>2</sup> = 4 ≡</span> <span class="ans">1</span></li>
+          <li>c) <span class="m"><i>f</i> − <i>g</i> ≡ (<i>x</i> + 1) − (2<i>x</i> + 1) = −<i>x</i> = 2<i>x</i></span>, <span class="m">(2<i>x</i>)<sup>3</sup> = 8<i>x</i><sup>3</sup> = 2<i>x</i><sup>3</sup> ≡ 2 · 2<i>x</i> = 4<i>x</i> ≡</span> <span class="ans"><span class="m"><i>x</i></span></span></li>
+        </ul>
+      </div></details>
+    </article>
+
+    <article class="task">
+      <div class="task-head"><span class="no">A4.</span><span class="src">a 6/5 és 5/5 rokona</span><span class="pts">8 pont (3 + 5)</span></div>
+      <p class="stmt">a) Mennyi <span class="m"><i>x</i><sup>2026</sup> mod <i>x</i><sup>2</sup> + <i>x</i> + 1</span> <span class="m">ℤ<sub>2</sub></span> fölött?<br>b) Határozza meg <span class="m"><i>a</i>, <i>b</i> ∈ ℤ<sub>5</sub></span> értékét úgy, hogy <span class="m"><i>x</i><sup>3</sup> + <i>a</i><i>x</i> + <i>b</i></span> osztható legyen <span class="m"><i>x</i><sup>2</sup> + 2<i>x</i> + 3</span>-mal <span class="m">ℤ<sub>5</sub></span> felett!</p>
+      <details><summary>Megoldás</summary><div class="sol">
+        <p><b>a)</b> <span class="m"><i>x</i><sup>3</sup> ≡ 1</span> (lásd 6/5 a), <span class="m">2026 = 675 · 3 + 1</span> → <span class="ans"><span class="m"><i>x</i></span></span></p>
+        <p><b>b)</b> A hányados <span class="m"><i>x</i> + <i>c</i></span>: <span class="m">(<i>x</i> + <i>c</i>)(<i>x</i><sup>2</sup> + 2<i>x</i> + 3) = <i>x</i><sup>3</sup> + (2 + <i>c</i>)<i>x</i><sup>2</sup> + (3 + 2<i>c</i>)<i>x</i> + 3<i>c</i></span>.</p>
+        <p><span class="m"><i>x</i><sup>2</sup></span>: <span class="m">2 + <i>c</i> = 0</span> → <span class="m"><i>c</i> = 3</span>. <span class="m"><i>x</i></span>: <span class="m"><i>a</i> = 3 + 6 = 9 ≡ 4</span>. Konstans: <span class="m"><i>b</i> = 9 ≡ 4</span>.</p>
+        <p>Ellenőrzés: <span class="m">(<i>x</i> − 2)(<i>x</i><sup>2</sup> + 2<i>x</i> + 3) = <i>x</i><sup>3</sup> − <i>x</i> − 6 ≡ <i>x</i><sup>3</sup> + 4<i>x</i> + 4</span> ✓. <span class="ans"><span class="m"><i>a</i> = 4</span>, <span class="m"><i>b</i> = 4</span></span></p>
+      </div></details>
+    </article>
+
+    <div class="exam-bar score" id="scoreA">
+      <label for="pA1">A1 <input id="pA1" type="number" min="0" max="7" inputmode="numeric"></label>
+      <label for="pA2">A2 <input id="pA2" type="number" min="0" max="8" inputmode="numeric"></label>
+      <label for="pA3">A3 <input id="pA3" type="number" min="0" max="7" inputmode="numeric"></label>
+      <label for="pA4">A4 <input id="pA4" type="number" min="0" max="8" inputmode="numeric"></label>
+      <span>Összesen: <b id="sumA">0</b> / 30</span>
+      <span class="verdict" id="verdictA" hidden></span>
+    </div>
+  </div>
+
+  <div class="exam" data-exam="B" style="margin-top:22px">
+    <div class="exam-bar">
+      <div><span class="label">B változat</span><div class="clock" id="clockB">60:00</div></div>
+      <div class="btns">
+        <button type="button" class="primary" id="startB">Indítás</button>
+        <button type="button" id="resetB">Újra</button>
+      </div>
+    </div>
+
+    <article class="task">
+      <div class="task-head"><span class="no">B1.</span><span class="src">az 5/3 rokona</span><span class="pts">7 pont</span></div>
+      <p class="stmt">Ossza el maradékosan az <span class="m"><i>f</i> = 2<i>x</i><sup>5</sup> − 3<i>x</i><sup>3</sup> + <i>x</i><sup>2</sup> − 4</span> polinomot a <span class="m"><i>g</i> = <i>x</i><sup>2</sup> + <i>x</i> − 1</span> polinommal <span class="m">ℚ</span> felett!</p>
+      <details><summary>Megoldás</summary><div class="sol">
+        <div class="pd"><table><tr><th></th><th><i>x</i><sup>5</sup></th><th><i>x</i><sup>4</sup></th><th><i>x</i><sup>3</sup></th><th><i>x</i><sup>2</sup></th><th><i>x</i></th><th>1</th></tr><tr class="top"><td class="lab"><i>f</i></td><td>2</td><td>0</td><td>−3</td><td>1</td><td>0</td><td>−4</td></tr><tr class="prod"><td class="lab">− (2<i>x</i><sup>3</sup>)·<i>g</i></td><td>2</td><td>2</td><td>−2</td><td></td><td></td><td></td></tr><tr class="rem"><td class="lab">=</td><td></td><td>−2</td><td>−1</td><td>1</td><td>0</td><td>−4</td></tr><tr class="prod"><td class="lab">− (−2<i>x</i><sup>2</sup>)·<i>g</i></td><td></td><td>−2</td><td>−2</td><td>2</td><td></td><td></td></tr><tr class="rem"><td class="lab">=</td><td></td><td></td><td>1</td><td>−1</td><td>0</td><td>−4</td></tr><tr class="prod"><td class="lab">− (<i>x</i>)·<i>g</i></td><td></td><td></td><td>1</td><td>1</td><td>−1</td><td></td></tr><tr class="rem"><td class="lab">=</td><td></td><td></td><td></td><td>−2</td><td>1</td><td>−4</td></tr><tr class="prod"><td class="lab">− (−2)·<i>g</i></td><td></td><td></td><td></td><td>−2</td><td>−2</td><td>2</td></tr><tr class="rem fin"><td class="lab">=</td><td></td><td></td><td></td><td></td><td>3</td><td>−6</td></tr></table></div>
+        <p><span class="ans"><span class="m"><i>q</i> = 2<i>x</i><sup>3</sup> − 2<i>x</i><sup>2</sup> + <i>x</i> − 2</span>, <span class="m"><i>r</i> = 3<i>x</i> − 6</span></span></p>
+        <p>Ellenőrzés <span class="m"><i>x</i> = 1</span>-nél: <span class="m"><i>f</i>(1) = −4</span>, <span class="m"><i>g</i>(1) = 1</span>, <span class="m"><i>q</i>(1) = −1</span>, <span class="m"><i>r</i>(1) = −3</span>, és <span class="m">−1 · 1 + (−3) = −4</span> ✓.</p>
+      </div></details>
+    </article>
+
+    <article class="task">
+      <div class="task-head"><span class="no">B2.</span><span class="src">a 6/4 rokona</span><span class="pts">8 pont</span></div>
+      <p class="stmt">Határozza meg <span class="m"><i>f</i> = <i>x</i><sup>4</sup> + 3<i>x</i><sup>3</sup> + 4<i>x</i><sup>2</sup> + <i>x</i> + 4</span> és <span class="m"><i>g</i> = <i>x</i><sup>4</sup> + 2<i>x</i><sup>3</sup> + 4<i>x</i><sup>2</sup> + 4<i>x</i> + 4</span> legnagyobb közös osztóját <span class="m">ℤ<sub>5</sub>[<i>x</i>]</span>-ben!</p>
+      <details><summary>Megoldás</summary><div class="sol">
+        <div class="steps">
+          <p class="mb"><i>f</i> = 1 · <i>g</i> + (<i>x</i><sup>3</sup> + 2<i>x</i>)</p>
+          <p class="mb"><i>g</i> = (<i>x</i> + 2)(<i>x</i><sup>3</sup> + 2<i>x</i>) + (2<i>x</i><sup>2</sup> + 4)  →  <i>r</i><sub>2</sub> = 3(2<i>x</i><sup>2</sup> + 4) = <i>x</i><sup>2</sup> + 2</p>
+          <p class="mb"><i>x</i><sup>3</sup> + 2<i>x</i> = <i>x</i> · (<i>x</i><sup>2</sup> + 2) + 0</p>
+        </div>
+        <p>Második sor: <span class="m">(<i>x</i> + 2)(<i>x</i><sup>3</sup> + 2<i>x</i>) = <i>x</i><sup>4</sup> + 2<i>x</i><sup>3</sup> + 2<i>x</i><sup>2</sup> + 4<i>x</i></span>, <span class="m"><i>g</i></span>-ből kivonva <span class="m">2<i>x</i><sup>2</sup> + 4</span>. Normálás <span class="m">2<sup>−1</sup> = 3</span>-mal: <span class="m">6<i>x</i><sup>2</sup> + 12 ≡ <i>x</i><sup>2</sup> + 2</span>.</p>
+        <p><span class="ans"><span class="m">(<i>f</i>, <i>g</i>) = <i>x</i><sup>2</sup> + 2</span></span> (valóban <span class="m"><i>f</i> = (<i>x</i><sup>2</sup> + 2)(<i>x</i> + 1)(<i>x</i> + 2)</span>, <span class="m"><i>g</i> = (<i>x</i><sup>2</sup> + 2)(<i>x</i> + 3)(<i>x</i> + 4)</span>)</p>
+      </div></details>
+    </article>
+
+    <article class="task">
+      <div class="task-head"><span class="no">B3.</span><span class="src">a 6/3 rokona</span><span class="pts">7 pont (3 + 4)</span></div>
+      <p class="stmt">Legyen <span class="m"><i>f</i> = 2<i>x</i><sup>2</sup> + <i>x</i> + 3</span>, <span class="m"><i>g</i> = <i>x</i><sup>2</sup> + 4<i>x</i> + 1 ∈ ℤ<sub>5</sub>[<i>x</i>]</span>. Számítsa ki modulo <span class="m"><i>x</i><sup>3</sup> + 2</span>: a) <span class="m"><i>f</i> · <i>g</i></span>; b) <span class="m">(<i>f</i> − <i>g</i>)<sup>2</sup></span>!</p>
+      <details><summary>Megoldás</summary><div class="sol">
+        <p><span class="m"><i>x</i><sup>3</sup> ≡ −2 = 3</span>, <span class="m"><i>x</i><sup>4</sup> ≡ 3<i>x</i></span>.</p>
+        <p><b>a)</b> <span class="m"><i>f</i><i>g</i> = 2<i>x</i><sup>4</sup> + 9<i>x</i><sup>3</sup> + 9<i>x</i><sup>2</sup> + 13<i>x</i> + 3 = 2<i>x</i><sup>4</sup> + 4<i>x</i><sup>3</sup> + 4<i>x</i><sup>2</sup> + 3<i>x</i> + 3</span> (mod 5). Redukálva: <span class="m">2 · 3<i>x</i> + 4 · 3 + 4<i>x</i><sup>2</sup> + 3<i>x</i> + 3 = 4<i>x</i><sup>2</sup> + 9<i>x</i> + 15 ≡</span> <span class="ans"><span class="m">4<i>x</i><sup>2</sup> + 4<i>x</i></span></span></p>
+        <p><b>b)</b> <span class="m"><i>f</i> − <i>g</i> = <i>x</i><sup>2</sup> − 3<i>x</i> + 2 = <i>x</i><sup>2</sup> + 2<i>x</i> + 2</span>. Négyzete <span class="m"><i>x</i><sup>4</sup> + 4<i>x</i><sup>3</sup> + 8<i>x</i><sup>2</sup> + 8<i>x</i> + 4 = <i>x</i><sup>4</sup> + 4<i>x</i><sup>3</sup> + 3<i>x</i><sup>2</sup> + 3<i>x</i> + 4</span>. Redukálva: <span class="m">3<i>x</i> + 12 + 3<i>x</i><sup>2</sup> + 3<i>x</i> + 4 = 3<i>x</i><sup>2</sup> + 6<i>x</i> + 16 ≡</span> <span class="ans"><span class="m">3<i>x</i><sup>2</sup> + <i>x</i> + 1</span></span></p>
+      </div></details>
+    </article>
+
+    <article class="task">
+      <div class="task-head"><span class="no">B4.</span><span class="src">a 6/5 és 5/4 rokona</span><span class="pts">8 pont (5 + 3)</span></div>
+      <p class="stmt">a) Mennyi <span class="m"><i>x</i><sup>100</sup> mod <i>x</i><sup>3</sup> + 2<i>x</i> + 1</span> <span class="m">ℤ<sub>3</sub></span> fölött?<br>b) Határozza meg <span class="m"><i>a</i>, <i>b</i> ∈ ℝ</span> értékét úgy, hogy <span class="m"><i>x</i><sup>4</sup> + <i>a</i><i>x</i> + <i>b</i></span> osztható legyen <span class="m"><i>x</i><sup>2</sup> + 1</span>-gyel!</p>
+      <details><summary>Megoldás</summary><div class="sol">
+        <p><b>a)</b> <span class="m"><i>x</i><sup>3</sup> ≡ −2<i>x</i> − 1 = <i>x</i> + 2</span>. <span class="m">ℤ<sub>3</sub></span>-ban <span class="m">(<i>a</i> + <i>b</i>)<sup>3</sup> = <i>a</i><sup>3</sup> + <i>b</i><sup>3</sup></span>, így</p>
+        <p class="mb"><i>x</i><sup>9</sup> = (<i>x</i><sup>3</sup>)<sup>3</sup> ≡ (<i>x</i> + 2)<sup>3</sup> = <i>x</i><sup>3</sup> + 8 ≡ <i>x</i> + 2 + 2 = <i>x</i> + 1</p>
+        <p><span class="m"><i>x</i><sup>4</sup> = <i>x</i> · <i>x</i><sup>3</sup> ≡ <i>x</i><sup>2</sup> + 2<i>x</i></span>, és <span class="m"><i>x</i><sup>13</sup> = <i>x</i><sup>9</sup> · <i>x</i><sup>4</sup> ≡ (<i>x</i> + 1)(<i>x</i><sup>2</sup> + 2<i>x</i>) = <i>x</i><sup>3</sup> + 3<i>x</i><sup>2</sup> + 2<i>x</i> = <i>x</i><sup>3</sup> + 2<i>x</i> ≡ <i>x</i> + 2 + 2<i>x</i> = 2</span>.</p>
+        <p>Tehát <span class="m"><i>x</i><sup>13</sup> ≡ 2 = −1</span>. <span class="m">100 = 7 · 13 + 9</span>, ezért <span class="m"><i>x</i><sup>100</sup> = (<i>x</i><sup>13</sup>)<sup>7</sup> · <i>x</i><sup>9</sup> ≡ (−1)<sup>7</sup> (<i>x</i> + 1) = −<i>x</i> − 1 =</span> <span class="ans"><span class="m">2<i>x</i> + 2</span></span></p>
+        <p><b>b)</b> <span class="m"><i>x</i><sup>2</sup> ≡ −1</span>, <span class="m"><i>x</i><sup>4</sup> ≡ 1</span>, így a maradék <span class="m"><i>a</i><i>x</i> + (<i>b</i> + 1)</span>. Ez akkor 0, ha <span class="ans"><span class="m"><i>a</i> = 0</span>, <span class="m"><i>b</i> = −1</span></span> (valóban <span class="m"><i>x</i><sup>4</sup> − 1 = (<i>x</i><sup>2</sup> + 1)(<i>x</i><sup>2</sup> − 1)</span>).</p>
+      </div></details>
+    </article>
+
+    <div class="exam-bar score" id="scoreB">
+      <label for="pB1">B1 <input id="pB1" type="number" min="0" max="7" inputmode="numeric"></label>
+      <label for="pB2">B2 <input id="pB2" type="number" min="0" max="8" inputmode="numeric"></label>
+      <label for="pB3">B3 <input id="pB3" type="number" min="0" max="7" inputmode="numeric"></label>
+      <label for="pB4">B4 <input id="pB4" type="number" min="0" max="8" inputmode="numeric"></label>
+      <span>Összesen: <b id="sumB">0</b> / 30</span>
+      <span class="verdict" id="verdictB" hidden></span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= HIBÁK ================= -->
+<section id="hibak">
+  <div class="section-head">
+    <span class="label">Ahol a pontok elvesznek</span>
+    <h2>Gyakori hibák</h2>
+  </div>
+  <div class="mistakes">
+    <div class="mistake"><span class="x">✗</span><p><span class="m">ℤ<sub><i>p</i></sub></span>-ben törttel osztani. <span class="m">3/2</span> ℤ<sub>5</sub>-ben nem 1,5, hanem <span class="m">3 · 2<sup>−1</sup> = 3 · 3 = 9 ≡ 4</span>. Az osztás előtt írd fel a főegyüttható inverzét.</p></div>
+    <div class="mistake"><span class="x">✗</span><p>Negatív vagy <span class="m"><i>p</i></span>-nél nagyobb együttható a végeredményben. <span class="m">ℤ<sub>5</sub></span>-ben <span class="m">−2</span> helyett 3, 7 helyett 2. Minden sor után redukálj mod <span class="m"><i>p</i></span>.</p></div>
+    <div class="mistake"><span class="x">✗</span><p>Túl korán vagy túl későn abbahagyott osztás. Akkor kell megállni, amikor a maradék foka <b>kisebb</b> az osztó fokánál. Ha egy lépés után a maradék több fokot esik (<span class="m">ℤ<sub><i>p</i></sub></span>-ben gyakori), a hányadosban kimaradnak tagok, ez rendben van.</p></div>
+    <div class="mistake"><span class="x">✗</span><p>A „mod <span class="m"><i>m</i></span>” feladatban a válasz foka <span class="m">≥ deg <i>m</i></span>. Ha <span class="m"><i>x</i><sup>2</sup></span> maradt a válaszban modulo egy másodfokú polinom, még egyszer redukálni kell.</p></div>
+    <div class="mistake"><span class="x">✗</span><p>Az lnko nem normált alakban. <span class="m">(<i>f</i>, <i>g</i>)</span> főegyütthatója 1 legyen: <span class="m">2<i>x</i><sup>2</sup> + 4</span> helyett <span class="m"><i>x</i><sup>2</sup> + 2</span> (ℤ<sub>5</sub>).</p></div>
+    <div class="mistake"><span class="x">✗</span><p>Paraméteres oszthatóságnál csak a maradék egyik együtthatóját nullázni. A maradék <b>minden</b> együtthatójának 0-nak kell lennie, ez több egyenlet. Ha kevesebb az egyenlet, mint a paraméter, a válasz egy paraméteres család (5/4).</p></div>
+    <div class="mistake"><span class="x">✗</span><p><span class="m">ℤ<sub>2</sub></span>-ben elfelejteni, hogy <span class="m">1 + 1 = 0</span>, ill. <span class="m">ℤ<sub><i>p</i></sub></span>-ben, hogy <span class="m">(<i>a</i> + <i>b</i>)<sup><i>p</i></sup> = <i>a</i><sup><i>p</i></sup> + <i>b</i><sup><i>p</i></sup></span>. Mindkettő sok számolást megspórol.</p></div>
+    <div class="mistake"><span class="x">✓</span><p>Osztás után ellenőrizz: <span class="m"><i>q</i> · <i>g</i> + <i>r</i> = <i>f</i></span>, vagy legalább <span class="m"><i>x</i> = 1</span>-et behelyettesítve <span class="m"><i>f</i>(1) = <i>q</i>(1)<i>g</i>(1) + <i>r</i>(1)</span>. 30 másodperc, és a legtöbb számolási hibát elkapja.</p></div>
+  </div>
+</section>
+
+<footer>
+  Forrás: dm2gy05–06 feladatsorok, zh1_minta (2026.10.07.) a Zh szerkezetéhez. Minden számszerű eredmény programmal ellenőrizve.
+</footer>
+</div>
+
+<script>
+(function () {
+  function setupExam(id, maxes) {
+    var clock = document.getElementById('clock' + id);
+    var start = document.getElementById('start' + id);
+    var reset = document.getElementById('reset' + id);
+    var total = 60 * 60, left = total, timer = null;
+    function render() {
+      var m = Math.floor(left / 60), s = left % 60;
+      clock.textContent = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+      clock.classList.toggle('low', left <= 300);
+    }
+    function tick() {
+      left = Math.max(0, left - 1);
+      render();
+      if (left === 0) { clearInterval(timer); timer = null; start.textContent = 'Lejárt'; start.disabled = true; }
+    }
+    start.addEventListener('click', function () {
+      if (timer) { clearInterval(timer); timer = null; start.textContent = 'Folytatás'; }
+      else { timer = setInterval(tick, 1000); start.textContent = 'Szünet'; }
+    });
+    reset.addEventListener('click', function () {
+      if (timer) clearInterval(timer);
+      timer = null; left = total; start.textContent = 'Indítás'; start.disabled = false; render();
+    });
+    render();
+
+    var inputs = maxes.map(function (_, i) { return document.getElementById('p' + id + (i + 1)); });
+    var sum = document.getElementById('sum' + id);
+    var verdict = document.getElementById('verdict' + id);
+    function update() {
+      var s = 0, filled = 0;
+      inputs.forEach(function (inp, i) {
+        var v = parseFloat(inp.value);
+        if (!isNaN(v)) { filled++; s += Math.min(Math.max(v, 0), maxes[i]); }
+      });
+      sum.textContent = s;
+      if (filled === 0) { verdict.hidden = true; return; }
+      verdict.hidden = false;
+      var pass = s >= 12;
+      verdict.className = 'verdict ' + (pass ? 'pass' : 'fail');
+      verdict.textContent = pass ? 'Megvan a 12 pont' : 'Még ' + (12 - s) + ' pont hiányzik a 12-höz';
+    }
+    inputs.forEach(function (inp) { inp.addEventListener('input', update); });
+  }
+  setupExam('A', [7, 8, 7, 8]);
+  setupExam('B', [7, 8, 7, 8]);
+})();
+</script>
+<!-- Fejezetsáv: az éppen olvasott szakasz gombja kiemelve -->
+<style>
+nav.bar a.active, nav.bar a.active:hover, nav.bar a.active:focus-visible { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+</style>
+<script>
+(function () {
+  var nav = document.querySelector('nav.bar');
+  if (!nav) return;
+  var links = Array.prototype.filter.call(nav.querySelectorAll('a[href^="#"]'), function (a) {
+    return a.getAttribute('href').length > 1 && document.getElementById(a.getAttribute('href').slice(1));
+  });
+  var current = null, ticking = false;
+  function sectionOf(a) { return document.getElementById(a.getAttribute('href').slice(1)); }
+  function update() {
+    ticking = false;
+    var line = nav.getBoundingClientRect().bottom + 12, active = null;
+    var visible = links.filter(function (a) { return sectionOf(a).offsetParent !== null; });
+    visible.forEach(function (a) { if (sectionOf(a).getBoundingClientRect().top <= line) active = a; });
+    // a lap alján az utolsó szakasz az aktuális akkor is, ha rövid
+    if (visible.length && window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) active = visible[visible.length - 1];
+    if (active === current) return;
+    if (current) { current.classList.remove('active'); current.removeAttribute('aria-current'); }
+    current = active;
+    if (!active) return;
+    active.classList.add('active');
+    active.setAttribute('aria-current', 'location');
+    var ul = active.closest('ul'), ur = ul.getBoundingClientRect(), ar = active.getBoundingClientRect();
+    var left = ar.left - ur.left + ul.scrollLeft, right = left + ar.width;
+    if (left < ul.scrollLeft || right > ul.scrollLeft + ul.clientWidth) ul.scrollTo({ left: Math.max(0, left - 16), behavior: 'smooth' });
+  }
+  function schedule() { if (!ticking) { ticking = true; setTimeout(update, 40); } }
+  window.addEventListener('scroll', schedule, { passive: true });
+  window.addEventListener('resize', schedule);
+  document.addEventListener('input', schedule);   // a keresés elrejthet szakaszokat
+  document.addEventListener('toggle', schedule, true);
+  update();
+})();
+</script>
+

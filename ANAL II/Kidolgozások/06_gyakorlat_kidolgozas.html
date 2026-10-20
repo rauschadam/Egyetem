@@ -1,0 +1,698 @@
+<!doctype html>
+<html lang="hu" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Analízis II · 6. gyakorlat kidolgozva</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['\\(', '\\)']],
+      displayMath: [['\\[', '\\]']],
+      macros: {
+        arcsin: '\\operatorname{arc\\,sin}', arccos: '\\operatorname{arc\\,cos}',
+        arctg: '\\operatorname{arc\\,tg}', arcctg: '\\operatorname{arc\\,ctg}',
+        tg: '\\operatorname{tg}', ctg: '\\operatorname{ctg}', R: '\\mathbb{R}'
+      }
+    },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js" async></script>
+<style>
+/* Layout: same exam-paper look as the DIMAT prep, in the Analysis orange; every task = statement + folded solution + folded walkthrough */
+:root {
+  --paper: #f5f7fa;
+  --grid: rgba(180, 80, 11, 0.06);
+  --card: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6574;
+  --rule: #d7dde6;
+  --accent: #b4500b;
+  --accent-soft: #fcefe4;
+  --mark: #b8352a;
+  --mark-soft: #fbe9e6;
+  --ok: #2c7a4b;
+  --ok-soft: #e3f3e9;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-label: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f141b; --grid: rgba(242, 162, 94, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+    --rule: #2a3442; --accent: #f2a25e; --accent-soft: #33241a; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+    --ok: #74d39c; --ok-soft: #173225; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f141b; --grid: rgba(242, 162, 94, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+  --rule: #2a3442; --accent: #f2a25e; --accent-soft: #33241a; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+  --ok: #74d39c; --ok-soft: #173225; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background-color: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 1.06rem;
+  line-height: 1.6;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 80px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2rem, 6vw, 3.1rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.65rem; font-weight: 700; letter-spacing: -0.01em; }
+h3 { font-size: 1.1rem; font-weight: 600; }
+p { margin: 0; }
+a { color: var(--accent); }
+.label { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding: 2px 0; margin: 6px 0 !important; min-width: 0; max-width: 100%; }
+/* grid children must be allowed to shrink, otherwise wide formulas push the page sideways */
+.task, .sol, .step, .rule-card, .sheet > * { grid-template-columns: minmax(0, 1fr); min-width: 0; }
+.rule-card li, .rule-card p, .sol p, .sol li, .step p, .stmt, .tip, .warn, .mistake p, td { overflow-x: auto; overflow-y: hidden; }
+
+/* back to subject page */
+.back { justify-self: start; display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px 9px 12px; border: 1.5px solid var(--accent); border-radius: 8px; background: var(--accent-soft); color: var(--ink); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 1.02rem; line-height: 1; white-space: nowrap; transition: background .15s, color .15s; }
+.back .arr { color: var(--accent); font-size: 1.25rem; transition: transform .15s, color .15s; }
+.back:hover, .back:focus-visible { background: var(--accent); color: var(--paper); outline: none; }
+.back:hover .arr, .back:focus-visible .arr { color: var(--paper); transform: translateX(-3px); }
+
+/* header */
+header.hero { display: grid; gap: 14px; padding-block: 0 26px; border-bottom: 2px solid var(--accent); }
+.hero .sub { color: var(--muted); max-width: 62ch; }
+.facts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.fact { display: flex; flex-direction: column; gap: 2px; padding: 8px 14px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; min-width: 120px; }
+.fact b { font-family: var(--f-display); font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+
+nav.bar { position: sticky; top: 0; z-index: 5; background: var(--paper); border-bottom: 1px solid var(--rule); margin-inline: -16px; padding-inline: 16px; }
+nav.bar ul { list-style: none; margin: 0; padding: 10px 0; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin; }
+nav.bar a { display: block; white-space: nowrap; text-decoration: none; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.04em; color: var(--ink); padding: 6px 10px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); }
+nav.bar a:hover, nav.bar a:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+nav.bar a.nav-back { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+
+section { padding-top: 44px; display: grid; gap: 18px; scroll-margin-top: 56px; }
+.section-head { display: grid; gap: 6px; }
+.section-head p { color: var(--muted); max-width: 64ch; }
+
+/* reminder cards */
+.sheet { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; }
+.rule-card { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 14px 16px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.rule-card h3 { font-size: 1rem; }
+.rule-card p, .rule-card li { font-size: 0.95rem; }
+.rule-card ul, .rule-card ol { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.rule-card.wide { grid-column: 1 / -1; }
+
+/* tables (sign charts, value tables) */
+.tbl { overflow-x: auto; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--rule); vertical-align: middle; }
+th { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+tr:last-child td, tr:last-child th { border-bottom: 0; }
+table.sgn { width: auto; min-width: 100%; }
+table.sgn th, table.sgn td { text-align: center; white-space: nowrap; border-left: 1px solid var(--rule); }
+table.sgn th:first-child { border-left: 0; text-transform: none; letter-spacing: 0; font-family: var(--f-body); font-size: 1rem; color: var(--ink); background: var(--accent-soft); }
+table.sgn td.pt { background: color-mix(in srgb, var(--accent-soft) 55%, transparent); }
+.p { color: var(--ok); font-weight: 600; }
+.n { color: var(--mark); font-weight: 600; }
+.note { font-size: 0.82rem; color: var(--muted); }
+.tag { font-family: var(--f-label); font-size: 0.72rem; color: var(--accent); }
+
+/* exercises */
+.task { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 18px; display: grid; gap: 10px; min-width: 0; scroll-margin-top: 60px; }
+.task-head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.task-head .no { font-family: var(--f-display); font-weight: 700; font-size: 1.05rem; }
+.task-head .src { font-family: var(--f-label); font-size: 0.72rem; color: var(--muted); }
+.task-head .kind { margin-left: auto; font-family: var(--f-label); font-size: 0.75rem; color: var(--accent); }
+.stmt { max-width: 70ch; }
+details { border-top: 1px dashed var(--rule); padding-top: 8px; min-width: 0; }
+summary { cursor: pointer; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); list-style: none; display: inline-flex; gap: 8px; align-items: center; padding: 4px 0; }
+summary::-webkit-details-marker { display: none; }
+summary::before { content: "+"; display: inline-grid; place-items: center; width: 18px; height: 18px; border: 1px solid currentColor; border-radius: 3px; font-size: 0.8rem; }
+details[open] > summary::before { content: "−"; }
+summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sol { display: grid; gap: 10px; padding-top: 6px; max-width: 74ch; min-width: 0; }
+.sol ol, .sol ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.step { display: grid; gap: 8px; min-width: 0; }
+.step > b:first-child { font-family: var(--f-display); font-weight: 600; }
+.ans { display: inline-block; background: var(--ok-soft); color: var(--ok); font-weight: 600; padding: 2px 9px; border-radius: 4px; }
+.warn { background: var(--mark-soft); border-left: 3px solid var(--mark); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 0.95rem; }
+.tip { background: var(--accent-soft); border-left: 3px solid var(--accent); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 0.95rem; }
+.taskgroup { display: grid; gap: 12px; }
+
+/* graphs */
+figure.graph { margin: 0; background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 8px 8px 6px; display: grid; gap: 6px; }
+figure.graph svg { width: 100%; height: auto; display: block; }
+figure.graph figcaption { display: flex; flex-wrap: wrap; gap: 4px 16px; font-family: var(--f-label); font-size: 0.72rem; color: var(--muted); padding: 0 4px; }
+.lg::before { content: ""; display: inline-block; width: 16px; height: 0; vertical-align: middle; margin-right: 6px; border-top: 2.5px solid var(--accent); }
+.lg.asy::before { border-top: 1.5px dashed var(--muted); }
+.lg.ext::before { width: 9px; height: 9px; border: 0; border-radius: 50%; background: var(--ok); }
+.lg.inf::before { width: 9px; height: 9px; border: 2px solid var(--mark); border-radius: 50%; box-sizing: border-box; }
+svg .gl { stroke: var(--rule); stroke-width: 1; opacity: .55; }
+svg .ax { stroke: var(--muted); stroke-width: 1.3; }
+svg .tk { fill: var(--muted); font-family: var(--f-label); font-size: 11px; }
+svg .cv { fill: none; stroke: var(--accent); stroke-width: 2.6; stroke-linejoin: round; stroke-linecap: round; }
+svg .as { stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 6 5; fill: none; }
+svg .pe { fill: var(--ok); stroke: var(--paper); stroke-width: 1.5; }
+svg .pi { fill: var(--paper); stroke: var(--mark); stroke-width: 2.2; }
+svg .pz { fill: var(--ink); }
+svg .po { fill: var(--paper); stroke: var(--accent); stroke-width: 2; }
+svg .pl { fill: var(--ink); font-family: var(--f-label); font-size: 12px; paint-order: stroke; stroke: var(--paper); stroke-width: 4px; stroke-linejoin: round; }
+
+/* mistakes */
+.mistakes { display: grid; gap: 10px; }
+.mistake { display: grid; grid-template-columns: auto 1fr; gap: 12px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 12px 14px; }
+.mistake .x { font-family: var(--f-display); font-weight: 700; color: var(--mark); font-size: 1.2rem; line-height: 1.3; }
+
+footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.88rem; }
+
+@media (max-width: 520px) {
+  body { font-size: 1rem; }
+  .task { padding: 14px; }
+  th, td { padding: 6px 8px; }
+}
+
+/* Taylor graphs: second curve dashed, highlighted x-band */
+svg .cv2 { fill: none; stroke: var(--ok); stroke-width: 2.2; stroke-dasharray: 7 5; }
+svg .bd { fill: var(--accent-soft); opacity: .8; }
+.lg.tay::before { border-top: 2.2px dashed var(--ok); }
+.lg.band::before { height: 10px; border: 0; background: var(--accent-soft); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <a class="back" href="../../index.html#/anal2"><span class="arr" aria-hidden="true">←</span>Vissza: Analízis II.</a>
+  <span class="label">Analízis II. · 6. gyakorlat · Differenciálszámítás 5.</span>
+  <h1>A 6. gyakorlat kidolgozva</h1>
+  <p class="sub">L'Hospital-szabály és Taylor-polinomok. Az órai feladatok a gyakorlati anyag megoldását követik, a házi feladatok (az összevont anyagból) saját megoldások. Előbb próbáld meg magad, és csak utána nyisd le a megoldást.</p>
+  <div class="facts">
+    <div class="fact"><span class="label">Órai feladat</span><b>3 (7 rész)</b></div>
+    <div class="fact"><span class="label">Házi feladat</span><b>2 (5 rész)</b></div>
+    <div class="fact"><span class="label">Grafikon</span><b>2 db</b></div>
+  </div>
+</header>
+
+<nav class="bar" aria-label="Fejezetek">
+  <ul>
+    <li><a class="nav-back" href="../../index.html#/anal2" aria-label="Vissza: Analízis II.">← ANAL II</a></li>
+    <li><a href="#emlekezteto">Emlékeztető</a></li>
+    <li><a href="#orai">Órai feladatok</a></li>
+    <li><a href="#hazi">Házi feladatok</a></li>
+    <li><a href="#hibak">Gyakori hibák</a></li>
+  </ul>
+</nav>
+
+<!-- ================= EMLÉKEZTETŐ ================= -->
+<section id="emlekezteto">
+  <div class="section-head">
+    <span class="label">Ami kell hozzá</span>
+    <h2>Emlékeztető</h2>
+    <p>A 6. gyakorlat elméleti összefoglalója röviden. A feladatokban végig ezekre hivatkozunk.</p>
+  </div>
+  <div class="sheet">
+    <div class="rule-card">
+      <h3>L'Hospital-szabály</h3>
+      <p>Legyen \(-\infty \le a \lt b \lt +\infty\), \(f, g \in D(a,b)\), \(g'(x) \ne 0\) \((x \in (a,b))\), és</p>
+      <ul>
+        <li>\(\lim_{a+0} f = \lim_{a+0} g = 0\), vagy \(\lim_{a+0} f = \lim_{a+0} g = +\infty\),</li>
+        <li>\(\exists \lim_{a+0} \frac{f'}{g'} \in \overline{\R}\).</li>
+      </ul>
+      <p>Ekkor \(\exists \lim_{a+0} \frac{f}{g}\) és \(\lim_{a+0} \frac{f}{g} = \lim_{a+0} \frac{f'}{g'}\). Ugyanígy bal oldali, kétoldali és \(\pm\infty\)-beli határértékre.</p>
+    </div>
+    <div class="rule-card">
+      <h3>A többi kritikus típus visszavezetése</h3>
+      <ul>
+        <li>\(0 \cdot (\pm\infty)\): \(f g = \dfrac{f}{1/g}\) vagy \(\dfrac{g}{1/f}\) → \(\frac00\) vagy \(\frac{\infty}{\infty}\).</li>
+        <li>\((+\infty) - (+\infty)\): közös nevező vagy kiemelés → szorzat vagy tört.</li>
+        <li>\(1^{\infty}\), \(0^0\), \(\infty^0\): \(f^g = e^{\,g \ln f}\), és mivel \(\exp\) folytonos, elég a kitevő határértéke.</li>
+      </ul>
+      <p class="note">Minden L'Hospital-lépés előtt újra ellenőrizd a típust!</p>
+    </div>
+    <div class="rule-card">
+      <h3>Taylor-polinom</h3>
+      <p>Ha \(f \in D^n\{a\}\), az \(a\) ponthoz tartozó \(n\)-edik Taylor-polinom:</p>
+      \[T_{a,n}(f,x) = \sum_{k=0}^{n} \frac{f^{(k)}(a)}{k!}(x-a)^k.\]
+      <p>A Taylor-sor ugyanez \(n \to \infty\)-re. \(\exp\), \(\sin\), \(\cos\), \(\operatorname{sh}\), \(\operatorname{ch}\) Taylor-sora (\(a = 0\)) az egész \(\R\)-en előállítja a függvényt.</p>
+    </div>
+    <div class="rule-card">
+      <h3>Lagrange-féle maradéktag</h3>
+      <p>Ha \(f \in D^{n+1}(K(a))\), akkor minden \(x \in K(a)\setminus\{a\}\)-hoz van \(\xi\) az \(a\) és \(x\) között, hogy</p>
+      \[f(x) - T_{a,n}(f,x) = \frac{f^{(n+1)}(\xi)}{(n+1)!}(x-a)^{n+1}.\]
+      <p><b>Hibabecslés:</b> \(|f^{(n+1)}|\)-et felülről becsüljük az \(a\) és \(x\) közötti szakaszon.</p>
+    </div>
+    <div class="rule-card">
+      <h3>\((1+x)^\alpha\) deriváltjai</h3>
+      <p>\(f(x) = (1+x)^\alpha\) esetén</p>
+      \[f^{(k)}(x) = \alpha(\alpha-1)\cdots(\alpha-k+1)\,(1+x)^{\alpha-k},\]
+      <p>így \(f^{(k)}(0) = \alpha(\alpha-1)\cdots(\alpha-k+1)\). Ez kell a 3. órai és a 2. házi feladathoz (\(\alpha = -\frac13\), ill. \(\alpha = \frac13\)).</p>
+    </div>
+    <div class="rule-card">
+      <h3>Hasznos határértékek</h3>
+      <ul>
+        <li>\(\lim_{x\to0} \frac{\sin x}{x} = 1\), \(\lim_{x\to0}\frac{e^x - 1}{x} = 1\), \(\lim_{x\to0}\frac{\ln(1+x)}{x} = 1\)</li>
+        <li>\(\lim_{x\to0+0} x^\alpha \ln x = 0\) \((\alpha \gt 0)\)</li>
+        <li>\(\lim_{x\to+\infty} \frac{\ln x}{x^\alpha} = 0\), \(\lim_{x\to+\infty} \frac{x^n}{e^x} = 0\)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ÓRAI FELADATOK ================= -->
+<section id="orai">
+  <div class="section-head">
+    <span class="label">6. gyakorlat · Feladatok</span>
+    <h2>Órai feladatok</h2>
+    <p>A megoldások menete a 6. gyakorlati anyag kidolgozását követi. Az 1. feladat öt határértéke külön kártyán van.</p>
+  </div>
+
+  <div class="taskgroup">
+
+  <article class="task" id="o1a">
+    <div class="task-head"><span class="no">1. (a)</span><span class="src">6. gyakorlat · órai</span><span class="kind">\(\frac00\) · L'Hospital</span></div>
+    \[\lim_{x\to0} \frac{\tg x - x}{x - \sin x}\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>\(\frac00\) típusú, a L'Hospital-szabály feltételei teljesülnek (a nevező deriváltja \(1 - \cos x \ne 0\) a 0 egy pontozott környezetében).</p>
+        \[\lim_{x\to0} \frac{\tg x - x}{x - \sin x} \overset{\text{L'H}}{=} \lim_{x\to0} \frac{\frac{1}{\cos^2 x} - 1}{1 - \cos x} = \lim_{x\to0} \frac{1 - \cos^2 x}{(1 - \cos x)\cos^2 x}\]
+        \[= \lim_{x\to0} \frac{(1 - \cos x)(1 + \cos x)}{(1 - \cos x)\cos^2 x} = \lim_{x\to0} \frac{1 + \cos x}{\cos^2 x} = \frac21 = 2.\]
+        <p>Eredmény: <span class="ans">\(2\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért nem deriválunk tovább?</b> Az első L'Hospital után is \(\frac00\) a típus, tehát lehetne újra deriválni (háromszor kellene). Ehelyett a \(1 - \cos^2 x = (1-\cos x)(1+\cos x)\) azonossággal a kritikus tényező egyszerűsíthető, és utána már csak be kell helyettesíteni.</p>
+        <p><b>Ellenőrzés Taylor-sorral:</b> \(\tg x = x + \frac{x^3}{3} + \dots\) és \(\sin x = x - \frac{x^3}{6} + \dots\), így a tört \(\approx \frac{x^3/3}{x^3/6} = 2\).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o1b">
+    <div class="task-head"><span class="no">1. (b)</span><span class="src">6. gyakorlat · órai</span><span class="kind">\(\infty - \infty\) · L'Hospital</span></div>
+    \[\lim_{x\to0} \left(\frac1x - \frac{1}{e^x - 1}\right)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>A tagoknak külön nincs határértéke 0-ban. Közös nevezőre hozva \(\frac00\) típust kapunk:</p>
+        \[\frac1x - \frac{1}{e^x - 1} = \frac{e^x - 1 - x}{x(e^x - 1)}.\]
+        <p>Kétszer alkalmazzuk a L'Hospital-szabályt (mindkétszer \(\frac00\)):</p>
+        \[\lim_{x\to0} \frac{e^x - 1 - x}{x(e^x-1)} \overset{\text{L'H}}{=} \lim_{x\to0}\frac{e^x - 1}{(e^x - 1) + x e^x} \overset{\text{L'H}}{=} \lim_{x\to0} \frac{e^x}{e^x + e^x + x e^x} = \frac{1}{2}.\]
+        <p>Eredmény: <span class="ans">\(\frac12\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>A nevező deriváltja</b> szorzatszabállyal: \(\big(x(e^x-1)\big)' = 1\cdot(e^x - 1) + x \cdot e^x\). Ennek második deriváltja \(e^x + e^x + x e^x\), ami 0-ban 2.</p>
+        <p><b>Kétoldali határérték:</b> itt \(x \to 0\) mindkét oldalról. A L'Hospital-szabály kétoldali változata ugyanígy működik, a feltételeket a 0 pontozott környezetében kell ellenőrizni.</p>
+        <div class="tip">Taylor-sorral: \(e^x - 1 - x \approx \frac{x^2}{2}\), a nevező \(x(e^x-1) \approx x^2\), a hányados \(\frac12\).</div>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o1c">
+    <div class="task-head"><span class="no">1. (c)</span><span class="src">6. gyakorlat · órai</span><span class="kind">\(0 \cdot \infty\) · L'Hospital</span></div>
+    \[\lim_{x\to1-0} \ln x \cdot \ln(1-x)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>\(\lim_{x\to1-0}\ln x = \ln 1 = 0\) és \(\lim_{x\to1-0}\ln(1-x) = \lim_{y\to0+0}\ln y = -\infty\), tehát \(0\cdot(-\infty)\) típus. Törtté alakítva \(\frac{-\infty}{-\infty}\) lesz:</p>
+        \[\lim_{x\to1-0} \frac{\ln(1-x)}{\frac{1}{\ln x}} \overset{\text{L'H}}{=} \lim_{x\to1-0} \frac{\frac{-1}{1-x}}{-\frac{1}{\ln^2 x}\cdot\frac1x} = \lim_{x\to1-0} \frac{x}{1-x}\ln^2 x = \Big(\lim_{x\to1-0} x\Big) \cdot \lim_{x\to1-0}\frac{\ln^2 x}{1-x}.\]
+        <p>Az utolsó tört \(\frac00\) típusú:</p>
+        \[1 \cdot \lim_{x\to1-0}\frac{\ln^2 x}{1-x} \overset{\text{L'H}}{=} \lim_{x\to1-0}\frac{2\ln x\cdot\frac1x}{-1} = (-2)\cdot\lim_{x\to1-0}\frac{\ln x}{x} = (-2)\cdot\frac01 = 0.\]
+        <p>Eredmény: <span class="ans">\(0\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Melyik tényezőt vigyük a nevezőbe?</b> Úgy érdemes, hogy a deriválás egyszerű legyen. Itt \(\frac{1}{\ln x}\) került a nevezőbe, ennek deriváltja \(-\frac{1}{\ln^2 x}\cdot\frac1x\). A „\(\ln^2 x\)” így a számlálóba kerül, és a 0-hoz tartó tényezőt a második lépésben már könnyen kezeljük.</p>
+        <p><b>Intuíció:</b> \(x \to 1\)-nél \(\ln x \approx x - 1\), így a szorzat \(\approx (x-1)\ln(1-x) = -t\ln t\) (\(t = 1-x \to 0+\)), és \(t\ln t \to 0\).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o1d">
+    <div class="task-head"><span class="no">1. (d)</span><span class="src">6. gyakorlat · órai</span><span class="kind">\(\infty - \infty\) · L'Hospital</span></div>
+    \[\lim_{x\to+\infty} \left(x e^{1/x} - x\right)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>\(\lim_{x\to+\infty} e^{1/x} = e^0 = 1\) (mert \(\exp\) folytonos), így \((+\infty) - (+\infty)\) típus. Kiemelés után \((+\infty)\cdot 0\), ebből tört:</p>
+        \[\lim_{x\to+\infty} x\left(e^{1/x} - 1\right) = \lim_{x\to+\infty}\frac{e^{1/x} - 1}{\frac1x} \overset{\text{L'H}}{=} \lim_{x\to+\infty}\frac{e^{1/x}\cdot\left(-\frac{1}{x^2}\right)}{-\frac{1}{x^2}} = \lim_{x\to+\infty} e^{1/x} = 1.\]
+        <p>Eredmény: <span class="ans">\(1\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Helyettesítéssel még egyszerűbb:</b> \(t = \frac1x \to 0+0\), és a határérték \(\lim_{t\to0+0}\frac{e^t - 1}{t} = 1\), ami nevezetes határérték (\(\exp'(0) = 1\)).</p>
+        <p><b>Jelentése:</b> az \(x e^{1/x}\) függvénynek \(+\infty\)-ben az \(y = x + 1\) egyenes a ferde aszimptotája.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o1e">
+    <div class="task-head"><span class="no">1. (e)</span><span class="src">6. gyakorlat · órai</span><span class="kind">\(1^\infty\) · \(e^{\ln}\) trükk</span></div>
+    \[\lim_{x\to0} \left(\frac{a^x + b^x + c^x}{3}\right)^{1/x} \qquad (a, b, c \gt 0)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Az alap és a kitevő is változik, ezért \(\alpha = e^{\ln\alpha}\) \((\alpha \gt 0)\) alapján:</p>
+        \[\left(\frac{a^x + b^x + c^x}{3}\right)^{1/x} = \exp\left(\frac{\ln\left(\frac{a^x + b^x + c^x}{3}\right)}{x}\right).\]
+        <p>A kitevő \(\frac00\) típusú. A számláló deriváltja:</p>
+        \[\left(\ln\frac{a^x + b^x + c^x}{3}\right)' = \frac{a^x\ln a + b^x\ln b + c^x\ln c}{a^x + b^x + c^x},\]
+        <p>így</p>
+        \[\lim_{x\to0}\frac{\ln\left(\frac{a^x+b^x+c^x}{3}\right)}{x} \overset{\text{L'H}}{=} \frac{\ln a + \ln b + \ln c}{3} = \ln\sqrt[3]{abc}.\]
+        <p>Mivel \(\exp\) folytonos \(\R\)-en: \(\lim = \exp\left(\ln\sqrt[3]{abc}\right) = \sqrt[3]{abc}\).</p>
+        <p>Eredmény: <span class="ans">\(\sqrt[3]{abc}\)</span> (a három szám mértani közepe)</p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Típus:</b> \(x \to 0\)-nál az alap \(\frac{1+1+1}{3} = 1\)-hez, a kitevő \(\pm\infty\)-hez tart: \(1^{\infty}\). Ennek határértéke bármi lehet, ezért kell átírni.</p>
+        <p><b>A deriválás:</b> \((a^x)' = a^x\ln a\), és a 3-as konstans osztó a \(\ln\) deriválásánál kiesik: \(\left(\ln\frac{u}{3}\right)' = \frac{u'}{u}\).</p>
+        <p><b>Ellenőrzés:</b> \(a = 2, b = 3, c = 5\)-re \(x = 10^{-7}\)-nél a kifejezés \(3{,}10723\dots\), és \(\sqrt[3]{30} = 3{,}10723\dots\)</p>
+        <div class="tip">Ugyanez a módszer működik minden \(f^g\) alakú határértéknél: \(\lim f^g = \exp\left(\lim g\ln f\right)\), ha a jobb oldali határérték létezik.</div>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o2">
+    <div class="task-head"><span class="no">2. feladat</span><span class="src">6. gyakorlat · órai</span><span class="kind">Taylor-polinom · átrendezés</span></div>
+    <p class="stmt">Rendezzük át a \(2x^3 + 5x^2 + 3x + 1\) polinomot \((x+1)\) hatványai szerint! Általánosításként mutassuk meg, hogy ha \(P\) legfeljebb \(n\)-edfokú polinom és \(a \in \R\), akkor minden \(x \in \R\) esetén</p>
+    \[P(x) = \sum_{k=0}^{n}\frac{P^{(k)}(a)}{k!}(x-a)^k.\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Legyen \(P(x) = 2x^3 + 5x^2 + 3x + 1\) és \(a = -1\). A deriváltak:</p>
+        \[P'(x) = 6x^2 + 10x + 3,\quad P''(x) = 12x + 10,\quad P'''(x) = 12,\quad P^{(4)}(x) = 0.\]
+        <p>Értékük \(-1\)-ben: \(P(-1) = 1\), \(P'(-1) = -1\), \(P''(-1) = -2\), \(P'''(-1) = 12\).</p>
+        <p>A Lagrange-maradéktagos Taylor-formula (\(n = 3\), \(a = -1\)) szerint \(P(x) - T_{-1,3}(P,x) = \frac{P^{(4)}(\xi)}{4!}(x+1)^4 = 0\), tehát</p>
+        \[P(x) = 1 + \frac{-1}{1!}(x+1) + \frac{-2}{2!}(x+1)^2 + \frac{12}{3!}(x+1)^3.\]
+        <p>Eredmény: <span class="ans">\(2x^3 + 5x^2 + 3x + 1 = 1 - (x+1) - (x+1)^2 + 2(x+1)^3\)</span></p>
+        <p><b>Általánosítás.</b> Ha \(P\) legfeljebb \(n\)-edfokú, akkor \(P^{(n+1)} \equiv 0\). A Lagrange-formula szerint minden \(x\)-re \(P(x) - T_{a,n}(P,x) = \frac{P^{(n+1)}(\xi)}{(n+1)!}(x-a)^{n+1} = 0\), vagyis \(P(x) = T_{a,n}(P,x)\).</p>
+        <div class="tip"><b>Megjegyzés a forrásról:</b> a gyakorlati anyagban a képlet \(T_{-1,4}(P,x)\)-et ír, de az összeg \(k = 3\)-ig megy. Helyesen \(T_{-1,3}\) (a harmadfokú Taylor-polinom, Lagrange-maradéktaggal \(n = 3\)).</div>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Ellenőrzés kifejtéssel:</b> \(2(x+1)^3 = 2x^3 + 6x^2 + 6x + 2\), \(-(x+1)^2 = -x^2 - 2x - 1\), \(-(x+1) = -x - 1\), \(+1\). Összeadva \(2x^3 + 5x^2 + 3x + 1\). ✓</p>
+        <p><b>Másik módszer (helyettesítés):</b> \(t = x + 1\), \(x = t - 1\). Kifejtve \(2(t-1)^3 + 5(t-1)^2 + 3(t-1) + 1 = 2t^3 - t^2 - t + 1\). Ugyanazt kapjuk.</p>
+        <p><b>Mire jó ez?</b> Polinomnál a Taylor-polinom nem közelítés, hanem pontos egyenlőség, mert a maradéktag 0. A Taylor-polinom tehát „ugyanaz a polinom, más hatványok szerint írva”.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o3">
+    <div class="task-head"><span class="no">3. feladat</span><span class="src">6. gyakorlat · órai</span><span class="kind">Taylor-polinom · hibabecslés</span></div>
+    <p class="stmt">Legyen \(f(x) := \dfrac{1}{\sqrt[3]{1+x}}\) \((x \gt -1)\).<br>
+      (a) Írjuk fel \(f\) 0 pont körüli harmadfokú Taylor-polinomját, és határozzuk meg, legfeljebb mekkora hibával közelíti a \(\left[0, \frac{1}{10}\right]\) intervallumon a függvényt!<br>
+      (b) Számítsuk ki az \(A := \dfrac{1}{\sqrt[3]{1{,}03}}\) szám egy közelítő értékét és a közelítés hibáját!</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p><b>(a)</b> \(f(x) = (1+x)^{-1/3}\) akárhányszor deriválható \(x \gt -1\)-re:</p>
+        \[f'(x) = -\tfrac13(1+x)^{-4/3},\quad f''(x) = \tfrac49(1+x)^{-7/3},\quad f'''(x) = -\tfrac{28}{27}(1+x)^{-10/3},\quad f^{(4)}(x) = \tfrac{280}{81}(1+x)^{-13/3}.\]
+        <p>Így \(f(0) = 1\), \(f'(0) = -\frac13\), \(f''(0) = \frac49\), \(f'''(0) = -\frac{28}{27}\), és</p>
+        \[T_{0,3}(f,x) = 1 - \frac13 x + \frac{4/9}{2!}x^2 - \frac{28/27}{3!}x^3 = 1 - \frac13x + \frac29x^2 - \frac{14}{81}x^3.\]
+        <p><b>Hiba.</b> \(x \in \left(0, \frac{1}{10}\right]\)-hez van \(\xi \in (0, x)\), hogy \(f(x) - T_{0,3}(f,x) = \frac{f^{(4)}(\xi)}{4!}x^4\). Mivel \(\xi \gt 0\), \((1+\xi)^{-13/3} \lt 1\), így \(|f^{(4)}(\xi)| \le \frac{280}{81}\), tehát</p>
+        \[\left|f(x) - T_{0,3}(f,x)\right| \le \frac{280}{81}\cdot\frac{1}{4!}\cdot 10^{-4} = \frac{7}{486\,000} \approx 0{,}0000144.\]
+        <p>(\(x = 0\)-ban a hiba 0.) Eredmény: <span class="ans">\(T_{0,3} = 1 - \frac13x + \frac29x^2 - \frac{14}{81}x^3\), hiba \(\le \frac{7}{486\,000}\)</span></p>
+        <p><b>(b)</b> \(A = f\left(\frac{3}{100}\right)\), így</p>
+        \[A \approx T_{0,3}\left(f, \tfrac{3}{100}\right) = 1 - \frac13\cdot\frac{3}{100} + \frac29\cdot\frac{9}{10^4} - \frac{14}{81}\cdot\frac{27}{10^6} = \frac{1\,485\,293}{1\,500\,000} = 0{,}990\,195\,\dot3.\]
+        <p>A hiba ugyanígy, \(x = \frac{3}{100}\)-ra:</p>
+        \[\left|A - T_{0,3}\left(f,\tfrac{3}{100}\right)\right| \le \frac{280}{81}\cdot\frac{1}{4!}\cdot\left(\frac{3}{100}\right)^4 = \frac76\cdot 10^{-7}.\]
+        <p>Eredmény: <span class="ans">\(A \approx 0{,}990\,195\,\dot3\), hiba \(\le \frac76\cdot10^{-7}\)</span>. Az első 6 tizedesjegy (\(0{,}990195\)) pontos.</p>
+        <div class="tip"><b>Megjegyzés a forrásról:</b> a gyakorlati anyag (b) részében a hibabecslésnél \(T_{3,0}\) szerepel, ez elírás, helyesen \(T_{0,3}\).</div>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>A deriváltak mintázata.</b> \((1+x)^\alpha\) deriválásakor a kitevő lejön szorzónak, és eggyel csökken: \(-\frac13 \to -\frac43 \to -\frac73 \to -\frac{10}{3} \to -\frac{13}{3}\). Az együtthatók: \(-\frac13\), \(-\frac13\cdot(-\frac43) = \frac49\), \(\frac49\cdot(-\frac73) = -\frac{28}{27}\), \(-\frac{28}{27}\cdot(-\frac{10}{3}) = \frac{280}{81}\).</p>
+        <p><b>Miért \((1+\xi)^{-13/3} \lt 1\)?</b> Negatív kitevő esetén a függvény csökkenő, és \(1 + \xi \gt 1\). Ezért becsülhetjük a \(\xi\)-t nem ismerve is: a legrosszabb eset a \(\xi \to 0\).</p>
+        <p><b>Előjel (pontosítás).</b> Mivel \(f^{(4)} \gt 0\), a hiba <b>pozitív</b>: \(A \gt T_{0,3}\). Ezért \(0{,}990\,195\,333 \le A \le 0{,}990\,195\,450\). A pontos érték \(A = 0{,}990\,195\,447\dots\), tényleg ebben az intervallumban van.</p>
+        <p><b>Numerikus ellenőrzés (a):</b> \(x = 0{,}1\)-nél a tényleges hiba \(1{,}33\cdot10^{-5}\), a becslés \(1{,}44\cdot10^{-5}\). ✓</p>
+        <figure class="graph"><div id="g-o3"></div><figcaption><span class="lg">\(f(x) = (1+x)^{-1/3}\)</span><span class="lg tay">\(T_{0,3}(f,x)\)</span><span class="lg band">a [0; 0,1] intervallum</span></figcaption></figure>
+        <p class="note">A 0 közelében a két görbe szinte egybeesik, távolabb szétválnak: a Taylor-polinom csak a pont környezetében jó közelítés.</p>
+      </div>
+    </details>
+  </article>
+
+  </div>
+</section>
+
+<!-- ================= HÁZI FELADATOK ================= -->
+<section id="hazi">
+  <div class="section-head">
+    <span class="label">Összevont gyakorlati anyag · 6. gyakorlat</span>
+    <h2>Házi feladatok</h2>
+    <p>Az „Analízis II. gyakorlatok” összevont anyag 6. gyakorlatához tartozó házi feladatok. A forrásban nincs megoldás, ezek <b>saját megoldások</b>; minden eredményt numerikusan is ellenőriztem.</p>
+  </div>
+
+  <div class="taskgroup">
+
+  <article class="task" id="h1a">
+    <div class="task-head"><span class="no">1. (a)</span><span class="src">házi · saját megoldás</span><span class="kind">\(0 \cdot \infty\)</span></div>
+    \[\lim_{x\to0+0} \sin x \cdot \ln x\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>\(\sin x \to 0\), \(\ln x \to -\infty\): \(0\cdot(-\infty)\) típus. Törtként \(\frac{-\infty}{+\infty}\):</p>
+        \[\lim_{x\to0+0}\frac{\ln x}{\frac{1}{\sin x}} \overset{\text{L'H}}{=} \lim_{x\to0+0}\frac{\frac1x}{-\frac{\cos x}{\sin^2 x}} = \lim_{x\to0+0}\left(-\frac{\sin x}{x}\cdot\frac{\sin x}{\cos x}\right) = -1\cdot\frac{0}{1} = 0.\]
+        <p>Eredmény: <span class="ans">\(0\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért a \(\frac{1}{\sin x}\) megy a nevezőbe?</b> Ha a \(\ln x\)-et vinnénk le (\(\frac{\sin x}{1/\ln x}\)), a nevező deriváltja \(-\frac{1}{x\ln^2 x}\) lenne, ami bonyolultabb. Általános szabály: a logaritmust hagyd a számlálóban, mert deriválva eltűnik.</p>
+        <p><b>Az átalakítás:</b> \(\frac{1/x}{-\cos x/\sin^2 x} = -\frac{\sin^2 x}{x\cos x}\), és ezt bontjuk két ismert határértékű tényezőre.</p>
+        <div class="tip">Rövidebben: \(\sin x\ln x = \frac{\sin x}{x}\cdot x\ln x \to 1\cdot 0 = 0\), a nevezetes \(\lim_{x\to0+0}x\ln x = 0\) határérték alapján.</div>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="h1b">
+    <div class="task-head"><span class="no">1. (b)</span><span class="src">házi · saját megoldás</span><span class="kind">\(0 \cdot \infty\)</span></div>
+    \[\lim_{x\to+\infty} e^{x - x^2}\cdot\ln\left(x^2 - x + 1\right)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>\(x - x^2 \to -\infty\), így \(e^{x-x^2} \to 0\); \(x^2 - x + 1 \to +\infty\), így \(\ln(\dots) \to +\infty\). \(0\cdot\infty\) típus, törtként \(\frac{\infty}{\infty}\):</p>
+        \[\lim_{x\to+\infty}\frac{\ln(x^2 - x + 1)}{e^{x^2 - x}} \overset{\text{L'H}}{=} \lim_{x\to+\infty}\frac{\frac{2x-1}{x^2-x+1}}{(2x-1)\,e^{x^2-x}} = \lim_{x\to+\infty}\frac{1}{(x^2-x+1)\,e^{x^2-x}} = 0.\]
+        <p>(Az utolsó lépésben a nevező \(+\infty\cdot+\infty = +\infty\), ez nem kritikus.) Eredmény: <span class="ans">\(0\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Feltételek:</b> a nevező \(g(x) = e^{x^2-x}\), deriváltja \((2x-1)e^{x^2-x} \ne 0\), ha \(x \gt \frac12\). Mivel \(+\infty\)-ben vizsgálunk, ez elég.</p>
+        <p><b>A szép rész:</b> a számláló deriváltjában is, a nevezőében is ott van a \(2x - 1\) belső derivált, és kiesik.</p>
+        <p><b>Intuíció:</b> \(e^{-x^2}\) sokkal gyorsabban tart 0-hoz, mint ahogy bármilyen logaritmus a végtelenbe. Az exponenciális mindig „legyőzi” a logaritmust és a hatványokat.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="h1c">
+    <div class="task-head"><span class="no">1. (c)</span><span class="src">házi · saját megoldás</span><span class="kind">\(\infty - \infty\)</span></div>
+    \[\lim_{x\to0+0}\left(\frac{1}{\arctg x} - \frac1x\right)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>\((+\infty) - (+\infty)\) típus. Közös nevezőre hozva \(\frac00\):</p>
+        \[\frac{1}{\arctg x} - \frac1x = \frac{x - \arctg x}{x\arctg x}.\]
+        \[\lim_{x\to0+0}\frac{x - \arctg x}{x\arctg x} \overset{\text{L'H}}{=} \lim_{x\to0+0}\frac{1 - \frac{1}{1+x^2}}{\arctg x + \frac{x}{1+x^2}} = \lim_{x\to0+0}\frac{x^2}{(1+x^2)\arctg x + x}.\]
+        <p>Ez megint \(\frac00\). Még egyszer:</p>
+        \[\overset{\text{L'H}}{=} \lim_{x\to0+0}\frac{2x}{2x\arctg x + (1+x^2)\cdot\frac{1}{1+x^2} + 1} = \lim_{x\to0+0}\frac{2x}{2x\arctg x + 2} = \frac{0}{2} = 0.\]
+        <p>Eredmény: <span class="ans">\(0\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Az egyszerűsítés az első lépés után:</b> \(1 - \frac{1}{1+x^2} = \frac{x^2}{1+x^2}\), a nevező \(\arctg x + \frac{x}{1+x^2} = \frac{(1+x^2)\arctg x + x}{1+x^2}\). Az \((1+x^2)\) nevezők kiesnek, és egyszerűbb tört marad.</p>
+        <p><b>A második deriválás:</b> \(\big((1+x^2)\arctg x\big)' = 2x\arctg x + (1+x^2)\cdot\frac{1}{1+x^2} = 2x\arctg x + 1\), plusz az \(x\) deriváltja, 1.</p>
+        <p><b>Ellenőrzés Taylor-sorral:</b> \(\arctg x = x - \frac{x^3}{3} + \dots\), így \(x - \arctg x \approx \frac{x^3}{3}\), a nevező \(\approx x^2\), a hányados \(\approx \frac{x}{3} \to 0\). Numerikusan \(x = 10^{-4}\)-nél \(3{,}33\cdot10^{-5}\).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="h1d">
+    <div class="task-head"><span class="no">1. (d)</span><span class="src">házi · saját megoldás</span><span class="kind">\(1^\infty\)</span></div>
+    \[\lim_{x\to0+0}\left(\cos x\right)^{\frac{1}{x^2}}\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>\(1^{\infty}\) típus. \((\cos x)^{1/x^2} = \exp\left(\frac{\ln\cos x}{x^2}\right)\) (\(x\) kicsi, így \(\cos x \gt 0\)). A kitevő \(\frac00\):</p>
+        \[\lim_{x\to0+0}\frac{\ln\cos x}{x^2} \overset{\text{L'H}}{=} \lim_{x\to0+0}\frac{\frac{-\sin x}{\cos x}}{2x} = -\frac12\lim_{x\to0+0}\frac{\sin x}{x}\cdot\frac{1}{\cos x} = -\frac12.\]
+        <p>Mivel \(\exp\) folytonos: \(\lim = e^{-1/2}\).</p>
+        <p>Eredmény: <span class="ans">\(e^{-1/2} = \dfrac{1}{\sqrt e} \approx 0{,}6065\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért nem 1?</b> Az alap 1-hez tart, de a kitevő végtelenhez, és a kettő „versenyez”. Mivel \(\cos x \approx 1 - \frac{x^2}{2}\), a kifejezés \(\approx \left(1 - \frac{x^2}{2}\right)^{1/x^2}\), ami az \(\left(1 + \frac{a}{n}\right)^n \to e^a\) mintára \(e^{-1/2}\).</p>
+        <p><b>Numerikus ellenőrzés:</b> \(x = 10^{-3}\)-nál \(0{,}606531\dots\), és \(e^{-1/2} = 0{,}606531\dots\)</p>
+        <div class="warn"><b>Tipikus hiba:</b> „az alap 1-hez tart, tehát a határérték 1”. Az \(1^\infty\) kritikus típus, mindig át kell írni \(e^{g\ln f}\) alakra.</div>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="h2">
+    <div class="task-head"><span class="no">2. házi feladat</span><span class="src">házi · saját megoldás</span><span class="kind">Taylor-polinom · hibabecslés</span></div>
+    <p class="stmt">Írja fel az \(f(x) := \sqrt[3]{1+x}\) \(\big(x \in (-1, +\infty)\big)\) függvény 0 pont körüli második Taylor-polinomját, \(T_{0,2}(f,x)\)-et! Adjon becslést az \(|f(x) - T_{0,2}(f,x)|\) hibára a \(\left[0, \frac14\right]\) intervallumon!</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>\(f(x) = (1+x)^{1/3}\), a deriváltak:</p>
+        \[f'(x) = \tfrac13(1+x)^{-2/3},\quad f''(x) = -\tfrac29(1+x)^{-5/3},\quad f'''(x) = \tfrac{10}{27}(1+x)^{-8/3}.\]
+        <p>\(f(0) = 1\), \(f'(0) = \frac13\), \(f''(0) = -\frac29\), így</p>
+        \[T_{0,2}(f,x) = 1 + \frac13x + \frac{-2/9}{2!}x^2 = 1 + \frac13x - \frac19x^2.\]
+        <p><b>Hiba.</b> \(x \in \left(0, \frac14\right]\)-hez van \(\xi \in (0, x)\), hogy</p>
+        \[f(x) - T_{0,2}(f,x) = \frac{f'''(\xi)}{3!}x^3 = \frac{10}{27\cdot 6}(1+\xi)^{-8/3}x^3.\]
+        <p>\((1+\xi)^{-8/3} \lt 1\) és \(x^3 \le \frac{1}{64}\), tehát</p>
+        \[\left|f(x) - T_{0,2}(f,x)\right| \le \frac{10}{162}\cdot\frac{1}{64} = \frac{5}{5184} \approx 0{,}000965.\]
+        <p>Eredmény: <span class="ans">\(T_{0,2} = 1 + \frac13x - \frac19x^2\), hiba \(\le \frac{5}{5184} \lt 10^{-3}\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Ugyanaz a recept, mint az órai 3. feladatban,</b> csak \(\alpha = \frac13\) és \(n = 2\). A maradéktaghoz a <b>harmadik</b> derivált kell (\(n + 1 = 3\)).</p>
+        <p><b>A deriváltak:</b> \(\frac13\), \(\frac13\cdot(-\frac23) = -\frac29\), \(-\frac29\cdot(-\frac53) = \frac{10}{27}\).</p>
+        <p><b>Numerikus ellenőrzés:</b> \(x = \frac14\)-nél \(f = \sqrt[3]{1{,}25} = 1{,}077217\), \(T_{0,2} = 1{,}076389\), a tényleges hiba \(0{,}000828 \le 0{,}000965\). ✓</p>
+        <p><b>Felhasználás:</b> ezzel például \(\sqrt[3]{1{,}25} \approx 1 + \frac{1}{12} - \frac{1}{144} = \frac{155}{144}\), legfeljebb \(10^{-3}\) hibával.</p>
+        <figure class="graph"><div id="g-h2"></div><figcaption><span class="lg">\(f(x) = \sqrt[3]{1+x}\)</span><span class="lg tay">\(T_{0,2}(f,x)\)</span><span class="lg band">a [0; 0,25] intervallum</span></figcaption></figure>
+      </div>
+    </details>
+  </article>
+
+  </div>
+</section>
+
+<!-- ================= GYAKORI HIBÁK ================= -->
+<section id="hibak">
+  <div class="section-head">
+    <span class="label">Mire figyelj</span>
+    <h2>Gyakori hibák</h2>
+  </div>
+  <div class="mistakes">
+    <div class="mistake"><span class="x">✕</span><p><b>L'Hospital nem kritikus típusra.</b> Csak \(\frac00\) és \(\frac{\infty}{\infty}\) esetén szabad. Pl. \(\lim_{x\to0}\frac{\cos x}{x+1} = 1\), de „L'Hospitallal” \(\frac{-\sin 0}{1} = 0\) jönne ki. Minden lépés előtt ellenőrizd a típust.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>A törtet hányadosszabállyal deriválod.</b> A L'Hospital-szabálynál a számlálót és a nevezőt <b>külön</b> kell deriválni: \(\frac{f'}{g'}\), nem \(\left(\frac fg\right)'\).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>\(1^\infty\) = 1.</b> Az \(1^{\infty}\), \(0^0\), \(\infty^0\) kritikus típusok. Írd át \(e^{g\ln f}\) alakra (órai 1(e), házi 1(d)).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Elfelejtett faktoriális.</b> A Taylor-polinomban \(\frac{f^{(k)}(a)}{k!}\) az együttható, nem \(f^{(k)}(a)\). Az órai 3-ban \(\frac{4/9}{2} = \frac29\) és \(\frac{28/27}{6} = \frac{14}{81}\).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Rossz derivált a maradéktagban.</b> Az \(n\)-edik Taylor-polinom hibájához az \((n+1)\)-edik derivált kell, \((n+1)!\)-sal és \((x-a)^{n+1}\)-gyel.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>A \(\xi\)-t konkrét számnak veszed.</b> A \(\xi\) ismeretlen, csak annyit tudunk, hogy \(a\) és \(x\) között van. A hibabecsléshez \(|f^{(n+1)}(\xi)|\)-t a teljes szakaszon felülről kell becsülni.</p></div>
+  </div>
+</section>
+
+<footer>Forrás: <a href="../Gyakorlat%20anyagok/06_Gy_An_II_A_B.pdf" target="_blank" rel="noopener">6. gyakorlat (PDF)</a> és <a href="../Gyakorlat%20anyagok/An_II_A_B_Gyak.pdf" target="_blank" rel="noopener">Analízis II. gyakorlatok, összevont anyag (PDF)</a>. A határértékek és hibabecslések numerikusan ellenőrizve, a grafikonok a függvényekből számolva készültek.</footer>
+</div>
+
+<script>
+(function () {
+  // Small SVG plotter: several curves on one grid, optional shaded x-band.
+  function fmt(v) { return (Math.round(v * 100) / 100).toString().replace('.', ',').replace('-', '−'); }
+  function plot(el, o) {
+    var W = 640, H = o.h || 320, L = 40, R = 14, T = 12, B = 26;
+    var x0 = o.x[0], x1 = o.x[1], y0 = o.y[0], y1 = o.y[1];
+    var X = function (x) { return L + (x - x0) / (x1 - x0) * (W - L - R); };
+    var Y = function (y) { return T + (y1 - y) / (y1 - y0) * (H - T - B); };
+    var s = [], cid = 'clip-' + el.id, v;
+    s.push('<defs><clipPath id="' + cid + '"><rect x="' + L + '" y="' + T + '" width="' + (W - L - R) + '" height="' + (H - T - B) + '"/></clipPath></defs>');
+    if (o.band) s.push('<rect class="bd" x="' + X(o.band[0]) + '" y="' + T + '" width="' + (X(o.band[1]) - X(o.band[0])) + '" height="' + (H - T - B) + '"/>');
+    for (v = Math.ceil(x0 / o.gx) * o.gx; v <= x1 + 1e-9; v += o.gx) {
+      s.push('<line class="gl" x1="' + X(v) + '" y1="' + T + '" x2="' + X(v) + '" y2="' + (H - B) + '"/>');
+      if (Math.abs(v) > 1e-9) s.push('<text class="tk" x="' + X(v) + '" y="' + (H - 8) + '" text-anchor="middle">' + fmt(v) + '</text>');
+    }
+    for (v = Math.ceil(y0 / o.gy) * o.gy; v <= y1 + 1e-9; v += o.gy) {
+      s.push('<line class="gl" x1="' + L + '" y1="' + Y(v) + '" x2="' + (W - R) + '" y2="' + Y(v) + '"/>');
+      if (Math.abs(v) > 1e-9) s.push('<text class="tk" x="' + (L - 6) + '" y="' + (Y(v) + 4) + '" text-anchor="end">' + fmt(v) + '</text>');
+    }
+    if (y0 <= 0 && y1 >= 0) s.push('<line class="ax" x1="' + L + '" y1="' + Y(0) + '" x2="' + (W - R) + '" y2="' + Y(0) + '"/>');
+    if (x0 <= 0 && x1 >= 0) s.push('<line class="ax" x1="' + X(0) + '" y1="' + T + '" x2="' + X(0) + '" y2="' + (H - B) + '"/>');
+    var g = '<g clip-path="url(#' + cid + ')">';
+    o.curves.forEach(function (c) {
+      var d = '', pen = false, N = 900, span = y1 - y0;
+      for (var i = 0; i <= N; i++) {
+        var x = x0 + (x1 - x0) * i / N;
+        if (c.dom && !c.dom(x)) { pen = false; continue; }
+        var y = c.f(x);
+        if (!isFinite(y)) { pen = false; continue; }
+        y = Math.max(Math.min(y, y1 + span), y0 - span);
+        d += (pen ? 'L' : 'M') + X(x).toFixed(1) + ' ' + Y(y).toFixed(1);
+        pen = true;
+      }
+      g += '<path class="' + c.cls + '" d="' + d + '"/>';
+    });
+    g += '<circle class="pz" cx="' + X(0) + '" cy="' + Y(1) + '" r="3.5"/></g>';
+    s.push(g);
+    el.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + o.label + '">' + s.join('') + '</svg>';
+  }
+  var GRAPHS = {
+    'g-o3': { label: 'f(x) = (1+x)^(−1/3) és harmadfokú Taylor-polinomja', x: [-0.95, 3], y: [0, 2.5], gx: 0.5, gy: 0.5, band: [0, 0.1],
+      curves: [ { cls: 'cv', f: function (x) { return Math.pow(1 + x, -1 / 3); }, dom: function (x) { return x > -1; } },
+                { cls: 'cv2', f: function (x) { return 1 - x / 3 + 2 * x * x / 9 - 14 * x * x * x / 81; } } ] },
+    'g-h2': { label: 'f(x) = köbgyök(1+x) és második Taylor-polinomja', x: [-1, 4], y: [-0.5, 2], gx: 0.5, gy: 0.5, band: [0, 0.25],
+      curves: [ { cls: 'cv', f: function (x) { return Math.cbrt(1 + x); }, dom: function (x) { return x >= -1; } },
+                { cls: 'cv2', f: function (x) { return 1 + x / 3 - x * x / 9; } } ] }
+  };
+  Object.keys(GRAPHS).forEach(function (id) { var el = document.getElementById(id); if (el) plot(el, GRAPHS[id]); });
+})();
+</script>
+<!-- Fejezetsáv: az éppen olvasott szakasz gombja kiemelve -->
+<style>
+nav.bar a.active, nav.bar a.active:hover, nav.bar a.active:focus-visible { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+</style>
+<script>
+(function () {
+  var nav = document.querySelector('nav.bar');
+  if (!nav) return;
+  var links = Array.prototype.filter.call(nav.querySelectorAll('a[href^="#"]'), function (a) {
+    return a.getAttribute('href').length > 1 && document.getElementById(a.getAttribute('href').slice(1));
+  });
+  var current = null, ticking = false;
+  function sectionOf(a) { return document.getElementById(a.getAttribute('href').slice(1)); }
+  function update() {
+    ticking = false;
+    var line = nav.getBoundingClientRect().bottom + 12, active = null;
+    var visible = links.filter(function (a) { return sectionOf(a).offsetParent !== null; });
+    visible.forEach(function (a) { if (sectionOf(a).getBoundingClientRect().top <= line) active = a; });
+    // a lap alján az utolsó szakasz az aktuális akkor is, ha rövid
+    if (visible.length && window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) active = visible[visible.length - 1];
+    if (active === current) return;
+    if (current) { current.classList.remove('active'); current.removeAttribute('aria-current'); }
+    current = active;
+    if (!active) return;
+    active.classList.add('active');
+    active.setAttribute('aria-current', 'location');
+    var ul = active.closest('ul'), ur = ul.getBoundingClientRect(), ar = active.getBoundingClientRect();
+    var left = ar.left - ur.left + ul.scrollLeft, right = left + ar.width;
+    if (left < ul.scrollLeft || right > ul.scrollLeft + ul.clientWidth) ul.scrollTo({ left: Math.max(0, left - 16), behavior: 'smooth' });
+  }
+  function schedule() { if (!ticking) { ticking = true; setTimeout(update, 40); } }
+  window.addEventListener('scroll', schedule, { passive: true });
+  window.addEventListener('resize', schedule);
+  document.addEventListener('input', schedule);   // a keresés elrejthet szakaszokat
+  document.addEventListener('toggle', schedule, true);
+  update();
+})();
+</script>
+</body>
+</html>

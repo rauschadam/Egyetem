@@ -1,0 +1,662 @@
+<!doctype html>
+<html lang="hu" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Analízis II · 1. ZH bizonyítások</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['\\(', '\\)']],
+      displayMath: [['\\[', '\\]']],
+      macros: {
+        arcsin: '\\operatorname{arc\\,sin}', arccos: '\\operatorname{arc\\,cos}',
+        arctg: '\\operatorname{arc\\,tg}', arcctg: '\\operatorname{arc\\,ctg}',
+        tg: '\\operatorname{tg}', ctg: '\\operatorname{ctg}', R: '\\mathbb{R}'
+      }
+    },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js" async></script>
+<style>
+/* Layout: same exam-paper look as the DIMAT prep, in the Analysis orange; every task = statement + folded solution + folded walkthrough */
+:root {
+  --paper: #f5f7fa;
+  --grid: rgba(180, 80, 11, 0.06);
+  --card: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6574;
+  --rule: #d7dde6;
+  --accent: #b4500b;
+  --accent-soft: #fcefe4;
+  --mark: #b8352a;
+  --mark-soft: #fbe9e6;
+  --ok: #2c7a4b;
+  --ok-soft: #e3f3e9;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-label: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f141b; --grid: rgba(242, 162, 94, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+    --rule: #2a3442; --accent: #f2a25e; --accent-soft: #33241a; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+    --ok: #74d39c; --ok-soft: #173225; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f141b; --grid: rgba(242, 162, 94, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+  --rule: #2a3442; --accent: #f2a25e; --accent-soft: #33241a; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+  --ok: #74d39c; --ok-soft: #173225; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background-color: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 1.06rem;
+  line-height: 1.6;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 80px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2rem, 6vw, 3.1rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.65rem; font-weight: 700; letter-spacing: -0.01em; }
+h3 { font-size: 1.1rem; font-weight: 600; }
+p { margin: 0; }
+a { color: var(--accent); }
+.label { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding: 2px 0; margin: 6px 0 !important; min-width: 0; max-width: 100%; }
+/* grid children must be allowed to shrink, otherwise wide formulas push the page sideways */
+.task, .sol, .step, .rule-card, .sheet > * { grid-template-columns: minmax(0, 1fr); min-width: 0; }
+.rule-card li, .rule-card p, .sol p, .sol li, .step p, .stmt, .tip, .warn, .mistake p, td { overflow-x: auto; overflow-y: hidden; }
+
+/* back to subject page */
+.back { justify-self: start; display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px 9px 12px; border: 1.5px solid var(--accent); border-radius: 8px; background: var(--accent-soft); color: var(--ink); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 1.02rem; line-height: 1; white-space: nowrap; transition: background .15s, color .15s; }
+.back .arr { color: var(--accent); font-size: 1.25rem; transition: transform .15s, color .15s; }
+.back:hover, .back:focus-visible { background: var(--accent); color: var(--paper); outline: none; }
+.back:hover .arr, .back:focus-visible .arr { color: var(--paper); transform: translateX(-3px); }
+
+/* header */
+header.hero { display: grid; gap: 14px; padding-block: 0 26px; border-bottom: 2px solid var(--accent); }
+.hero .sub { color: var(--muted); max-width: 62ch; }
+.facts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.fact { display: flex; flex-direction: column; gap: 2px; padding: 8px 14px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; min-width: 120px; }
+.fact b { font-family: var(--f-display); font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+
+nav.bar { position: sticky; top: 0; z-index: 5; background: var(--paper); border-bottom: 1px solid var(--rule); margin-inline: -16px; padding-inline: 16px; }
+nav.bar ul { list-style: none; margin: 0; padding: 10px 0; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin; }
+nav.bar a { display: block; white-space: nowrap; text-decoration: none; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.04em; color: var(--ink); padding: 6px 10px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); }
+nav.bar a:hover, nav.bar a:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+nav.bar a.nav-back { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+
+section { padding-top: 44px; display: grid; gap: 18px; scroll-margin-top: 56px; }
+.section-head { display: grid; gap: 6px; }
+.section-head p { color: var(--muted); max-width: 64ch; }
+
+/* reminder cards */
+.sheet { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; }
+.rule-card { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 14px 16px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.rule-card h3 { font-size: 1rem; }
+.rule-card p, .rule-card li { font-size: 0.95rem; }
+.rule-card ul, .rule-card ol { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.rule-card.wide { grid-column: 1 / -1; }
+
+/* tables (sign charts, value tables) */
+.tbl { overflow-x: auto; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--rule); vertical-align: middle; }
+th { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+tr:last-child td, tr:last-child th { border-bottom: 0; }
+table.sgn { width: auto; min-width: 100%; }
+table.sgn th, table.sgn td { text-align: center; white-space: nowrap; border-left: 1px solid var(--rule); }
+table.sgn th:first-child { border-left: 0; text-transform: none; letter-spacing: 0; font-family: var(--f-body); font-size: 1rem; color: var(--ink); background: var(--accent-soft); }
+table.sgn td.pt { background: color-mix(in srgb, var(--accent-soft) 55%, transparent); }
+.p { color: var(--ok); font-weight: 600; }
+.n { color: var(--mark); font-weight: 600; }
+.note { font-size: 0.82rem; color: var(--muted); }
+.tag { font-family: var(--f-label); font-size: 0.72rem; color: var(--accent); }
+
+/* exercises */
+.task { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 18px; display: grid; gap: 10px; min-width: 0; scroll-margin-top: 60px; }
+.task-head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.task-head .no { font-family: var(--f-display); font-weight: 700; font-size: 1.05rem; }
+.task-head .src { font-family: var(--f-label); font-size: 0.72rem; color: var(--muted); }
+.task-head .kind { margin-left: auto; font-family: var(--f-label); font-size: 0.75rem; color: var(--accent); }
+.stmt { max-width: 70ch; }
+details { border-top: 1px dashed var(--rule); padding-top: 8px; min-width: 0; }
+summary { cursor: pointer; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); list-style: none; display: inline-flex; gap: 8px; align-items: center; padding: 4px 0; }
+summary::-webkit-details-marker { display: none; }
+summary::before { content: "+"; display: inline-grid; place-items: center; width: 18px; height: 18px; border: 1px solid currentColor; border-radius: 3px; font-size: 0.8rem; }
+details[open] > summary::before { content: "−"; }
+summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sol { display: grid; gap: 10px; padding-top: 6px; max-width: 74ch; min-width: 0; }
+.sol ol, .sol ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.step { display: grid; gap: 8px; min-width: 0; }
+.step > b:first-child { font-family: var(--f-display); font-weight: 600; }
+.ans { display: inline-block; background: var(--ok-soft); color: var(--ok); font-weight: 600; padding: 2px 9px; border-radius: 4px; }
+.warn { background: var(--mark-soft); border-left: 3px solid var(--mark); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 0.95rem; }
+.tip { background: var(--accent-soft); border-left: 3px solid var(--accent); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 0.95rem; }
+.taskgroup { display: grid; gap: 12px; }
+
+/* graphs */
+figure.graph { margin: 0; background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 8px 8px 6px; display: grid; gap: 6px; }
+figure.graph svg { width: 100%; height: auto; display: block; }
+figure.graph figcaption { display: flex; flex-wrap: wrap; gap: 4px 16px; font-family: var(--f-label); font-size: 0.72rem; color: var(--muted); padding: 0 4px; }
+.lg::before { content: ""; display: inline-block; width: 16px; height: 0; vertical-align: middle; margin-right: 6px; border-top: 2.5px solid var(--accent); }
+.lg.asy::before { border-top: 1.5px dashed var(--muted); }
+.lg.ext::before { width: 9px; height: 9px; border: 0; border-radius: 50%; background: var(--ok); }
+.lg.inf::before { width: 9px; height: 9px; border: 2px solid var(--mark); border-radius: 50%; box-sizing: border-box; }
+svg .gl { stroke: var(--rule); stroke-width: 1; opacity: .55; }
+svg .ax { stroke: var(--muted); stroke-width: 1.3; }
+svg .tk { fill: var(--muted); font-family: var(--f-label); font-size: 11px; }
+svg .cv { fill: none; stroke: var(--accent); stroke-width: 2.6; stroke-linejoin: round; stroke-linecap: round; }
+svg .as { stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 6 5; fill: none; }
+svg .pe { fill: var(--ok); stroke: var(--paper); stroke-width: 1.5; }
+svg .pi { fill: var(--paper); stroke: var(--mark); stroke-width: 2.2; }
+svg .pz { fill: var(--ink); }
+svg .po { fill: var(--paper); stroke: var(--accent); stroke-width: 2; }
+svg .pl { fill: var(--ink); font-family: var(--f-label); font-size: 12px; paint-order: stroke; stroke: var(--paper); stroke-width: 4px; stroke-linejoin: round; }
+
+/* mistakes */
+.mistakes { display: grid; gap: 10px; }
+.mistake { display: grid; grid-template-columns: auto 1fr; gap: 12px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 12px 14px; }
+.mistake .x { font-family: var(--f-display); font-weight: 700; color: var(--mark); font-size: 1.2rem; line-height: 1.3; }
+
+footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.88rem; }
+
+@media (max-width: 520px) {
+  body { font-size: 1rem; }
+  .task { padding: 14px; }
+  th, td { padding: 6px 8px; }
+}
+
+/* proofs: side notes readable, not tiny */
+.sol .note { font-size: 0.92rem; border-left: 2px solid var(--rule); padding-left: 10px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <a class="back" href="../../index.html#/anal2"><span class="arr" aria-hidden="true">←</span>Vissza: Analízis II.</a>
+  <span class="label">Analízis II. · 1. ZH · bizonyítással kért tételek</span>
+  <h1>Az 1. ZH bizonyításai</h1>
+  <p class="sub">A megajánlott vizsgajegyhez az 1. ZH-n bizonyítással kért 12 tétel, az előadásdiák (1–5. előadás) alapján. Minden kérdésnél előbb próbáld fejből kimondani a tételt, utána nyisd le, majd ugyanígy a bizonyítást. A diákon kihagyott lépéseket kiegészítettem, ezek jelölve vannak.</p>
+  <div class="facts">
+    <div class="fact"><span class="label">Tétel</span><b>12</b></div>
+    <div class="fact"><span class="label">Forrás</span><b>1–5. előadás</b></div>
+  </div>
+</header>
+
+<nav class="bar" aria-label="Fejezetek">
+  <ul>
+    <li><a class="nav-back" href="../../index.html#/anal2" aria-label="Vissza: Analízis II.">← ANAL II</a></li>
+    <li><a href="#derivalas">Deriválás (1–3)</a></li>
+    <li><a href="#kozepertek">Középértéktételek (4–7)</a></li>
+    <li><a href="#alkalmazas">Monotonitás, konvexitás (8–10)</a></li>
+    <li><a href="#lhospital">L'Hospital, Taylor (11–12)</a></li>
+  </ul>
+</nav>
+
+<!-- ================= DERIVÁLÁS ================= -->
+<section id="derivalas">
+  <div class="section-head">
+    <span class="label">1. előadás · Differenciálszámítás 1.</span>
+    <h2>Deriválhatóság, deriválási szabályok</h2>
+  </div>
+  <div class="taskgroup">
+
+  <article class="task" id="t1">
+    <div class="task-head"><span class="no">1.</span><span class="src">1. előadás · Lineáris közelítés</span></div>
+    <p class="stmt"><b>A deriválhatóság ekvivalens átfogalmazása lineáris közelítéssel.</b></p>
+    <details>
+      <summary>Tétel</summary>
+      <div class="sol">
+        <p>Legyen \(f \in \R \to \R\) és \(a \in \operatorname{int}\mathcal{D}_f\). Ekkor</p>
+        \[f \in D\{a\} \iff \begin{cases} \exists A \in \R \text{ és } \exists \varepsilon : \mathcal{D}_f \to \R,\ \lim_a \varepsilon = 0 : \\[2pt] f(x) - f(a) = A\cdot(x-a) + \varepsilon(x)(x-a) \quad (x \in \mathcal{D}_f), \end{cases}\]
+        <p>és \(A = f'(a)\).</p>
+      </div>
+    </details>
+    <details>
+      <summary>Bizonyítás</summary>
+      <div class="sol">
+        <div class="tip"><b>Kulcsötlet:</b> \(\varepsilon\) = a különbségi hányados és a derivált eltérése.</div>
+        <p><b>\(\Longrightarrow\)</b> \(f \in D\{a\}\), tehát</p>
+        \[\lim_{x\to a}\frac{f(x) - f(a)}{x - a} = f'(a) \in \R \iff \lim_{x\to a}\left(\frac{f(x)-f(a)}{x-a} - f'(a)\right) = 0.\]
+        <p>Ha</p>
+        \[\varepsilon(x) := \frac{f(x) - f(a)}{x - a} - f'(a) \quad \big(x \in \mathcal{D}_f\setminus\{a\}\big),\]
+        <p>akkor \(\lim_a \varepsilon = 0\), és (átszorozva \((x-a)\)-val)</p>
+        \[f(x) - f(a) = f'(a)\cdot(x-a) + \varepsilon(x)(x-a) \quad (x \in \mathcal{D}_f),\]
+        <p>ezért a feltétel az \(A = f'(a)\) választással teljesül. (Az \(x = a\) pontban mindkét oldal 0, ott \(\varepsilon(a)\) tetszőleges, pl. \(\varepsilon(a) := 0\).)</p>
+        <p><b>\(\Longleftarrow\)</b> Tegyük fel, hogy \(\exists A \in \R\) és \(\exists \varepsilon : \mathcal{D}_f \to \R\), \(\lim_a\varepsilon = 0\), hogy</p>
+        \[f(x) - f(a) = A\cdot(x-a) + \varepsilon(x)(x-a) \quad (x \in \mathcal{D}_f).\]
+        <p>Ebből \(x \ne a\)-ra \((x-a)\)-val osztva</p>
+        \[\frac{f(x) - f(a)}{x - a} = A + \varepsilon(x) \longrightarrow A, \quad \text{ha } x \to a\]
+        <p>adódik, ami azt jelenti, hogy \(f \in D\{a\}\) és \(f'(a) = A\). \(\blacksquare\)</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="t2">
+    <div class="task-head"><span class="no">2.</span><span class="src">1. előadás · Deriválási szabályok, 3°</span></div>
+    <p class="stmt"><b>A szorzatfüggvény deriválása.</b></p>
+    <details>
+      <summary>Tétel</summary>
+      <div class="sol">
+        <p>Tegyük fel, hogy \(f, g \in D\{a\}\) valamilyen \(a \in \operatorname{int}(\mathcal{D}_f \cap \mathcal{D}_g)\) pontban. Ekkor \(f\cdot g \in D\{a\}\) és</p>
+        \[(f\cdot g)'(a) = f'(a)\cdot g(a) + f(a)\cdot g'(a).\]
+      </div>
+    </details>
+    <details>
+      <summary>Bizonyítás</summary>
+      <div class="sol">
+        <div class="tip"><b>Kulcsötlet:</b> az \(\frac{f(x)-f(a)}{x-a}\) és \(\frac{g(x)-g(a)}{x-a}\) hányadosok „kialakítása”: a számlálóban \(f(a)g(x)\)-et kivonunk és hozzáadunk.</div>
+        <p>Világos, hogy \(a \in \operatorname{int}\mathcal{D}_{f\cdot g}\). Az \(f\cdot g\) függvény különbségihányados-függvénye az \(a\) pontban:</p>
+        \[\frac{(fg)(x) - (fg)(a)}{x-a} = \frac{f(x)g(x) - f(a)g(a)}{x-a} = \frac{f(x)g(x) - f(a)g(x) + f(a)g(x) - f(a)g(a)}{x-a} =\]
+        \[= \frac{f(x) - f(a)}{x-a}\cdot g(x) + f(a)\cdot\frac{g(x) - g(a)}{x-a} \qquad \big(x \in \mathcal{D}_{f\cdot g}\setminus\{a\}\big).\]
+        <p>Mivel \(g \in D\{a\}\), ezért \(g \in C\{a\}\), tehát \(\lim_{x\to a} g(x) = g(a)\). Így</p>
+        \[\lim_{x\to a}\frac{(fg)(x) - (fg)(a)}{x-a} = \lim_{x\to a}\frac{f(x)-f(a)}{x-a}\cdot\lim_{x\to a} g(x) + f(a)\cdot\lim_{x\to a}\frac{g(x)-g(a)}{x-a} = f'(a)\,g(a) + f(a)\,g'(a).\]
+        <p>Ez azt jelenti, hogy \(f\cdot g \in D\{a\}\) és \((f\cdot g)'(a) = f'(a)\,g(a) + f(a)\,g'(a)\). \(\blacksquare\)</p>
+        <div class="note"><b>Felhasznált tétel</b> (1. előadás): ha \(f \in D\{a\}\), akkor \(f \in C\{a\}\), mert \(\lim_{x\to a}\big(f(x) - f(a)\big) = \lim_{x\to a}\frac{f(x)-f(a)}{x-a}\cdot(x-a) = f'(a)\cdot 0 = 0\).</div>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="t3">
+    <div class="task-head"><span class="no">3.</span><span class="src">1. előadás · Deriválási szabályok, 4°</span></div>
+    <p class="stmt"><b>A hányadosfüggvény deriválása.</b></p>
+    <details>
+      <summary>Tétel</summary>
+      <div class="sol">
+        <p>Tegyük fel, hogy \(f, g \in D\{a\}\) valamilyen \(a \in \operatorname{int}(\mathcal{D}_f \cap \mathcal{D}_g)\) pontban, és \(g(a) \ne 0\). Ekkor \(\frac{f}{g} \in D\{a\}\) és</p>
+        \[\left(\frac fg\right)'(a) = \frac{f'(a)\cdot g(a) - f(a)\cdot g'(a)}{g^2(a)}.\]
+      </div>
+    </details>
+    <details>
+      <summary>Bizonyítás</summary>
+      <div class="sol">
+        <div class="tip"><b>Kulcsötlet:</b> előbb belátjuk, hogy \(a\) belső pontja \(\mathcal{D}_{f/g}\)-nek; utána közös nevező, és a számlálóban \(f(a)g(a)\)-t kivonunk és hozzáadunk.</div>
+        <p><b>Először azt igazoljuk, hogy \(a \in \operatorname{int}\mathcal{D}_{f/g}\).</b> Valóban: \(g \in D\{a\} \Rightarrow g \in C\{a\}\). Tehát \(g(a) \ne 0\) miatt</p>
+        \[\exists K(a) \subset \mathcal{D}_g : \ g(x) \ne 0 \ \ (\forall x \in K(a)) \implies a \in \operatorname{int}\mathcal{D}_{f/g}.\]
+        <p>(A folytonosság miatt \(g\) egy környezetben megtartja \(g(a)\) előjelét.)</p>
+        <p><b>A különbségi hányados</b> az \(a\) pontban:</p>
+        \[\frac{\left(\frac fg\right)(x) - \left(\frac fg\right)(a)}{x-a} = \frac{\frac{f(x)}{g(x)} - \frac{f(a)}{g(a)}}{x-a} = \frac{1}{g(a)g(x)}\cdot\frac{f(x)g(a) - f(a)g(x)}{x-a} =\]
+        \[= \frac{1}{g(a)g(x)}\left(\frac{f(x)-f(a)}{x-a}\cdot g(a) - f(a)\cdot\frac{g(x)-g(a)}{x-a}\right).\]
+        <p>(A számlálóban \(-f(a)g(a) + f(a)g(a)\)-t írtunk be: \(f(x)g(a) - f(a)g(a) - \big(f(a)g(x) - f(a)g(a)\big)\).)</p>
+        <p>Mivel \(g \in C\{a\} \Rightarrow \lim_{x\to a} g(x) = g(a) \ne 0\), ezért</p>
+        \[\lim_{x\to a}\frac{\left(\frac fg\right)(x) - \left(\frac fg\right)(a)}{x-a} = \frac{1}{g(a)\lim_{x\to a}g(x)}\left(\lim_{x\to a}\frac{f(x)-f(a)}{x-a}\cdot g(a) - f(a)\cdot\lim_{x\to a}\frac{g(x)-g(a)}{x-a}\right) = \frac{f'(a)g(a) - f(a)g'(a)}{g^2(a)}.\]
+        <p>Ez azt jelenti, hogy \(\frac fg \in D\{a\}\) és \(\left(\frac fg\right)'(a) = \frac{f'(a)g(a) - f(a)g'(a)}{g^2(a)}\). \(\blacksquare\)</p>
+      </div>
+    </details>
+  </article>
+
+  </div>
+</section>
+
+<!-- ================= KÖZÉPÉRTÉKTÉTELEK ================= -->
+<section id="kozepertek">
+  <div class="section-head">
+    <span class="label">2. előadás · Differenciálszámítás 2.</span>
+    <h2>Szélsőérték és középértéktételek</h2>
+    <p>Egymásra épülnek: a szükséges feltételből jön a Rolle-tétel, abból a Lagrange- és a Cauchy-tétel.</p>
+  </div>
+  <div class="taskgroup">
+
+  <article class="task" id="t4">
+    <div class="task-head"><span class="no">4.</span><span class="src">2. előadás · Lokális szélsőértékek</span></div>
+    <p class="stmt"><b>A lokális szélsőértékre vonatkozó elsőrendű szükséges feltétel.</b></p>
+    <details>
+      <summary>Tétel</summary>
+      <div class="sol">
+        <p><b>Definíció</b> (emlékeztető). Az \(f\) függvénynek az \(a \in \operatorname{int}\mathcal{D}_f\) pontban <b>lokális maximuma</b> van, ha \(\exists K(a) \subset \mathcal{D}_f\), hogy \(\forall x \in K(a) : f(x) \le f(a)\). A lokális minimum hasonlóan, \(\ge\)-vel.</p>
+        <p><b>Tétel.</b> Tegyük fel, hogy az \(f\) függvénynek az \(a \in \operatorname{int}\mathcal{D}_f\) pontban lokális szélsőértéke van és \(f \in D\{a\}\). Ekkor</p>
+        \[f'(a) = 0.\]
+      </div>
+    </details>
+    <details>
+      <summary>Bizonyítás</summary>
+      <div class="sol">
+        <div class="tip"><b>Kulcsötlet:</b> a különbségi hányados előjele \(a\) jobb oldalán \(\le 0\), bal oldalán \(\ge 0\), így a két egyoldali derivált előjele ellentétes; mivel egyenlők, csak 0 lehet.</div>
+        <p>Tegyük fel, hogy \(f\)-nek \(a\)-ban <b>lokális maximuma</b> van, azaz \(\exists r \gt 0\):</p>
+        \[\forall x \in (a - r, a + r) : f(x) \le f(a) \implies f(x) - f(a) \le 0.\]
+        <p>Tekintsük az \(f\) függvény \(a\)-hoz tartozó különbségihányados-függvényét: \(\frac{f(x)-f(a)}{x-a}\) \((x \in \mathcal{D}_f\setminus\{a\})\).</p>
+        <p>Ha \(a \lt x \lt a + r\), akkor \(x - a \gt 0\) és \(f(x) - f(a) \le 0\), ezért</p>
+        \[\frac{f(x)-f(a)}{x-a} \le 0 \implies \lim_{x\to a+0}\frac{f(x)-f(a)}{x-a} = f'_+(a) \le 0.\]
+        <p>Ha \(a - r \lt x \lt a\), akkor \(x - a \lt 0\) és \(f(x) - f(a) \le 0\), ezért</p>
+        \[\frac{f(x)-f(a)}{x-a} \ge 0 \implies \lim_{x\to a-0}\frac{f(x)-f(a)}{x-a} = f'_-(a) \ge 0.\]
+        <p>Mivel \(f \in D\{a\}\), ezért</p>
+        \[\underbrace{f'_-(a)}_{\ge 0} = \underbrace{f'_+(a)}_{\le 0} = f'(a) = 0.\]
+        <p>A bizonyítás hasonló akkor is, ha \(f\)-nek \(a\)-ban lokális minimuma van. \(\blacksquare\)</p>
+        <div class="warn">A feltétel csak <b>szükséges</b>: \(f(x) = x^3\)-ra \(f'(0) = 0\), de 0-ban nincs lokális szélsőérték.</div>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="t5">
+    <div class="task-head"><span class="no">5.</span><span class="src">2. előadás · Középértéktételek</span></div>
+    <p class="stmt"><b>A Rolle-féle középértéktétel.</b></p>
+    <details>
+      <summary>Tétel</summary>
+      <div class="sol">
+        <p>Legyen \(a, b \in \R\) és \(a \lt b\). Ekkor</p>
+        \[\left.\begin{array}{l} \bullet\ f \in C[a,b], \\ \bullet\ f \in D(a,b), \\ \bullet\ f(a) = f(b) \end{array}\right\} \implies \exists\,\xi \in (a,b),\ \text{hogy}\ f'(\xi) = 0.\]
+      </div>
+    </details>
+    <details>
+      <summary>Bizonyítás</summary>
+      <div class="sol">
+        <div class="tip"><b>Kulcsötlet:</b> Weierstrass-tétel → van abszolút szélsőérték; ha \(f\) nem konstans, az egyik a nyílt intervallum belsejébe esik → ott \(f' = 0\) (4. tétel).</div>
+        <p>\(f \in C[a,b] \implies\) (Weierstrass-tétel) \(\exists\,\alpha, \beta \in [a,b]\):</p>
+        \[f(\alpha) = \min_{[a,b]} f =: m \quad\text{és}\quad f(\beta) = \max_{[a,b]} f =: M.\]
+        <p><b>1. eset: \(m = M\).</b> Ekkor \(f\) állandó, így \(\forall\,\xi \in (a,b)\): \(f'(\xi) = 0\).</p>
+        <p><b>2. eset: \(m \ne M\).</b> Mivel \(f(a) = f(b)\), ezért \(\alpha\) és \(\beta\) közül legalább az egyik (pl. \(\alpha\)) \((a,b)\)-be esik. (Ha mindkettő végpont lenne, akkor \(m = f(\alpha) = f(\beta) = M\) lenne, hiszen a végpontokban \(f\) értéke ugyanaz.) Ekkor \(\xi := \alpha \in \operatorname{int}\mathcal{D}_f = (a,b)\), és \(f\)-nek \(\xi\)-ben lokális minimuma van. Mivel \(f \in D\{\xi\}\), az elsőrendű szükséges feltétel szerint \(f'(\xi) = 0\). \(\blacksquare\)</p>
+        <div class="note"><b>Szemléletesen:</b> ha a görbe két végpontja egy magasságban van, akkor van vízszintes érintője.</div>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="t6">
+    <div class="task-head"><span class="no">6.</span><span class="src">2. előadás · Középértéktételek</span></div>
+    <p class="stmt"><b>A Lagrange-féle középértéktétel.</b></p>
+    <details>
+      <summary>Tétel</summary>
+      <div class="sol">
+        <p>Legyen \(a, b \in \R\) és \(a \lt b\). Ekkor</p>
+        \[\left.\begin{array}{l} \bullet\ f \in C[a,b], \\ \bullet\ f \in D(a,b) \end{array}\right\} \implies \exists\,\xi \in (a,b),\ \text{hogy}\ f'(\xi) = \frac{f(b) - f(a)}{b - a}.\]
+      </div>
+    </details>
+    <details>
+      <summary>Bizonyítás</summary>
+      <div class="sol">
+        <div class="tip"><b>Kulcsötlet:</b> \(f\)-ből levonjuk a végpontokon átmenő szelőt; a különbség a végpontokban 0, így Rolle-tétel.</div>
+        <p>Az \(\big(a, f(a)\big)\) és a \(\big(b, f(b)\big)\) pontokon átmenő szelő egyenesének az egyenlete:</p>
+        \[y = h_{a,b}(x) = \frac{f(b) - f(a)}{b - a}(x - a) + f(a).\]
+        <p>Igazoljuk, hogy az</p>
+        \[F(x) := f(x) - h_{a,b}(x) \quad \big(x \in [a,b]\big)\]
+        <p>függvény kielégíti a Rolle-féle középértéktétel feltételeit. Valóban, \(f\) és \(h_{a,b}\) mindketten folytonosak \([a,b]\)-n és deriválhatók \((a,b)\)-n, ezért a különbségük, \(F\) szintén rendelkezik ezekkel a tulajdonságokkal. Továbbá</p>
+        \[F(a) = f(a) - h_{a,b}(a) = f(a) - f(a) = 0,\]
+        \[F(b) = f(b) - h_{a,b}(b) = f(b) - \left(\frac{f(b)-f(a)}{b-a}(b-a) + f(a)\right) = 0,\]
+        <p>tehát \(F(a) = F(b)\) is teljesül. A Rolle-tétel alapján tehát van olyan \(\xi \in (a,b)\) pont, amelyre</p>
+        \[F'(\xi) = f'(\xi) - h'_{a,b}(\xi) = f'(\xi) - \frac{f(b) - f(a)}{b - a} = 0,\]
+        <p>következésképpen \(f'(\xi) = \frac{f(b) - f(a)}{b - a}\). \(\blacksquare\)</p>
+        <div class="note"><b>Szemléletesen:</b> van olyan pont, ahol az érintő párhuzamos a végpontokat összekötő szelővel.</div>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="t7">
+    <div class="task-head"><span class="no">7.</span><span class="src">2. előadás · Középértéktételek</span></div>
+    <p class="stmt"><b>A Cauchy-féle középértéktétel.</b></p>
+    <details>
+      <summary>Tétel</summary>
+      <div class="sol">
+        <p>Legyen \(a, b \in \R\) és \(a \lt b\). Ekkor</p>
+        \[\left.\begin{array}{l} \bullet\ f, g \in C[a,b], \\ \bullet\ f, g \in D(a,b), \\ \bullet\ \forall x \in (a,b) : g'(x) \ne 0 \end{array}\right\} \implies \exists\,\xi \in (a,b),\ \text{hogy}\ \frac{f'(\xi)}{g'(\xi)} = \frac{f(b) - f(a)}{g(b) - g(a)}.\]
+      </div>
+    </details>
+    <details>
+      <summary>Bizonyítás</summary>
+      <div class="sol">
+        <div class="tip"><b>Kulcsötlet:</b> ugyanaz, mint Lagrange-nál, csak \(x\) helyett \(g(x)\) áll: \(F = f - f(a) - \frac{f(b)-f(a)}{g(b)-g(a)}\big(g - g(a)\big)\), és Rolle-tétel.</div>
+        <p>A Rolle-tételből következik, hogy \(g(a) \ne g(b)\). Valóban, \(g(a) = g(b)\)-ből az következne, hogy \(g\) deriváltja nulla az \((a,b)\) intervallum legalább egy pontjában, amit kizártunk. (Tehát a jobb oldali tört értelmes.)</p>
+        <p>Legyen</p>
+        \[F(x) := f(x) - f(a) - \frac{f(b) - f(a)}{g(b) - g(a)}\big(g(x) - g(a)\big) \quad \big(x \in [a,b]\big).\]
+        <p>Az \(F\) függvény folytonos \([a,b]\)-n, deriválható \((a,b)\)-n és \(F(a) = F(b) = 0\). (Behelyettesítve: \(F(a) = 0 - 0 = 0\), \(F(b) = f(b) - f(a) - \big(f(b) - f(a)\big) = 0\).) Így a Rolle-tétel szerint létezik olyan \(\xi \in (a,b)\), amelyre \(F'(\xi) = 0\). Ekkor</p>
+        \[0 = F'(\xi) = f'(\xi) - \frac{f(b) - f(a)}{g(b) - g(a)}\,g'(\xi).\]
+        <p>Mivel a feltételeink szerint \(g'(\xi) \ne 0\), ezért azt kapjuk, hogy</p>
+        \[\frac{f'(\xi)}{g'(\xi)} = \frac{f(b) - f(a)}{g(b) - g(a)}. \quad \blacksquare\]
+        <div class="note">\(g(x) = x\) választással visszakapjuk a Lagrange-tételt.</div>
+      </div>
+    </details>
+  </article>
+
+  </div>
+</section>
+
+<!-- ================= MONOTONITÁS, SZÉLSŐÉRTÉK, KONVEXITÁS ================= -->
+<section id="alkalmazas">
+  <div class="section-head">
+    <span class="label">2–3. előadás · Differenciálszámítás 2–3.</span>
+    <h2>Monotonitás, szélsőérték, konvexitás</h2>
+    <p>Mindhárom a Lagrange-féle középértéktételre épül.</p>
+  </div>
+  <div class="taskgroup">
+
+  <article class="task" id="t8">
+    <div class="task-head"><span class="no">8.</span><span class="src">2. előadás · Monotonitás</span></div>
+    <p class="stmt"><b>Nyílt intervallumon értelmezett deriválható függvények esetében a monotonitás és a derivált kapcsolata.</b></p>
+    <details>
+      <summary>Tétel</summary>
+      <div class="sol">
+        <p>Legyen \((a,b) \subset \R\) egy <b>nyílt intervallum</b>. Tegyük fel, hogy \(f \in D(a,b)\). Ekkor</p>
+        <p><b>1°</b> \(f \nearrow\ [\searrow]\ (a,b)\)-n \(\iff f' \ge 0\ [f' \le 0]\ (a,b)\)-n;</p>
+        <p><b>2°</b> ha \(f' \gt 0\ [f' \lt 0]\ (a,b)\)-n \(\implies f \uparrow\ [\downarrow]\ (a,b)\)-n.</p>
+        <p class="note">\(\nearrow\): monoton növő, \(\uparrow\): szigorúan monoton növő.</p>
+      </div>
+    </details>
+    <details>
+      <summary>Bizonyítás</summary>
+      <div class="sol">
+        <div class="tip"><b>Kulcsötlet:</b> \(\Rightarrow\): a különbségi hányados \(\ge 0\), határértéke is. \(\Leftarrow\): Lagrange-tétel két tetszőleges pont között.</div>
+        <p><b>1° \(\Longrightarrow\)</b> Ha \(f \nearrow (a,b)\)-n és \(t \in (a,b)\) egy tetszőleges pont, akkor</p>
+        \[\frac{f(x) - f(t)}{x - t} \ge 0 \quad (t \lt x \lt b),\]
+        <p>hiszen \(x - t \gt 0\) és a monotonitás miatt \(f(x) - f(t) \ge 0\). Mivel \(f \in D\{t\}\), így</p>
+        \[f'(t) = f'_+(t) = \lim_{x\to t+0}\frac{f(x) - f(t)}{x - t} \ge 0.\]
+        <p><b>1° \(\Longleftarrow\)</b> Ha \(\forall x \in (a,b) : f'(x) \ge 0\), akkor legyen \(x, y \in (a,b)\), \(x \lt y\) két tetszőleges pont. Ekkor \(f \in C[x,y]\), \(f \in D(x,y)\), és így a Lagrange-féle középértéktétel szerint</p>
+        \[\exists\,\xi \in (x,y) : \frac{f(y) - f(x)}{y - x} = f'(\xi) \ge 0 \implies f(x) \le f(y).\]
+        <p>Ezért \(f \nearrow (a,b)\)-n. Az állítás hasonlóan igazolható monoton csökkenő függvények esetében is.</p>
+        <p><b>2°</b> Alkalmazzunk „éles” egyenlőtlenségeket 1°-ben a \(\Longleftarrow\) irányban: ha \(f' \gt 0\), akkor \(\frac{f(y)-f(x)}{y-x} = f'(\xi) \gt 0\), és mivel \(y - x \gt 0\), \(f(x) \lt f(y)\). Tehát \(f \uparrow (a,b)\)-n. \(\blacksquare\)</p>
+        <div class="warn"><b>Lényeges, hogy intervallumon értelmezett a függvény.</b> \(f(x) := \frac1x\) \((x \ne 0)\)-ra \(f'(x) = -\frac{1}{x^2} \lt 0\), de \(f\) nem szigorúan csökkenő az \(\R\setminus\{0\}\) halmazon (ami nem intervallum). 2° megfordítása sem igaz: \(x^3\) szigorúan nő, de \(f'(0) = 0\).</div>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="t9">
+    <div class="task-head"><span class="no">9.</span><span class="src">3. előadás · Szélsőértékek</span></div>
+    <p class="stmt"><b>A lokális szélsőértékre vonatkozó elsőrendű elégséges feltétel.</b></p>
+    <details>
+      <summary>Tétel</summary>
+      <div class="sol">
+        <p>Legyen \(-\infty \le a \lt b \le +\infty\) és \(f : (a,b) \to \R\). Tegyük fel, hogy</p>
+        <ul>
+          <li>\(f \in D(a,b)\),</li>
+          <li>egy \(c \in (a,b)\) pontban \(f'(c) = 0\) és</li>
+          <li>az \(f'\) deriváltfüggvény előjelet vált \(c\)-ben.</li>
+        </ul>
+        <p>Ekkor</p>
+        <p><b>1°</b> ha az \(f'\) függvénynek \(c\)-ben \((-,+)\) előjelváltása van, akkor \(c\) az \(f\) függvénynek szigorú <b>lokális minimumhelye</b>;</p>
+        <p><b>2°</b> ha az \(f'\) függvénynek \(c\)-ben \((+,-)\) előjelváltása van, akkor \(c\) az \(f\) függvénynek szigorú <b>lokális maximumhelye</b>.</p>
+      </div>
+    </details>
+    <details>
+      <summary>Bizonyítás</summary>
+      <div class="sol">
+        <div class="tip"><b>Kulcsötlet:</b> a 8. tétel 2° pontja a \(c\) bal és jobb oldalán.</div>
+        <p>Az állítás azonnal következik a monotonitás és a derivált kapcsolatáról szóló tételből, hiszen ha az \(f'\) függvénynek \(c\)-ben \((-,+)\) előjelváltása van, akkor \(\exists\,\delta \gt 0\) úgy, hogy \(f' \lt 0\) \((c - \delta, c)\)-n és \(f' \gt 0\) \((c, c + \delta)\)-n.</p>
+        <p>Ezért \(f \downarrow (c - \delta, c]\)-n és \(f \uparrow [c, c + \delta)\)-n. Emiatt \(\forall x \in (c - \delta, c + \delta)\setminus\{c\}\): \(f(x) \gt f(c)\), tehát \(c\) az \(f\) függvénynek szigorú lokális minimumhelye.</p>
+        <p>Az állítás hasonlóan igazolható \((+,-)\) előjelváltás esetén. \(\blacksquare\)</p>
+        <div class="note"><b>Kiegészítés</b> (a diákon nincs részletezve): a zárt végpont, \(c\) azért vehető hozzá, mert \(f\) folytonos \(c\)-ben (deriválható). Pl. \(x \in (c-\delta, c)\)-re a Lagrange-tétel az \([x, c]\) intervallumon: \(f(c) - f(x) = f'(\xi)(c - x) \lt 0\), tehát \(f(x) \gt f(c)\).</div>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="t10">
+    <div class="task-head"><span class="no">10.</span><span class="src">3. előadás · Konvex és konkáv függvények</span></div>
+    <p class="stmt"><b>A konvexitás jellemzése a deriváltfüggvénnyel.</b></p>
+    <details>
+      <summary>Tétel</summary>
+      <div class="sol">
+        <p><b>Emlékeztető</b> (Analízis I.): \(f\) <b>konvex</b> az \(I\) intervallumon, ha bármely \(u, v \in I\), \(u \lt v\) esetén a grafikon \([u,v]\) feletti része a szelő alatt van:</p>
+        \[f(x) \le \frac{f(v) - f(u)}{v - u}(x - u) + f(u) \quad \big(\forall x \in (u,v)\big).\]
+        <p><b>Tétel.</b> Tegyük fel, hogy \(I \subset \R\) nyílt intervallum és \(f \in D(I)\). Ekkor</p>
+        \[f \text{ konvex } I\text{-n} \iff f' \nearrow I\text{-n}.\]
+        <p class="note"><b>Megjegyzés.</b> „\(\nearrow\)” helyett szigorúan konvex esetben „\(\uparrow\)”, konkáv esetben „\(\searrow\)” és szigorúan konkáv esetben pedig „\(\downarrow\)” áll.</p>
+        <p><b>Következmény</b> (a 8. tételt \(f'\)-re alkalmazva). Ha \(f \in D^2(I)\), akkor \(f\) konvex \(I\)-n \(\iff f'' \ge 0\) \(I\)-n; ha \(f'' \gt 0\) \(I\)-n, akkor \(f\) szigorúan konvex \(I\)-n.</p>
+      </div>
+    </details>
+    <details>
+      <summary>Bizonyítás</summary>
+      <div class="sol">
+        <div class="tip"><b>Kulcsötlet:</b> konvexitás \(\iff\) „a szelők meredeksége balról jobbra nő”: \(\frac{f(x)-f(u)}{x-u} \le \frac{f(v)-f(u)}{v-u} \le \frac{f(x)-f(v)}{x-v}\). \(\Rightarrow\): határátmenet. \(\Leftarrow\): Lagrange-tétel.</div>
+        <p><b>\(\Longrightarrow\)</b> Legyen \(u, v \in I\), \(u \lt v\) tetszőleges és \(x \in (u,v)\) is tetszőleges. Tegyük fel, hogy \(f\) konvex \(I\)-n. Ekkor (a szelő egyenletét egyszer az \(u\), egyszer a \(v\) pontból felírva)</p>
+        \[f(x) \le \frac{f(v) - f(u)}{v - u}(x - u) + f(u) \quad\text{és}\quad f(x) \le \frac{f(v) - f(u)}{v - u}(x - v) + f(v).\]
+        <p>Egyszerű átrendezésekkel azt kapjuk, hogy</p>
+        \[\frac{f(x) - f(u)}{x - u} \le \frac{f(v) - f(u)}{v - u} \le \frac{f(x) - f(v)}{x - v}.\]
+        <p class="note"><b>Az átrendezés</b> (a diákon kihagyva): az első egyenlőtlenségből \(f(u)\)-t kivonva és \(x - u \gt 0\)-val osztva jön a bal oldali egyenlőtlenség; a másodikból \(f(v)\)-t kivonva és \(x - v \lt 0\)-val osztva (az egyenlőtlenség megfordul) a jobb oldali.</p>
+        <p>Vegyük itt az \(x \to u\), ill. az \(x \to v\) határátmenetet (\(f\) deriválható \(u\)-ban és \(v\)-ben):</p>
+        \[f'(u) \le \frac{f(v) - f(u)}{v - u} \le f'(v).\]
+        <p>Tehát \(f'\) monoton növekedő \(I\)-n.</p>
+        <p><b>\(\Longleftarrow\)</b> Tegyük fel, hogy \(f'\) monoton növekedő \(I\)-n. Legyen \(u, v \in I\), \(u \lt v\) tetszőleges és \(x \in (u,v)\) is tetszőleges. Ekkor a Lagrange-féle középértéktétel szerint \(\exists\,\xi_1 \in (u,x)\) és \(\exists\,\xi_2 \in (x,v)\):</p>
+        \[f'(\xi_1) = \frac{f(x) - f(u)}{x - u} \quad\text{és}\quad f'(\xi_2) = \frac{f(v) - f(x)}{v - x}.\]
+        <p>Mivel \(\xi_1 \lt \xi_2\) és \(f' \nearrow I\)-n, ezért \(f'(\xi_1) \le f'(\xi_2)\), vagyis</p>
+        \[\frac{f(x) - f(u)}{x - u} \le \frac{f(v) - f(x)}{v - x}.\]
+        <p>Ezt átrendezve azt kapjuk, hogy</p>
+        \[f(x) \le \frac{f(v) - f(u)}{v - u}(x - u) + f(u).\]
+        <p class="note"><b>Az átrendezés</b> (a diákon kihagyva): legyen \(s := \frac{f(x)-f(u)}{x-u}\). Ekkor \(f(v) - f(x) \ge s\,(v - x)\), így \(f(v) - f(u) = \big(f(v) - f(x)\big) + \big(f(x) - f(u)\big) \ge s(v - x) + s(x - u) = s(v - u)\). Tehát \(s \le \frac{f(v)-f(u)}{v-u}\), és \((x-u)\)-val szorozva, \(f(u)\)-t hozzáadva kapjuk a fenti egyenlőtlenséget.</p>
+        <p>Ez azt jelenti, hogy az \(f\) függvény konvex \(I\)-n. \(\blacksquare\)</p>
+      </div>
+    </details>
+  </article>
+
+  </div>
+</section>
+
+<!-- ================= L'HOSPITAL, TAYLOR ================= -->
+<section id="lhospital">
+  <div class="section-head">
+    <span class="label">4–5. előadás · Differenciálszámítás 4–5.</span>
+    <h2>L'Hospital-szabály, Taylor-formula</h2>
+    <p>Mindkettő a Cauchy-féle középértéktételre épül.</p>
+  </div>
+  <div class="taskgroup">
+
+  <article class="task" id="t11">
+    <div class="task-head"><span class="no">11.</span><span class="src">4. előadás · L'Hospital-szabályok</span></div>
+    <p class="stmt"><b>A véges pontbeli \(\frac00\) határérték esetre vonatkozó L'Hospital-szabály.</b></p>
+    <details>
+      <summary>Tétel</summary>
+      <div class="sol">
+        <p>Legyen \(-\infty \le a \lt b \lt +\infty\) és \(f, g \in D(a,b)\). Tegyük fel, hogy</p>
+        <ul>
+          <li>(a) \(\exists \lim_{a+0} f = \lim_{a+0} g = 0\),</li>
+          <li>(b) \(g(x) \ne 0\) és \(g'(x) \ne 0\) \(\forall x \in (a,b)\),</li>
+          <li>(c) \(\exists \lim_{a+0}\frac{f'}{g'} \in \overline{\R}\).</li>
+        </ul>
+        <p>Ekkor</p>
+        \[\exists \lim_{a+0}\frac fg \in \overline{\R} \quad\text{és}\quad \lim_{a+0}\frac fg = \lim_{a+0}\frac{f'}{g'} \in \overline{\R}.\]
+        <p class="note">A ZH-n a <b>véges</b> \(a\) esetét kell bizonyítani (1. eset); az \(a = -\infty\) esetet az előadás sem bizonyítja.</p>
+      </div>
+    </details>
+    <details>
+      <summary>Bizonyítás</summary>
+      <div class="sol">
+        <div class="tip"><b>Kulcsötlet:</b> \(f(a) := g(a) := 0\) kiterjesztés, utána Cauchy-tétel az \([a, x]\) intervallumon: \(\frac{f(x)}{g(x)} = \frac{f'(\xi_x)}{g'(\xi_x)}\), ahol \(\xi_x \in (a,x)\).</div>
+        <p><b>1. eset: \(a \gt -\infty\) (véges).</b> Legyen \(A := \lim_{a+0}\frac{f'}{g'} \in \overline{\R}\), azaz</p>
+        \[\forall \varepsilon \gt 0\text{-hoz } \exists\,\delta \gt 0 : \ \forall y \in (a, a+\delta) \subset (a,b) : \ \frac{f'(y)}{g'(y)} \in K_\varepsilon(A).\]
+        <p>Azt kell igazolni, hogy</p>
+        \[\forall \varepsilon \gt 0\text{-hoz } \exists\,\delta \gt 0 : \ \forall x \in (a, a+\delta) \subset (a,b) : \ \frac{f(x)}{g(x)} \in K_\varepsilon(A).\]
+        <p>Értelmezzük \(f\)-et és \(g\)-t az \(a\) pontban úgy, hogy</p>
+        \[f(a) := 0 \quad\text{és}\quad g(a) := 0.\]
+        <p>Ekkor a \(\lim_{a+0} f = \lim_{a+0} g = 0\) feltételből következik, hogy \(f, g \in C[a, a+\delta)\).</p>
+        <p>Legyen most \(x \in (a, a+\delta)\) tetszőleges pont. A Cauchy-féle középértéktétel feltételei az \(f\) és a \(g\) függvényre az \([a,x]\) intervallumon teljesülnek (folytonosak \([a,x]\)-en, deriválhatók \((a,x)\)-en, és \(g' \ne 0\)). Így \(\exists\,\xi_x \in (a,x)\), amelyre</p>
+        \[\frac{f(x)}{g(x)} = \frac{f(x) - f(a)}{g(x) - g(a)} = \frac{f'(\xi_x)}{g'(\xi_x)} \in K_\varepsilon(A),\]
+        <p>hiszen \(\xi_x \in (a,x) \subset (a, a+\delta)\). Ez azt jelenti, hogy a \(\lim_{a+0}\frac fg\) határérték létezik, és \(\lim_{a+0}\frac fg = A\).</p>
+        <p><b>2. eset: \(a = -\infty\).</b> Nem bizonyítjuk. \(\blacksquare\)</p>
+        <div class="note">\(K_\varepsilon(A)\) az \(A\) pont \(\varepsilon\) sugarú környezete; \(A = \pm\infty\) esetén is értelmes (pl. \(K_\varepsilon(+\infty) = (1/\varepsilon, +\infty)\)), ezért működik a bizonyítás \(\overline{\R}\)-beli határértékre is.</div>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="t12">
+    <div class="task-head"><span class="no">12.</span><span class="src">5. előadás · Taylor-polinomok</span></div>
+    <p class="stmt"><b>A Taylor-formula a Lagrange-féle maradéktaggal.</b></p>
+    <details>
+      <summary>Tétel</summary>
+      <div class="sol">
+        <p>Legyen \(n \in \mathbb{N}\), és tegyük fel, hogy \(f \in D^{n+1}\big(K(a)\big)\). Ekkor \(\forall x \in K(a)\) ponthoz \(\exists\) olyan \(a\) és \(x\) közé eső \(\xi\) szám, hogy</p>
+        \[f(x) - T_{a,n}f(x) = \frac{f^{(n+1)}(\xi)}{(n+1)!}(x - a)^{n+1},\]
+        <p>ahol \(T_{a,n}f(x) = \sum_{k=0}^{n}\frac{f^{(k)}(a)}{k!}(x-a)^k\) az \(n\)-edik Taylor-polinom.</p>
+      </div>
+    </details>
+    <details>
+      <summary>Bizonyítás</summary>
+      <div class="sol">
+        <div class="tip"><b>Kulcsötlet:</b> \(F := f - T_{a,n}f\) és \(G := (x-a)^{n+1}\) mindketten \(n\)-szeres zérushellyel bírnak \(a\)-ban; a Cauchy-tételt \((n+1)\)-szer egymás után alkalmazzuk \(F, G\), majd \(F', G'\), …, \(F^{(n)}, G^{(n)}\)-re.</div>
+        <p>A Cauchy-féle középértéktételt fogjuk felhasználni. Legyen</p>
+        \[F(x) := f(x) - T_{a,n}f(x) \quad \big(x \in K(a)\big).\]
+        <p>A \(T_{a,n}f\) polinom definíciójából következik, hogy</p>
+        \[F^{(i)}(a) = f^{(i)}(a) - \big(T_{a,n}f\big)^{(i)}(a) = 0 \quad (i = 0, 1, \dots, n).\]
+        <p>Továbbá \(F^{(n+1)}(x) = f^{(n+1)}(x)\), hiszen \(\big(T_{a,n}f\big)^{(n+1)} \equiv 0\), mert \(T_{a,n}f\) egy legfeljebb \(n\)-edfokú polinom.</p>
+        <p>Másrészt legyen \(G(x) := (x - a)^{n+1}\) \(\big(x \in K(a)\big)\). Ekkor minden \(x \in K(a)\) esetén</p>
+        \[G'(x) = (n+1)(x-a)^n, \quad G''(x) = n(n+1)(x-a)^{n-1}, \quad \dots, \quad G^{(n)}(x) = (n+1)!\,(x - a),\]
+        <p>amiből következik, hogy \(G^{(i)}(a) = 0\) \((i = 0, 1, \dots, n)\), és \(G^{(n+1)}(x) = (n+1)!\).</p>
+        <p>Tegyük fel, hogy \(x \in K(a)\) és például \(x \gt a\). (Az \(x \lt a\) eset hasonlóan vizsgálható.) Az \(F\) és a \(G\) függvényekre az \([a,x]\) intervallumon alkalmazható a Cauchy-féle középértéktétel, következésképpen</p>
+        \[\exists\,\xi_1 \in (a,x) : \ \frac{F'(\xi_1)}{G'(\xi_1)} = \frac{F(x) - F(a)}{G(x) - G(a)} = \frac{F(x)}{G(x)} = \frac{f(x) - T_{a,n}f(x)}{(x - a)^{n+1}}.\]
+        <p>A Cauchy-féle középértéktételt most az \(F'\) és a \(G'\) függvényekre az \([a, \xi_1]\) intervallumon alkalmazzuk:</p>
+        \[\exists\,\xi_2 \in (a, \xi_1) \subset (a,x) : \ \frac{F''(\xi_2)}{G''(\xi_2)} = \frac{F'(\xi_1) - F'(a)}{G'(\xi_1) - G'(a)} = \frac{F'(\xi_1)}{G'(\xi_1)}.\]
+        <p>Ha a fenti gondolatmenetet \(n\)-szer megismételjük, akkor a \(k\)-dik lépésben \((k = 1, 2, \dots, n)\):</p>
+        \[\exists\,\xi_{k+1} \in (a, \xi_k) \subset (a,x) : \ \frac{F^{(k+1)}(\xi_{k+1})}{G^{(k+1)}(\xi_{k+1})} = \frac{F^{(k)}(\xi_k) - F^{(k)}(a)}{G^{(k)}(\xi_k) - G^{(k)}(a)} = \frac{F^{(k)}(\xi_k)}{G^{(k)}(\xi_k)}.\]
+        <p>Az \(n\) számú lépés során kapott egyenlőségeket egybevetve azt kapjuk, hogy</p>
+        \[\frac{f(x) - T_{a,n}f(x)}{(x - a)^{n+1}} = \frac{F(x)}{G(x)} = \frac{F'(\xi_1)}{G'(\xi_1)} = \dots = \frac{F^{(n)}(\xi_n)}{G^{(n)}(\xi_n)} = \frac{F^{(n+1)}(\xi_{n+1})}{G^{(n+1)}(\xi_{n+1})} = \frac{f^{(n+1)}(\xi_{n+1})}{(n+1)!},\]
+        <p>hiszen minden \(x \in K(a)\) esetén \(F^{(n+1)}(x) = f^{(n+1)}(x)\) és \(G^{(n+1)}(x) = (n+1)!\). A konstrukcióból látható, hogy \(\xi_{n+1}\) az \(a\) pont és \(x\) között van, ezért a \(\xi := \xi_{n+1}\) választással a bizonyítandó állítást kapjuk. \(\blacksquare\)</p>
+        <div class="note"><b>Miért alkalmazható a Cauchy-tétel?</b> \(G^{(k)}(t) = \frac{(n+1)!}{(n+1-k)!}(t-a)^{n+1-k} \ne 0\), ha \(t \ne a\) és \(k \le n\), tehát a nevező deriváltja nem nulla a nyílt intervallumon; \(F^{(k)}, G^{(k)}\) pedig deriválhatók (\(f \in D^{n+1}\)).</div>
+      </div>
+    </details>
+  </article>
+
+  </div>
+</section>
+
+<footer>Forrás: <a href="../1_zh_tetelek_An_II_A_B.pdf" target="_blank" rel="noopener">Bizonyítással kért tételek, 1. ZH (PDF)</a>; az 1–5. előadás diái (<a href="../El%C5%91ad%C3%A1s%20anyagok/01_ea_An_II_A_B.pdf" target="_blank" rel="noopener">1.</a>, <a href="../El%C5%91ad%C3%A1s%20anyagok/02_ea_An_II_A_B.pdf" target="_blank" rel="noopener">2.</a>, <a href="../El%C5%91ad%C3%A1s%20anyagok/03_ea_An_II_A_B.pdf" target="_blank" rel="noopener">3.</a>, <a href="../El%C5%91ad%C3%A1s%20anyagok/04_ea_An_II_A_B.pdf" target="_blank" rel="noopener">4.</a>, <a href="../El%C5%91ad%C3%A1s%20anyagok/05_ea_An_II_A_B.pdf" target="_blank" rel="noopener">5.</a>). A „Kulcsötlet” és a „Kiegészítés” dobozok saját magyarázatok, a tételek és bizonyítások az előadás megfogalmazását követik.</footer>
+</div>
+
+<!-- Fejezetsáv: az éppen olvasott szakasz gombja kiemelve -->
+<style>
+nav.bar a.active, nav.bar a.active:hover, nav.bar a.active:focus-visible { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+</style>
+<script>
+(function () {
+  var nav = document.querySelector('nav.bar');
+  if (!nav) return;
+  var links = Array.prototype.filter.call(nav.querySelectorAll('a[href^="#"]'), function (a) {
+    return a.getAttribute('href').length > 1 && document.getElementById(a.getAttribute('href').slice(1));
+  });
+  var current = null, ticking = false;
+  function sectionOf(a) { return document.getElementById(a.getAttribute('href').slice(1)); }
+  function update() {
+    ticking = false;
+    var line = nav.getBoundingClientRect().bottom + 12, active = null;
+    var visible = links.filter(function (a) { return sectionOf(a).offsetParent !== null; });
+    visible.forEach(function (a) { if (sectionOf(a).getBoundingClientRect().top <= line) active = a; });
+    // a lap alján az utolsó szakasz az aktuális akkor is, ha rövid
+    if (visible.length && window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) active = visible[visible.length - 1];
+    if (active === current) return;
+    if (current) { current.classList.remove('active'); current.removeAttribute('aria-current'); }
+    current = active;
+    if (!active) return;
+    active.classList.add('active');
+    active.setAttribute('aria-current', 'location');
+    var ul = active.closest('ul'), ur = ul.getBoundingClientRect(), ar = active.getBoundingClientRect();
+    var left = ar.left - ur.left + ul.scrollLeft, right = left + ar.width;
+    if (left < ul.scrollLeft || right > ul.scrollLeft + ul.clientWidth) ul.scrollTo({ left: Math.max(0, left - 16), behavior: 'smooth' });
+  }
+  function schedule() { if (!ticking) { ticking = true; setTimeout(update, 40); } }
+  window.addEventListener('scroll', schedule, { passive: true });
+  window.addEventListener('resize', schedule);
+  document.addEventListener('input', schedule);   // a keresés elrejthet szakaszokat
+  document.addEventListener('toggle', schedule, true);
+  update();
+})();
+</script>
+</body>
+</html>
