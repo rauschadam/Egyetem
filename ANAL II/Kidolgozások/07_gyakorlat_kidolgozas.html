@@ -1,0 +1,835 @@
+<!doctype html>
+<html lang="hu" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Analízis II · 7. gyakorlat kidolgozva</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['\\(', '\\)']],
+      displayMath: [['\\[', '\\]']],
+      macros: {
+        arcsin: '\\operatorname{arc\\,sin}', arccos: '\\operatorname{arc\\,cos}',
+        arctg: '\\operatorname{arc\\,tg}', arcctg: '\\operatorname{arc\\,ctg}',
+        tg: '\\operatorname{tg}', ctg: '\\operatorname{ctg}', R: '\\mathbb{R}'
+      }
+    },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js" async></script>
+<style>
+/* Layout: same exam-paper look as the DIMAT prep, in the Analysis orange; every task = statement + folded solution + folded walkthrough */
+:root {
+  --paper: #f5f7fa;
+  --grid: rgba(180, 80, 11, 0.06);
+  --card: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6574;
+  --rule: #d7dde6;
+  --accent: #b4500b;
+  --accent-soft: #fcefe4;
+  --mark: #b8352a;
+  --mark-soft: #fbe9e6;
+  --ok: #2c7a4b;
+  --ok-soft: #e3f3e9;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-label: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f141b; --grid: rgba(242, 162, 94, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+    --rule: #2a3442; --accent: #f2a25e; --accent-soft: #33241a; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+    --ok: #74d39c; --ok-soft: #173225; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f141b; --grid: rgba(242, 162, 94, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+  --rule: #2a3442; --accent: #f2a25e; --accent-soft: #33241a; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+  --ok: #74d39c; --ok-soft: #173225; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background-color: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 1.06rem;
+  line-height: 1.6;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 80px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2rem, 6vw, 3.1rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.65rem; font-weight: 700; letter-spacing: -0.01em; }
+h3 { font-size: 1.1rem; font-weight: 600; }
+p { margin: 0; }
+a { color: var(--accent); }
+.label { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding: 2px 0; margin: 6px 0 !important; min-width: 0; max-width: 100%; }
+/* grid children must be allowed to shrink, otherwise wide formulas push the page sideways */
+.task, .sol, .step, .rule-card, .sheet > * { grid-template-columns: minmax(0, 1fr); min-width: 0; }
+.rule-card li, .rule-card p, .sol p, .sol li, .step p, .stmt, .tip, .warn, .mistake p, td { overflow-x: auto; overflow-y: hidden; }
+
+/* back to subject page */
+.back { justify-self: start; display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px 9px 12px; border: 1.5px solid var(--accent); border-radius: 8px; background: var(--accent-soft); color: var(--ink); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 1.02rem; line-height: 1; white-space: nowrap; transition: background .15s, color .15s; }
+.back .arr { color: var(--accent); font-size: 1.25rem; transition: transform .15s, color .15s; }
+.back:hover, .back:focus-visible { background: var(--accent); color: var(--paper); outline: none; }
+.back:hover .arr, .back:focus-visible .arr { color: var(--paper); transform: translateX(-3px); }
+
+/* header */
+header.hero { display: grid; gap: 14px; padding-block: 0 26px; border-bottom: 2px solid var(--accent); }
+.hero .sub { color: var(--muted); max-width: 62ch; }
+.facts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.fact { display: flex; flex-direction: column; gap: 2px; padding: 8px 14px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; min-width: 120px; }
+.fact b { font-family: var(--f-display); font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+
+nav.bar { position: sticky; top: 0; z-index: 5; background: var(--paper); border-bottom: 1px solid var(--rule); margin-inline: -16px; padding-inline: 16px; }
+nav.bar ul { list-style: none; margin: 0; padding: 10px 0; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin; }
+nav.bar a { display: block; white-space: nowrap; text-decoration: none; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.04em; color: var(--ink); padding: 6px 10px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); }
+nav.bar a:hover, nav.bar a:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+nav.bar a.nav-back { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+
+section { padding-top: 44px; display: grid; gap: 18px; scroll-margin-top: 56px; }
+.section-head { display: grid; gap: 6px; }
+.section-head p { color: var(--muted); max-width: 64ch; }
+
+/* reminder cards */
+.sheet { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; }
+.rule-card { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 14px 16px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.rule-card h3 { font-size: 1rem; }
+.rule-card p, .rule-card li { font-size: 0.95rem; }
+.rule-card ul, .rule-card ol { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.rule-card.wide { grid-column: 1 / -1; }
+
+/* tables (sign charts, value tables) */
+.tbl { overflow-x: auto; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--rule); vertical-align: middle; }
+th { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+tr:last-child td, tr:last-child th { border-bottom: 0; }
+table.sgn { width: auto; min-width: 100%; }
+table.sgn th, table.sgn td { text-align: center; white-space: nowrap; border-left: 1px solid var(--rule); }
+table.sgn th:first-child { border-left: 0; text-transform: none; letter-spacing: 0; font-family: var(--f-body); font-size: 1rem; color: var(--ink); background: var(--accent-soft); }
+table.sgn td.pt { background: color-mix(in srgb, var(--accent-soft) 55%, transparent); }
+.p { color: var(--ok); font-weight: 600; }
+.n { color: var(--mark); font-weight: 600; }
+.note { font-size: 0.82rem; color: var(--muted); }
+.tag { font-family: var(--f-label); font-size: 0.72rem; color: var(--accent); }
+
+/* exercises */
+.task { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 18px; display: grid; gap: 10px; min-width: 0; scroll-margin-top: 60px; }
+.task-head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.task-head .no { font-family: var(--f-display); font-weight: 700; font-size: 1.05rem; }
+.task-head .src { font-family: var(--f-label); font-size: 0.72rem; color: var(--muted); }
+.task-head .kind { margin-left: auto; font-family: var(--f-label); font-size: 0.75rem; color: var(--accent); }
+.stmt { max-width: 70ch; }
+details { border-top: 1px dashed var(--rule); padding-top: 8px; min-width: 0; }
+summary { cursor: pointer; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); list-style: none; display: inline-flex; gap: 8px; align-items: center; padding: 4px 0; }
+summary::-webkit-details-marker { display: none; }
+summary::before { content: "+"; display: inline-grid; place-items: center; width: 18px; height: 18px; border: 1px solid currentColor; border-radius: 3px; font-size: 0.8rem; }
+details[open] > summary::before { content: "−"; }
+summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sol { display: grid; gap: 10px; padding-top: 6px; max-width: 74ch; min-width: 0; }
+.sol ol, .sol ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.step { display: grid; gap: 8px; min-width: 0; }
+.step > b:first-child { font-family: var(--f-display); font-weight: 600; }
+.ans { display: inline-block; background: var(--ok-soft); color: var(--ok); font-weight: 600; padding: 2px 9px; border-radius: 4px; }
+.warn { background: var(--mark-soft); border-left: 3px solid var(--mark); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 0.95rem; }
+.tip { background: var(--accent-soft); border-left: 3px solid var(--accent); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 0.95rem; }
+.taskgroup { display: grid; gap: 12px; }
+
+/* graphs */
+figure.graph { margin: 0; background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 8px 8px 6px; display: grid; gap: 6px; }
+figure.graph svg { width: 100%; height: auto; display: block; }
+figure.graph figcaption { display: flex; flex-wrap: wrap; gap: 4px 16px; font-family: var(--f-label); font-size: 0.72rem; color: var(--muted); padding: 0 4px; }
+.lg::before { content: ""; display: inline-block; width: 16px; height: 0; vertical-align: middle; margin-right: 6px; border-top: 2.5px solid var(--accent); }
+.lg.asy::before { border-top: 1.5px dashed var(--muted); }
+.lg.ext::before { width: 9px; height: 9px; border: 0; border-radius: 50%; background: var(--ok); }
+.lg.inf::before { width: 9px; height: 9px; border: 2px solid var(--mark); border-radius: 50%; box-sizing: border-box; }
+svg .gl { stroke: var(--rule); stroke-width: 1; opacity: .55; }
+svg .ax { stroke: var(--muted); stroke-width: 1.3; }
+svg .tk { fill: var(--muted); font-family: var(--f-label); font-size: 11px; }
+svg .cv { fill: none; stroke: var(--accent); stroke-width: 2.6; stroke-linejoin: round; stroke-linecap: round; }
+svg .as { stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 6 5; fill: none; }
+svg .pe { fill: var(--ok); stroke: var(--paper); stroke-width: 1.5; }
+svg .pi { fill: var(--paper); stroke: var(--mark); stroke-width: 2.2; }
+svg .pz { fill: var(--ink); }
+svg .po { fill: var(--paper); stroke: var(--accent); stroke-width: 2; }
+svg .pl { fill: var(--ink); font-family: var(--f-label); font-size: 12px; paint-order: stroke; stroke: var(--paper); stroke-width: 4px; stroke-linejoin: round; }
+
+/* mistakes */
+.mistakes { display: grid; gap: 10px; }
+.mistake { display: grid; grid-template-columns: auto 1fr; gap: 12px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 12px 14px; }
+.mistake .x { font-family: var(--f-display); font-weight: 700; color: var(--mark); font-size: 1.2rem; line-height: 1.3; }
+
+footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.88rem; }
+
+@media (max-width: 520px) {
+  body { font-size: 1rem; }
+  .task { padding: 14px; }
+  th, td { padding: 6px 8px; }
+}
+
+/* Taylor graphs: second curve dashed, highlighted x-band */
+svg .cv2 { fill: none; stroke: var(--ok); stroke-width: 2.2; stroke-dasharray: 7 5; }
+svg .bd { fill: var(--accent-soft); opacity: .8; }
+.lg.tay::before { border-top: 2.2px dashed var(--ok); }
+.lg.band::before { height: 10px; border: 0; background: var(--accent-soft); }
+/* primitive-function families and vertical asymptotes */
+svg .cv3 { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: .4; }
+.lg.fam::before { opacity: .45; border-top-width: 1.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <a class="back" href="../../index.html#/anal2"><span class="arr" aria-hidden="true">←</span>Vissza: Analízis II.</a>
+  <span class="label">Analízis II. · 7. gyakorlat · Primitív függvény, határozatlan integrál 1.</span>
+  <h1>A 7. gyakorlat kidolgozva</h1>
+  <p class="sub">Alapintegrálok, linearitás, az első helyettesítési szabály speciális esetei és a parciális integrálás. Az órai feladatok a gyakorlati anyag megoldását követik, a házi feladatok (az összevont anyagból) saját megoldások. Az órán kérdezett röpZH-tételek: <a href="ropzh_kidolgozas.html#rz7">7. röpZH</a>. Előbb próbáld meg magad, és csak utána nyisd le a megoldást.</p>
+  <div class="facts">
+    <div class="fact"><span class="label">Órai feladat</span><b>4 (15 rész)</b></div>
+    <div class="fact"><span class="label">Házi feladat</span><b>1 (4 rész)</b></div>
+    <div class="fact"><span class="label">Grafikon</span><b>1 db</b></div>
+  </div>
+</header>
+
+<nav class="bar" aria-label="Fejezetek">
+  <ul>
+    <li><a class="nav-back" href="../../index.html#/anal2" aria-label="Vissza: Analízis II.">← ANAL II</a></li>
+    <li><a href="#emlekezteto">Emlékeztető</a></li>
+    <li><a href="#orai">Órai feladatok</a></li>
+    <li><a href="#hazi">Házi feladatok</a></li>
+    <li><a href="#hibak">Gyakori hibák</a></li>
+    <li><a href="ropzh_kidolgozas.html#rz7">7. röpZH ↗</a></li>
+  </ul>
+</nav>
+
+<!-- ================= EMLÉKEZTETŐ ================= -->
+<section id="emlekezteto">
+  <div class="section-head">
+    <span class="label">Ami kell hozzá</span>
+    <h2>Emlékeztető</h2>
+    <p>A 7. gyakorlat elméleti összefoglalója röviden. A feladatokban végig ezekre hivatkozunk.</p>
+  </div>
+  <div class="sheet">
+    <div class="rule-card">
+      <h3>Primitív függvény, határozatlan integrál</h3>
+      <p>Legyen \(I \subset \R\) nyílt intervallum, \(f : I \to \R\). Az \(F : I \to \R\) az \(f\) primitív függvénye, ha \(F \in D(I)\) és \(F'(x) = f(x)\) \((x \in I)\).</p>
+      <p>Intervallumon bármely két primitív függvény csak konstansban tér el, ezért</p>
+      \[\int f(x)\,dx = F(x) + c \quad (x \in I).\]
+      <p class="note">Az intervallumot mindig fel kell tüntetni. Ellenőrzés: \(F' = f\)?</p>
+    </div>
+    <div class="rule-card">
+      <h3>Linearitás</h3>
+      <p>Ha \(f\)-nek és \(g\)-nek van primitív függvénye \(I\)-n, akkor minden \(\alpha, \beta \in \R\)-re</p>
+      \[\int (\alpha f + \beta g) = \alpha\int f + \beta\int g.\]
+      <p class="note">Szorzatra és hányadosra <b>nincs</b> ilyen szabály: \(\int fg \ne \int f \cdot \int g\).</p>
+    </div>
+    <div class="rule-card wide">
+      <h3>Alapintegrálok</h3>
+      <div class="tbl"><table>
+        <thead><tr><th>\(f(x)\)</th><th>\(\int f(x)\,dx\)</th><th>\(f(x)\)</th><th>\(\int f(x)\,dx\)</th></tr></thead>
+        <tbody>
+          <tr><td>\(x^\alpha\) \((\alpha \ne -1)\)</td><td>\(\dfrac{x^{\alpha+1}}{\alpha+1}\)</td><td>\(\dfrac{1}{\cos^2 x}\)</td><td>\(\tg x\)</td></tr>
+          <tr><td>\(\dfrac1x\) \((x \gt 0)\)</td><td>\(\ln x\)</td><td>\(\dfrac{1}{\sin^2 x}\)</td><td>\(-\ctg x\)</td></tr>
+          <tr><td>\(e^x\)</td><td>\(e^x\)</td><td>\(\dfrac{1}{1+x^2}\)</td><td>\(\arctg x\)</td></tr>
+          <tr><td>\(a^x\) \((a \gt 0, a \ne 1)\)</td><td>\(\dfrac{a^x}{\ln a}\)</td><td>\(\dfrac{1}{\sqrt{1-x^2}}\) \((|x| \lt 1)\)</td><td>\(\arcsin x\)</td></tr>
+          <tr><td>\(\sin x\)</td><td>\(-\cos x\)</td><td>\(\operatorname{sh} x\)</td><td>\(\operatorname{ch} x\)</td></tr>
+          <tr><td>\(\cos x\)</td><td>\(\sin x\)</td><td>\(\operatorname{ch} x\)</td><td>\(\operatorname{sh} x\)</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div class="rule-card wide">
+      <h3>Első helyettesítési szabály és speciális esetei</h3>
+      <p>Ha \(g \in D(I)\), \(\mathcal R_g \subset J\) és \(F\) az \(f : J \to \R\) primitív függvénye, akkor</p>
+      \[\int f\big(g(x)\big)\,g'(x)\,dx = F\big(g(x)\big) + c \quad (x \in I).\]
+      <ul>
+        <li><b>\(\frac{f'}{f}\) típus</b> (\(f \gt 0\)): \(\displaystyle\int \frac{f'(x)}{f(x)}\,dx = \ln f(x) + c\). Ha \(f \lt 0\), akkor \(\ln(-f(x)) + c\).</li>
+        <li><b>\(f^\alpha f'\) típus</b> (\(f \gt 0\), \(\alpha \ne -1\)): \(\displaystyle\int f^\alpha(x)\,f'(x)\,dx = \frac{f^{\alpha+1}(x)}{\alpha+1} + c\). Ha \(\alpha \in \mathbb N\), az \(f \gt 0\) feltétel nem kell.</li>
+        <li><b>Lineáris helyettesítés</b> (\(a \ne 0\)): \(\displaystyle\int f(ax+b)\,dx = \frac{F(ax+b)}{a} + c\).</li>
+      </ul>
+    </div>
+    <div class="rule-card">
+      <h3>Parciális integrálás</h3>
+      <p>Ha \(f, g \in D(I)\) és \(f'g\)-nek van primitív függvénye, akkor</p>
+      \[\int f g' = f g - \int f' g.\]
+      <p class="note">Szereposztás: \(P(x)\cdot\{e^{ax}, \sin, \cos\}\): \(f = P\). \(P(x)\cdot\{\ln, \operatorname{arc}\dots\}\): \(g' = P\). \(\int \ln x\), \(\int \arctg x\): \(g' = 1\).</p>
+    </div>
+    <div class="rule-card">
+      <h3>Hasznos trigonometrikus azonosságok</h3>
+      <ul>
+        <li>\(\sin^2 x = \dfrac{1 - \cos 2x}{2}\), \(\cos^2 x = \dfrac{1 + \cos 2x}{2}\)</li>
+        <li>\(1 + \cos 2x = 2\cos^2 x\)</li>
+        <li>\(\sin^2 x + \cos^2 x = 1\), tehát \(\sin^3 x = (1 - \cos^2 x)\sin x\)</li>
+        <li>\((\tg x)' = \dfrac{1}{\cos^2 x}\)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ÓRAI FELADATOK ================= -->
+<section id="orai">
+  <div class="section-head">
+    <span class="label">7. gyakorlat · Feladatok</span>
+    <h2>Órai feladatok</h2>
+    <p>A megoldások menete a 7. gyakorlati anyag kidolgozását követi. Minden eredményt deriválással ellenőriztünk.</p>
+  </div>
+
+  <div class="taskgroup">
+
+  <!-- 1. feladat -->
+  <article class="task" id="o1a">
+    <div class="task-head"><span class="no">1. (a)</span><span class="src">7. gyakorlat · órai</span><span class="kind">linearitás</span></div>
+    <p class="stmt">Határozzuk meg az \(f(x) := 6x^2 - 8x + 3\) \((x \in \R)\) függvény határozatlan integrálját.</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        \[\int (6x^2 - 8x + 3)\,dx = 6\int x^2\,dx - 8\int x\,dx + 3\int 1\,dx = 6\cdot\frac{x^3}{3} - 8\cdot\frac{x^2}{2} + 3x + c\]
+        <p>Eredmény: <span class="ans">\(2x^3 - 4x^2 + 3x + c\quad (x, c \in \R)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Mit használunk?</b> A linearitás miatt tagonként integrálhatunk, a konstans szorzókat kiemelhetjük. Minden tag \(x^\alpha\) alakú alapintegrál (\(1 = x^0\)).</p>
+        <p><b>Ellenőrzés:</b> \((2x^3 - 4x^2 + 3x)' = 6x^2 - 8x + 3\). ✓</p>
+        <p class="tip">Elég egyetlen \(+c\)-t írni a végén: a tagonkénti konstansok összege is csak egy tetszőleges konstans.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o1b">
+    <div class="task-head"><span class="no">1. (b)</span><span class="src">7. gyakorlat · órai</span><span class="kind">átalakítás · arctg</span></div>
+    <p class="stmt">Határozzuk meg az \(f(x) := \dfrac{x^2}{x^2 + 1}\) \((x \in \R)\) függvény határozatlan integrálját.</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>A számlálóban kialakítjuk a nevezőt:</p>
+        \[\int \frac{x^2}{x^2+1}\,dx = \int \frac{x^2 + 1 - 1}{x^2+1}\,dx = \int \Big(1 - \frac{1}{1+x^2}\Big)\,dx = x - \arctg x + c.\]
+        <p>Eredmény: <span class="ans">\(x - \arctg x + c\quad (x, c \in \R)\)</span></p>
+        <figure class="graph"><div id="g-o1b"></div><figcaption><span class="lg tay">integrandus: \(f(x) = \frac{x^2}{x^2+1}\)</span><span class="lg">\(F(x) = x - \arctg x\)</span><span class="lg fam">\(F(x) + c\), \(c = \pm 1, \pm 2\)</span></figcaption></figure>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Az ötlet:</b> „hozzáadunk és elveszünk” 1-et a számlálóban. Így a tört egy polinom (itt: 1) és egy alapintegrál különbsége lesz. Ez a racionális törtek maradékos osztásának gyors változata (lásd 8. gyakorlat).</p>
+        <p><b>Ellenőrzés:</b> \(\big(x - \arctg x\big)' = 1 - \frac{1}{1+x^2} = \frac{x^2}{1+x^2}\). ✓</p>
+        <p><b>A grafikon:</b> a primitív függvények egymás eltoltjai függőlegesen. Ahol \(f = 0\) (az \(x = 0\) pontban), ott minden \(F + c\) érintője vízszintes, és mivel \(f \ge 0\), mindegyik monoton nő.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o1c">
+    <div class="task-head"><span class="no">1. (c)</span><span class="src">7. gyakorlat · órai</span><span class="kind">hatványozás</span></div>
+    <p class="stmt">Határozzuk meg az \(f(x) := \sqrt{x\sqrt{x\sqrt{x}}}\) \(\big(x \in (0, +\infty)\big)\) függvény határozatlan integrálját.</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Belülről kifelé törtkitevős hatványokra írjuk át:</p>
+        \[\sqrt{x\sqrt{x\sqrt x}} = \Big(x\big(x \cdot x^{1/2}\big)^{1/2}\Big)^{1/2} = \Big(x \cdot x^{3/4}\Big)^{1/2} = \big(x^{7/4}\big)^{1/2} = x^{7/8}.\]
+        \[\int x^{7/8}\,dx = \frac{x^{7/8 + 1}}{7/8 + 1} + c = \frac{8}{15}\,x^{15/8} + c.\]
+        <p>Eredmény: <span class="ans">\(\frac{8}{15}\sqrt[8]{x^{15}} + c\quad \big(x \in (0,+\infty),\ c \in \R\big)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Lépésenként:</b> \(x\sqrt x = x^{3/2}\), ennek gyöke \(x^{3/4}\); \(x\cdot x^{3/4} = x^{7/4}\), ennek gyöke \(x^{7/8}\). Szorzásnál a kitevők összeadódnak, gyökvonásnál feleződnek.</p>
+        <p><b>Ellenőrzés:</b> \(\big(\frac{8}{15}x^{15/8}\big)' = \frac{8}{15}\cdot\frac{15}{8}x^{7/8} = x^{7/8}\). ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o1d">
+    <div class="task-head"><span class="no">1. (d)</span><span class="src">7. gyakorlat · órai</span><span class="kind">trigonometria</span></div>
+    <p class="stmt">Határozzuk meg az \(f(x) := \dfrac{\cos^2 x - 5}{1 + \cos 2x}\) \(\big(x \in (-\frac\pi2, \frac\pi2)\big)\) függvény határozatlan integrálját.</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>\(1 + \cos 2x = \sin^2 x + \cos^2 x + \cos^2 x - \sin^2 x = 2\cos^2 x\), így</p>
+        \[\int \frac{\cos^2 x - 5}{2\cos^2 x}\,dx = \int \Big(\frac12 - \frac52\cdot\frac{1}{\cos^2 x}\Big)\,dx = \frac12\,x - \frac52\,\tg x + c.\]
+        <p>Eredmény: <span class="ans">\(\frac{x}{2} - \frac52\tg x + c\quad \big(|x| \lt \frac\pi2,\ c \in \R\big)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért ez az intervallum?</b> A nevező \(2\cos^2 x\) a \(\pm\frac\pi2\)-ben nulla, és a \(\tg\) is csak a \((-\frac\pi2, \frac\pi2)\) intervallumon (és eltoltjain) deriválható. Egy intervallumon dolgozunk, így egyetlen \(+c\) elég.</p>
+        <p><b>Ellenőrzés:</b> \(\big(\frac x2 - \frac52\tg x\big)' = \frac12 - \frac{5}{2\cos^2 x} = \frac{\cos^2 x - 5}{2\cos^2 x}\). ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <!-- 2. feladat -->
+  <article class="task" id="o2a">
+    <div class="task-head"><span class="no">2. (a)</span><span class="src">7. gyakorlat · órai</span><span class="kind">\(\frac{f'}{f}\) típus</span></div>
+    \[\int \frac{2x}{x^2 + 3}\,dx \quad (x \in \R)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        \[\int \frac{2x}{x^2+3}\,dx = \int \frac{(x^2+3)'}{x^2+3}\,dx = \ln(x^2 + 3) + c.\]
+        <p>Eredmény: <span class="ans">\(\ln(x^2+3) + c\quad (x, c \in \R)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Felismerés:</b> a számláló pontosan a nevező deriváltja. Mivel \(x^2 + 3 \gt 0\) minden \(x\)-re, abszolút érték nélkül írhatjuk a logaritmust.</p>
+        <p><b>Ellenőrzés:</b> \(\big(\ln(x^2+3)\big)' = \frac{2x}{x^2+3}\). ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o2b">
+    <div class="task-head"><span class="no">2. (b)</span><span class="src">7. gyakorlat · órai</span><span class="kind">\(f^\alpha f'\) típus</span></div>
+    \[\int \sin^3 x\cdot\cos x\,dx \quad (x \in \R)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        \[\int \sin^3 x\cdot(\sin x)'\,dx = \frac{\sin^4 x}{4} + c.\]
+        <p>Eredmény: <span class="ans">\(\frac{\sin^4 x}{4} + c\quad (x, c \in \R)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Felismerés:</b> \(f = \sin\), \(f' = \cos\), \(\alpha = 3\). Mivel \(\alpha \in \mathbb N\), nem kell \(f \gt 0\), tehát az egész \(\R\)-en érvényes.</p>
+        <p><b>Ellenőrzés:</b> \(\big(\frac{\sin^4 x}{4}\big)' = \sin^3 x\cos x\). ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o2c">
+    <div class="task-head"><span class="no">2. (c)</span><span class="src">7. gyakorlat · órai</span><span class="kind">\(\frac{f'}{f}\) típus</span></div>
+    \[\int \frac{dx}{x\ln x} \quad \big(x \in (1, +\infty)\big)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Ha \(x \gt 1\), akkor \(\ln x \gt 0\), és</p>
+        \[\int \frac{1/x}{\ln x}\,dx = \int \frac{(\ln x)'}{\ln x}\,dx = \ln(\ln x) + c.\]
+        <p>Eredmény: <span class="ans">\(\ln(\ln x) + c\quad (x \gt 1,\ c \in \R)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért fontos az intervallum?</b> Az \(\frac{f'}{f}\) képletben \(\ln f\) csak \(f \gt 0\) esetén értelmes. Itt \(f = \ln x \gt 0\), mert \(x \gt 1\).</p>
+        <p class="tip"><b>Ha \(x \in (0,1)\) lenne:</b> ekkor \(\ln x \lt 0\), és \(\int\frac{dx}{x\ln x} = \ln(-\ln x) + c\). Ellenőrzés: \(\big(\ln(-\ln x)\big)' = \frac{-1/x}{-\ln x} = \frac{1}{x\ln x}\). ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o2d">
+    <div class="task-head"><span class="no">2. (d)</span><span class="src">7. gyakorlat · órai</span><span class="kind">\(f^\alpha f'\) típus</span></div>
+    \[\int \sin^3 x\cdot\cos^4 x\,dx \quad (x \in \R)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>\(\sin^3 x = (1 - \cos^2 x)\sin x\) és \(\sin x = -(\cos x)'\) alapján</p>
+        \[\int \sin^3 x\cos^4 x\,dx = \int (\cos^4 x - \cos^6 x)\sin x\,dx = \int \big(\cos^6 x\cdot(\cos x)' - \cos^4 x\cdot(\cos x)'\big)\,dx\]
+        \[= \frac{\cos^7 x}{7} - \frac{\cos^5 x}{5} + c.\]
+        <p>Eredmény: <span class="ans">\(\frac{\cos^7 x}{7} - \frac{\cos^5 x}{5} + c\quad (x, c \in \R)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Az ötlet:</b> a <b>páratlan</b> kitevőjű tényezőből (\(\sin^3\)) leválasztunk egyet (\(\sin x\)), ez lesz a \(-(\cos x)'\). A maradék \(\sin^2 x\)-et \(1 - \cos^2 x\)-szel kifejezve minden tag \(\cos^n x\cdot(\cos x)'\) alakú.</p>
+        <p><b>Előjel:</b> \(\sin x = -(\cos x)'\), ezért \(\cos^4 x\sin x = -\cos^4 x(\cos x)'\), és \(-\cos^6 x\sin x = +\cos^6 x(\cos x)'\).</p>
+        <p><b>Ellenőrzés:</b> \(\big(\frac{\cos^7 x}{7} - \frac{\cos^5 x}{5}\big)' = -\cos^6 x\sin x + \cos^4 x\sin x = \cos^4 x\sin x(1 - \cos^2 x) = \sin^3 x\cos^4 x\). ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o2e">
+    <div class="task-head"><span class="no">2. (e)</span><span class="src">7. gyakorlat · órai</span><span class="kind">linearizálás</span></div>
+    \[\int \sin^2 x\,dx \quad (x \in \R)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        \[\int \sin^2 x\,dx = \int \frac{1 - \cos 2x}{2}\,dx = \frac x2 - \frac12\int\cos 2x\,dx = \frac x2 - \frac12\cdot\frac{\sin 2x}{2} + c.\]
+        <p>Eredmény: <span class="ans">\(\frac x2 - \frac{\sin 2x}{4} + c\quad (x, c \in \R)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért nem \(\frac{\sin^3 x}{3}\)?</b> Mert az \(f^\alpha f'\) típushoz kellene egy \(\cos x\) szorzó is. Páros kitevőnél a linearizáló formulát használjuk.</p>
+        <p><b>Lineáris helyettesítés:</b> \(\int \cos 2x\,dx = \frac{\sin 2x}{2}\): az \(ax + b\) belső függvény miatt \(\frac1a\)-val szorzunk.</p>
+        <p><b>Ellenőrzés:</b> \(\big(\frac x2 - \frac{\sin 2x}{4}\big)' = \frac12 - \frac{\cos 2x}{2} = \sin^2 x\). ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o2f">
+    <div class="task-head"><span class="no">2. (f)</span><span class="src">7. gyakorlat · órai</span><span class="kind">\(f^\alpha f'\) típus</span></div>
+    \[\int \frac{1}{\cos^2 x\cdot\sqrt{\tg^3 x}}\,dx \quad \big(x \in (0, \tfrac\pi2)\big)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Ha \(x \in (0, \frac\pi2)\), akkor \(\cos x \gt 0\) és \(\tg x \gt 0\), ezért</p>
+        \[\int (\tg x)^{-3/2}\cdot\frac{1}{\cos^2 x}\,dx = \int (\tg x)^{-3/2}(\tg x)'\,dx = \frac{(\tg x)^{-1/2}}{-1/2} + c = -\frac{2}{\sqrt{\tg x}} + c.\]
+        <p>Eredmény: <span class="ans">\(-\dfrac{2}{\sqrt{\tg x}} + c\quad \big(x \in (0,\tfrac\pi2),\ c \in \R\big)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Felismerés:</b> \(\frac{1}{\cos^2 x} = (\tg x)'\), a maradék \(\tg x\) hatványa: \(f = \tg\), \(\alpha = -\frac32\). Mivel \(\alpha \notin \mathbb N\), szükség van az \(f \gt 0\) feltételre, ezt az intervallum biztosítja.</p>
+        <p><b>Ellenőrzés:</b> \(\big(-2(\tg x)^{-1/2}\big)' = -2\cdot(-\tfrac12)(\tg x)^{-3/2}\cdot\frac{1}{\cos^2 x} = \frac{1}{\cos^2 x\sqrt{\tg^3 x}}\). ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <!-- 3. feladat -->
+  <article class="task" id="o3a">
+    <div class="task-head"><span class="no">3. (a)</span><span class="src">7. gyakorlat · órai</span><span class="kind">parciális integrálás ×2</span></div>
+    \[\int (x^2 + 2x - 1)\,e^{-2x}\,dx \quad (x \in \R)\]
+    <p class="warn"><b>Megjegyzés a forráshoz.</b> A gyakorlati anyagban a feladat \(e^{-2x}\)-szel van kitűzve, de a megoldás végig \(e^{2x}\)-szel számol. Az összevont anyagban pedig \(e^{-3x}\) szerepel. Lent a kitűzött \(e^{-2x}\)-es változat van kidolgozva, a másik kettő eredménye a magyarázatban.</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Kétszer integrálunk parciálisan, mindkétszer az exponenciális rész a \(g'\): \(e^{-2x} = \big(-\frac{e^{-2x}}{2}\big)'\).</p>
+        \[\int (x^2+2x-1)e^{-2x}\,dx = -(x^2+2x-1)\frac{e^{-2x}}{2} + \int (2x+2)\frac{e^{-2x}}{2}\,dx = -\frac{(x^2+2x-1)e^{-2x}}{2} + \int (x+1)e^{-2x}\,dx.\]
+        <p>A második integrál:</p>
+        \[\int (x+1)e^{-2x}\,dx = -(x+1)\frac{e^{-2x}}{2} + \frac12\int e^{-2x}\,dx = -\frac{(x+1)e^{-2x}}{2} - \frac{e^{-2x}}{4} + c.\]
+        <p>Visszaírva:</p>
+        \[\int (x^2+2x-1)e^{-2x}\,dx = -\frac{e^{-2x}}{4}\Big(2(x^2+2x-1) + 2(x+1) + 1\Big) + c = -\frac{(2x^2 + 6x + 1)\,e^{-2x}}{4} + c.\]
+        <p>Eredmény: <span class="ans">\(-\dfrac{(2x^2+6x+1)\,e^{-2x}}{4} + c\quad (x, c \in \R)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Szereposztás:</b> \(f = P\) (polinom), \(g' = e^{-2x}\). Minden parciális integrálás eggyel csökkenti a polinom fokát, így másodfokú polinomnál két lépés kell.</p>
+        <p><b>Előjel:</b> az \(e^{-2x}\) primitív függvénye \(-\frac{e^{-2x}}{2}\), ezért a \(-\int f'g\) tag előjele pozitívra fordul.</p>
+        <p><b>Ellenőrzés:</b> \(\Big(-\frac{(2x^2+6x+1)e^{-2x}}{4}\Big)' = -\frac{(4x+6)e^{-2x} - 2(2x^2+6x+1)e^{-2x}}{4} = \frac{(4x^2 + 8x - 4)e^{-2x}}{4} = (x^2+2x-1)e^{-2x}\). ✓</p>
+        <p class="tip"><b>Gyorsabb út (határozatlan együtthatók):</b> a primitív függvény \((Ax^2 + Bx + C)e^{-2x}\) alakú. Deriválva és összevetve: \(-2A = 1\), \(2A - 2B = 2\), \(B - 2C = -1\), azaz \(A = -\frac12\), \(B = -\frac32\), \(C = -\frac14\).</p>
+        <p><b>A másik két változat eredménye:</b></p>
+        <ul>
+          <li>\(e^{2x}\)-szel (a gyakorlati anyag megoldása): \(\displaystyle\int (x^2+2x-1)e^{2x}\,dx = \frac{(2x^2 + 2x - 3)\,e^{2x}}{4} + c\).</li>
+          <li>\(e^{-3x}\)-szel (összevont anyag): \(\displaystyle\int (x^2+2x-1)e^{-3x}\,dx = -\frac{(9x^2 + 24x - 1)\,e^{-3x}}{27} + c\).</li>
+        </ul>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o3b">
+    <div class="task-head"><span class="no">3. (b)</span><span class="src">7. gyakorlat · órai</span><span class="kind">parciális integrálás · egyenlet</span></div>
+    \[\int e^{2x}\sin x\,dx \quad (x \in \R)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Legyen \(I := \int e^{2x}\sin x\,dx\). A trigonometrikus rész a \(g'\):</p>
+        \[I = \int e^{2x}(-\cos x)'\,dx = -e^{2x}\cos x + 2\int e^{2x}\cos x\,dx,\]
+        \[\int e^{2x}\cos x\,dx = \int e^{2x}(\sin x)'\,dx = e^{2x}\sin x - 2\int e^{2x}\sin x\,dx = e^{2x}\sin x - 2I.\]
+        <p>Visszaírva:</p>
+        \[I = -e^{2x}\cos x + 2e^{2x}\sin x - 4I \quad\Longrightarrow\quad 5I = e^{2x}(2\sin x - \cos x).\]
+        <p>Eredmény: <span class="ans">\(\dfrac{e^{2x}(2\sin x - \cos x)}{5} + c\quad (x, c \in \R)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért egyenlet?</b> Két parciális integrálás után visszakapjuk a kiinduló integrált (\(-4\)-szeres szorzóval). Ezt átvisszük a bal oldalra, és kifejezzük \(I\)-t. A konstanst a végén írjuk hozzá.</p>
+        <p class="warn"><b>Fontos:</b> a második lépésben is ugyanazt a szerepet kell adni a trigonometrikus résznek (\(g'\)). Ha ott megcserélnéd, egyszerűen visszakapnád az \(I = I\) azonosságot.</p>
+        <p><b>Ellenőrzés:</b> \(\Big(\frac{e^{2x}(2\sin x - \cos x)}{5}\Big)' = \frac{e^{2x}\big(2(2\sin x - \cos x) + 2\cos x + \sin x\big)}{5} = \frac{5e^{2x}\sin x}{5} = e^{2x}\sin x\). ✓</p>
+        <p class="tip"><b>Általános képlet:</b> \(\int e^{\alpha x}\sin(ax)\,dx = \frac{e^{\alpha x}(\alpha\sin ax - a\cos ax)}{\alpha^2 + a^2} + c\). Itt \(\alpha = 2\), \(a = 1\).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o3c">
+    <div class="task-head"><span class="no">3. (c)</span><span class="src">7. gyakorlat · órai</span><span class="kind">parciális integrálás · ln</span></div>
+    \[\int x^2\ln x\,dx \quad (x \gt 0)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Most a polinom a \(g'\): \(x^2 = \big(\frac{x^3}{3}\big)'\).</p>
+        \[\int x^2\ln x\,dx = \frac{x^3}{3}\ln x - \int \frac{x^3}{3}\cdot\frac1x\,dx = \frac{x^3}{3}\ln x - \frac13\int x^2\,dx = \frac{x^3}{3}\ln x - \frac{x^3}{9} + c.\]
+        <p>Eredmény: <span class="ans">\(\frac{x^3}{3}\ln x - \frac{x^3}{9} + c\quad (x \gt 0,\ c \in \R)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért fordított a szereposztás?</b> A \(\ln x\)-nek nem ismerjük „kényelmesen” a primitív függvényét, de a deriváltja \(\frac1x\), ami a polinommal összeszorozva egyszerűsödik. Ezért \(f = \ln x\) (deriváljuk), \(g' = x^2\) (integráljuk).</p>
+        <p><b>Ellenőrzés:</b> \(\big(\frac{x^3}{3}\ln x - \frac{x^3}{9}\big)' = x^2\ln x + \frac{x^2}{3} - \frac{x^2}{3} = x^2\ln x\). ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o3d">
+    <div class="task-head"><span class="no">3. (d)</span><span class="src">7. gyakorlat · órai</span><span class="kind">\(1\cdot G\) trükk</span></div>
+    \[\int \arctg(3x)\,dx \quad (x \in \R)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        \[\int 1\cdot\arctg(3x)\,dx = x\arctg(3x) - \int x\cdot\frac{3}{1 + 9x^2}\,dx = x\arctg(3x) - \frac16\int\frac{18x}{1 + 9x^2}\,dx\]
+        \[= x\arctg(3x) - \frac16\ln(1 + 9x^2) + c.\]
+        <p>Eredmény: <span class="ans">\(x\arctg(3x) - \frac16\ln(1+9x^2) + c\quad (x, c \in \R)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>A trükk:</b> \(\arctg(3x) = (x)'\cdot\arctg(3x)\), azaz \(g' = 1\), \(f = \arctg(3x)\). Így az \(\arctg\) helyett annak (racionális) deriváltja jelenik meg.</p>
+        <p><b>Láncszabály:</b> \(\big(\arctg(3x)\big)' = \frac{1}{1 + (3x)^2}\cdot 3\).</p>
+        <p><b>A maradék integrál</b> \(\frac{f'}{f}\) típusú: \((1 + 9x^2)' = 18x\), ezért \(\frac{3x}{1+9x^2} = \frac16\cdot\frac{18x}{1+9x^2}\).</p>
+        <p><b>Ellenőrzés:</b> \(\big(x\arctg 3x - \frac16\ln(1+9x^2)\big)' = \arctg 3x + \frac{3x}{1+9x^2} - \frac{3x}{1+9x^2} = \arctg 3x\). ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <!-- 4. feladat -->
+  <article class="task" id="o4">
+    <div class="task-head"><span class="no">4.</span><span class="src">7. gyakorlat · órai</span><span class="kind">parciális integrálás · egyenlet</span></div>
+    <p class="stmt">Parciális integrálással számítsuk ki a következő határozatlan integrált:</p>
+    \[\int \sqrt{1 - x^2}\,dx \quad \big(x \in (-1, 1)\big)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Legyen \(I := \int\sqrt{1-x^2}\,dx\), és írjuk \(1\cdot\sqrt{1-x^2}\) alakba:</p>
+        \[I = x\sqrt{1-x^2} - \int x\cdot\frac{-x}{\sqrt{1-x^2}}\,dx = x\sqrt{1-x^2} - \int\frac{(1 - x^2) - 1}{\sqrt{1-x^2}}\,dx\]
+        \[= x\sqrt{1-x^2} - \int\sqrt{1-x^2}\,dx + \int\frac{dx}{\sqrt{1-x^2}} = x\sqrt{1-x^2} - I + \arcsin x.\]
+        <p>Tehát \(2I = x\sqrt{1-x^2} + \arcsin x\).</p>
+        <p>Eredmény: <span class="ans">\(\dfrac{x\sqrt{1-x^2} + \arcsin x}{2} + c\quad \big(x \in (-1,1),\ c \in \R\big)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Kulcslépés:</b> az \(x^2 = -\big((1-x^2) - 1\big)\) átírás. Így a tört szétesik \(\sqrt{1-x^2}\)-re (ez maga \(I\)) és \(\frac{1}{\sqrt{1-x^2}}\)-re (alapintegrál: \(\arcsin\)).</p>
+        <p><b>Ellenőrzés:</b> \(\Big(\frac{x\sqrt{1-x^2} + \arcsin x}{2}\Big)' = \frac12\Big(\sqrt{1-x^2} - \frac{x^2}{\sqrt{1-x^2}} + \frac{1}{\sqrt{1-x^2}}\Big) = \frac12\cdot\frac{2(1-x^2)}{\sqrt{1-x^2}} = \sqrt{1-x^2}\). ✓</p>
+        <p class="tip"><b>Az előadáson</b> ugyanezt az \(x = \sin t\) helyettesítéssel (második helyettesítési szabály) oldották meg: \(\int\cos^2 t\,dt = \frac t2 + \frac{\sin 2t}{4}\), és \(t = \arcsin x\), \(\frac{\sin 2t}{4} = \frac{\sin t\cos t}{2} = \frac{x\sqrt{1-x^2}}{2}\). Ugyanaz jön ki.</p>
+      </div>
+    </details>
+  </article>
+
+  </div>
+</section>
+
+<!-- ================= HÁZI FELADATOK ================= -->
+<section id="hazi">
+  <div class="section-head">
+    <span class="label">7. gyakorlat · Házi feladatok · saját megoldás</span>
+    <h2>Házi feladatok</h2>
+    <p>Az összevont gyakorlati anyag 7. gyakorlathoz tartozó házi feladatai. Ezekhez nincs hivatalos megoldás, ezek saját megoldások (deriválással ellenőrizve).</p>
+  </div>
+
+  <div class="taskgroup">
+
+  <article class="task" id="h1a">
+    <div class="task-head"><span class="no">1. (a)</span><span class="src">7. gyakorlat · házi</span><span class="kind">\(f^\alpha f'\) típus</span></div>
+    \[\int \frac{1}{\cos^2 x}\cdot\frac{1}{\sqrt{1 + \tg x}}\,dx \quad \big(x \in (-\tfrac\pi2, \tfrac\pi2)\big)\]
+    <p class="warn"><b>Megjegyzés a forráshoz.</b> A gyök alatt \(1 + \tg x \gt 0\) kell, azaz \(\tg x \gt -1\), ami a \((-\frac\pi2, \frac\pi2)\) intervallumon csak \(x \gt -\frac\pi4\) esetén teljesül. A feladat tehát valójában az \(x \in (-\frac\pi4, \frac\pi2)\) intervallumon értelmes.</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Ha \(x \in (-\frac\pi4, \frac\pi2)\), akkor \(1 + \tg x \gt 0\), és \((1 + \tg x)' = \frac{1}{\cos^2 x}\), így</p>
+        \[\int (1 + \tg x)^{-1/2}\cdot(1 + \tg x)'\,dx = \frac{(1 + \tg x)^{1/2}}{1/2} + c = 2\sqrt{1 + \tg x} + c.\]
+        <p>Eredmény: <span class="ans">\(2\sqrt{1 + \tg x} + c\quad \big(x \in (-\tfrac\pi4, \tfrac\pi2),\ c \in \R\big)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Felismerés:</b> ugyanaz a minta, mint az órai 2(f)-ben: \(\frac{1}{\cos^2 x}\) a \(\tg x\) (és így az \(1 + \tg x\)) deriváltja. \(f = 1 + \tg x\), \(\alpha = -\frac12\).</p>
+        <p><b>Ellenőrzés:</b> \(\big(2\sqrt{1+\tg x}\big)' = 2\cdot\frac{1}{2\sqrt{1+\tg x}}\cdot\frac{1}{\cos^2 x}\). ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="h1b">
+    <div class="task-head"><span class="no">1. (b)</span><span class="src">7. gyakorlat · házi</span><span class="kind">első helyettesítés · arctg</span></div>
+    \[\int \frac{1}{x(1 + \ln^2 x)}\,dx \quad \big(x \in (0, +\infty)\big)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Az első helyettesítési szabály \(f(u) = \frac{1}{1+u^2}\), \(F = \arctg\) és \(g(x) = \ln x\), \(g'(x) = \frac1x\) választással:</p>
+        \[\int \frac{1}{1 + (\ln x)^2}\cdot(\ln x)'\,dx = \arctg(\ln x) + c.\]
+        <p>Eredmény: <span class="ans">\(\arctg(\ln x) + c\quad (x \gt 0,\ c \in \R)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Felismerés:</b> az \(\frac1x\) a \(\ln x\) deriváltja, a maradék pedig \(\frac{1}{1+u^2}\) alakú, ahol \(u = \ln x\). Ez nem a három speciális eset egyike, hanem az általános \(\int f(g(x))g'(x)\,dx = F(g(x)) + c\) szabály.</p>
+        <p><b>Ellenőrzés:</b> \(\big(\arctg(\ln x)\big)' = \frac{1}{1 + \ln^2 x}\cdot\frac1x\). ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="h1c">
+    <div class="task-head"><span class="no">1. (c)</span><span class="src">7. gyakorlat · házi</span><span class="kind">parciális integrálás · egyenlet</span></div>
+    \[\int \cos(2x + 1)\cdot e^{3x+2}\,dx \quad (x \in \R)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Legyen \(I := \int e^{3x+2}\cos(2x+1)\,dx\). Kétszer integrálunk parciálisan, mindkétszer az exponenciális rész a \(g'\): \(e^{3x+2} = \big(\frac{e^{3x+2}}{3}\big)'\).</p>
+        \[I = \frac{e^{3x+2}}{3}\cos(2x+1) + \frac23\int e^{3x+2}\sin(2x+1)\,dx,\]
+        \[\int e^{3x+2}\sin(2x+1)\,dx = \frac{e^{3x+2}}{3}\sin(2x+1) - \frac23\,I.\]
+        <p>Visszaírva:</p>
+        \[I = \frac{e^{3x+2}}{3}\cos(2x+1) + \frac{2e^{3x+2}}{9}\sin(2x+1) - \frac49\,I \;\Longrightarrow\; \frac{13}{9}I = \frac{e^{3x+2}}{9}\big(3\cos(2x+1) + 2\sin(2x+1)\big).\]
+        <p>Eredmény: <span class="ans">\(\dfrac{e^{3x+2}\big(3\cos(2x+1) + 2\sin(2x+1)\big)}{13} + c\quad (x, c \in \R)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Minta:</b> ugyanaz, mint az órai 3(b): \(e^{\alpha x + \beta}\cdot G(ax+b)\) alak, két parciális integrálás után visszakapjuk \(I\)-t. Itt az exponenciálist választottuk \(g'\)-nek; ez is jó, csak mindkét lépésben ugyanígy kell.</p>
+        <p><b>Előjelek:</b> \(\big(\cos(2x+1)\big)' = -2\sin(2x+1)\), ezért az első lépésben \(-\int f'g = +\frac23\int e^{3x+2}\sin(2x+1)\,dx\). A második lépésben \(\big(\sin(2x+1)\big)' = 2\cos(2x+1)\), így ott \(-\frac23 I\) jön.</p>
+        <p><b>Ellenőrzés:</b> legyen \(u = 2x+1\). \(\Big(e^{3x+2}(3\cos u + 2\sin u)\Big)' = e^{3x+2}\big(9\cos u + 6\sin u - 6\sin u + 4\cos u\big) = 13\,e^{3x+2}\cos u\). Osztva 13-mal ✓.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="h1d">
+    <div class="task-head"><span class="no">1. (d)</span><span class="src">7. gyakorlat · házi</span><span class="kind">\(1\cdot G\) trükk</span></div>
+    \[\int \arcsin(3x)\,dx \quad (x \in \R)\]
+    <p class="warn"><b>Megjegyzés a forráshoz.</b> Az \(\arcsin(3x)\) csak \(|3x| \le 1\) esetén értelmes, és a primitív függvény a nyílt \(x \in (-\frac13, \frac13)\) intervallumon kereshető. Az „\(x \in \R\)” elírás.</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Ha \(x \in (-\frac13, \frac13)\), akkor</p>
+        \[\int 1\cdot\arcsin(3x)\,dx = x\arcsin(3x) - \int\frac{3x}{\sqrt{1 - 9x^2}}\,dx.\]
+        <p>A maradék \(f^\alpha f'\) típusú (\(f = 1 - 9x^2 \gt 0\), \(f' = -18x\), \(\alpha = -\frac12\)):</p>
+        \[\int\frac{3x}{\sqrt{1-9x^2}}\,dx = -\frac16\int(1 - 9x^2)^{-1/2}(-18x)\,dx = -\frac16\cdot 2\sqrt{1 - 9x^2} = -\frac13\sqrt{1 - 9x^2}.\]
+        <p>Eredmény: <span class="ans">\(x\arcsin(3x) + \frac13\sqrt{1 - 9x^2} + c\quad \big(x \in (-\tfrac13, \tfrac13),\ c \in \R\big)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Minta:</b> ugyanaz, mint az órai 3(d) (\(\arctg 3x\)): \(g' = 1\), \(f = \arcsin(3x)\), \(f' = \frac{3}{\sqrt{1 - 9x^2}}\).</p>
+        <p><b>Ellenőrzés:</b> \(\big(x\arcsin 3x + \frac13\sqrt{1-9x^2}\big)' = \arcsin 3x + \frac{3x}{\sqrt{1-9x^2}} + \frac13\cdot\frac{-18x}{2\sqrt{1-9x^2}} = \arcsin 3x\). ✓</p>
+      </div>
+    </details>
+  </article>
+
+  </div>
+</section>
+
+<!-- ================= GYAKORI HIBÁK ================= -->
+<section id="hibak">
+  <div class="section-head">
+    <span class="label">Mire figyelj</span>
+    <h2>Gyakori hibák</h2>
+  </div>
+  <div class="mistakes">
+    <div class="mistake"><span class="x">✕</span><p><b>\(\int f g = \int f\cdot\int g\).</b> Szorzatra nincs ilyen szabály. Szorzatnál az első helyettesítési szabály (ha az egyik tényező a másik belső függvényének deriváltja) vagy a parciális integrálás segít.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Hiányzó \(\frac1a\) a lineáris helyettesítésnél.</b> \(\int\cos 2x\,dx = \frac{\sin 2x}{2}\), nem \(\sin 2x\). Deriválással azonnal kiderül.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>\(\int\sin^2 x\,dx = \frac{\sin^3 x}{3}\).</b> Az \(f^\alpha f'\) típushoz kell az \(f'\) szorzó is. Páros kitevőjű \(\sin\), \(\cos\) esetén linearizálunk (órai 2(e)).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Elfelejtett intervallum vagy előjel a logaritmusban.</b> \(\int\frac{f'}{f} = \ln f\) csak \(f \gt 0\)-n; ha \(f \lt 0\), akkor \(\ln(-f)\) (órai 2(c) megjegyzése). Mindig nézd meg, hol dolgozol.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Rossz szereposztás a parciális integrálásnál.</b> \(\int x^2\ln x\)-nél ha \(g' = \ln x\) lenne, egyre bonyolultabb integrált kapnál. Az a jó szereposztás, ahol \(\int f'g\) egyszerűbb, mint az eredeti.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Szerepcsere a „visszatérő” integráloknál.</b> Az \(\int e^{\alpha x}\sin x\) típusnál a második parciális integrálásban is ugyanazt a tényezőt kell \(g'\)-nek venni, különben \(I = I\) jön ki (órai 3(b)).</p></div>
+  </div>
+</section>
+
+<footer>Forrás: <a href="../Gyakorlat%20anyagok/07_Gy_An_II_A_B.pdf" target="_blank" rel="noopener">7. gyakorlat (PDF)</a> és <a href="../Gyakorlat%20anyagok/An_II_A_B_Gyak.pdf" target="_blank" rel="noopener">Analízis II. gyakorlatok, összevont anyag (PDF)</a>. Minden primitív függvényt numerikus deriválással ellenőriztünk, a grafikon a függvényekből számolva készült.</footer>
+</div>
+
+<script>
+(function () {
+  // Small SVG plotter: several curves on one grid, optional vertical guide lines.
+  function fmt(v) { return (Math.round(v * 100) / 100).toString().replace('.', ',').replace('-', '−'); }
+  function plot(el, o) {
+    var W = 640, H = o.h || 320, L = 40, R = 14, T = 12, B = 26;
+    var x0 = o.x[0], x1 = o.x[1], y0 = o.y[0], y1 = o.y[1];
+    var X = function (x) { return L + (x - x0) / (x1 - x0) * (W - L - R); };
+    var Y = function (y) { return T + (y1 - y) / (y1 - y0) * (H - T - B); };
+    var s = [], cid = 'clip-' + el.id, v;
+    s.push('<defs><clipPath id="' + cid + '"><rect x="' + L + '" y="' + T + '" width="' + (W - L - R) + '" height="' + (H - T - B) + '"/></clipPath></defs>');
+    for (v = Math.ceil(x0 / o.gx - 1e-9) * o.gx; v <= x1 + 1e-9; v += o.gx) {
+      s.push('<line class="gl" x1="' + X(v) + '" y1="' + T + '" x2="' + X(v) + '" y2="' + (H - B) + '"/>');
+      if (Math.abs(v) > 1e-9) s.push('<text class="tk" x="' + X(v) + '" y="' + (H - 8) + '" text-anchor="middle">' + fmt(v) + '</text>');
+    }
+    for (v = Math.ceil(y0 / o.gy - 1e-9) * o.gy; v <= y1 + 1e-9; v += o.gy) {
+      s.push('<line class="gl" x1="' + L + '" y1="' + Y(v) + '" x2="' + (W - R) + '" y2="' + Y(v) + '"/>');
+      if (Math.abs(v) > 1e-9) s.push('<text class="tk" x="' + (L - 6) + '" y="' + (Y(v) + 4) + '" text-anchor="end">' + fmt(v) + '</text>');
+    }
+    if (y0 <= 0 && y1 >= 0) s.push('<line class="ax" x1="' + L + '" y1="' + Y(0) + '" x2="' + (W - R) + '" y2="' + Y(0) + '"/>');
+    if (x0 <= 0 && x1 >= 0) s.push('<line class="ax" x1="' + X(0) + '" y1="' + T + '" x2="' + X(0) + '" y2="' + (H - B) + '"/>');
+    (o.vl || []).forEach(function (a) { s.push('<line class="as" x1="' + X(a) + '" y1="' + T + '" x2="' + X(a) + '" y2="' + (H - B) + '"/>'); });
+    var g = '<g clip-path="url(#' + cid + ')">';
+    o.curves.forEach(function (c) {
+      var d = '', pen = false, N = 900, span = y1 - y0;
+      for (var i = 0; i <= N; i++) {
+        var x = x0 + (x1 - x0) * i / N;
+        if (c.dom && !c.dom(x)) { pen = false; continue; }
+        var y = c.f(x);
+        if (!isFinite(y)) { pen = false; continue; }
+        y = Math.max(Math.min(y, y1 + span), y0 - span);
+        d += (pen ? 'L' : 'M') + X(x).toFixed(1) + ' ' + Y(y).toFixed(1);
+        pen = true;
+      }
+      g += '<path class="' + c.cls + '" d="' + d + '"/>';
+    });
+    (o.pts || []).forEach(function (p) { g += '<circle class="pz" cx="' + X(p[0]) + '" cy="' + Y(p[1]) + '" r="3.5"/>'; });
+    g += '</g>';
+    s.push(g);
+    el.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + o.label + '">' + s.join('') + '</svg>';
+  }
+  var GRAPHS = {
+    'g-o1b': { label: 'f(x) = x²/(x²+1) és primitív függvényei x − arctg x + c', x: [-4, 4], y: [-4, 4], gx: 1, gy: 1, pts: [[0, 0]],
+      curves: [ { cls: 'cv3', f: function (x) { return x - Math.atan(x) - 2; } }, { cls: 'cv3', f: function (x) { return x - Math.atan(x) - 1; } },
+                { cls: 'cv3', f: function (x) { return x - Math.atan(x) + 1; } }, { cls: 'cv3', f: function (x) { return x - Math.atan(x) + 2; } },
+                { cls: 'cv2', f: function (x) { return x * x / (x * x + 1); } },
+                { cls: 'cv', f: function (x) { return x - Math.atan(x); } } ] }
+  };
+  Object.keys(GRAPHS).forEach(function (id) { var el = document.getElementById(id); if (el) plot(el, GRAPHS[id]); });
+})();
+</script>
+<!-- Fejezetsáv: az éppen olvasott szakasz gombja kiemelve -->
+<style>
+nav.bar a.active, nav.bar a.active:hover, nav.bar a.active:focus-visible { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+</style>
+<script>
+(function () {
+  var nav = document.querySelector('nav.bar');
+  if (!nav) return;
+  var links = Array.prototype.filter.call(nav.querySelectorAll('a[href^="#"]'), function (a) {
+    return a.getAttribute('href').length > 1 && document.getElementById(a.getAttribute('href').slice(1));
+  });
+  var current = null, ticking = false;
+  function sectionOf(a) { return document.getElementById(a.getAttribute('href').slice(1)); }
+  function update() {
+    ticking = false;
+    var line = nav.getBoundingClientRect().bottom + 12, active = null;
+    var visible = links.filter(function (a) { return sectionOf(a).offsetParent !== null; });
+    visible.forEach(function (a) { if (sectionOf(a).getBoundingClientRect().top <= line) active = a; });
+    // a lap alján az utolsó szakasz az aktuális akkor is, ha rövid
+    if (visible.length && window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) active = visible[visible.length - 1];
+    if (active === current) return;
+    if (current) { current.classList.remove('active'); current.removeAttribute('aria-current'); }
+    current = active;
+    if (!active) return;
+    active.classList.add('active');
+    active.setAttribute('aria-current', 'location');
+    var ul = active.closest('ul'), ur = ul.getBoundingClientRect(), ar = active.getBoundingClientRect();
+    var left = ar.left - ur.left + ul.scrollLeft, right = left + ar.width;
+    if (left < ul.scrollLeft || right > ul.scrollLeft + ul.clientWidth) ul.scrollTo({ left: Math.max(0, left - 16), behavior: 'smooth' });
+  }
+  function schedule() { if (!ticking) { ticking = true; setTimeout(update, 40); } }
+  window.addEventListener('scroll', schedule, { passive: true });
+  window.addEventListener('resize', schedule);
+  document.addEventListener('input', schedule);   // a keresés elrejthet szakaszokat
+  document.addEventListener('toggle', schedule, true);
+  update();
+})();
+</script>
+</body>
+</html>
