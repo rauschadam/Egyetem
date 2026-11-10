@@ -191,20 +191,845 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
   <h1>RöpZH kérdések kidolgozva</h1>
   <p class="sub">A gyakorlatonkénti röpZH kérdések válaszai, az előadásdiák megfogalmazásában (így kell leírni a röpZH-n). Előbb próbáld fejből, utána nyisd le a választ.</p>
   <div class="facts">
-    <div class="fact"><span class="label">Kidolgozva</span><b>7–9. röpZH</b></div>
-    <div class="fact"><span class="label">Kérdés</span><b>24 db</b></div>
-    <div class="fact"><span class="label">Anyag</span><b>6–7. előadás</b></div>
+    <div class="fact"><span class="label">Kidolgozva</span><b>2–12. röpZH</b></div>
+    <div class="fact"><span class="label">Kérdés</span><b>100 db</b></div>
+    <div class="fact"><span class="label">Anyag</span><b>1–11. előadás</b></div>
   </div>
 </header>
 
 <nav class="bar" aria-label="Fejezetek">
   <ul>
     <li><a class="nav-back" href="../../index.html#/anal2" aria-label="Vissza: Analízis II.">← ANAL II</a></li>
+    <li><a href="#rz2">2. röpZH</a></li>
+    <li><a href="#rz3">3. röpZH</a></li>
+    <li><a href="#rz4">4. röpZH</a></li>
+    <li><a href="#rz5">5. röpZH</a></li>
+    <li><a href="#rz6">6. röpZH</a></li>
     <li><a href="#rz7">7. röpZH</a></li>
     <li><a href="#rz8">8. röpZH</a></li>
     <li><a href="#rz9">9. röpZH</a></li>
+    <li><a href="#rz10">10. röpZH</a></li>
+    <li><a href="#rz11">11. röpZH</a></li>
+    <li><a href="#rz12">12. röpZH</a></li>
   </ul>
 </nav>
+
+<!-- ================= 2–6. RÖPZH ================= -->
+<!-- ================= 2. RÖPZH ================= -->
+<section id="rz2">
+  <div class="section-head">
+    <span class="label">2. gyakorlat · <a href="../An2_rop_kerdesek.pdf" target="_blank" rel="noopener">kérdéssor PDF ↗</a> · <a href="../El%C5%91ad%C3%A1s%20anyagok/01_ea_An_II_A_B.pdf" target="_blank" rel="noopener">1. előadás PDF ↗</a></span>
+    <h2>Belső pont, pontbeli derivált, deriválási szabályok</h2>
+    <p>A kérdéssorban a „2. gyakorlat” alatti kérdések. Az anyaguk az 1. előadás (Differenciálszámítás 1.).</p>
+  </div>
+
+  <div class="taskgroup">
+
+  <article class="task" id="rz2-1">
+    <div class="task-head"><span class="no">1.</span><span class="kind">definíció</span></div>
+    <p class="stmt">Mi a belső pont definíciója?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Definíció.</b> Legyen \(\emptyset \ne A \subset \R\). Az \(a \in A\) pont az \(A\) halmaz <b>belső pontja</b>, ha</p>
+        \[\exists\, r \gt 0, \text{ hogy } K_r(a) = (a - r, a + r) \subset A.\]
+        <p>Jelölés: \(\operatorname{int} A := \{a \in A \mid a \text{ belső pontja } A\text{-nak}\}\).</p>
+        <p class="note">Példák (dia): \(\operatorname{int}(0, 1) = (0, 1)\), \(\operatorname{int}[0, 1] = (0, 1)\), \(\operatorname{int}\R = \R\), \(\operatorname{int}\mathbb N = \emptyset\), \(\operatorname{int}\mathbb Q = \emptyset\); ha \(A \subset \R\) véges halmaz, akkor \(\operatorname{int} A = \emptyset\).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz2-2">
+    <div class="task-head"><span class="no">2.</span><span class="kind">definíció</span></div>
+    <p class="stmt">Mikor mondja azt, hogy egy \(f \in \R \to \R\) függvény differenciálható valamely \(a \in \operatorname{int} D_f\) pontban?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Definíció.</b> Az \(f \in \R \to \R\) függvény az \(a \in \operatorname{int} D_f\) pontban <b>differenciálható</b> (vagy <b>deriválható</b>), ha</p>
+        \[\exists \text{ és véges a } \lim_{h \to 0}\frac{f(a + h) - f(a)}{h} \text{ határérték.}\]
+        <p>Ezt \(f'(a)\)-val jelöljük, és az \(f\) függvény \(a\) pontbeli <b>deriváltjának</b> (vagy <b>differenciálhányadosának</b>) nevezzük, azaz</p>
+        \[f'(a) := \lim_{h \to 0}\frac{f(a + h) - f(a)}{h} \in \R.\]
+        <p>Ezt a tényt a következőképpen fogjuk jelölni: \(f \in D\{a\}\).</p>
+        <p class="note">Ekvivalens alak (dia): \(f \in D\{a\} \iff \exists\, f'(a) = \lim_{x \to a}\frac{f(x) - f(a)}{x - a} \in \R\).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz2-3">
+    <div class="task-head"><span class="no">3.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Mi a kapcsolat a pontbeli differenciálhatóság és a folytonosság között?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Tétel.</b> Tegyük fel, hogy \(f \in \R \to \R\) és \(a \in \operatorname{int} D_f\). Ekkor</p>
+        <p><b>1°</b> \(f \in D\{a\} \implies f \in C\{a\}\),</p>
+        <p><b>2°</b> az állítás megfordítása nem igaz.</p>
+        <p class="note">A 2°-hoz a dia példája: \(\operatorname{abs} \in C\{0\}\), de \(\operatorname{abs} \notin D\{0\}\).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz2-4">
+    <div class="task-head"><span class="no">4.</span><span class="kind">példa</span></div>
+    <p class="stmt">Adjon példát olyan függvényre, ami az \(a \in \R\) pontban folytonos, de nem differenciálható!</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Példa.</b> \(\operatorname{abs} \in C\{0\}\), de \(\operatorname{abs} \notin D\{0\}\), mert az</p>
+        \[\R \setminus \{0\} \ni x \mapsto \frac{\operatorname{abs}(x) - \operatorname{abs}(0)}{x - 0} = \frac{|x| - |0|}{x} = \begin{cases} 1, & \text{ha } x \gt 0,\\ -1, & \text{ha } x \lt 0\end{cases}\]
+        <p>függvénynek a \(0\) pontban nincs határértéke.</p>
+        <p class="note">Tetszőleges \(a \in \R\) pontra ugyanígy: \(f(x) := |x - a|\) \((x \in \R)\) folytonos \(a\)-ban, de \(f \notin D\{a\}\) (a különbségi hányados \(a\)-tól jobbra \(1\), balra \(-1\)).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz2-5">
+    <div class="task-head"><span class="no">5.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Milyen tételt ismer két függvény szorzatának valamely pontbeli differenciálhatóságáról és a deriváltjáról?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Tétel.</b> Tegyük fel, hogy \(f, g \in D\{a\}\) valamilyen \(a \in \operatorname{int}(D_f \cap D_g)\) pontban. Ekkor \(f \cdot g \in D\{a\}\) és</p>
+        \[(f \cdot g)'(a) = f'(a) \cdot g(a) + f(a) \cdot g'(a).\]
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz2-6">
+    <div class="task-head"><span class="no">6.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Milyen tételt ismer két függvény hányadosának valamely pontbeli differenciálhatóságáról és a deriváltjáról?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Tétel.</b> Tegyük fel, hogy \(f, g \in D\{a\}\) valamilyen \(a \in \operatorname{int}(D_f \cap D_g)\) pontban, és \(g(a) \ne 0\). Ekkor \(\frac fg \in D\{a\}\) és</p>
+        \[\left(\frac fg\right)'(a) = \frac{f'(a) \cdot g(a) - f(a) \cdot g'(a)}{g^2(a)}.\]
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz2-7">
+    <div class="task-head"><span class="no">7.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Milyen tételt ismer két függvény kompozíciójának valamely pontbeli differenciálhatóságáról és a deriváltjáról?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Tétel</b> (az összetett függvény deriválása). Tegyük fel, hogy \(f, g \in \R \to \R\), \(\mathcal R_g \subset D_f\) és egy \(a \in \operatorname{int} D_g\) pontban \(g \in D\{a\}\), továbbá \(f \in D\{g(a)\}\). Ekkor \(f \circ g \in D\{a\}\), és</p>
+        \[(f \circ g)'(a) = f'\big(g(a)\big) \cdot g'(a).\]
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz2-8">
+    <div class="task-head"><span class="no">8.</span><span class="kind">képlet</span></div>
+    <p class="stmt">Mi az \(\exp\), \(\sin\), \(\cos\) függvények deriváltfüggvénye?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p>Az \(\exp\), \(\sin\), \(\cos\) függvények (mint hatványsorok összegfüggvényei) minden \(x \in \R\) pontban deriválhatók, és</p>
+        \[\exp'(x) = (e^x)' = e^x, \qquad \sin'(x) = \cos x, \qquad \cos'(x) = -\sin x \qquad (x \in \R).\]
+        <p class="note">Az \(\exp\) függvény deriváltja önmaga. (A bizonyítás a hatványsorok tagonkénti deriválásával megy.)</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz2-9">
+    <div class="task-head"><span class="no">9.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Milyen tételt ismer hatványsor összegfüggvényének differenciálhatóságáról és a deriváltjáról?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Tétel.</b> Tegyük fel, hogy a \(\sum\limits_{n=0}^{\infty} \alpha_n (x - a)^n\) \((x \in \R)\) hatványsor \(R\) konvergenciasugara pozitív, és legyen</p>
+        \[f(x) := \sum_{n=0}^{+\infty} \alpha_n (x - a)^n \quad \big(x \in K_R(a)\big).\]
+        <p>Ekkor minden \(x \in K_R(a)\) pontban \(f \in D\{x\}\) és</p>
+        \[f'(x) = \sum_{n=1}^{+\infty} n\,\alpha_n (x - a)^{n-1} \quad \big(\forall\, x \in K_R(a)\big).\]
+        <p class="note">A kérdéssorban a „Milyen tételt hatványsor…” mondatból kimaradt az „ismer” szó; itt pótoltuk.</p>
+      </div>
+    </details>
+  </article>
+
+  </div>
+</section>
+
+<!-- ================= 3. RÖPZH ================= -->
+<section id="rz3">
+  <div class="section-head">
+    <span class="label">3. gyakorlat · <a href="../An2_rop_kerdesek.pdf" target="_blank" rel="noopener">kérdéssor PDF ↗</a> · <a href="../El%C5%91ad%C3%A1s%20anyagok/01_ea_An_II_A_B.pdf" target="_blank" rel="noopener">1. előadás PDF ↗</a> · <a href="../El%C5%91ad%C3%A1s%20anyagok/02_ea_An_II_A_B.pdf" target="_blank" rel="noopener">2. előadás PDF ↗</a></span>
+    <h2>Elemi deriváltak, lineáris közelítés, érintő, egyoldali és magasabb rendű deriváltak, középértéktételek</h2>
+    <p>A kérdéssorban a „3. gyakorlat” alatti kérdések. Az 1–4. kérdés anyaga az 1. előadás (Differenciálszámítás 1.), az 5–10. kérdésé a 2. előadás (Differenciálszámítás 2.).</p>
+  </div>
+
+  <div class="taskgroup">
+
+  <article class="task" id="rz3-1">
+    <div class="task-head"><span class="no">1.</span><span class="kind">képlet</span></div>
+    <p class="stmt">Írja fel az \(\exp\), \(\ln\), \(\sin\), \(\cos\), \(\tg\), \(a^x\) \((a \gt 0,\ x \in \R)\) függvények deriváltfüggvényét.</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <div class="tbl"><table>
+          <thead><tr><th>\(f(x)\)</th><th>\(f'(x)\)</th><th>Ahol</th></tr></thead>
+          <tbody>
+            <tr><td>\(e^x\)</td><td>\(e^x\)</td><td>\(x \in \R\)</td></tr>
+            <tr><td>\(\ln x\)</td><td>\(\dfrac1x\)</td><td>\(x \in (0, +\infty)\)</td></tr>
+            <tr><td>\(\sin x\)</td><td>\(\cos x\)</td><td>\(x \in \R\)</td></tr>
+            <tr><td>\(\cos x\)</td><td>\(-\sin x\)</td><td>\(x \in \R\)</td></tr>
+            <tr><td>\(\tg x\)</td><td>\(\dfrac{1}{\cos^2 x}\)</td><td>\(x \in D_{\tg} = \R \setminus \{\frac\pi2 + k\pi \mid k \in \mathbb Z\}\)</td></tr>
+            <tr><td>\(a^x\) \((a \gt 0)\)</td><td>\(a^x \cdot \ln a\)</td><td>\(x \in \R\)</td></tr>
+          </tbody>
+        </table></div>
+        <p class="note">Indoklás a diákról: \(\ln = \exp^{-1}\), így \(\ln' x = \frac{1}{\exp'(\ln x)} = \frac1x\); \(a^x = e^{x \ln a}\), így \((a^x)' = e^{x \ln a} \cdot \ln a\); \(\tg = \frac{\sin}{\cos}\), így \(\tg' x = \frac{\cos^2 x + \sin^2 x}{\cos^2 x} = \frac{1}{\cos^2 x}\).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz3-2">
+    <div class="task-head"><span class="no">2.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Milyen ekvivalens átfogalmazást ismer a pontbeli deriválhatóságra lineáris közelítéssel?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Tétel.</b> Legyen \(f \in \R \to \R\) és \(a \in \operatorname{int} D_f\). Ekkor</p>
+        \[f \in D\{a\} \iff \begin{cases} \exists\, A \in \R \text{ és } \exists\, \varepsilon : D_f \to \R,\ \lim_a \varepsilon = 0 : \\[2pt] f(x) - f(a) = A \cdot (x - a) + \varepsilon(x)(x - a) \quad (x \in D_f), \end{cases}\]
+        <p>és \(A = f'(a)\).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz3-3">
+    <div class="task-head"><span class="no">3.</span><span class="kind">definíció</span></div>
+    <p class="stmt">Mi az érintő definíciója?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Definíció.</b> Az \(f \in \R \to \R\) függvény grafikonjának az \(\big(a, f(a)\big)\) pontban <b>van érintője</b>, ha \(f \in D\{a\}\). Az \(f\) függvény grafikonjának \(\big(a, f(a)\big)\) pontbeli <b>érintőjén</b> az</p>
+        \[y = f'(a) \cdot (x - a) + f(a)\]
+        <p>egyenletű egyenest értjük.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz3-4">
+    <div class="task-head"><span class="no">4.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Írja le az inverz függvény differenciálhatóságáról szóló tételt!</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Tétel.</b> Legyen \(I \subset \R\) nyílt intervallum és \(f : I \to \R\). Tegyük fel, hogy</p>
+        <ul>
+          <li>(a) \(f\) szigorúan monoton és folytonos \(I\)-n,</li>
+          <li>(b) egy \(a \in I\) pontban \(f \in D\{a\}\) és \(f'(a) \ne 0\).</li>
+        </ul>
+        <p>Ekkor az \(f^{-1}\) inverz függvény deriválható a \(b := f(a)\) pontban, és</p>
+        \[\big(f^{-1}\big)'(b) = \frac{1}{f'(a)} = \frac{1}{f'\big(f^{-1}(b)\big)}.\]
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz3-5">
+    <div class="task-head"><span class="no">5.</span><span class="kind">definíció</span></div>
+    <p class="stmt">Definiálja a jobb oldali derivált fogalmát!</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Definíció.</b> Legyen \(f \in \R \to \R\), \(a \in D_f\). Tegyük fel, hogy \(\exists\, \delta \gt 0 : [a, a + \delta) \subset D_f\). Azt mondjuk, hogy \(f\) az \(a\) pontban <b>jobbról deriválható</b> (vagy differenciálható), ha</p>
+        \[\exists \text{ és véges a } \lim_{x \to a+0}\frac{f(x) - f(a)}{x - a} \text{ határérték.}\]
+        <p>Ezt az \(f\) függvény \(a\) pontbeli <b>jobb oldali deriváltjának</b> (vagy differenciálhányadosának) nevezzük, és \(f'_+(a)\)-val jelöljük.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz3-6">
+    <div class="task-head"><span class="no">6.</span><span class="kind">definíció</span></div>
+    <p class="stmt">Definiálja a bal oldali derivált fogalmát!</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Definíció.</b> Legyen \(f \in \R \to \R\), \(a \in D_f\). Tegyük fel, hogy \(\exists\, \delta \gt 0 : (a - \delta, a] \subset D_f\). Azt mondjuk, hogy \(f\) az \(a\) pontban <b>balról deriválható</b> (vagy differenciálható), ha</p>
+        \[\exists \text{ és véges a } \lim_{x \to a-0}\frac{f(x) - f(a)}{x - a} \text{ határérték.}\]
+        <p>Ezt az \(f\) függvény \(a\) pontbeli <b>bal oldali deriváltjának</b> (vagy differenciálhányadosának) nevezzük, és \(f'_-(a)\)-val jelöljük.</p>
+        <p class="note">A dia csak annyit mond: „Az \(a\) pontbeli bal oldali deriváltat hasonlóan értelmezzük, és \(f'_-(a)\)-vel jelöljük.” Ez a jobb oldali definíció értelemszerű tükrözése. Kapcsolat: \(f \in D\{a\} \iff \exists\, f'_+(a),\ \exists\, f'_-(a)\) és \(f'_+(a) = f'_-(a)\ (= f'(a))\).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz3-7">
+    <div class="task-head"><span class="no">7.</span><span class="kind">definíció</span></div>
+    <p class="stmt">Mikor mondjuk azt, hogy egy függvény kétszer differenciálható egy pontban?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Definíció.</b> Legyen \(f \in \R \to \R\) és \(a \in \operatorname{int} D_f\). Azt mondjuk, hogy \(f\) <b>kétszer deriválható</b> az \(a \in \operatorname{int} D_f\) pontban (jelölése: \(f \in D^2\{a\}\)), ha</p>
+        <ul>
+          <li>a függvény deriválható az \(a\) pont egy környezetében, azaz \(\exists\, r \gt 0 : f \in D\big(K_r(a)\big)\), és</li>
+          <li>az \(f'\) deriváltfüggvény deriválható \(a\)-ban, azaz \(f' \in D\{a\}\).</li>
+        </ul>
+        <p>Legyen ekkor</p>
+        \[f''(a) := \big(f'\big)'(a)\]
+        <p>az \(f\) függvény \(a\)-beli <b>második deriváltja</b>.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz3-8">
+    <div class="task-head"><span class="no">8.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Mondja ki a Rolle-tételt!</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Tétel</b> (Rolle-féle középértéktétel). Legyen \(a, b \in \R\) és \(a \lt b\). Ekkor</p>
+        \[\left.\begin{array}{l} \bullet\ f \in C[a,b], \\ \bullet\ f \in D(a,b), \\ \bullet\ f(a) = f(b) \end{array}\right\} \implies \exists\,\xi \in (a,b),\ \text{hogy}\ f'(\xi) = 0.\]
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz3-9">
+    <div class="task-head"><span class="no">9.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Mondja ki a Lagrange-féle középértéktételt!</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Tétel</b> (Lagrange-féle középértéktétel). Legyen \(a, b \in \R\) és \(a \lt b\). Ekkor</p>
+        \[\left.\begin{array}{l} \bullet\ f \in C[a,b], \\ \bullet\ f \in D(a,b) \end{array}\right\} \implies \exists\,\xi \in (a,b),\ \text{hogy}\ f'(\xi) = \frac{f(b) - f(a)}{b - a}.\]
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz3-10">
+    <div class="task-head"><span class="no">10.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Mondja ki a Cauchy-féle középértéktételt!</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Tétel</b> (Cauchy-féle középértéktétel). Legyen \(a, b \in \R\) és \(a \lt b\). Ekkor</p>
+        \[\left.\begin{array}{l} \bullet\ f, g \in C[a,b], \\ \bullet\ f, g \in D(a,b), \\ \bullet\ \forall\, x \in (a,b) : g'(x) \ne 0 \end{array}\right\} \implies \exists\,\xi \in (a,b),\ \text{hogy}\ \frac{f'(\xi)}{g'(\xi)} = \frac{f(b) - f(a)}{g(b) - g(a)}.\]
+      </div>
+    </details>
+  </article>
+
+  </div>
+</section>
+
+<!-- ================= 4. RÖPZH ================= -->
+<section id="rz4">
+  <div class="section-head">
+    <span class="label">4. gyakorlat · <a href="../An2_rop_kerdesek.pdf" target="_blank" rel="noopener">kérdéssor PDF ↗</a> · <a href="../El%C5%91ad%C3%A1s%20anyagok/02_ea_An_II_A_B.pdf" target="_blank" rel="noopener">2. előadás PDF ↗</a> · <a href="../El%C5%91ad%C3%A1s%20anyagok/03_ea_An_II_A_B.pdf" target="_blank" rel="noopener">3. előadás PDF ↗</a></span>
+    <h2>Lokális szélsőértékek, monotonitás, Weierstrass-tétel</h2>
+    <p>A kérdéssorban a „4. gyakorlat” alatti kérdések. Az 1–7. kérdés anyaga a 2. előadás (Differenciálszámítás 2.), a 8–13. kérdésé a 3. előadás (Differenciálszámítás 3.).</p>
+  </div>
+
+  <div class="taskgroup">
+
+  <article class="task" id="rz4-1">
+    <div class="task-head"><span class="no">1.</span><span class="kind">definíció</span></div>
+    <p class="stmt">Mit ért azon, hogy az \(f \in \R \to \R\) függvénynek valamely helyen lokális minimuma van?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Definíció.</b> Az \(f\) függvénynek az \(a \in \operatorname{int} D_f\) pontban <b>lokális minimuma</b> van, ha</p>
+        \[\exists\, K(a) \subset D_f, \text{ hogy } \forall\, x \in K(a) : f(x) \ge f(a).\]
+        <p>Az \(a \in \operatorname{int} D_f\) pont \(f\) <b>lokális minimumhelye</b>, \(f(a)\) pedig \(f\) <b>lokális minimuma</b>.</p>
+        <p class="note">A dián a lokális maximum van kiírva, a minimumról annyi áll, hogy „hasonlóan értelmezzük” (\(\le\) helyett \(\ge\)). Szigorú lokális minimum: \(\ge\) helyett \(\gt\) (\(x \ne a\)-ra).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz4-2">
+    <div class="task-head"><span class="no">2.</span><span class="kind">definíció</span></div>
+    <p class="stmt">Mit ért azon, hogy az \(f \in \R \to \R\) függvénynek valamely helyen lokális maximuma van?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Definíció.</b> Az \(f\) függvénynek az \(a \in \operatorname{int} D_f\) pontban <b>lokális maximuma</b> van, ha</p>
+        \[\exists\, K(a) \subset D_f, \text{ hogy } \forall\, x \in K(a) : f(x) \le f(a).\]
+        <p>Az \(a \in \operatorname{int} D_f\) pont \(f\) <b>lokális maximumhelye</b>, \(f(a)\) pedig \(f\) <b>lokális maximuma</b>.</p>
+        <p class="note">A lokális maximum(hely), minimum(hely) közösen lokális szélsőérték(hely). Szigorú lokális szélsőérték(hely)ekről beszélünk, ha \(\le\), ill. \(\ge\) helyett \(\lt\), ill. \(\gt\) teljesül.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz4-3">
+    <div class="task-head"><span class="no">3.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Hogyan szól a lokális szélsőértékre vonatkozó elsőrendű szükséges feltétel?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Tétel.</b> Tegyük fel, hogy az \(f\) függvénynek az \(a \in \operatorname{int} D_f\) pontban lokális szélsőértéke van és \(f \in D\{a\}\). Ekkor</p>
+        \[f'(a) = 0.\]
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz4-4">
+    <div class="task-head"><span class="no">4.</span><span class="kind">példa</span></div>
+    <p class="stmt">Adjon példát olyan \(f \in \R \to \R\) függvényre, amelyre valamely \(a \in \R\) esetén \(f \in D\{a\}\), \(f'(a) = 0\) teljesül, de az \(f\) függvénynek az \(a\) pontban nincs lokális szélsőértéke!</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Példa.</b> Ha \(f(x) := x^3\) \((x \in \R)\) és \(a = 0\), akkor \(f'(x) = 3x^2\) \((x \in \R)\) miatt \(f'(0) = 0\), de \(f\)-nek \(0\)-ban nincs lokális szélsőértéke (ui. \(f \uparrow \R\)-en).</p>
+        <p class="note">Így \(f \in D\{a\}\) esetén az \(f'(a) = 0\) csak szükséges, de nem elégséges feltétele annak, hogy \(f\)-nek \(a\)-ban lokális szélsőértéke legyen. A kérdéssorban „\(f \in \R \to\) függvényre” áll, a második \(\R\) kimaradt; itt pótoltuk.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz4-5">
+    <div class="task-head"><span class="no">5.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Milyen szükséges és elégséges feltételt ismer differenciálható függvény monoton növekedésével kapcsolatban?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Tétel</b> (a monotonitás és a derivált kapcsolata, 1°). Legyen \((a, b) \subset \R\) egy nyílt intervallum. Tegyük fel, hogy \(f \in D(a, b)\). Ekkor</p>
+        \[f \nearrow (a, b)\text{-n} \iff f' \ge 0 \ (a, b)\text{-n}.\]
+        <p class="note">\(\nearrow\): monoton növő, \(\uparrow\): szigorúan monoton növő. Csökkenésre ugyanígy: \(f \searrow \iff f' \le 0\). Lényeges, hogy a függvény intervallumon van értelmezve.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz4-6">
+    <div class="task-head"><span class="no">6.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Milyen elégséges feltételt ismer differenciálható függvény szigorú monoton növekedésével kapcsolatban?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Tétel</b> (a monotonitás és a derivált kapcsolata, 2°). Legyen \((a, b) \subset \R\) egy nyílt intervallum. Tegyük fel, hogy \(f \in D(a, b)\). Ekkor</p>
+        \[\text{ha } f' \gt 0 \ (a, b)\text{-n} \implies f \uparrow (a, b)\text{-n}.\]
+        <p class="note">A feltétel nem szükséges: \(f(x) := x^3\) \((x \in \R)\) esetén \(f \uparrow \R\)-en, de \(f'(0) = 0\).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz4-7">
+    <div class="task-head"><span class="no">7.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Milyen szükséges és elégséges feltételt ismer differenciálható függvény szigorú monoton növekedésével kapcsolatban?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Tétel</b> (szükséges és elégséges feltétel a szigorú monotonitásra). Legyen \((a, b) \subset \R\) egy nyílt intervallum. Tegyük fel, hogy \(f \in D(a, b)\). Ekkor</p>
+        \[f \uparrow (a, b)\text{-n} \iff f' \ge 0 \ (a, b)\text{-n, és } (a, b)\text{-nek nincs olyan részintervalluma, amelyen } f' \text{ azonosan } 0.\]
+        <p class="note">Csökkenésre: \(f \downarrow \iff f' \le 0\) és nincs olyan részintervallum, amelyen \(f' \equiv 0\).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz4-8">
+    <div class="task-head"><span class="no">8.</span><span class="kind">definíció</span></div>
+    <p class="stmt">Mit ért azon, hogy egy függvény valamely helyen jelet vált?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Definíció.</b> Azt mondjuk, hogy a \(h\) függvény a \(c \in \operatorname{int} D_h\) pontban <b>negatívból pozitívba megy át</b> (röviden \(h\)-nak \(c\)-ben \((-, +)\) <b>előjelváltása</b> van), ha \(h(c) = 0\) és \(\exists\, \delta \gt 0\) úgy, hogy</p>
+        \[h(x) \lt 0, \text{ ha } x \in (c - \delta, c) \quad\text{és}\quad h(x) \gt 0, \text{ ha } x \in (c, c + \delta).\]
+        <p>A \(h\) függvény \(c\)-beli \((+, -)\) előjelváltását hasonlóan értelmezzük. Ekkor \(h\) a \(c\) pontban pozitívból negatívba megy át.</p>
+        <p>Azt mondjuk, hogy a \(h\) függvény \(c\)-ben <b>előjelet vált</b>, ha \(h\)-nak \(c\)-ben \((-, +)\) vagy \((+, -)\) előjelváltása van.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz4-9">
+    <div class="task-head"><span class="no">9.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Hogyan szól a lokális minimumra vonatkozó elsőrendű elégséges feltétel?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Tétel.</b> Legyen \(-\infty \lt a \lt b \lt +\infty\) és \(f : (a, b) \to \R\). Tegyük fel, hogy</p>
+        <ul>
+          <li>\(f \in D(a, b)\),</li>
+          <li>egy \(c \in (a, b)\) pontban \(f'(c) = 0\) és</li>
+          <li>az \(f'\) deriváltfüggvény előjelet vált \(c\)-ben.</li>
+        </ul>
+        <p>Ekkor, ha az \(f'\) függvénynek \(c\)-ben \((-, +)\) előjelváltása van, akkor \(c\) az \(f\) függvénynek <b>szigorú lokális minimumhelye</b>.</p>
+        <p class="note">A dián egyetlen tétel: 1° \((-, +)\) előjelváltás \(\Rightarrow\) szigorú lokális minimumhely, 2° \((+, -)\) előjelváltás \(\Rightarrow\) szigorú lokális maximumhely. A feltétel elégséges, de nem szükséges.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz4-10">
+    <div class="task-head"><span class="no">10.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Hogyan szól a lokális maximumra vonatkozó elsőrendű elégséges feltétel?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Tétel.</b> Legyen \(-\infty \lt a \lt b \lt +\infty\) és \(f : (a, b) \to \R\). Tegyük fel, hogy</p>
+        <ul>
+          <li>\(f \in D(a, b)\),</li>
+          <li>egy \(c \in (a, b)\) pontban \(f'(c) = 0\) és</li>
+          <li>az \(f'\) deriváltfüggvény előjelet vált \(c\)-ben.</li>
+        </ul>
+        <p>Ekkor, ha az \(f'\) függvénynek \(c\)-ben \((+, -)\) előjelváltása van, akkor \(c\) az \(f\) függvénynek <b>szigorú lokális maximumhelye</b>.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz4-11">
+    <div class="task-head"><span class="no">11.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Írja le a lokális minimumra vonatkozó másodrendű elégséges feltételt!</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Tétel.</b> Legyen \(-\infty \lt a \lt b \lt +\infty\) és \(f : (a, b) \to \R\). Tegyük fel, hogy</p>
+        <ul>
+          <li>\(f\) kétszer deriválható egy \(c \in (a, b)\) pontban, \(f \in D^2\{c\}\),</li>
+          <li>\(f'(c) = 0\),</li>
+          <li>\(f''(c) \ne 0\).</li>
+        </ul>
+        <p>Ekkor \(c\) szigorú lokális szélsőértékhelye az \(f\) függvénynek; ha \(f''(c) \gt 0\), akkor \(c\) az \(f\) függvénynek <b>szigorú lokális minimumhelye</b>.</p>
+        <p class="note">A feltétel nem szükséges: \(f(x) := x^4\) \((x \in \R)\)-nek \(0\)-ban (abszolút, így) lokális minimuma van, de \(f''(0) = 0\).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz4-12">
+    <div class="task-head"><span class="no">12.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Írja le a lokális maximumra vonatkozó másodrendű elégséges feltételt!</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Tétel.</b> Legyen \(-\infty \lt a \lt b \lt +\infty\) és \(f : (a, b) \to \R\). Tegyük fel, hogy</p>
+        <ul>
+          <li>\(f\) kétszer deriválható egy \(c \in (a, b)\) pontban, \(f \in D^2\{c\}\),</li>
+          <li>\(f'(c) = 0\),</li>
+          <li>\(f''(c) \ne 0\).</li>
+        </ul>
+        <p>Ekkor \(c\) szigorú lokális szélsőértékhelye az \(f\) függvénynek; ha \(f''(c) \lt 0\), akkor \(c\) az \(f\) függvénynek <b>szigorú lokális maximumhelye</b>.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz4-13">
+    <div class="task-head"><span class="no">13.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Fogalmazza meg a Weierstrass-tételt!</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Weierstrass-tétel.</b> Korlátos és zárt \([a, b] \subset \R\) intervallumon folytonos \(f\) függvénynek léteznek abszolút szélsőértékei, azaz</p>
+        \[\exists\, \alpha, \beta \in [a, b] \text{ úgy, hogy } f(\beta) \le f(x) \le f(\alpha) \quad \big(\forall\, x \in [a, b]\big).\]
+      </div>
+    </details>
+  </article>
+
+  </div>
+</section>
+
+<!-- ================= 5. RÖPZH ================= -->
+<section id="rz5">
+  <div class="section-head">
+    <span class="label">5. gyakorlat · <a href="../An2_rop_kerdesek.pdf" target="_blank" rel="noopener">kérdéssor PDF ↗</a> · <a href="../El%C5%91ad%C3%A1s%20anyagok/03_ea_An_II_A_B.pdf" target="_blank" rel="noopener">3. előadás PDF ↗</a> · <a href="../El%C5%91ad%C3%A1s%20anyagok/04_ea_An_II_A_B.pdf" target="_blank" rel="noopener">4. előadás PDF ↗</a></span>
+    <h2>Konvexitás, konkávitás, inflexiós pont, aszimptota</h2>
+    <p>A kérdéssorban az „5. gyakorlat” alatti kérdések. Az 1–9. kérdés anyaga a 3. előadás (Differenciálszámítás 3.), a 10–11. kérdésé a 4. előadás (Differenciálszámítás 4.).</p>
+  </div>
+
+  <div class="taskgroup">
+
+  <article class="task" id="rz5-1">
+    <div class="task-head"><span class="no">1.</span><span class="kind">definíció</span></div>
+    <p class="stmt">Mi a konvex függvény definíciója?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Definíció.</b> Azt mondjuk, hogy az \(f : I \to \R\) függvény <b>konvex</b> az \(I\) intervallumon, ha \(\forall\, a, b \in I,\ a \lt b\) esetén</p>
+        \[(*)\qquad f(x) \le \frac{f(b) - f(a)}{b - a}(x - a) + f(a) \quad \big(\forall\, x \in (a, b)\big).\]
+        <p>Ha \((*)\)-ban \(\le\) helyett \(\lt\) áll, akkor \(f\)-et \(I\)-n <b>szigorúan konvexnek</b> nevezzük.</p>
+        <p class="note">\(I\) tetszőleges (korlátos vagy nem korlátos, nyílt, zárt, félig nyílt vagy félig zárt) intervallum. Szemléletesen: a grafikon \((a, b)\) feletti része az \(\big(a, f(a)\big)\), \(\big(b, f(b)\big)\) pontokat összekötő húr alatt van.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz5-2">
+    <div class="task-head"><span class="no">2.</span><span class="kind">definíció</span></div>
+    <p class="stmt">Mi a konkáv függvény definíciója?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Definíció.</b> Azt mondjuk, hogy az \(f : I \to \R\) függvény <b>konkáv</b> az \(I\) intervallumon, ha \(\forall\, a, b \in I,\ a \lt b\) esetén</p>
+        \[f(x) \ge \frac{f(b) - f(a)}{b - a}(x - a) + f(a) \quad \big(\forall\, x \in (a, b)\big).\]
+        <p>Ha itt \(\ge\) helyett \(\gt\) áll, akkor \(f\)-et \(I\)-n <b>szigorúan konkávnak</b> nevezzük.</p>
+        <p class="note">A dián egyetlen definíció van: a konvexitást jellemző \((*)\) egyenlőtlenségben „\(\ge\), illetve \(\gt\) áll” esetén konkáv, illetve szigorúan konkáv. Továbbá: \(f\) konkáv \(I\)-n \(\iff -f\) konvex \(I\)-n.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz5-3">
+    <div class="task-head"><span class="no">3.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Jellemezze egy függvény konvexitását az első deriváltfüggvény segítségével!</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Tétel.</b> Tegyük fel, hogy \(I \subset \R\) nyílt intervallum és \(f \in D(I)\). Ekkor</p>
+        \[f \text{ konvex } I\text{-n} \iff f' \nearrow I\text{-n}.\]
+        <p class="note"><b>Megjegyzés</b> (dia). „\(\nearrow\)” helyett szigorúan konvex esetben „\(\uparrow\)” áll.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz5-4">
+    <div class="task-head"><span class="no">4.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Jellemezze egy függvény konkávitását az első deriváltfüggvény segítségével!</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Tétel.</b> Tegyük fel, hogy \(I \subset \R\) nyílt intervallum és \(f \in D(I)\). Ekkor</p>
+        \[f \text{ konkáv } I\text{-n} \iff f' \searrow I\text{-n}.\]
+        <p class="note">A dián ez a konvex tételhez fűzött megjegyzés: „\(\nearrow\)” helyett konkáv esetben „\(\searrow\)”, szigorúan konkáv esetben pedig „\(\downarrow\)” áll.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz5-5">
+    <div class="task-head"><span class="no">5.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Jellemezze egy függvény konvexitását a második deriváltfüggvény segítségével!</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Tétel.</b> Tegyük fel, hogy \(I \subset \R\) nyílt intervallum és \(f \in D^2(I)\). Ekkor</p>
+        <p><b>1°</b> \(f\) konvex \(I\)-n \(\iff f'' \ge 0\) \(I\)-n.</p>
+        <p><b>2°</b> Ha \(f'' \gt 0\) \(I\)-n \(\implies f\) szigorúan konvex \(I\)-n.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz5-6">
+    <div class="task-head"><span class="no">6.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Jellemezze egy függvény konkávitását a második deriváltfüggvény segítségével!</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Tétel.</b> Tegyük fel, hogy \(I \subset \R\) nyílt intervallum és \(f \in D^2(I)\). Ekkor</p>
+        <p><b>1°</b> \(f\) konkáv \(I\)-n \(\iff f'' \le 0\) \(I\)-n.</p>
+        <p><b>2°</b> Ha \(f'' \lt 0\) \(I\)-n \(\implies f\) szigorúan konkáv \(I\)-n.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz5-7">
+    <div class="task-head"><span class="no">7.</span><span class="kind">definíció</span></div>
+    <p class="stmt">Mi az inflexiós pont definíciója?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Definíció.</b> Legyen \(I\) nyílt intervallum, és tegyük fel, hogy \(f \in D(I)\). Azt mondjuk, hogy a \(c \in I\) pont az \(f\) függvénynek <b>inflexiós pontja</b>, ha</p>
+        \[\exists\, \delta \gt 0 :\ f \text{ konvex } (c - \delta, c]\text{-n és konkáv } [c, c + \delta)\text{-n,}\]
+        <p>vagy fordítva.</p>
+        <p class="note">Példa (dia): az \(x^3\) és a \(-x^3\) \((x \in \R)\) függvénynek a \(c = 0\) pont inflexiós pontja.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz5-8">
+    <div class="task-head"><span class="no">8.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Mondja ki a konvexitás és az érintő kapcsolatára vonatkozó tételt!</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p>Emlékeztető: \(f \in D\{a\}\) esetén az \(e_{f,a}(x) := f'(a)(x - a) + f(a)\) \((x \in \R)\) egyenest neveztük az \(f\) függvény \(a\)-beli érintőjének.</p>
+        <p><b>Tétel.</b> Tegyük fel, hogy \(I \subset \R\) nyílt intervallum és \(f \in D(I)\). Ekkor</p>
+        \[f \text{ konvex } I\text{-n} \iff \forall\, a \in I : f(x) \ge e_{f,a}(x) \quad (x \in I),\]
+        <p>vagyis \(f\) grafikonja egy tetszőleges pontjában húzott érintője felett halad.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz5-9">
+    <div class="task-head"><span class="no">9.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Mondja ki a konkávitás és az érintő kapcsolatára vonatkozó tételt!</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p>Emlékeztető: \(f \in D\{a\}\) esetén az \(e_{f,a}(x) := f'(a)(x - a) + f(a)\) \((x \in \R)\) egyenest neveztük az \(f\) függvény \(a\)-beli érintőjének.</p>
+        <p><b>Tétel.</b> Tegyük fel, hogy \(I \subset \R\) nyílt intervallum és \(f \in D(I)\). Ekkor</p>
+        \[f \text{ konkáv } I\text{-n} \iff \forall\, a \in I : f(x) \le e_{f,a}(x) \quad (x \in I),\]
+        <p>vagyis \(f\) grafikonja egy tetszőleges pontjában húzott érintője alatt halad.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz5-10">
+    <div class="task-head"><span class="no">10.</span><span class="kind">definíció</span></div>
+    <p class="stmt">Mikor mondjuk, hogy egy függvénynek aszimptotája van a \(+\infty\)-ben?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Definíció.</b> Legyen \(a \in \R\) és \(f : (a, +\infty) \to \R\). Azt mondjuk, hogy \(f\)-nek <b>van aszimptotája</b> \((+\infty)\)-ben, ha</p>
+        \[\exists\, l(x) = Ax + B \ (x \in \R) \text{ elsőfokú függvény, amelyre } \lim_{x \to +\infty}\big(f(x) - l(x)\big) = 0.\]
+        <p>Ekkor az \(l(x)\) \((x \in \R)\) egyenes az \(f\) <b>aszimptotája</b> \((+\infty)\)-ben.</p>
+        <p class="note">A \((-\infty)\)-beli aszimptota definíciója hasonló.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz5-11">
+    <div class="task-head"><span class="no">11.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Hogyan szól a \(+\infty\)-beli aszimptota létezésére vonatkozó feltétel?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Tétel.</b> Az \(f : (a, +\infty) \to \R\) függvénynek akkor és csak akkor van aszimptotája \((+\infty)\)-ben, ha léteznek és végesek az alábbi határértékek:</p>
+        \[\lim_{x \to +\infty}\frac{f(x)}{x} =: A \in \R, \qquad \lim_{x \to +\infty}\big(f(x) - Ax\big) =: B \in \R.\]
+        <p>Ekkor az</p>
+        \[l(x) = Ax + B \quad (x \in \R)\]
+        <p>egyenes az \(f\) függvény aszimptotája \((+\infty)\)-ben.</p>
+        <p class="note">Hasonló állítás érvényes a \((-\infty)\)-beli aszimptoták meghatározására.</p>
+      </div>
+    </details>
+  </article>
+
+  </div>
+</section>
+
+<!-- ================= 6. RÖPZH ================= -->
+<section id="rz6">
+  <div class="section-head">
+    <span class="label">6. gyakorlat · <a href="../An2_rop_kerdesek.pdf" target="_blank" rel="noopener">kérdéssor PDF ↗</a> · <a href="../El%C5%91ad%C3%A1s%20anyagok/02_ea_An_II_A_B.pdf" target="_blank" rel="noopener">2. előadás PDF ↗</a> · <a href="../El%C5%91ad%C3%A1s%20anyagok/04_ea_An_II_A_B.pdf" target="_blank" rel="noopener">4. előadás PDF ↗</a> · <a href="../El%C5%91ad%C3%A1s%20anyagok/05_ea_An_II_A_B.pdf" target="_blank" rel="noopener">5. előadás PDF ↗</a></span>
+    <h2>Magasabb rendű deriváltak, L'Hospital-szabályok, Taylor-sor</h2>
+    <p>A kérdéssorban a „6. gyakorlat” alatti kérdések. Az 1. kérdés anyaga a 2. előadás (Differenciálszámítás 2.), a 2–3. kérdésé a 4. előadás (Differenciálszámítás 4.), a 4–9. kérdésé az 5. előadás (Differenciálszámítás 5., Taylor-polinomok és Taylor-sorok).</p>
+  </div>
+
+  <div class="taskgroup">
+
+  <article class="task" id="rz6-1">
+    <div class="task-head"><span class="no">1.</span><span class="kind">definíció</span></div>
+    <p class="stmt">Mikor mondjuk azt, hogy egy függvény \(n\)-szer \((2 \le n \in \mathbb N)\) differenciálható egy pontban?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Definíció.</b> Tegyük fel, hogy \(f \in \R \to \R\), \(a \in \operatorname{int} D_f\) és egy \(n = 2, 3, \dots\)-re \(\exists\) az \(f^{(n-1)}\) deriváltfüggvény. Azt mondjuk, hogy \(f\) <b>\(n\)-szer deriválható</b> az \(a \in \operatorname{int} D_f\) pontban (jelölése: \(f \in D^n\{a\}\)), ha</p>
+        <ul>
+          <li>\(\exists\, r \gt 0 : f \in D^{n-1}\big(K_r(a)\big)\), és</li>
+          <li>az \(f^{(n-1)}\) függvény deriválható \(a\)-ban, azaz \(f^{(n-1)} \in D\{a\}\).</li>
+        </ul>
+        <p>Legyen ekkor</p>
+        \[f^{(n)}(a) := \big(f^{(n-1)}\big)'(a)\]
+        <p>az \(f\) függvény \(a\)-beli <b>\(n\)-edik deriváltja</b>.</p>
+        <p class="note">A definíció rekurzív (indukciós): feltételezi, hogy az \((n-1)\)-szeri deriválhatóságot és az \(f^{(n-1)}\) deriváltfüggvényt már értelmeztük. Jelölések: \(f^{(0)} := f\), \(f^{(1)} := f'\), \(f^{(2)} := f''\).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz6-2">
+    <div class="task-head"><span class="no">2.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Írja le a \(\frac00\) esetre vonatkozó L'Hospital-szabályt!</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Tétel.</b> Legyen \(-\infty \le a \lt b \lt +\infty\) és \(f, g \in D(a, b)\). Tegyük fel, hogy</p>
+        <ul>
+          <li>(a) \(\exists \lim\limits_{a+0} f = \lim\limits_{a+0} g = 0\),</li>
+          <li>(b) \(g(x) \ne 0\) és \(g'(x) \ne 0\) \(\forall\, x \in (a, b)\),</li>
+          <li>(c) \(\exists \lim\limits_{a+0}\dfrac{f'}{g'} \in \overline{\R}\).</li>
+        </ul>
+        <p>Ekkor</p>
+        \[\exists \lim_{a+0}\frac fg \in \overline{\R} \quad\text{és}\quad \lim_{a+0}\frac fg = \lim_{a+0}\frac{f'}{g'} \in \overline{\R}.\]
+        <p class="note">A szabályt az \(a\) pontbeli jobb oldali határértékre fogalmaztuk meg; hasonló állítások érvényesek (értelemszerű módosításokkal) a bal oldali és a (kétoldali) határértékre, sőt a \((+\infty)\)-ben vett határértékre is.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz6-3">
+    <div class="task-head"><span class="no">3.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Írja le a \(\frac{+\infty}{+\infty}\) esetre vonatkozó L'Hospital-szabályt!</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Tétel.</b> Legyen \(-\infty \le a \lt b \lt +\infty\) és \(f, g \in D(a, b)\). Tegyük fel, hogy</p>
+        <ul>
+          <li>(a) \(\exists \lim\limits_{a+0} f = \lim\limits_{a+0} g = +\infty\),</li>
+          <li>(b) \(g(x) \ne 0\) és \(g'(x) \ne 0\) \(\forall\, x \in (a, b)\),</li>
+          <li>(c) \(\exists \lim\limits_{a+0}\dfrac{f'}{g'} \in \overline{\R}\).</li>
+        </ul>
+        <p>Ekkor</p>
+        \[\exists \lim_{a+0}\frac fg \in \overline{\R} \quad\text{és}\quad \lim_{a+0}\frac fg = \lim_{a+0}\frac{f'}{g'} \in \overline{\R}.\]
+        <p class="note">A \(\frac{+\infty}{-\infty}\), \(\frac{-\infty}{+\infty}\), \(\frac{-\infty}{-\infty}\) kritikus határértékekre, a bal oldali és a (kétoldali) határértékre, sőt a \((+\infty)\)-ben vett határértékre hasonló állítások érvényesek.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz6-4">
+    <div class="task-head"><span class="no">4.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Mi a kapcsolat a hatványsor összegfüggvénye és a hatványsor együtthatói között?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Tétel.</b> Tegyük fel, hogy a \(\sum\limits_{k=0}^{\infty} \alpha_k (x - a)^k\) \((x \in \R)\) hatványsor \(R\) konvergenciasugara pozitív, és jelölje \(f\) az összegfüggvényét. Ekkor minden \(x \in K_R(a)\) pontban \(f \in D^\infty\{x\}\), és bármely \(n \in \mathbb N^+\) esetén</p>
+        \[f^{(n)}(x) = \sum_{k=n}^{+\infty} k(k-1)\cdots(k-n+1)\,\alpha_k (x - a)^{k-n}.\]
+        <p>Ha \(x = a\), akkor</p>
+        \[(*)\qquad \alpha_n = \frac{f^{(n)}(a)}{n!} \quad (n \in \mathbb N).\]
+        <p>A tétel tehát azt is állítja, hogy egy hatványsor együtthatói és az összegfüggvénye között a \((*)\) alatti kapcsolat áll fenn.</p>
+        <p class="note">Másképp (dia): minden konvergens hatványsor az összegfüggvényének a Taylor-sorával egyenlő.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz6-5">
+    <div class="task-head"><span class="no">5.</span><span class="kind">definíció</span></div>
+    <p class="stmt">Hogyan definiálja egy függvény Taylor-sorát?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Definíció.</b> Ha \(f \in D^\infty\{a\}\), akkor a</p>
+        \[T_a f(x) := \sum_{k=0}^{+\infty}\frac{f^{(k)}(a)}{k!}(x - a)^k \quad (x \in \R)\]
+        <p>hatványsort az \(f\) függvény \(a \in \operatorname{int} D_f\) ponthoz tartozó <b>Taylor-sorának</b>, a sor \(n\)-edik részletösszegét, azaz a</p>
+        \[T_{a,n} f(x) = \sum_{k=0}^{n}\frac{f^{(k)}(a)}{k!}(x - a)^k \quad (x \in \R)\]
+        <p>polinomot az \(f\) függvény \(a \in \operatorname{int} D_f\) ponthoz tartozó <b>\(n\)-edik Taylor-polinomjának</b> nevezzük.</p>
+        <p>Az \(f\) függvény \(a = 0\) ponthoz tartozó Taylor-sorát \(f\) <b>Maclaurin-sorának</b> is nevezzük.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz6-6">
+    <div class="task-head"><span class="no">6.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Fogalmazza meg a Taylor-formula Lagrange maradéktaggal néven tanult tételt!</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Tétel</b> (Taylor-formula a Lagrange-féle maradéktaggal). Legyen \(n \in \mathbb N\), és tegyük fel, hogy \(f \in D^{n+1}\big(K(a)\big)\). Ekkor \(\forall\, x \in K(a)\) ponthoz \(\exists\) olyan \(a\) és \(x\) közé eső \(\xi\) szám, hogy</p>
+        \[f(x) - T_{a,n} f(x) = \frac{f^{(n+1)}(\xi)}{(n+1)!}(x - a)^{n+1}.\]
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz6-7">
+    <div class="task-head"><span class="no">7.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Milyen elégséges feltételt ismer a Taylor-sornak a generáló függvényhez való konvergenciájával kapcsolatosan?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Tétel</b> (elégséges feltétel az előállításra). Legyen \(f \in D^\infty\big(K(a)\big)\), és tegyük fel, hogy</p>
+        \[\exists\, M \gt 0 :\ \big|f^{(n)}(x)\big| \le M \quad \big(\forall\, x \in K(a),\ \forall\, n \in \mathbb N\big).\]
+        <p>Ekkor \(f\)-nek az \(a\) ponthoz tartozó Taylor-sora a \(K(a)\) halmazon előállítja az \(f\) függvényt, vagyis fennáll az</p>
+        \[f(x) = \lim_{n \to +\infty}\sum_{k=0}^{n}\frac{f^{(k)}(a)}{k!}(x - a)^k = \sum_{k=0}^{+\infty}\frac{f^{(k)}(a)}{k!}(x - a)^k \quad \big(x \in K(a)\big)\]
+        <p>egyenlőség.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz6-8">
+    <div class="task-head"><span class="no">8.</span><span class="kind">képlet</span></div>
+    <p class="stmt">Írja fel az \(f(x) = \frac{1}{1+x}\) \((x \in \R,\ |x| \lt 1)\) függvény Taylor-sorát!</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p>Az \(f\) függvény \(0\) ponthoz tartozó Taylor-sora:</p>
+        \[T_0 f(x) = \sum_{n=0}^{+\infty}\frac{f^{(n)}(0)}{n!}x^n = \sum_{n=0}^{+\infty}(-1)^n x^n,\]
+        <p>és ez előállítja \(f\)-et:</p>
+        \[\frac{1}{1+x} = \sum_{n=0}^{+\infty}(-1)^n x^n = 1 - x + x^2 - x^3 + \cdots \quad (|x| \lt 1).\]
+        <p class="note">A dia indoklása: \(f^{(n)}(x) = (-1)^n n!\,(1+x)^{-n-1}\), így \(f^{(n)}(0) = (-1)^n n!\). A sor \((-x)\) hányadosú geometriai sor, konvergens \(\iff |x| \lt 1\), és ekkor az összege \(\frac{1}{1-(-x)} = \frac{1}{1+x}\).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz6-9">
+    <div class="task-head"><span class="no">9.</span><span class="kind">képlet</span></div>
+    <p class="stmt">Írja fel az \(f(x) = \frac{1}{1+x^2}\) \((x \in \R,\ |x| \lt 1)\) függvény Taylor-sorát!</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p>Az \(f\) függvény \(0\) ponthoz tartozó Taylor-sora előállítja \(f\)-et:</p>
+        \[\frac{1}{1+x^2} = \sum_{n=0}^{+\infty}(-1)^n x^{2n} = 1 - x^2 + x^4 - x^6 + \cdots \quad (|x| \lt 1).\]
+        <p class="note">A dia indoklása: az \(\frac{1}{1+x}\) sorfejtésében \(x\) helyett \(x^2\)-et írva kapjuk az állítást. Mivel minden konvergens hatványsor az összegfüggvényének Taylor-sora, ez valóban \(f\) Taylor-sora.</p>
+      </div>
+    </details>
+  </article>
+
+  </div>
+</section>
 
 <!-- ================= 7. RÖPZH ================= -->
 <section id="rz7">
@@ -575,7 +1400,382 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
   </div>
 </section>
 
-<footer>Forrás: <a href="../An2_rop_kerdesek.pdf" target="_blank" rel="noopener">RöpZH kérdések (PDF)</a>, <a href="../El%C5%91ad%C3%A1s%20anyagok/06_ea_An_II_A_B.pdf" target="_blank" rel="noopener">6. előadás: A határozatlan integrál (PDF)</a> és <a href="../El%C5%91ad%C3%A1s%20anyagok/07_ea_An_II_A_B.pdf" target="_blank" rel="noopener">7. előadás: A határozott integrál 1. (PDF)</a>. A válaszok az előadásdiák megfogalmazását követik.</footer>
+<!-- ================= 10–12. RÖPZH ================= -->
+<section id="rz10">
+  <div class="section-head">
+    <span class="label">10. gyakorlat · <a href="../An2_rop_kerdesek.pdf" target="_blank" rel="noopener">kérdéssor PDF ↗</a> · <a href="../El%C5%91ad%C3%A1s%20anyagok/07_ea_An_II_A_B.pdf" target="_blank" rel="noopener">7. előadás PDF ↗</a> · <a href="../El%C5%91ad%C3%A1s%20anyagok/08_ea_An_II_A_B.pdf" target="_blank" rel="noopener">8. előadás PDF ↗</a></span>
+    <h2>Felosztássorozatok, műveletek, additivitás, középértéktétel, CBS</h2>
+    <p>A kérdéssorban a „10. gyakorlat” alatti kérdések. Az 1. kérdés anyaga a 7. előadás (A határozott integrál 1.), a 2–8. kérdésé a 8. előadás (A határozott integrál 2.).</p>
+  </div>
+
+  <div class="taskgroup">
+
+  <article class="task" id="rz10-1">
+    <div class="task-head"><span class="no">1.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Felosztássorozatok segítségével adja meg a Riemann-integrálhatóság egy ekvivalens átfogalmazását!</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Tétel.</b> Legyen \(f \in K[a, b]\). Az \(f \in R[a, b]\) és \(\displaystyle\int_a^b f = I\) \(\iff\)</p>
+        \[\exists\, (\tau_n) \text{ felosztássorozat}:\quad \lim_{n \to +\infty} s(f, \tau_n) = \lim_{n \to +\infty} S(f, \tau_n) = I.\]
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz10-2">
+    <div class="task-head"><span class="no">2.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Hogyan szól a Riemann-integrálható függvények összegével kapcsolatban tanult tétel?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Tétel.</b> Tegyük fel, hogy \(f, g \in R[a, b]\), és legyen \(\lambda \in \R\). Ekkor</p>
+        <p><b>1°</b> \(\lambda \cdot f \in R[a, b]\) és \(\displaystyle\int_a^b (\lambda \cdot f) = \lambda \cdot \int_a^b f\);</p>
+        <p><b>2°</b> \(f + g \in R[a, b]\) és \(\displaystyle\int_a^b (f + g) = \int_a^b f + \int_a^b g\).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz10-3">
+    <div class="task-head"><span class="no">3.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Hogyan szól a Riemann-integrálható függvények szorzatával kapcsolatban tanult tétel?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Tétel.</b> Tegyük fel, hogy \(f, g \in R[a, b]\). Ekkor</p>
+        <p><b>3°</b> \(f \cdot g \in R[a, b]\) (csak ennyi!).</p>
+        <p class="note">Az integrálra nincs szorzatszabály: pl. \(\int_0^1 x \cdot x\,dx = \frac13 \ne \frac14 = \int_0^1 x\,dx \cdot \int_0^1 x\,dx\).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz10-4">
+    <div class="task-head"><span class="no">4.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Hogyan szól a Riemann-integrálható függvények hányadosával kapcsolatban tanult tétel?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Tétel.</b> Tegyük fel, hogy \(f, g \in R[a, b]\). Ekkor</p>
+        <p><b>4°</b> ha \(|g(x)| \ge m \gt 0\) \((\forall\, x \in [a, b])\), akkor \(\dfrac{f}{g} \in R[a, b]\) (csak ennyi!).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz10-5">
+    <div class="task-head"><span class="no">5.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Milyen tételt tanult Riemann-integrálható függvény értékeinek megváltoztatását illetően?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Tétel.</b> Tegyük fel, hogy \(f, g \in K[a, b]\). Ha \(f \in R[a, b]\) és az</p>
+        \[A := \big\{x \in [a, b] \mid f(x) \ne g(x)\big\}\]
+        <p>halmaz véges, akkor \(g \in R[a, b]\) és</p>
+        \[\int_a^b g = \int_a^b f.\]
+        <p class="note">Szóval: a Riemann-integrál érzéketlen a függvény véges halmazon való viselkedésére; ha egy integrálható függvényt véges sok pontban (tetszőlegesen) megváltoztatunk, az új függvény is integrálható, és az integrálja ugyanaz marad.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz10-6">
+    <div class="task-head"><span class="no">6.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Mit ért a Riemann-integrál intervallum szerinti additivitásán?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Tétel.</b> Tegyük fel, hogy \(f : [a, b] \to \R\) korlátos, és legyen \(c \in (a, b)\). Ekkor</p>
+        <p><b>1°</b> \(f \in R[a, b] \iff f \in R[a, c]\) és \(f \in R[c, b]\),</p>
+        <p><b>2°</b> ha \(f \in R[a, c]\) és \(f \in R[c, b]\) (vagy \(f \in R[a, b]\)), akkor</p>
+        \[\int_a^b f = \int_a^c f + \int_c^b f.\]
+        <p><b>Megjegyzés.</b> \(f \in R[a, c]\) azt jelenti, hogy \(f_1 := f_{|[a, c]} \in R[a, c]\); \(f \in R[c, b]\) azt jelenti, hogy \(f_2 := f_{|[c, b]} \in R[c, b]\).</p>
+        <p class="note">A \(\int_a^a f := 0\) és \(\int_a^b f := -\int_b^a f\) \((a \gt b)\) megállapodással: ha \(f \in R[A, B]\), akkor minden \(a, b, c \in [A, B]\) esetén \(\int_a^b f = \int_a^c f + \int_c^b f\).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz10-7">
+    <div class="task-head"><span class="no">7.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Hogyan szól az integrálszámítás első középértéktétele?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Tétel (az integrálszámítás első középértéktétele).</b> Tegyük fel, hogy \(f, g \in R[a, b]\) és \(g \ge 0\). Ekkor:</p>
+        <p><b>1°</b> az \(m := \inf_{[a, b]} f\), \(M := \sup_{[a, b]} f\) jelölésekkel</p>
+        \[\int_a^b m \cdot g \le \int_a^b f \cdot g \le \int_a^b M \cdot g,\]
+        <p><b>2°</b> ha még \(f \in C[a, b]\) is teljesül, akkor \(\exists\, \xi \in [a, b]\):</p>
+        \[\int_a^b f \cdot g = f(\xi) \cdot \int_a^b g.\]
+        <p class="note">Ha \(g \equiv 1\): \(m = \inf_{[a, b]} f \le \frac{1}{b - a}\int_a^b f \le \sup_{[a, b]} f = M\); a középső mennyiség az \(f\) integrálközepe.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz10-8">
+    <div class="task-head"><span class="no">8.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Fogalmazza meg a Cauchy–Bunyakovszkij–Schwarz-féle egyenlőtlenséget!</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Tétel (Cauchy–Bunyakovszkij–Schwarz-egyenlőtlenség).</b> Tetszőleges \(f, g \in R[a, b]\) függvények esetén</p>
+        \[\left|\int_a^b f(x) \cdot g(x)\,dx\right| \le \sqrt{\int_a^b f^2(x)\,dx} \cdot \sqrt{\int_a^b g^2(x)\,dx}.\]
+        <p class="note">Diszkrét változata (Cauchy-egyenlőtlenség): \(n \in \mathbb N^+\) és \(a_1, \dots, a_n, b_1, \dots, b_n \in \R\) esetén \(\big|\sum_{k=1}^n a_k b_k\big| \le \sqrt{\sum_{k=1}^n a_k^2} \cdot \sqrt{\sum_{k=1}^n b_k^2}\).</p>
+      </div>
+    </details>
+  </article>
+
+  </div>
+</section>
+
+<section id="rz11">
+  <div class="section-head">
+    <span class="label">11. gyakorlat · <a href="../An2_rop_kerdesek.pdf" target="_blank" rel="noopener">kérdéssor PDF ↗</a> · <a href="../El%C5%91ad%C3%A1s%20anyagok/09_ea_An_II_A_B.pdf" target="_blank" rel="noopener">9. előadás PDF ↗</a> · <a href="../El%C5%91ad%C3%A1s%20anyagok/10_ea_An_II_A_B.pdf" target="_blank" rel="noopener">10. előadás PDF ↗</a></span>
+    <h2>Monoton és folytonos függvények integrálhatósága, egyenletes folytonosság, Newton–Leibniz</h2>
+    <p>A kérdéssorban a „11. gyakorlat” alatti kérdések. Az 1–6. kérdés anyaga a 9. előadás (A határozott integrál 3.), a 7–8. kérdésé a 10. előadás (A határozott integrál 4.).</p>
+  </div>
+
+  <div class="taskgroup">
+
+  <article class="task" id="rz11-1">
+    <div class="task-head"><span class="no">1.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Mi a kapcsolat a monotonitás és a Riemann-integrálhatóság között?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p>A monotonitás az integrálhatóság egy elégséges feltétele:</p>
+        <p><b>Tétel.</b> Ha az \(f : [a, b] \to \R\) függvény monoton az \([a, b]\) intervallumon, akkor integrálható \([a, b]\)-n.</p>
+        <p class="note">A feltétel nem szükséges: pl. a \(\sin\) függvény folytonos, tehát integrálható \([0, 2\pi]\)-n, de ott nem monoton.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz11-2">
+    <div class="task-head"><span class="no">2.</span><span class="kind">definíció</span></div>
+    <p class="stmt">Definiálja a szakaszonként monoton függvény fogalmát!</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Definíció.</b> Legyen \(a, b \in \R\), \(a \lt b\). Azt mondjuk, hogy az \(f : [a, b] \to \R\) függvény <b>szakaszonként monoton</b>, ha</p>
+        \[\exists\, m \in \mathbb N^+ \text{ és } \tau = \{a = x_0 \lt x_1 \lt \dots \lt x_m = b\} \in \mathcal F[a, b]\]
+        <p>úgy, hogy minden \(i = 1, \dots, m\) index esetén</p>
+        <p>(i) az \(f_{|(x_{i-1}, x_i)}\) függvény monoton,</p>
+        <p>(ii) \(f\) korlátos \([a, b]\)-n.</p>
+        <p><b>Megjegyzés.</b> A (ii) feltétel garantálja az osztópontokban az egyoldali véges határértékek létezését.</p>
+        <p class="note">Tétel: ha \(f\) szakaszonként monoton (a fenti \(\tau\)-val), akkor \(f \in R[a, b]\) és \(\int_a^b f = \sum_{i=1}^m \int_{x_{i-1}}^{x_i} f\).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz11-3">
+    <div class="task-head"><span class="no">3.</span><span class="kind">definíció</span></div>
+    <p class="stmt">Definiálja az egyenletes folytonosság fogalmát!</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Definíció.</b> Az \(f \in \R \to \R\) függvény <b>egyenletesen folytonos</b> a \(H \subset \mathcal D_f\) halmazon, ha</p>
+        \[\forall\, \varepsilon \gt 0\text{-hoz } \exists\, \delta \gt 0, \text{ hogy } \forall\, x, y \in H,\ |x - y| \lt \delta :\ |f(x) - f(y)| \lt \varepsilon.\]
+        <p>Ha csak azt mondjuk, hogy \(f\) egyenletesen folytonos, akkor ezen azt értjük, hogy \(f\) egyenletesen folytonos a \(\mathcal D_f\) halmazon.</p>
+        <p class="note">A folytonossággal szemben itt \(\delta\) csak \(\varepsilon\)-tól függ, a ponttól nem. Ha \(f\) egyenletesen folytonos \(H\)-n, akkor folytonos is \(H\)-n; a megfordítás nem igaz.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz11-4">
+    <div class="task-head"><span class="no">4.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Mondja ki az egyenletes folytonosságra igazolt Heine-tételt!</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Heine-tétel.</b> Ha \(-\infty \lt a \lt b \lt +\infty\) és \(f \in C[a, b]\), akkor \(f\) egyenletesen folytonos az \([a, b]\) intervallumon.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz11-5">
+    <div class="task-head"><span class="no">5.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Mi a kapcsolat a folytonosság és a Riemann-integrálhatóság között?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p>A folytonosság az integrálhatóság elégséges feltétele:</p>
+        <p><b>Tétel.</b> Ha az \(f\) függvény folytonos az \([a, b]\) intervallumon, akkor integrálható \([a, b]\)-n (jelekkel \(C[a, b] \subset R[a, b]\)).</p>
+        <p>Az állítás megfordítása nem igaz. Legyen például</p>
+        \[f(x) := \begin{cases} 1, & \text{ha } 0 \lt x \le 1,\\ 0, & \text{ha } x = 0.\end{cases}\]
+        <p>Ekkor \(f \in R[0, 1]\), de \(f \notin C[0, 1]\).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz11-6">
+    <div class="task-head"><span class="no">6.</span><span class="kind">definíció</span></div>
+    <p class="stmt">Definiálja a szakaszonként folytonos függvény fogalmát!</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Definíció.</b> Legyen \(a, b \in \R\), \(a \lt b\). Azt mondjuk, hogy az \(f : [a, b] \to \R\) függvény <b>szakaszonként folytonos</b>, ha</p>
+        \[\exists\, m \in \mathbb N^+ \text{ és } \tau = \{a = x_0 \lt x_1 \lt \dots \lt x_m = b\} \in \mathcal F[a, b]\]
+        <p>úgy, hogy minden \(i = 1, \dots, m\) index esetén</p>
+        <ul>
+          <li>az \(f_{|(x_{i-1}, x_i)}\) függvény folytonos,</li>
+          <li>léteznek és végesek a \(\displaystyle\lim_{x_{i-1} + 0} f\), \(\displaystyle\lim_{x_i - 0} f\) határértékek.</li>
+        </ul>
+        <p class="note">Tétel: ha \(f\) szakaszonként folytonos (a fenti \(\tau\)-val), akkor \(f \in R[a, b]\) és \(\int_a^b f = \sum_{i=1}^m \int_{x_{i-1}}^{x_i} f\).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz11-7">
+    <div class="task-head"><span class="no">7.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Hogyan szól a Newton–Leibniz-tétel?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Newton–Leibniz-tétel.</b> Ha \(f \in R[a, b]\) és az \(f\) függvénynek van primitív függvénye az \([a, b]\) intervallumon, akkor</p>
+        \[\int_a^b f(x)\,dx = F(b) - F(a) =: \big[F(x)\big]_a^b,\]
+        <p>ahol \(F\) az \(f\) függvény egy tetszőleges primitív függvénye.</p>
+        <p class="note">Itt \(F : [a, b] \to \R\) az \(f\) primitív függvénye \([a, b]\)-n, ha \(F \in C[a, b]\), \(F \in D(a, b)\) és \(F'(x) = f(x)\) \((x \in (a, b))\). A két feltétel egymástól független, egyik sem hagyható el.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz11-8">
+    <div class="task-head"><span class="no">8.</span><span class="kind">definíció</span></div>
+    <p class="stmt">Definiálja az integrálfüggvény fogalmát!</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Definíció.</b> Tegyük fel, hogy \(f \in R[a, b]\) és \(x_0 \in [a, b]\). Ekkor az</p>
+        \[F : [a, b] \ni x \mapsto \int_{x_0}^x f(t)\,dt\]
+        <p>függvényt az \(f\) függvény \(x_0\)-ban eltűnő <b>integrálfüggvényének</b> nevezzük.</p>
+        <p><b>Megjegyzés.</b> Az „\(x_0\)-ban eltűnő” arra utal, hogy \(F(x_0) = 0\).</p>
+      </div>
+    </details>
+  </article>
+
+  </div>
+</section>
+
+<section id="rz12">
+  <div class="section-head">
+    <span class="label">12. gyakorlat · <a href="../An2_rop_kerdesek.pdf" target="_blank" rel="noopener">kérdéssor PDF ↗</a> · <a href="../El%C5%91ad%C3%A1s%20anyagok/10_ea_An_II_A_B.pdf" target="_blank" rel="noopener">10. előadás PDF ↗</a> · <a href="../El%C5%91ad%C3%A1s%20anyagok/11_ea_An_II_A_B.pdf" target="_blank" rel="noopener">11. előadás PDF ↗</a></span>
+    <h2>Integrálfüggvény, parciális és helyettesítéses integrálás, ívhossz, forgástest</h2>
+    <p>A kérdéssorban a „12. gyakorlat” alatti kérdések. Az 1–6. kérdés anyaga a 10. előadás (A határozott integrál 4.), a 7–8. kérdésé a 11. előadás (Az integrálszámítás néhány alkalmazása).</p>
+  </div>
+
+  <div class="taskgroup">
+
+  <article class="task" id="rz12-1">
+    <div class="task-head"><span class="no">1.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Hogyan szól a Newton–Leibniz-tétel?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Newton–Leibniz-tétel.</b> Ha \(f \in R[a, b]\) és az \(f\) függvénynek van primitív függvénye az \([a, b]\) intervallumon, akkor</p>
+        \[\int_a^b f(x)\,dx = F(b) - F(a) =: \big[F(x)\big]_a^b,\]
+        <p>ahol \(F\) az \(f\) függvény egy tetszőleges primitív függvénye.</p>
+        <p class="note">Itt \(F : [a, b] \to \R\) az \(f\) primitív függvénye \([a, b]\)-n, ha \(F \in C[a, b]\), \(F \in D(a, b)\) és \(F'(x) = f(x)\) \((x \in (a, b))\). A két feltétel egymástól független, egyik sem hagyható el.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz12-2">
+    <div class="task-head"><span class="no">2.</span><span class="kind">definíció</span></div>
+    <p class="stmt">Definiálja az integrálfüggvény fogalmát!</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Definíció.</b> Tegyük fel, hogy \(f \in R[a, b]\) és \(x_0 \in [a, b]\). Ekkor az</p>
+        \[F : [a, b] \ni x \mapsto \int_{x_0}^x f(t)\,dt\]
+        <p>függvényt az \(f\) függvény \(x_0\)-ban eltűnő <b>integrálfüggvényének</b> nevezzük.</p>
+        <p><b>Megjegyzés.</b> Az „\(x_0\)-ban eltűnő” arra utal, hogy \(F(x_0) = 0\).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz12-3">
+    <div class="task-head"><span class="no">3.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Fogalmazza meg az integrálfüggvény folytonosságára vonatkozó állítást!</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Tétel.</b> Tegyük fel, hogy \(f \in R[a, b]\) és \(x_0 \in [a, b]\). Ekkor az</p>
+        \[F(x) = \int_{x_0}^x f(t)\,dt \quad (x \in [a, b])\]
+        <p>integrálfüggvényre:</p>
+        <p><b>1°</b> Az \(F\) függvény folytonos az \([a, b]\) intervallumon.</p>
+        <p class="note">A bizonyításból: \(M := \sup_{[a, b]} |f|\) mellett \(|F(y) - F(x)| \le M \cdot |y - x|\) \((x, y \in [a, b])\).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz12-4">
+    <div class="task-head"><span class="no">4.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Mondja ki integrálfüggvény deriválhatóságára vonatkozó tételt!</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Tétel.</b> Tegyük fel, hogy \(f \in R[a, b]\) és \(x_0 \in [a, b]\). Ekkor az</p>
+        \[F(x) = \int_{x_0}^x f(t)\,dt \quad (x \in [a, b])\]
+        <p>integrálfüggvényre:</p>
+        <p><b>2°</b> Ha egy \(d \in [a, b]\) pontban \(f\) folytonos, akkor ott az \(F\) integrálfüggvény deriválható, és \(F'(d) = f(d)\).</p>
+        <p><b>3°</b> Ha \(f \in C[a, b]\), akkor \(F \in D[a, b]\) és \(F'(x) = f(x)\) minden \(x \in [a, b]\) pontban. Következésképpen, ha \(f\) folytonos \([a, b]\)-n, akkor itt van primitív függvénye.</p>
+        <p><b>Megjegyzés.</b> Ha \(d = a\) vagy \(d = b\), akkor a jobb-, illetve a bal oldali deriváltról van szó.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz12-5">
+    <div class="task-head"><span class="no">5.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Hogyan szól a parciális integrálásra vonatkozó tétel határozott integrálra?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Tétel.</b> Tegyük fel, hogy \(f, g : [a, b] \to \R\), \(f, g \in D[a, b]\) és \(f', g' \in R[a, b]\). Ekkor</p>
+        \[\int_a^b f g' = f(b)g(b) - f(a)g(a) - \int_a^b f' g.\]
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz12-6">
+    <div class="task-head"><span class="no">6.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Mi a helyettesítéses integrálás szabálya határozott integrálra?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Tétel.</b> Tegyük fel, hogy \(f \in C[a, b]\) és a \(g : [\alpha, \beta] \to [a, b]\) függvény folytonosan deriválható. Ekkor</p>
+        \[\int_{g(\alpha)}^{g(\beta)} f = \int_\alpha^\beta f \circ g \cdot g'.\]
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz12-7">
+    <div class="task-head"><span class="no">7.</span><span class="kind">tétel</span></div>
+    <p class="stmt">Milyen tételt ismer függvénygrafikon ívhosszának kiszámítására határozott integrál segítségével?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Tétel.</b> Legyen \(a, b \in \R\), \(a \lt b\), és tegyük fel, hogy az \(f : [a, b] \to \R\) függvény folytonosan deriválható. Ekkor az \(f\) függvény grafikonjának ívhossza</p>
+        \[\ell(\Gamma_f) = \int_a^b \sqrt{1 + \big(f'(x)\big)^2}\,dx \lt +\infty.\]
+        <p class="note">Itt \(\Gamma_f := \{(x, f(x)) \mid x \in [a, b]\}\) és \(\ell(\Gamma_f) := \sup\{\ell_f(\tau) \mid \tau \in \mathcal F[a, b]\}\), ahol \(\ell_f(\tau) = \sum_{i=1}^n \sqrt{(x_i - x_{i-1})^2 + \big(f(x_i) - f(x_{i-1})\big)^2}\) a \(\tau\)-hoz tartozó beírt töröttvonal hossza.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="rz12-8">
+    <div class="task-head"><span class="no">8.</span><span class="kind">definíció</span></div>
+    <p class="stmt">Hogyan értelmezi forgástest térfogatát határozott integrál segítségével?</p>
+    <details>
+      <summary>Válasz</summary>
+      <div class="sol">
+        <p><b>Definíció.</b> Legyen \(0 \le f \in R[a, b]\). Ekkor \(f\) grafikonjának az \(x\) tengely körüli megforgatásával adódó</p>
+        \[H_f := \big\{(x, y, z) \in \R^3 \mid a \le x \le b,\ y^2 + z^2 \le f^2(x)\ (y, z \in \R)\big\}\]
+        <p>forgástestnek van térfogata, és az egyenlő a</p>
+        \[V(H_f) = \pi \int_a^b f^2(x)\,dx\]
+        <p>integrállal.</p>
+        <p class="note">Motiváció: a beírt és körülírt hengerek térfogatösszege \(s(\pi f^2, \tau)\), ill. \(S(\pi f^2, \tau)\), és \(\pi\int_a^b f^2\) az egyetlen szám, amely minden \(\tau \in \mathcal F[a, b]\) esetén ezek közé esik.</p>
+      </div>
+    </details>
+  </article>
+
+  </div>
+</section>
+
+<footer>Forrás: <a href="../An2_rop_kerdesek.pdf" target="_blank" rel="noopener">RöpZH kérdések (PDF)</a> és az 1–11. előadás diái (a szakaszok fejlécében blokkonként linkelve). A válaszok az előadásdiák megfogalmazását követik; a saját kiegészítések szürke megjegyzésként szerepelnek.</footer>
 </div>
 
 <!-- Fejezetsáv: az éppen olvasott szakasz gombja kiemelve -->

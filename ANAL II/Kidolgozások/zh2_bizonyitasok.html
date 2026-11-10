@@ -1,0 +1,695 @@
+<!doctype html>
+<html lang="hu" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Analízis II · 2. ZH bizonyítások</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['\\(', '\\)']],
+      displayMath: [['\\[', '\\]']],
+      macros: {
+        arcsin: '\\operatorname{arc\\,sin}', arccos: '\\operatorname{arc\\,cos}',
+        arctg: '\\operatorname{arc\\,tg}', arcctg: '\\operatorname{arc\\,ctg}',
+        tg: '\\operatorname{tg}', ctg: '\\operatorname{ctg}', R: '\\mathbb{R}'
+      }
+    },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js" async></script>
+<style>
+/* Layout: same exam-paper look as the DIMAT prep, in the Analysis orange; every task = statement + folded solution + folded walkthrough */
+:root {
+  --paper: #f5f7fa;
+  --grid: rgba(180, 80, 11, 0.06);
+  --card: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6574;
+  --rule: #d7dde6;
+  --accent: #b4500b;
+  --accent-soft: #fcefe4;
+  --mark: #b8352a;
+  --mark-soft: #fbe9e6;
+  --ok: #2c7a4b;
+  --ok-soft: #e3f3e9;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-label: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f141b; --grid: rgba(242, 162, 94, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+    --rule: #2a3442; --accent: #f2a25e; --accent-soft: #33241a; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+    --ok: #74d39c; --ok-soft: #173225; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f141b; --grid: rgba(242, 162, 94, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+  --rule: #2a3442; --accent: #f2a25e; --accent-soft: #33241a; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+  --ok: #74d39c; --ok-soft: #173225; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background-color: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 1.06rem;
+  line-height: 1.6;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 80px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2rem, 6vw, 3.1rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.65rem; font-weight: 700; letter-spacing: -0.01em; }
+h3 { font-size: 1.1rem; font-weight: 600; }
+p { margin: 0; }
+a { color: var(--accent); }
+.label { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding: 2px 0; margin: 6px 0 !important; min-width: 0; max-width: 100%; }
+/* grid children must be allowed to shrink, otherwise wide formulas push the page sideways */
+.task, .sol, .step, .rule-card, .sheet > * { grid-template-columns: minmax(0, 1fr); min-width: 0; }
+.rule-card li, .rule-card p, .sol p, .sol li, .step p, .stmt, .tip, .warn, .mistake p, td { overflow-x: auto; overflow-y: hidden; }
+
+/* back to subject page */
+.back { justify-self: start; display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px 9px 12px; border: 1.5px solid var(--accent); border-radius: 8px; background: var(--accent-soft); color: var(--ink); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 1.02rem; line-height: 1; white-space: nowrap; transition: background .15s, color .15s; }
+.back .arr { color: var(--accent); font-size: 1.25rem; transition: transform .15s, color .15s; }
+.back:hover, .back:focus-visible { background: var(--accent); color: var(--paper); outline: none; }
+.back:hover .arr, .back:focus-visible .arr { color: var(--paper); transform: translateX(-3px); }
+
+/* header */
+header.hero { display: grid; gap: 14px; padding-block: 0 26px; border-bottom: 2px solid var(--accent); }
+.hero .sub { color: var(--muted); max-width: 62ch; }
+.facts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.fact { display: flex; flex-direction: column; gap: 2px; padding: 8px 14px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; min-width: 120px; }
+.fact b { font-family: var(--f-display); font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+
+nav.bar { position: sticky; top: 0; z-index: 5; background: var(--paper); border-bottom: 1px solid var(--rule); margin-inline: -16px; padding-inline: 16px; }
+nav.bar ul { list-style: none; margin: 0; padding: 10px 0; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin; }
+nav.bar a { display: block; white-space: nowrap; text-decoration: none; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.04em; color: var(--ink); padding: 6px 10px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); }
+nav.bar a:hover, nav.bar a:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+nav.bar a.nav-back { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+
+section { padding-top: 44px; display: grid; gap: 18px; scroll-margin-top: 56px; }
+.section-head { display: grid; gap: 6px; }
+.section-head p { color: var(--muted); max-width: 64ch; }
+
+/* reminder cards */
+.sheet { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; }
+.rule-card { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 14px 16px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.rule-card h3 { font-size: 1rem; }
+.rule-card p, .rule-card li { font-size: 0.95rem; }
+.rule-card ul, .rule-card ol { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.rule-card.wide { grid-column: 1 / -1; }
+
+/* tables (sign charts, value tables) */
+.tbl { overflow-x: auto; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--rule); vertical-align: middle; }
+th { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+tr:last-child td, tr:last-child th { border-bottom: 0; }
+table.sgn { width: auto; min-width: 100%; }
+table.sgn th, table.sgn td { text-align: center; white-space: nowrap; border-left: 1px solid var(--rule); }
+table.sgn th:first-child { border-left: 0; text-transform: none; letter-spacing: 0; font-family: var(--f-body); font-size: 1rem; color: var(--ink); background: var(--accent-soft); }
+table.sgn td.pt { background: color-mix(in srgb, var(--accent-soft) 55%, transparent); }
+.p { color: var(--ok); font-weight: 600; }
+.n { color: var(--mark); font-weight: 600; }
+.note { font-size: 0.82rem; color: var(--muted); }
+.tag { font-family: var(--f-label); font-size: 0.72rem; color: var(--accent); }
+
+/* exercises */
+.task { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 18px; display: grid; gap: 10px; min-width: 0; scroll-margin-top: 60px; }
+.task-head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.task-head .no { font-family: var(--f-display); font-weight: 700; font-size: 1.05rem; }
+.task-head .src { font-family: var(--f-label); font-size: 0.72rem; color: var(--muted); }
+.task-head .kind { margin-left: auto; font-family: var(--f-label); font-size: 0.75rem; color: var(--accent); }
+.stmt { max-width: 70ch; }
+details { border-top: 1px dashed var(--rule); padding-top: 8px; min-width: 0; }
+summary { cursor: pointer; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); list-style: none; display: inline-flex; gap: 8px; align-items: center; padding: 4px 0; }
+summary::-webkit-details-marker { display: none; }
+summary::before { content: "+"; display: inline-grid; place-items: center; width: 18px; height: 18px; border: 1px solid currentColor; border-radius: 3px; font-size: 0.8rem; }
+details[open] > summary::before { content: "−"; }
+summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sol { display: grid; gap: 10px; padding-top: 6px; max-width: 74ch; min-width: 0; }
+.sol ol, .sol ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.step { display: grid; gap: 8px; min-width: 0; }
+.step > b:first-child { font-family: var(--f-display); font-weight: 600; }
+.ans { display: inline-block; background: var(--ok-soft); color: var(--ok); font-weight: 600; padding: 2px 9px; border-radius: 4px; }
+.warn { background: var(--mark-soft); border-left: 3px solid var(--mark); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 0.95rem; }
+.tip { background: var(--accent-soft); border-left: 3px solid var(--accent); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 0.95rem; }
+.taskgroup { display: grid; gap: 12px; }
+
+/* graphs */
+figure.graph { margin: 0; background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 8px 8px 6px; display: grid; gap: 6px; }
+figure.graph svg { width: 100%; height: auto; display: block; }
+figure.graph figcaption { display: flex; flex-wrap: wrap; gap: 4px 16px; font-family: var(--f-label); font-size: 0.72rem; color: var(--muted); padding: 0 4px; }
+.lg::before { content: ""; display: inline-block; width: 16px; height: 0; vertical-align: middle; margin-right: 6px; border-top: 2.5px solid var(--accent); }
+.lg.asy::before { border-top: 1.5px dashed var(--muted); }
+.lg.ext::before { width: 9px; height: 9px; border: 0; border-radius: 50%; background: var(--ok); }
+.lg.inf::before { width: 9px; height: 9px; border: 2px solid var(--mark); border-radius: 50%; box-sizing: border-box; }
+svg .gl { stroke: var(--rule); stroke-width: 1; opacity: .55; }
+svg .ax { stroke: var(--muted); stroke-width: 1.3; }
+svg .tk { fill: var(--muted); font-family: var(--f-label); font-size: 11px; }
+svg .cv { fill: none; stroke: var(--accent); stroke-width: 2.6; stroke-linejoin: round; stroke-linecap: round; }
+svg .as { stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 6 5; fill: none; }
+svg .pe { fill: var(--ok); stroke: var(--paper); stroke-width: 1.5; }
+svg .pi { fill: var(--paper); stroke: var(--mark); stroke-width: 2.2; }
+svg .pz { fill: var(--ink); }
+svg .po { fill: var(--paper); stroke: var(--accent); stroke-width: 2; }
+svg .pl { fill: var(--ink); font-family: var(--f-label); font-size: 12px; paint-order: stroke; stroke: var(--paper); stroke-width: 4px; stroke-linejoin: round; }
+
+/* mistakes */
+.mistakes { display: grid; gap: 10px; }
+.mistake { display: grid; grid-template-columns: auto 1fr; gap: 12px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 12px 14px; }
+.mistake .x { font-family: var(--f-display); font-weight: 700; color: var(--mark); font-size: 1.2rem; line-height: 1.3; }
+
+footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.88rem; }
+
+@media (max-width: 520px) {
+  body { font-size: 1rem; }
+  .task { padding: 14px; }
+  th, td { padding: 6px 8px; }
+}
+
+/* proofs: side notes readable, not tiny */
+.sol .note { font-size: 0.92rem; border-left: 2px solid var(--rule); padding-left: 10px; }
+/* wide inline formulas scroll inside their paragraph instead of widening the page on phones */
+.sol p, .sol li, .sol .note, .sol .tip, .sol .warn { overflow-x: auto; overflow-y: hidden; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <a class="back" href="../../index.html#/anal2"><span class="arr" aria-hidden="true">←</span>Vissza: Analízis II.</a>
+  <span class="label">Analízis II. · 2. ZH · bizonyítással kért tételek</span>
+  <h1>A 2. ZH bizonyításai</h1>
+  <p class="sub">A megajánlott vizsgajegyhez a 2. ZH-n bizonyítással kért 12 tétel, az előadásdiák (7–10. előadás) alapján. Minden kérdésnél előbb próbáld fejből kimondani a tételt, utána nyisd le, majd ugyanígy a bizonyítást. A diákon kihagyott lépéseket kiegészítettem, ezek jelölve vannak.</p>
+  <div class="facts">
+    <div class="fact"><span class="label">Tétel</span><b>12</b></div>
+    <div class="fact"><span class="label">Forrás</span><b>7–10. előadás</b></div>
+  </div>
+</header>
+
+<nav class="bar" aria-label="Fejezetek">
+  <ul>
+    <li><a class="nav-back" href="../../index.html#/anal2" aria-label="Vissza: Analízis II.">← ANAL II</a></li>
+    <li><a href="#muveletek">Oszcilláció, műveletek (1–4)</a></li>
+    <li><a href="#elegseges">Monoton, folytonos (5–7)</a></li>
+    <li><a href="#newton">Newton–Leibniz, integrálfüggvény (8–10)</a></li>
+    <li><a href="#modszerek">Parciális, helyettesítés (11–12)</a></li>
+  </ul>
+</nav>
+
+<!-- ================= OSZCILLÁCIÓ, MŰVELETEK ================= -->
+<section id="muveletek">
+  <div class="section-head">
+    <span class="label">7–8. előadás · A határozott integrál 1–2.</span>
+    <h2>Oszcillációs összegek, műveletek integrálható függvényekkel</h2>
+    <p>Az 1. tétel (integrálhatóság \(\iff\) tetszőlegesen kicsi oszcillációs összeg) a további bizonyítások fő eszköze: a 3–5. és a 7. tétel is erre épül.</p>
+  </div>
+  <div class="taskgroup">
+
+  <article class="task" id="t1">
+    <div class="task-head"><span class="no">1.</span><span class="src">7. előadás · Az integrálhatóság ekvivalens átfogalmazásai</span></div>
+    <p class="stmt"><b>Oszcillációs összegek. Az integrálhatóság jellemzése az oszcillációs összegekkel.</b></p>
+    <details>
+      <summary>Tétel</summary>
+      <div class="sol">
+        <p><b>Jelölések</b> (emlékeztető, 7. előadás). \([a,b]\) mindig korlátos és zárt intervallum (\(a, b \in \R\), \(a \lt b\)), \(K[a,b] := \{f : [a,b] \to \R \mid f \text{ korlátos } [a,b]\text{-n}\}\). Az \([a,b]\) egy felosztása \(\tau = \{a = x_0 \lt x_1 \lt \dots \lt x_n = b\}\) \((n \in \mathbb{N}^+)\); a felosztások halmaza \(\mathcal{F}[a,b]\). Ha \(f \in K[a,b]\), \(\tau \in \mathcal{F}[a,b]\), akkor</p>
+        \[m_i := \inf_{[x_{i-1},x_i]} f, \qquad M_i := \sup_{[x_{i-1},x_i]} f \qquad (i = 1, \dots, n),\]
+        \[s(f,\tau) := \sum_{i=1}^{n} m_i\,(x_i - x_{i-1}), \qquad S(f,\tau) := \sum_{i=1}^{n} M_i\,(x_i - x_{i-1})\]
+        <p>az alsó, illetve felső közelítő összeg;</p>
+        \[I_*(f) := \sup\{s(f,\tau) \mid \tau \in \mathcal{F}[a,b]\}, \qquad I^*(f) := \inf\{S(f,\tau) \mid \tau \in \mathcal{F}[a,b]\}\]
+        <p>a Darboux-féle alsó, illetve felső integrál. \(f \in R[a,b]\) (Riemann-integrálható), ha \(I_*(f) = I^*(f)\), és ekkor \(\int_a^b f := I_*(f) = I^*(f)\).</p>
+        <p><b>Definíció.</b> Ha \(f \in K[a,b]\) és \(\tau \in \mathcal{F}[a,b]\), akkor</p>
+        \[\Omega(f,\tau) := S(f,\tau) - s(f,\tau)\]
+        <p>az \(f\) függvény \(\tau\) felosztáshoz tartozó <b>oszcillációs összege</b>.</p>
+        <p class="note">Szemléletesen: \(\Omega(f,\tau) = \sum_{i=1}^n (M_i - m_i)(x_i - x_{i-1})\) azoknak a téglalapoknak a területösszege, amelyek az \([x_{i-1}, x_i]\) részintervallum fölött \(m_i\)-től \(M_i\)-ig érnek.</p>
+        <p><b>Tétel.</b> Legyen \(f \in K[a,b]\). Ekkor</p>
+        \[f \in R[a,b] \iff \forall \varepsilon \gt 0\text{-hoz } \exists\,\tau \in \mathcal{F}[a,b] : \ \Omega(f,\tau) \lt \varepsilon.\]
+      </div>
+    </details>
+    <details>
+      <summary>Bizonyítás</summary>
+      <div class="sol">
+        <div class="tip"><b>Kulcsötlet:</b> \(\Rightarrow\): a szuprémum, ill. az infimum definíciója ad egy jó alsó és egy jó felső összeget; a két felosztás közös finomítása mindkettőnél jó. \(\Leftarrow\): \(I^*(f) - I_*(f)\) mindig \(\le \Omega(f,\tau)\), tehát kisebb bármely \(\varepsilon\)-nál.</div>
+        <p><b>\(\Longrightarrow\)</b> Tegyük fel, hogy \(f \in R[a,b]\): \(I_*(f) = I^*(f) =: I(f)\).</p>
+        <p>\(\sup\{s(f,\tau) \mid \tau \in \mathcal{F}[a,b]\} = I_*(f) = I(f) \implies\) (a sup definíciója)</p>
+        \[\forall \varepsilon \gt 0\text{-hoz } \exists\,\tau_1 \in \mathcal{F}[a,b] : \quad I(f) - \frac{\varepsilon}{2} \lt s(f,\tau_1) \le I(f);\]
+        <p>\(\inf\{S(f,\tau) \mid \tau \in \mathcal{F}[a,b]\} = I^*(f) = I(f) \implies\) (az inf definíciója)</p>
+        \[\forall \varepsilon \gt 0\text{-hoz } \exists\,\tau_2 \in \mathcal{F}[a,b] : \quad I(f) \le S(f,\tau_2) \lt I(f) + \frac{\varepsilon}{2}.\]
+        <p>Legyen \(\tau := \tau_1 \cup \tau_2 \in \mathcal{F}[a,b]\). Ekkor \(\tau\) finomítása \(\tau_1\)-nek és \(\tau_2\)-nek, ezért</p>
+        \[I(f) - \frac{\varepsilon}{2} \lt s(f,\tau_1) \le s(f,\tau) \le I_*(f) \le I^*(f) \le S(f,\tau) \le S(f,\tau_2) \lt I(f) + \frac{\varepsilon}{2} \implies\]
+        \[\Omega(f,\tau) = S(f,\tau) - s(f,\tau) \lt \varepsilon.\]
+        <p class="note"><b>Az utolsó lépés</b> (a diákon kihagyva): \(S(f,\tau) \lt I(f) + \frac{\varepsilon}{2}\) és \(s(f,\tau) \gt I(f) - \frac{\varepsilon}{2}\), a kettőt kivonva \(S(f,\tau) - s(f,\tau) \lt \varepsilon\).</p>
+        <p><b>\(\Longleftarrow\)</b> Legyen \(\varepsilon \gt 0\) tetszőleges és \(\tau \in \mathcal{F}[a,b]\) olyan, hogy \(\Omega(f,\tau) \lt \varepsilon\). Mivel \(s(f,\tau) \le I_*(f) \le I^*(f) \le S(f,\tau)\), ezért</p>
+        \[0 \le I^*(f) - I_*(f) \le S(f,\tau) - s(f,\tau) = \Omega(f,\tau) \lt \varepsilon \implies 0 \le I^*(f) - I_*(f) \lt \varepsilon \quad \forall\,\varepsilon \gt 0\text{-ra} \implies\]
+        \[I^*(f) - I_*(f) = 0 \implies I_*(f) = I^*(f) \implies f \in R[a,b]. \quad \blacksquare\]
+        <div class="note"><b>Felhasznált tétel</b> (7. előadás, a közelítő összegek szerkezete): legyen \(f \in K[a,b]\), \(\tau_1, \tau_2 \in \mathcal{F}[a,b]\).<br>1° Ha \(\tau_1 \subset \tau_2\) (\(\tau_2\) finomabb), akkor \(s(f,\tau_1) \le s(f,\tau_2)\) és \(S(f,\tau_1) \ge S(f,\tau_2)\).<br>2° Tetszőleges \(\tau_1, \tau_2\)-re \(s(f,\tau_1) \le S(f,\tau_2)\).<br>Ebből sup/inf-et véve: \(s(f,\tau) \le I_*(f) \le I^*(f) \le S(f,\tau)\) minden \(\tau\)-ra.</div>
+        <div class="note"><b>Kiegészítés</b> (a további bizonyításokban használjuk): 1°-ből \(\tau \subset \tau'\) esetén \(\Omega(f,\tau') \le \Omega(f,\tau)\), azaz finomításkor az oszcillációs összeg nem nő. Ezért ha \(\Omega(f,\tau_f) \lt \varepsilon\) és \(\Omega(g,\tau_g) \lt \varepsilon\), akkor a közös \(\tau := \tau_f \cup \tau_g\) felosztásra egyszerre \(\Omega(f,\tau) \lt \varepsilon\) és \(\Omega(g,\tau) \lt \varepsilon\).</div>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="t2">
+    <div class="task-head"><span class="no">2.</span><span class="src">8. előadás · Műveletek integrálható függvényekkel, 2°</span></div>
+    <p class="stmt"><b>Az összegfüggvény integrálhatóságára vonatkozó tétel.</b></p>
+    <details>
+      <summary>Tétel</summary>
+      <div class="sol">
+        <p>Tegyük fel, hogy \(f, g \in R[a,b]\). Ekkor</p>
+        \[f + g \in R[a,b] \quad\text{és}\quad \int_a^b (f + g) = \int_a^b f + \int_a^b g.\]
+        <p class="note">A diákon ez egy négyrészes tétel 2° pontja: 1° \(\lambda f \in R[a,b]\) és \(\int_a^b \lambda f = \lambda\int_a^b f\); 2° összeg; 3° szorzat (3. tétel); 4° hányados (4. tétel).</p>
+      </div>
+    </details>
+    <details>
+      <summary>Bizonyítás</summary>
+      <div class="sol">
+        <div class="tip"><b>Kulcsötlet:</b> részintervallumonként \(\inf f + \inf g \le \inf(f+g)\) és \(\sup(f+g) \le \sup f + \sup g\); ebből \(I_*(f) + I_*(g) \le I_*(f+g) \le I^*(f+g) \le I^*(f) + I^*(g)\), és a két szélső érték egyenlő.</div>
+        <p>Legyen \(\tau = \{x_0 = a \lt x_1 \lt \dots \lt x_n = b\} \in \mathcal{F}[a,b]\) és</p>
+        \[f_i = \inf_{[x_{i-1},x_i]} f, \quad F_i = \sup_{[x_{i-1},x_i]} f, \qquad g_i = \inf_{[x_{i-1},x_i]} g, \quad G_i = \sup_{[x_{i-1},x_i]} g.\]
+        <p>Mivel</p>
+        \[f_i + g_i \le f(x) + g(x) \le F_i + G_i \quad \forall\,x \in [x_{i-1}, x_i],\]
+        <p>ezért</p>
+        \[f_i + g_i \le \inf_{[x_{i-1},x_i]} (f+g) \le \sup_{[x_{i-1},x_i]} (f+g) \le F_i + G_i.\]
+        <p>Ebből \((x_i - x_{i-1})\)-gyel való szorzás és összegzés után az adódik, hogy</p>
+        \[s(f,\tau) + s(g,\tau) \le s(f+g,\tau) \le S(f+g,\tau) \le S(f,\tau) + S(g,\tau).\]
+        <p>Tegyük fel, hogy \(\tau_1, \tau_2 \in \mathcal{F}[a,b]\), és legyen \(\tau = \tau_1 \cup \tau_2 \in \mathcal{F}[a,b]\). Ekkor</p>
+        \[s(f,\tau_1) + s(g,\tau_2) \le s(f,\tau) + s(g,\tau) \le s(f+g,\tau) \le I_*(f+g).\]
+        <p>Innen — először a \(\tau_1 \in \mathcal{F}[a,b]\), majd a \(\tau_2 \in \mathcal{F}[a,b]\) felosztásokra a bal oldal felső határát véve — következik, hogy</p>
+        \[I_*(f) + I_*(g) \le I_*(f+g).\]
+        <p>Hasonlóan igazolható, hogy \(I^*(f+g) \le I^*(f) + I^*(g)\). Így</p>
+        \[I_*(f) + I_*(g) \le I_*(f+g) \le I^*(f+g) \le I^*(f) + I^*(g).\]
+        <p>Mivel \(f, g \in R[a,b]\), ezért \(I_*(f) = I^*(f) = \int_a^b f\) és \(I_*(g) = I^*(g) = \int_a^b g\), így a lánc két vége egyenlő, ezért \(I_*(f+g) = I^*(f+g)\), tehát \(f + g \in R[a,b]\) és</p>
+        \[\int_a^b (f+g) = \int_a^b f + \int_a^b g. \quad \blacksquare\]
+        <div class="note"><b>Kiegészítés</b> (a diákon „hasonlóan igazolható”): ugyanazzal a \(\tau = \tau_1 \cup \tau_2\) felosztással
+        \[I^*(f+g) \le S(f+g,\tau) \le S(f,\tau) + S(g,\tau) \le S(f,\tau_1) + S(g,\tau_2),\]
+        és itt először \(\tau_1\), majd \(\tau_2\) szerint a jobb oldal alsó határát véve \(I^*(f+g) \le I^*(f) + I^*(g)\). A felosztás finomításáról szóló tételt (1. tételnél, „Felhasznált tétel”) használtuk: \(s(f,\tau_1) \le s(f,\tau)\), \(S(f,\tau) \le S(f,\tau_1)\) stb.</div>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="t3">
+    <div class="task-head"><span class="no">3.</span><span class="src">8. előadás · Műveletek integrálható függvényekkel, 3°</span></div>
+    <p class="stmt"><b>A szorzatfüggvény integrálhatóságára vonatkozó tétel.</b></p>
+    <details>
+      <summary>Tétel</summary>
+      <div class="sol">
+        <p>Tegyük fel, hogy \(f, g \in R[a,b]\). Ekkor</p>
+        \[f \cdot g \in R[a,b].\]
+        <p class="note">A dia kiemeli: „csak ennyi!” — az integrál értékére nincs szorzatszabály, általában \(\int_a^b fg \ne \int_a^b f \cdot \int_a^b g\).</p>
+      </div>
+    </details>
+    <details>
+      <summary>Bizonyítás</summary>
+      <div class="sol">
+        <div class="tip"><b>Kulcsötlet:</b> az oszcillációs összegek alkalmazása. Nemnegatív \(f, g\)-re \(F_iG_i - f_ig_i = F_i(G_i - g_i) + (F_i - f_i)g_i\), így \(\Omega(fg,\tau) \le M\big(\Omega(g,\tau) + \Omega(f,\tau)\big)\). Az általános esetet eltolással (\(f - \inf f \ge 0\)) vezetjük vissza erre.</div>
+        <p><b>(i) Tegyük fel, hogy \(f, g \ge 0\)</b>, és \(\tau = \{a = x_0 \lt x_1 \lt \dots \lt x_n = b\} \in \mathcal{F}[a,b]\). A 2°-ben (2. tétel) bevezetett jelölésekkel (\(f_i, F_i, g_i, G_i\)):</p>
+        \[f_i \cdot g_i \le f(x)\cdot g(x) \le F_i \cdot G_i \quad \forall\,x \in [x_{i-1},x_i] \implies f_i \cdot g_i \le \inf_{[x_{i-1},x_i]} f\cdot g \le \sup_{[x_{i-1},x_i]} f \cdot g \le F_i \cdot G_i \implies\]
+        \[\Omega(f\cdot g,\tau) = S(f\cdot g,\tau) - s(f \cdot g,\tau) = \sum_{i=1}^n \Big(\sup_{[x_{i-1},x_i]} f\cdot g - \inf_{[x_{i-1},x_i]} f\cdot g\Big)(x_i - x_{i-1}) \le \sum_{i=1}^n \big(F_i \cdot G_i - f_i \cdot g_i\big)(x_i - x_{i-1}).\]
+        <p class="note"><b>Kiegészítés:</b> az első egyenlőtlenséghez kell a nemnegativitás: \(0 \le f_i \le f(x) \le F_i\) és \(0 \le g_i \le g(x) \le G_i\), nemnegatív számok egyenlőtlenségei pedig összeszorozhatók.</p>
+        <p>Mivel \(f\) és \(g\) korlátos, ezért \(\exists\,M\): \(|f|, |g| \le M\) \([a,b]\)-n. Így</p>
+        \[\Omega(f\cdot g,\tau) \le \sum_{i=1}^n \Big(F_i\cdot(G_i - g_i) + (F_i - f_i)\cdot g_i\Big)(x_i - x_{i-1}) \le\]
+        \[\le M \cdot \sum_{i=1}^n (G_i - g_i)(x_i - x_{i-1}) + M\cdot\sum_{i=1}^n (F_i - f_i)(x_i - x_{i-1}) = M\cdot\big(\Omega(g,\tau) + \Omega(f,\tau)\big).\]
+        <p class="note"><b>Kiegészítés:</b> \(F_iG_i - f_ig_i = F_iG_i - F_ig_i + F_ig_i - f_ig_i\); itt \(0 \le F_i \le M\), \(0 \le g_i \le M\) és \(G_i - g_i \ge 0\), \(F_i - f_i \ge 0\).</p>
+        <p>Mivel \(f, g \in R[a,b]\), ezért \(\forall\,\varepsilon \gt 0\)-hoz \(\exists\,\tau\): \(\Omega(f,\tau), \Omega(g,\tau) \lt \varepsilon\). Tehát \(\forall\,\varepsilon \gt 0\)-hoz \(\exists\,\tau \in \mathcal{F}[a,b]\) felosztás:</p>
+        \[\Omega(f \cdot g,\tau) \le 2 \cdot M \cdot \varepsilon \implies f \cdot g \in R[a,b].\]
+        <div class="note"><b>Kiegészítés:</b> (1) A közös \(\tau\) létezése: \(f\)-hez és \(g\)-hez külön-külön van jó felosztás, ezek egyesítésén (finomítás) egyik oszcillációs összeg sem nő (l. 1. tétel, Kiegészítés). (2) Az 1. tétel „\(\lt \varepsilon\)” feltétele: \(M \gt 0\) feltehető, és a fentit \(\frac{\varepsilon}{4M}\)-mel alkalmazva \(\Omega(fg,\tau) \le \frac{\varepsilon}{2} \lt \varepsilon\).</div>
+        <p><b>(ii) Legyen \(f, g\) tetszőleges</b>, és</p>
+        \[m_f := \inf_{[a,b]} f, \qquad m_g := \inf_{[a,b]} g.\]
+        <p>Ekkor \(f - m_f \ge 0\) és \(g - m_g \ge 0\) \([a,b]\)-n integrálható függvények. Tehát (i) szerint</p>
+        \[(f - m_f)\cdot(g - m_g) = f\cdot g \underbrace{{} - m_f\cdot g - f\cdot m_g + m_f\cdot m_g}_{\in R[a,b]} \in R[a,b],\]
+        <p>következésképpen \(f \cdot g \in R[a,b]\). \(\blacksquare\)</p>
+        <div class="note"><b>Kiegészítés:</b> a konstans függvény integrálható (7. előadás, 1. példa), így 1° (számszoros) és 2° (összeg) miatt \(f - m_f\), \(g - m_g\) és a kapcsos zárójellel jelölt összeg is \(R[a,b]\)-beli. Végül \(f\cdot g = (f - m_f)(g - m_g) + m_f\, g + m_g\, f - m_f m_g\), ami integrálható függvények összege.</div>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="t4">
+    <div class="task-head"><span class="no">4.</span><span class="src">8. előadás · Műveletek integrálható függvényekkel, 4°</span></div>
+    <p class="stmt"><b>Függvények hányadosának integrálhatóságára vonatkozó tétel.</b></p>
+    <details>
+      <summary>Tétel</summary>
+      <div class="sol">
+        <p>Tegyük fel, hogy \(f, g \in R[a,b]\), és \(|g(x)| \ge m \gt 0\) \((\forall\,x \in [a,b])\). Ekkor</p>
+        \[\frac{f}{g} \in R[a,b].\]
+        <p class="note">Itt is „csak ennyi!”: az integrál értékére nincs hányadosszabály.</p>
+      </div>
+    </details>
+    <details>
+      <summary>Bizonyítás</summary>
+      <div class="sol">
+        <div class="tip"><b>Kulcsötlet:</b> \(\frac fg = f \cdot \frac 1g\), tehát a szorzattétel miatt elég \(\frac1g\)-t vizsgálni; \(\big|\frac1{g(x)} - \frac1{g(y)}\big| \le \frac{|g(y) - g(x)|}{m^2}\) miatt \(\Omega\big(\frac1g,\tau\big) \le \frac{1}{m^2}\,\Omega(g,\tau)\).</div>
+        <p>A 3° állítás (3. tétel) miatt elég azt igazolni, hogy a \(g\)-re tett feltétel esetén \(\frac1g \in R[a,b]\).</p>
+        <p>Legyen \(\tau = \{a = x_0 \lt x_1 \lt \dots \lt x_n = b\} \in \mathcal{F}[a,b]\) tetszőleges. Ekkor \(\forall\,x, y \in [x_{i-1}, x_i]\) pontban</p>
+        \[\frac{1}{g(x)} - \frac{1}{g(y)} = \frac{g(y) - g(x)}{g(x)\cdot g(y)} \le \frac{|g(y) - g(x)|}{|g(x)\cdot g(y)|} \le \frac{G_i - g_i}{m^2}.\]
+        <p>Ebből következik, hogy</p>
+        \[\sup_{[x_{i-1},x_i]} \frac1g - \inf_{[x_{i-1},x_i]} \frac1g \le \frac{G_i - g_i}{m^2}.\]
+        <p>\((x_i - x_{i-1})\)-gyel való szorzás és összegzés után azt kapjuk, hogy</p>
+        \[\Omega\Big(\frac1g, \tau\Big) \le \frac{1}{m^2}\cdot\Omega(g,\tau).\]
+        <p>Mivel \(g \in R[a,b]\), ezért \(\forall\,\varepsilon \gt 0\)-hoz \(\exists\,\tau\): \(\Omega(g,\tau) \lt \varepsilon\). Így</p>
+        \[\Omega\Big(\frac1g,\tau\Big) \lt \frac{\varepsilon}{m^2} \implies \frac1g \in R[a,b]. \quad \blacksquare\]
+        <div class="note"><b>Kiegészítés</b> (a diákon nincs részletezve):<br>(1) \(\frac1g \in K[a,b]\), hiszen \(\big|\frac1{g(x)}\big| \le \frac1m\); csak így beszélhetünk az oszcillációs összegéről.<br>(2) Az első becslésben \(|g(x)\,g(y)| \ge m \cdot m = m^2\), és \(g(x), g(y) \in [g_i, G_i]\) miatt \(|g(y) - g(x)| \le G_i - g_i\).<br>(3) „Ebből következik”: a becslés szerint \(\frac1{g(x)} \le \frac1{g(y)} + \frac{G_i - g_i}{m^2}\) minden \(x, y\)-ra; \(x\) szerint szuprémumot, majd \(y\) szerint infimumot véve kapjuk a sup − inf becslést.<br>(4) Mivel \(\varepsilon \gt 0\) tetszőleges, \(\frac{\varepsilon}{m^2}\) is tetszőlegesen kicsi pozitív szám (\(\varepsilon m^2\)-tel indítva \(\Omega\big(\frac1g,\tau\big) \lt \varepsilon\)), így az 1. tétel alkalmazható. Végül \(\frac fg = f\cdot\frac1g \in R[a,b]\) a szorzattétel szerint.</div>
+      </div>
+    </details>
+  </article>
+
+  </div>
+</section>
+
+<!-- ================= ELÉGSÉGES FELTÉTELEK ================= -->
+<section id="elegseges">
+  <div class="section-head">
+    <span class="label">9. előadás · A határozott integrál 3.</span>
+    <h2>Monoton és folytonos függvények integrálhatósága</h2>
+    <p>Mindkettő az oszcillációs összegekkel való jellemzést (1. tétel) használja; a folytonos esethez kell a Heine-tétel.</p>
+  </div>
+  <div class="taskgroup">
+
+  <article class="task" id="t5">
+    <div class="task-head"><span class="no">5.</span><span class="src">9. előadás · Monoton függvények integrálhatósága</span></div>
+    <p class="stmt"><b>A monoton függvények integrálhatóságára vonatkozó tétel.</b></p>
+    <details>
+      <summary>Tétel</summary>
+      <div class="sol">
+        <p>Ha az \(f : [a,b] \to \R\) függvény monoton az \([a,b]\) intervallumon, akkor integrálható \([a,b]\)-n.</p>
+      </div>
+    </details>
+    <details>
+      <summary>Bizonyítás</summary>
+      <div class="sol">
+        <div class="tip"><b>Kulcsötlet:</b> \(f \nearrow\) esetén \(m_i = f(x_{i-1})\), \(M_i = f(x_i)\); egyenletes, elég finom felosztásnál \(\Omega(f,\tau) \lt \frac{\varepsilon}{f(b) - f(a)}\sum\big(f(x_i) - f(x_{i-1})\big)\), és ez az összeg teleszkopikus: \(= f(b) - f(a)\).</div>
+        <p>Az integrálhatóság oszcillációs összegekkel való jellemzésére vonatkozó állítást (1. tétel) alkalmazzuk. Azt igazoljuk:</p>
+        \[(*) \qquad \forall\,\varepsilon \gt 0\text{-hoz } \exists\,\tau \in \mathcal{F}[a,b] : \ \Omega(f,\tau) \lt \varepsilon.\]
+        <p>Legyen pl. \(f \nearrow\). Ha \(f(a) = f(b)\), akkor \(f\) állandó, ezért ebben az esetben az állítás igaz.</p>
+        <p>Ha \(f(a) \lt f(b)\), akkor \(\forall\,\tau = \{a = x_0 \lt \dots \lt x_n = b\} \in \mathcal{F}[a,b]\) felosztásra</p>
+        \[m_i = \inf_{[x_{i-1},x_i]} f = f(x_{i-1}) \quad\text{és}\quad M_i = \sup_{[x_{i-1},x_i]} f = f(x_i),\]
+        <p>ezért</p>
+        \[\Omega(f,\tau) = S(f,\tau) - s(f,\tau) = \sum_{i=1}^n \big(f(x_i) - f(x_{i-1})\big)\cdot(x_i - x_{i-1}).\]
+        <p>Legyen \(\varepsilon \gt 0\) adott és \(n \in \mathbb{N}^+\): \(\frac{b-a}{n} \lt \frac{\varepsilon}{f(b) - f(a)}\), valamint \(\tau\) az \([a,b]\) egyenletes felosztása. Ekkor \(x_i - x_{i-1} \lt \frac{\varepsilon}{f(b) - f(a)}\) minden \(i = 1, \dots, n\) indexre, és</p>
+        \[\Omega(f,\tau) \lt \sum_{i=1}^n \big(f(x_i) - f(x_{i-1})\big)\cdot\frac{\varepsilon}{f(b) - f(a)} =\]
+        \[= \frac{\varepsilon}{f(b) - f(a)}\cdot\Big(\big(f(x_1) - \underbrace{f(x_0)}_{f(a)}\big) + \big(f(x_2) - f(x_1)\big) + \dots + \big(\underbrace{f(x_n)}_{f(b)} - f(x_{n-1})\big)\Big) = \varepsilon.\]
+        <p>Ezzel \((*)\)-ot igazoltuk \(\implies f \in R[a,b]\). \(\blacksquare\)</p>
+        <div class="note"><b>Kiegészítés</b> (a diákon nincs részletezve):<br>(1) \(f \in K[a,b]\), mert \(f \nearrow\) miatt \(f(a) \le f(x) \le f(b)\); állandó \(f\)-re \(\Omega(f,\tau) = 0\) minden \(\tau\)-ra.<br>(2) Az egyenletes felosztásban \(x_i - x_{i-1} = \frac{b-a}{n}\). A „\(\lt\)” azért szigorú, mert minden \(f(x_i) - f(x_{i-1}) \ge 0\), és összegük \(f(b) - f(a) \gt 0\), így legalább egy tag pozitív.<br>(3) Ha \(f \searrow\), akkor \(-f \nearrow\), így \(-f \in R[a,b]\), és a számszorosról szóló tétel (\(\lambda = -1\)) miatt \(f \in R[a,b]\). (Közvetlenül is: ekkor \(m_i = f(x_i)\), \(M_i = f(x_{i-1})\), és ugyanígy megy.)</div>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="t6">
+    <div class="task-head"><span class="no">6.</span><span class="src">9. előadás · Egyenletes folytonosság</span></div>
+    <p class="stmt"><b>Az egyenletes folytonosságra vonatkozó Heine-tétel.</b></p>
+    <details>
+      <summary>Tétel</summary>
+      <div class="sol">
+        <p><b>Definíció.</b> Az \(f \in \R \to \R\) függvény <b>egyenletesen folytonos</b> a \(H \subset \mathcal{D}_f\) halmazon, ha</p>
+        \[\forall\,\varepsilon \gt 0\text{-hoz } \exists\,\delta \gt 0, \text{ hogy } \forall\,x, y \in H,\ |x - y| \lt \delta : \ |f(x) - f(y)| \lt \varepsilon.\]
+        <p class="note">A folytonosságtól az a különbség, hogy \(\delta\) csak \(\varepsilon\)-tól függ, a ponttól nem.</p>
+        <p><b>Heine-tétel.</b> Ha \(-\infty \lt a \lt b \lt +\infty\) és \(f \in C[a,b]\), akkor \(f\) egyenletesen folytonos az \([a,b]\) intervallumon.</p>
+      </div>
+    </details>
+    <details>
+      <summary>Bizonyítás</summary>
+      <div class="sol">
+        <div class="tip"><b>Kulcsötlet:</b> indirekt. A tagadásból \(\delta = \frac1n\)-nel két sorozat jön, \(|x_n - y_n| \lt \frac1n\), de \(|f(x_n) - f(y_n)| \ge \varepsilon\). Bolzano–Weierstrass: \(x_{n_k} \to \alpha \in [a,b]\), ekkor \(y_{n_k} \to \alpha\) is, és a folytonosság miatt \(f(x_{n_k}) - f(y_{n_k}) \to 0\). Ellentmondás.</div>
+        <p>Az állítást indirekt módon bizonyítjuk. Tegyük fel, hogy \(f\) nem egyenletesen folytonos \([a,b]\)-n. Ez azt jelenti, hogy</p>
+        \[\exists\,\varepsilon \gt 0, \text{ hogy } \forall\,\delta \gt 0\text{-hoz } \exists\,x, y \in [a,b],\ |x - y| \lt \delta : \ |f(x) - f(y)| \ge \varepsilon.\]
+        <p>A \(\delta := \frac1n\) \((n \in \mathbb{N}^+)\) választással kapjuk, hogy minden \(n\)-re létezik \(x_n, y_n \in [a,b]\):</p>
+        \[|x_n - y_n| \lt \frac1n \quad\text{és}\quad |f(x_n) - f(y_n)| \ge \varepsilon. \qquad (*)\]
+        <p>Az \((x_n)\) sorozat korlátos, ezért van egy \((x_{n_k})\) konvergens részsorozata, amelynek az \(\alpha\) határértéke ugyancsak \([a,b]\)-ben van. Így</p>
+        \[y_{n_k} = (y_{n_k} - x_{n_k}) + x_{n_k} \to 0 + \alpha = \alpha, \quad\text{ha } n_k \to +\infty.\]
+        <p>Mivel \(f \in C[a,b]\), ezért \(f \in C\{\alpha\}\) is teljesül. Az átviteli elv szerint tehát \(f(x_{n_k}) \to f(\alpha)\) és \(f(y_{n_k}) \to f(\alpha)\), ezért</p>
+        \[\lim_{n_k \to +\infty} \big(f(x_{n_k}) - f(y_{n_k})\big) = 0.\]
+        <p>Ez azonban ellentmond \((*)\)-nak. \(\blacksquare\)</p>
+        <div class="note"><b>Felhasznált tételek</b> (Analízis I.): <b>Bolzano–Weierstrass-féle kiválasztási tétel</b>: minden korlátos sorozatnak van konvergens részsorozata. <b>Átviteli elv</b>: \(f \in C\{\alpha\} \iff\) minden \(\mathcal{D}_f\)-beli \(z_n \to \alpha\) sorozatra \(f(z_n) \to f(\alpha)\).</div>
+        <div class="note"><b>Kiegészítés</b> (a diákon nincs részletezve): \(\alpha \in [a,b]\), mert \(a \le x_{n_k} \le b\), és a határátmenet megőrzi a nem szigorú egyenlőtlenségeket; itt használjuk, hogy az intervallum zárt. \(y_{n_k} - x_{n_k} \to 0\), mert \(|y_{n_k} - x_{n_k}| \lt \frac{1}{n_k} \le \frac1k\). Az ellentmondás: \((*)\) szerint \(|f(x_{n_k}) - f(y_{n_k})| \ge \varepsilon \gt 0\) minden \(k\)-ra, így a különbség nem tarthat 0-hoz.</div>
+        <div class="warn">A korlátos és zárt intervallum lényeges (a 9. előadás példái): \(f(x) = \frac1x\) folytonos, de nem egyenletesen folytonos \((0,1)\)-en, és \(f(x) = x^2\) sem az \([1, +\infty)\)-en.</div>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="t7">
+    <div class="task-head"><span class="no">7.</span><span class="src">9. előadás · Folytonos függvények integrálhatósága</span></div>
+    <p class="stmt"><b>A folytonos függvények integrálhatóságára vonatkozó tétel.</b></p>
+    <details>
+      <summary>Tétel</summary>
+      <div class="sol">
+        <p>Ha az \(f\) függvény folytonos az \([a,b]\) intervallumon, akkor integrálható \([a,b]\)-n, jelekkel</p>
+        \[C[a,b] \subset R[a,b].\]
+        <p class="note">A 7. előadásban már kimondva („Bizonyítás. Később.”), a bizonyítás a 9. előadásban van.</p>
+      </div>
+    </details>
+    <details>
+      <summary>Bizonyítás</summary>
+      <div class="sol">
+        <div class="tip"><b>Kulcsötlet:</b> Heine-tétel \(\Rightarrow\) egyenletes folytonosság \(\frac{\varepsilon}{b-a}\)-hoz egy közös \(\delta\). Ha \(\|\tau\| \lt \delta\), akkor minden részintervallumon \(M_i - m_i \lt \frac{\varepsilon}{b-a}\), így \(\Omega(f,\tau) \le \frac{\varepsilon}{b-a}\cdot(b-a) = \varepsilon\).</div>
+        <p>Elég megmutatni azt, hogy \(\forall\,f \in C[a,b]\) függvényre a következő teljesül:</p>
+        \[\forall\,\varepsilon \gt 0\text{-hoz } \exists\,\tau \in \mathcal{F}[a,b] : \ \Omega(f,\tau) \lt \varepsilon.\]
+        <p>Mivel \(f \in C[a,b] \implies\) (l. Heine tételét) \(f\) egyenletesen folytonos az \([a,b]\) intervallumon, ezért \(\forall\,\varepsilon \gt 0\)-hoz \(\exists\,\delta \gt 0\), hogy</p>
+        \[\forall\,x, y \in [a,b],\ |x - y| \lt \delta : \ |f(x) - f(y)| \lt \frac{\varepsilon}{b - a}.\]
+        <p>Legyen \(\varepsilon \gt 0\) és \(\tau = \{x_0 = a \lt x_1 \lt \dots \lt x_n = b\} \in \mathcal{F}[a,b]\):</p>
+        \[\|\tau\| = \max\{x_i - x_{i-1} \mid i = 1, \dots, n\} \lt \delta.\]
+        <p>Ekkor \(\Omega(f,\tau)\)-ban \(i = 1, \dots, n\) esetén legyen</p>
+        \[m_i := \min_{[x_{i-1},x_i]} f = f(u_i), \qquad M_i := \max_{[x_{i-1},x_i]} f = f(v_i)\]
+        <p>(Weierstrass tétele szerint \(\exists\,u_i, v_i\)). Ekkor</p>
+        \[\Omega(f,\tau) = \sum_{i=1}^n (M_i - m_i)\cdot(x_i - x_{i-1}) \le \frac{\varepsilon}{b-a}\cdot\sum_{i=1}^n (x_i - x_{i-1}) = \varepsilon.\]
+        <p>Ez pedig azt jelenti, hogy \(f \in R[a,b]\). \(\blacksquare\)</p>
+        <div class="note"><b>Felhasznált tételek:</b> <b>Heine-tétel</b> (6. tétel); <b>Weierstrass-tétel</b> (Analízis I.): korlátos és zárt intervallumon folytonos függvénynek van legnagyobb és legkisebb értéke.</div>
+        <div class="note"><b>Kiegészítés</b> (a diákon kihagyva):<br>(1) Ilyen \(\tau\) létezik: pl. az egyenletes felosztás \(n \gt \frac{b-a}{\delta}\) részre.<br>(2) A becslés: \(u_i, v_i \in [x_{i-1}, x_i]\) miatt \(|u_i - v_i| \le x_i - x_{i-1} \le \|\tau\| \lt \delta\), így \(M_i - m_i = f(v_i) - f(u_i) = |f(v_i) - f(u_i)| \lt \frac{\varepsilon}{b-a}\).<br>(3) Mivel minden tagban szigorú a becslés és \(x_i - x_{i-1} \gt 0\), valójában \(\Omega(f,\tau) \lt \varepsilon\); egyébként \(\Omega(f,\tau) \le \varepsilon\) minden \(\varepsilon \gt 0\)-ra is elég lenne az 1. tételhez (\(\frac\varepsilon2\)-vel alkalmazva).</div>
+        <div class="warn">Az állítás megfordítása nem igaz (9. előadás): \(f(x) := 1\), ha \(0 \lt x \le 1\), és \(f(0) := 0\); ekkor \(f \in R[0,1]\), de \(f \notin C[0,1]\).</div>
+      </div>
+    </details>
+  </article>
+
+  </div>
+</section>
+
+<!-- ================= NEWTON–LEIBNIZ, INTEGRÁLFÜGGVÉNY ================= -->
+<section id="newton">
+  <div class="section-head">
+    <span class="label">10. előadás · A határozott integrál 4.</span>
+    <h2>Newton–Leibniz-tétel, integrálfüggvény</h2>
+    <p>Az integrál kiszámítása primitív függvénnyel, és az \(x \mapsto \int_{x_0}^x f\) integrálfüggvény folytonossága, deriválhatósága.</p>
+  </div>
+  <div class="taskgroup">
+
+  <article class="task" id="t8">
+    <div class="task-head"><span class="no">8.</span><span class="src">10. előadás · Az integrál kiszámítása</span></div>
+    <p class="stmt"><b>A Newton–Leibniz-tétel.</b></p>
+    <details>
+      <summary>Tétel</summary>
+      <div class="sol">
+        <p><b>Definíció.</b> Legyen \(-\infty \lt a \lt b \lt +\infty\). Az \(F : [a,b] \to \R\) függvény az \(f : [a,b] \to \R\) függvény <b>primitív függvénye</b> az \([a,b]\) intervallumon, ha</p>
+        \[F \in C[a,b], \quad F \in D(a,b) \quad\text{és}\quad F'(x) = f(x) \quad \big(x \in (a,b)\big).\]
+        <p><b>Newton–Leibniz-tétel.</b> Ha \(f \in R[a,b]\) és az \(f\) függvénynek van primitív függvénye az \([a,b]\) intervallumon, akkor</p>
+        \[\int_a^b f(x)\,dx = F(b) - F(a) =: \big[F(x)\big]_a^b,\]
+        <p>ahol \(F\) az \(f\) függvény egy tetszőleges primitív függvénye.</p>
+      </div>
+    </details>
+    <details>
+      <summary>Bizonyítás</summary>
+      <div class="sol">
+        <div class="tip"><b>Kulcsötlet:</b> tetszőleges felosztásnál Lagrange-tétel minden részintervallumon: \(F(b) - F(a)\) teleszkopikus összeg \(= \sum f(\xi_i)(x_i - x_{i-1})\), egy Riemann-féle közelítő összeg, ami \(s(f,\tau)\) és \(S(f,\tau)\) közé esik. Így \(F(b) - F(a)\) az alsó és a felső integrál közé esik, amelyek egyenlők.</div>
+        <p>Legyen \(\tau = \{a = x_0 \lt x_1 \lt \dots \lt x_n = b\} \in \mathcal{F}[a,b]\) tetszőleges. A Lagrange-középértéktétel szerint \(\forall\,i = 1, \dots, n\) indexre \(\exists\,\xi_i \in (x_{i-1}, x_i)\):</p>
+        \[F(x_i) - F(x_{i-1}) = F'(\xi_i)\cdot(x_i - x_{i-1}) = f(\xi_i)\cdot(x_i - x_{i-1}).\]
+        <p>Ha ezeket az egyenlőségeket összeadjuk \(\forall\,i = 1, \dots, n\) indexre, akkor a bal oldalon minden tag kiesik, kivéve az \(F(x_n) = F(b)\) és \(F(x_0) = F(a)\) tagokat. Így azt kapjuk, hogy</p>
+        \[F(b) - F(a) = \sum_{i=1}^n f(\xi_i)\cdot(x_i - x_{i-1}) = \sigma(f,\tau,\xi),\]
+        <p>ahol \(\xi := (\xi_1, \dots, \xi_n)\). Mivel \(\inf_{[x_{i-1},x_i]} f \le f(\xi_i) \le \sup_{[x_{i-1},x_i]} f\), ezért</p>
+        \[s(f,\tau) \le \sigma(f,\tau,\xi) = F(b) - F(a) \le S(f,\tau).\]
+        <div class="note"><b>Megjegyzés a forráshoz:</b> a dián itt \(S(f,\tau,\xi)\) áll; ez elírás, a felső közelítő összeg \(S(f,\tau)\) (nem függ \(\xi\)-től).</div>
+        <p>Következésképpen (mivel \(\tau\) tetszőleges volt)</p>
+        \[I_*(f) = \sup_{\tau \in \mathcal{F}[a,b]} s(f,\tau) \le F(b) - F(a) \le \inf_{\tau \in \mathcal{F}[a,b]} S(f,\tau) = I^*(f).\]
+        <p>Mivel \(f \in R[a,b]\), ezért \(I_*(f) = I^*(f) = \int_a^b f\). Így</p>
+        \[F(b) - F(a) = \int_a^b f(x)\,dx. \quad \blacksquare\]
+        <div class="note"><b>Felhasznált tétel: Lagrange-féle középértéktétel</b> (Analízis II., 2. előadás): ha \(F \in C[u,v]\) és \(F \in D(u,v)\), akkor \(\exists\,\xi \in (u,v)\): \(F'(\xi) = \frac{F(v) - F(u)}{v - u}\). Ennek feltételei minden \([x_{i-1}, x_i]\)-n teljesülnek, mert \(F \in C[a,b]\) és \(F \in D(a,b)\). A \(\sigma(f,\tau,\xi)\) Riemann-féle közelítő összegről a 7. előadásban láttuk, hogy \(s(f,\tau) \le \sigma(f,\tau,\xi) \le S(f,\tau)\).</div>
+        <div class="warn">A két feltétel egymástól független, egyik sem hagyható el (10. előadás): a \(\operatorname{sign}\) függvény integrálható \([-1,1]\)-en, de ott nincs primitív függvénye; az \(F(x) = x^2\sin\frac{1}{x^2}\) \((x \ne 0)\), \(F(0) = 0\) függvény deriváltjának van primitív függvénye \([0,1]\)-en, de \(F'\) nem korlátos, így nem integrálható.</div>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="t9">
+    <div class="task-head"><span class="no">9.</span><span class="src">10. előadás · Az integrálfüggvény tulajdonságai, 1°</span></div>
+    <p class="stmt"><b>Az integrálfüggvény folytonosságára vonatkozó állítás.</b></p>
+    <details>
+      <summary>Tétel</summary>
+      <div class="sol">
+        <p><b>Definíció.</b> Tegyük fel, hogy \(f \in R[a,b]\) és \(x_0 \in [a,b]\). Ekkor az</p>
+        \[F : [a,b] \ni x \mapsto \int_{x_0}^x f(t)\,dt\]
+        <p>függvényt az \(f\) függvény \(x_0\)-ban eltűnő <b>integrálfüggvényének</b> nevezzük (\(F(x_0) = 0\)).</p>
+        <p><b>Tétel.</b> Tegyük fel, hogy \(f \in R[a,b]\) és \(x_0 \in [a,b]\). Ekkor az \(F(x) = \int_{x_0}^x f(t)\,dt\) \((x \in [a,b])\) integrálfüggvény folytonos az \([a,b]\) intervallumon.</p>
+        <p class="note">Megállapodás (8. előadás): \(\int_a^a f := 0\), és \(a \gt b\) esetén \(\int_a^b f := -\int_b^a f\).</p>
+      </div>
+    </details>
+    <details>
+      <summary>Bizonyítás</summary>
+      <div class="sol">
+        <div class="tip"><b>Kulcsötlet:</b> \(F(y) - F(x) = \int_x^y f\), és \(|f| \le M\) miatt \(|F(y) - F(x)| \le M\,|y - x|\). Ebből \(\delta = \frac{\varepsilon}{M}\)-mel egyenletes folytonosság, tehát folytonosság.</div>
+        <p>Tetszőleges \(x, y \in [a,b]\), \(x \lt y\) esetén</p>
+        \[|F(y) - F(x)| = \left|\int_{x_0}^y f - \int_{x_0}^x f\right| = \left|\int_x^{x_0} f + \int_{x_0}^y f\right| = \left|\int_x^y f\right| \le \int_x^y |f| \le \int_x^y M = M\cdot(y - x),\]
+        <p>ahol \(M\) az \(f\) függvény egy korlátja: \(|f(x)| \le M\) \(\big(x \in [a,b]\big)\). (Mivel \(f \in R[a,b]\), ezért \(f\) korlátos \([a,b]\)-n.)</p>
+        <p>Ha tehát \(\varepsilon \gt 0\) és \(\delta := \frac{\varepsilon}{M}\), akkor \(\forall\,x, y \in [a,b]\), \(|x - y| \lt \delta\) esetén</p>
+        \[|F(y) - F(x)| \le M\cdot|y - x| \lt M\cdot\frac{\varepsilon}{M} = \varepsilon.\]
+        <p>Ez azt jelenti, hogy \(F\) egyenletesen folytonos \([a,b]\)-n, így folytonos is az \([a,b]\) intervallumon. \(\blacksquare\)</p>
+        <div class="note"><b>Felhasznált tételek</b> (8–9. előadás): az integrál intervallum szerinti additivitása (\(f \in R[A,B]\) esetén \(\int_a^b f = \int_a^c f + \int_c^b f\) bármely \(a, b, c \in [A,B]\)-re, és \(f\) integrálható minden részintervallumon); \(|f| \in R[a,b]\) és \(\big|\int_a^b f\big| \le \int_a^b |f|\); az integrál monoton (\(|f| \le M \Rightarrow \int_x^y |f| \le \int_x^y M\)); \(\int_x^y M = M(y - x)\); végül: ha \(f\) egyenletesen folytonos \(H\)-n, akkor folytonos \(H\)-n.</div>
+        <div class="note"><b>Kiegészítés:</b> \(M \gt 0\) feltehető (a korlát növelhető), így \(\delta = \frac{\varepsilon}{M}\) értelmes. A diákon a \(\delta\) választása tömörebben áll („\(M\delta \lt \varepsilon\)”); bármely \(0 \lt \delta \le \frac\varepsilon M\) jó. Az \(x \gt y\) eset a szerepek cseréjével ugyanez, így \(|F(y) - F(x)| \le M|y - x|\) minden \(x, y\)-ra.</div>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="t10">
+    <div class="task-head"><span class="no">10.</span><span class="src">10. előadás · Az integrálfüggvény tulajdonságai, 2°–3°</span></div>
+    <p class="stmt"><b>Az integrálfüggvény differenciálhatóságára vonatkozó állítás.</b></p>
+    <details>
+      <summary>Tétel</summary>
+      <div class="sol">
+        <p>Tegyük fel, hogy \(f \in R[a,b]\) és \(x_0 \in [a,b]\), és legyen \(F(x) = \int_{x_0}^x f(t)\,dt\) \(\big(x \in [a,b]\big)\). Ekkor</p>
+        <p><b>2°</b> Ha egy \(d \in [a,b]\) pontban \(f\) folytonos, akkor ott az \(F\) integrálfüggvény deriválható, és \(F'(d) = f(d)\).</p>
+        <p><b>3°</b> Ha \(f \in C[a,b]\), akkor \(F \in D[a,b]\) és \(F'(x) = f(x)\) minden \(x \in [a,b]\) pontban. Következésképpen, ha \(f\) folytonos \([a,b]\)-n, akkor itt van primitív függvénye.</p>
+        <p class="note">Megjegyzés. Ha \(d = a\) vagy \(d = b\), akkor a jobb-, illetve a bal oldali deriváltról van szó.</p>
+      </div>
+    </details>
+    <details>
+      <summary>Bizonyítás</summary>
+      <div class="sol">
+        <div class="tip"><b>Kulcsötlet:</b> \(f(d) = \frac1h\int_d^{d+h} f(d)\,dt\) (konstans integrálja), így a különbségi hányados eltérése \(f(d)\)-től \(\frac1h\int_d^{d+h}\big(f(t) - f(d)\big)\,dt\), ami a folytonosság miatt \(\varepsilon\)-nál nem nagyobb abszolút értékű.</div>
+        <p><b>2°</b> Legyen \(d \in (a,b)\), és tegyük fel, hogy \(f \in C\{d\}\). Ez azt jelenti, hogy \(\forall\,\varepsilon \gt 0\)-hoz \(\exists\,\delta \gt 0\):</p>
+        \[\forall\,t \in [a,b],\ |t - d| \lt \delta \text{ esetén } |f(t) - f(d)| \lt \varepsilon.\]
+        <p>Tegyük fel, hogy \(h \ne 0\)-ra \(d + h \in (a,b)\) teljesül. Ekkor</p>
+        \[F(d + h) - F(d) = \int_{x_0}^{d+h} f - \int_{x_0}^{d} f = \int_d^{d+h} f.\]
+        <p>Mivel \(f(d) = \frac1h\cdot\int_d^{d+h} f(d)\,dt\), ezért</p>
+        \[\frac{F(d+h) - F(d)}{h} - f(d) = \frac1h\int_d^{d+h}\big(f(t) - f(d)\big)\,dt.\]
+        <p>Ha \(0 \lt h \lt \delta\), akkor</p>
+        \[\left|\frac{F(d+h) - F(d)}{h} - f(d)\right| \le \frac1h\cdot\int_d^{d+h}\big|f(t) - f(d)\big|\,dt \le \frac1h\cdot\int_d^{d+h}\varepsilon\,dt = \frac1h\cdot\varepsilon\cdot h = \varepsilon.\]
+        <p>Ha \(-\delta \lt h \lt 0\), akkor</p>
+        \[\left|\frac{F(d+h) - F(d)}{h} - f(d)\right| \le \frac{1}{|h|}\cdot\int_{d+h}^{d}\big|f(t) - f(d)\big|\,dt \le \frac{1}{|h|}\cdot\varepsilon\cdot|h| = \varepsilon.\]
+        <p>Az előzőek alapján tehát \(\forall\,\varepsilon \gt 0\)-hoz \(\exists\,\delta \gt 0\): \(\forall\,0 \lt |h| \lt \delta\)-ra</p>
+        \[\left|\frac{F(d+h) - F(d)}{h} - f(d)\right| \le \varepsilon.\]
+        <p>Ez azt jelenti, hogy</p>
+        \[\lim_{h\to 0}\left(\frac{F(d+h) - F(d)}{h} - f(d)\right) = 0 \implies \lim_{h\to 0}\frac{F(d+h) - F(d)}{h} = f(d),\]
+        <p>vagyis \(F \in D\{d\}\) és \(F'(d) = f(d)\).</p>
+        <p>A végpontokban az előzőekhez hasonlóan kapjuk az egyoldali deriváltakra vonatkozó állításokat.</p>
+        <p><b>3°</b> A 2° állítás közvetlen következménye. \(\blacksquare\)</p>
+        <div class="note"><b>Kiegészítés</b> (a diákon nincs részletezve):<br>(1) \(F(d+h) - F(d) = \int_d^{d+h} f\) ugyanúgy jön az additivitásból, mint a 9. tételben. \(f(d) = \frac1h\int_d^{d+h} f(d)\,dt\), mert konstans integrálja \(\int_d^{d+h} c\,dt = c\cdot h\) (\(h \lt 0\)-ra is, a megállapodás szerint).<br>(2) A \(d\) és \(d+h\) közötti \(t\)-kre \(|t - d| \le |h| \lt \delta\), ezért ott \(|f(t) - f(d)| \lt \varepsilon\); az integrál monotonitása miatt \(\int |f(t) - f(d)|\,dt \le \int \varepsilon\,dt\). (\(|f - f(d)|\) integrálható, mert \(f - f(d) \in R\), és akkor abszolút értéke is.) \(h \lt 0\)-ra \(\frac1h\int_d^{d+h} = \frac{1}{|h|}\int_{d+h}^d\).<br>(3) A diákon itt „\(\lt \varepsilon\)” áll; az integrál monotonitásából csak „\(\le\)” következik, de ez a határértékhez elég (\(\frac\varepsilon2\)-vel indítva már \(\lt \varepsilon\)).<br>(4) 3°: \(F \in D[a,b] \Rightarrow F \in C[a,b]\), \(F \in D(a,b)\) és \(F' = f\), tehát \(F\) primitív függvénye \(f\)-nek \([a,b]\)-n (8. tétel definíciója szerint).</div>
+      </div>
+    </details>
+  </article>
+
+  </div>
+</section>
+
+<!-- ================= PARCIÁLIS INTEGRÁLÁS, HELYETTESÍTÉS ================= -->
+<section id="modszerek">
+  <div class="section-head">
+    <span class="label">10. előadás · A határozott integrál 4.</span>
+    <h2>Parciális integrálás, helyettesítés</h2>
+    <p>Mindkettő a Newton–Leibniz-tételre, illetve az integrálfüggvény deriválhatóságára épül.</p>
+  </div>
+  <div class="taskgroup">
+
+  <article class="task" id="t11">
+    <div class="task-head"><span class="no">11.</span><span class="src">10. előadás · Parciális integrálás</span></div>
+    <p class="stmt"><b>A parciális integrálásra vonatkozó tétel határozott integrálra.</b></p>
+    <details>
+      <summary>Tétel</summary>
+      <div class="sol">
+        <p>Tegyük fel, hogy \(f, g : [a,b] \to \R\), \(f, g \in D[a,b]\) és \(f', g' \in R[a,b]\). Ekkor</p>
+        \[\int_a^b f g' = f(b)g(b) - f(a)g(a) - \int_a^b f' g.\]
+      </div>
+    </details>
+    <details>
+      <summary>Bizonyítás</summary>
+      <div class="sol">
+        <div class="tip"><b>Kulcsötlet:</b> \((fg)' = f'g + fg'\), tehát \(fg\) primitív függvénye \(f'g + fg'\)-nek; Newton–Leibniz, majd átrendezés. Előbb az integrálhatóságot kell biztosítani.</div>
+        <p>Egyrészt \(f \in D[a,b] \implies f \in C[a,b] \implies f \in R[a,b]\). Mivel \(g' \in R[a,b]\), ezért \(f g' \in R[a,b]\). Hasonlóan kapjuk azt is, hogy \(f' g \in R[a,b]\). Így \(f'g + fg' \in R[a,b]\).</p>
+        <p>Másrészt \(fg\) primitív függvénye az \(f'g + fg'\) függvénynek (ui. \((fg)' = f'g + fg'\)). A Newton–Leibniz-tétel szerint tehát</p>
+        \[\int_a^b \big(fg' + f'g\big) = \big[fg\big]_a^b = f(b)g(b) - f(a)g(a).\]
+        <p>A határozott integrál additivitását felhasználva rendezés után azt kapjuk, hogy</p>
+        \[\int_a^b fg' = \big[fg\big]_a^b - \int_a^b f'g. \quad \blacksquare\]
+        <div class="note"><b>Felhasznált tételek:</b> deriválható \(\Rightarrow\) folytonos; folytonos \(\Rightarrow\) integrálható (7. tétel); szorzat és összeg integrálhatósága (2–3. tétel); Newton–Leibniz-tétel (8. tétel).</div>
+        <div class="note"><b>Kiegészítés:</b> „additivitás” itt az integrál összegre vonatkozó tulajdonsága (2. tétel): \(\int_a^b (fg' + f'g) = \int_a^b fg' + \int_a^b f'g\). A primitív függvény definíciójának feltételei: \(fg \in C[a,b]\) (mert \(fg \in D[a,b]\)), \(fg \in D(a,b)\) és ott \((fg)' = f'g + fg'\).</div>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="t12">
+    <div class="task-head"><span class="no">12.</span><span class="src">10. előadás · Helyettesítéssel való integrálás</span></div>
+    <p class="stmt"><b>A helyettesítéses integrálás szabálya határozott integrálra.</b></p>
+    <details>
+      <summary>Tétel</summary>
+      <div class="sol">
+        <p>Tegyük fel, hogy \(f \in C[a,b]\) és a \(g : [\alpha, \beta] \to [a,b]\) függvény folytonosan deriválható. Ekkor</p>
+        \[\int_{g(\alpha)}^{g(\beta)} f = \int_\alpha^\beta (f\circ g)\cdot g'.\]
+      </div>
+    </details>
+    <details>
+      <summary>Bizonyítás</summary>
+      <div class="sol">
+        <div class="tip"><b>Kulcsötlet:</b> mindkét oldalt integrálfüggvény értékeként írjuk fel: \(F(x) = \int_{g(\alpha)}^x f\), \(G(u) = \int_\alpha^u (f\circ g)\,g'\). A láncszabály szerint \(F\circ g\) és \(G\) deriváltja ugyanaz, tehát csak konstansban térnek el, és \(\alpha\)-ban mindkettő 0.</div>
+        <p>Tekintsük az</p>
+        \[F(x) := \int_{g(\alpha)}^x f \quad \big(x \in [a,b]\big), \qquad G(u) := \int_\alpha^u (f\circ g)\cdot g' \quad \big(u \in [\alpha,\beta]\big)\]
+        <p>integrálfüggvényeket. Megmutatjuk, hogy</p>
+        \[(*) \qquad \int_{g(\alpha)}^{g(\beta)} f = F\big(g(\beta)\big) = G(\beta) = \int_\alpha^\beta (f\circ g)\cdot g'.\]
+        <p>Egyrészt \(f \in C[a,b] \implies F' = f\), másrészt \((f\circ g)\cdot g' \in C[\alpha,\beta] \implies G' = (f\circ g)\cdot g'\).</p>
+        <p>Mivel \((F\circ g)' = (F'\circ g)\cdot g' = (f\circ g)\cdot g'\), ezért \((F\circ g - G)' = 0 \implies \exists\,c \in \R : F\circ g - G = c\). Ugyanakkor \(F\big(g(\alpha)\big) = 0 = G(\alpha) \implies c = 0\), következésképpen \(F\circ g = G \implies F\big(g(\beta)\big) = G(\beta)\).</p>
+        <p>A \((*)\) egyenlőség tehát valóban teljesül. \(\blacksquare\)</p>
+        <div class="note"><b>Felhasznált tételek:</b> az integrálfüggvény deriválhatósága (10. tétel, 3°): folytonos függvény integrálfüggvényének deriváltja maga a függvény; a láncszabály (összetett függvény deriválása); és ha egy intervallumon a derivált azonosan 0, akkor a függvény ott állandó (a Lagrange-középértéktétel következménye).</div>
+        <div class="note"><b>Kiegészítés</b> (a diákon nincs részletezve):<br>(1) \((f\circ g)\cdot g' \in C[\alpha,\beta]\), mert \(g\) folytonos (deriválható), \(f\) folytonos, így \(f\circ g\) folytonos, és \(g'\) a feltétel szerint folytonos; folytonos függvények szorzata folytonos. Ezért a jobb oldali integrál is létezik.<br>(2) \(g(\alpha) \in [a,b]\), így \(F\) az \([a,b]\)-n értelmezett, \(g(\alpha)\)-ban eltűnő integrálfüggvény; \(F(g(\alpha)) = \int_{g(\alpha)}^{g(\alpha)} f = 0\), \(G(\alpha) = \int_\alpha^\alpha (f\circ g)\,g' = 0\).<br>(3) Nem kell, hogy \(g(\alpha) \lt g(\beta)\) legyen: \(g(\alpha) \gt g(\beta)\) esetén a bal oldal az \(\int_u^v := -\int_v^u\) megállapodás szerint értendő, a bizonyítás változatlan.</div>
+      </div>
+    </details>
+  </article>
+
+  </div>
+</section>
+
+<footer>Forrás: <a href="../MegajanlottVizsgaTetelek2resz.pdf" target="_blank" rel="noopener">Bizonyítással kért tételek, 2. ZH (PDF)</a>; a 7–10. előadás diái (<a href="../El%C5%91ad%C3%A1s%20anyagok/07_ea_An_II_A_B.pdf" target="_blank" rel="noopener">7.</a>, <a href="../El%C5%91ad%C3%A1s%20anyagok/08_ea_An_II_A_B.pdf" target="_blank" rel="noopener">8.</a>, <a href="../El%C5%91ad%C3%A1s%20anyagok/09_ea_An_II_A_B.pdf" target="_blank" rel="noopener">9.</a>, <a href="../El%C5%91ad%C3%A1s%20anyagok/10_ea_An_II_A_B.pdf" target="_blank" rel="noopener">10.</a>). A „Kulcsötlet” és a „Kiegészítés” dobozok saját magyarázatok, a tételek és bizonyítások az előadás megfogalmazását követik.</footer>
+</div>
+
+<!-- Fejezetsáv: az éppen olvasott szakasz gombja kiemelve -->
+<style>
+nav.bar a.active, nav.bar a.active:hover, nav.bar a.active:focus-visible { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+</style>
+<script>
+(function () {
+  var nav = document.querySelector('nav.bar');
+  if (!nav) return;
+  var links = Array.prototype.filter.call(nav.querySelectorAll('a[href^="#"]'), function (a) {
+    return a.getAttribute('href').length > 1 && document.getElementById(a.getAttribute('href').slice(1));
+  });
+  var current = null, ticking = false;
+  function sectionOf(a) { return document.getElementById(a.getAttribute('href').slice(1)); }
+  function update() {
+    ticking = false;
+    var line = nav.getBoundingClientRect().bottom + 12, active = null;
+    var visible = links.filter(function (a) { return sectionOf(a).offsetParent !== null; });
+    visible.forEach(function (a) { if (sectionOf(a).getBoundingClientRect().top <= line) active = a; });
+    // a lap alján az utolsó szakasz az aktuális akkor is, ha rövid
+    if (visible.length && window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) active = visible[visible.length - 1];
+    if (active === current) return;
+    if (current) { current.classList.remove('active'); current.removeAttribute('aria-current'); }
+    current = active;
+    if (!active) return;
+    active.classList.add('active');
+    active.setAttribute('aria-current', 'location');
+    var ul = active.closest('ul'), ur = ul.getBoundingClientRect(), ar = active.getBoundingClientRect();
+    var left = ar.left - ur.left + ul.scrollLeft, right = left + ar.width;
+    if (left < ul.scrollLeft || right > ul.scrollLeft + ul.clientWidth) ul.scrollTo({ left: Math.max(0, left - 16), behavior: 'smooth' });
+  }
+  function schedule() { if (!ticking) { ticking = true; setTimeout(update, 40); } }
+  window.addEventListener('scroll', schedule, { passive: true });
+  window.addEventListener('resize', schedule);
+  document.addEventListener('input', schedule);   // a keresés elrejthet szakaszokat
+  document.addEventListener('toggle', schedule, true);
+  update();
+})();
+</script>
+</body>
+</html>

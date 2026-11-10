@@ -1,0 +1,790 @@
+<!doctype html>
+<html lang="hu" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Analízis II · Alapintegrálok kidolgozva</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['\\(', '\\)']],
+      displayMath: [['\\[', '\\]']],
+      macros: {
+        arcsin: '\\operatorname{arc\\,sin}', arccos: '\\operatorname{arc\\,cos}',
+        arctg: '\\operatorname{arc\\,tg}', arcctg: '\\operatorname{arc\\,ctg}',
+        tg: '\\operatorname{tg}', ctg: '\\operatorname{ctg}', R: '\\mathbb{R}'
+      }
+    },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js" async></script>
+<style>
+/* Layout: same exam-paper look as the DIMAT prep, in the Analysis orange; every task = statement + folded solution + folded walkthrough */
+:root {
+  --paper: #f5f7fa;
+  --grid: rgba(180, 80, 11, 0.06);
+  --card: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6574;
+  --rule: #d7dde6;
+  --accent: #b4500b;
+  --accent-soft: #fcefe4;
+  --mark: #b8352a;
+  --mark-soft: #fbe9e6;
+  --ok: #2c7a4b;
+  --ok-soft: #e3f3e9;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-label: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f141b; --grid: rgba(242, 162, 94, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+    --rule: #2a3442; --accent: #f2a25e; --accent-soft: #33241a; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+    --ok: #74d39c; --ok-soft: #173225; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f141b; --grid: rgba(242, 162, 94, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+  --rule: #2a3442; --accent: #f2a25e; --accent-soft: #33241a; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+  --ok: #74d39c; --ok-soft: #173225; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background-color: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 1.06rem;
+  line-height: 1.6;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 80px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2rem, 6vw, 3.1rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.65rem; font-weight: 700; letter-spacing: -0.01em; }
+h3 { font-size: 1.1rem; font-weight: 600; }
+p { margin: 0; }
+a { color: var(--accent); }
+.label { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding: 2px 0; margin: 6px 0 !important; min-width: 0; max-width: 100%; }
+/* grid children must be allowed to shrink, otherwise wide formulas push the page sideways */
+.task, .sol, .step, .rule-card, .sheet > * { grid-template-columns: minmax(0, 1fr); min-width: 0; }
+.rule-card li, .rule-card p, .sol p, .sol li, .step p, .stmt, .tip, .warn, .mistake p, td { overflow-x: auto; overflow-y: hidden; }
+
+/* back to subject page */
+.back { justify-self: start; display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px 9px 12px; border: 1.5px solid var(--accent); border-radius: 8px; background: var(--accent-soft); color: var(--ink); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 1.02rem; line-height: 1; white-space: nowrap; transition: background .15s, color .15s; }
+.back .arr { color: var(--accent); font-size: 1.25rem; transition: transform .15s, color .15s; }
+.back:hover, .back:focus-visible { background: var(--accent); color: var(--paper); outline: none; }
+.back:hover .arr, .back:focus-visible .arr { color: var(--paper); transform: translateX(-3px); }
+
+/* header */
+header.hero { display: grid; gap: 14px; padding-block: 0 26px; border-bottom: 2px solid var(--accent); }
+.hero .sub { color: var(--muted); max-width: 62ch; }
+.facts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.fact { display: flex; flex-direction: column; gap: 2px; padding: 8px 14px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; min-width: 120px; }
+.fact b { font-family: var(--f-display); font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+
+nav.bar { position: sticky; top: 0; z-index: 5; background: var(--paper); border-bottom: 1px solid var(--rule); margin-inline: -16px; padding-inline: 16px; }
+nav.bar ul { list-style: none; margin: 0; padding: 10px 0; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin; }
+nav.bar a { display: block; white-space: nowrap; text-decoration: none; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.04em; color: var(--ink); padding: 6px 10px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); }
+nav.bar a:hover, nav.bar a:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+nav.bar a.nav-back { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+
+section { padding-top: 44px; display: grid; gap: 18px; scroll-margin-top: 56px; }
+.section-head { display: grid; gap: 6px; }
+.section-head p { color: var(--muted); max-width: 64ch; }
+
+/* reminder cards */
+.sheet { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; }
+.rule-card { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 14px 16px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.rule-card h3 { font-size: 1rem; }
+.rule-card p, .rule-card li { font-size: 0.95rem; }
+.rule-card ul, .rule-card ol { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.rule-card.wide { grid-column: 1 / -1; }
+
+/* tables (sign charts, value tables) */
+.tbl { overflow-x: auto; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--rule); vertical-align: middle; }
+th { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+tr:last-child td, tr:last-child th { border-bottom: 0; }
+table.sgn { width: auto; min-width: 100%; }
+table.sgn th, table.sgn td { text-align: center; white-space: nowrap; border-left: 1px solid var(--rule); }
+table.sgn th:first-child { border-left: 0; text-transform: none; letter-spacing: 0; font-family: var(--f-body); font-size: 1rem; color: var(--ink); background: var(--accent-soft); }
+table.sgn td.pt { background: color-mix(in srgb, var(--accent-soft) 55%, transparent); }
+.p { color: var(--ok); font-weight: 600; }
+.n { color: var(--mark); font-weight: 600; }
+.note { font-size: 0.82rem; color: var(--muted); }
+.tag { font-family: var(--f-label); font-size: 0.72rem; color: var(--accent); }
+
+/* exercises */
+.task { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 18px; display: grid; gap: 10px; min-width: 0; scroll-margin-top: 60px; }
+.task-head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.task-head .no { font-family: var(--f-display); font-weight: 700; font-size: 1.05rem; }
+.task-head .src { font-family: var(--f-label); font-size: 0.72rem; color: var(--muted); }
+.task-head .kind { margin-left: auto; font-family: var(--f-label); font-size: 0.75rem; color: var(--accent); }
+.stmt { max-width: 70ch; }
+details { border-top: 1px dashed var(--rule); padding-top: 8px; min-width: 0; }
+summary { cursor: pointer; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); list-style: none; display: inline-flex; gap: 8px; align-items: center; padding: 4px 0; }
+summary::-webkit-details-marker { display: none; }
+summary::before { content: "+"; display: inline-grid; place-items: center; width: 18px; height: 18px; border: 1px solid currentColor; border-radius: 3px; font-size: 0.8rem; }
+details[open] > summary::before { content: "−"; }
+summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sol { display: grid; gap: 10px; padding-top: 6px; max-width: 74ch; min-width: 0; }
+.sol ol, .sol ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.step { display: grid; gap: 8px; min-width: 0; }
+.step > b:first-child { font-family: var(--f-display); font-weight: 600; }
+.ans { display: inline-block; background: var(--ok-soft); color: var(--ok); font-weight: 600; padding: 2px 9px; border-radius: 4px; }
+.warn { background: var(--mark-soft); border-left: 3px solid var(--mark); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 0.95rem; }
+.tip { background: var(--accent-soft); border-left: 3px solid var(--accent); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 0.95rem; }
+.taskgroup { display: grid; gap: 12px; }
+
+/* graphs */
+figure.graph { margin: 0; background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 8px 8px 6px; display: grid; gap: 6px; }
+figure.graph svg { width: 100%; height: auto; display: block; }
+figure.graph figcaption { display: flex; flex-wrap: wrap; gap: 4px 16px; font-family: var(--f-label); font-size: 0.72rem; color: var(--muted); padding: 0 4px; }
+.lg::before { content: ""; display: inline-block; width: 16px; height: 0; vertical-align: middle; margin-right: 6px; border-top: 2.5px solid var(--accent); }
+.lg.asy::before { border-top: 1.5px dashed var(--muted); }
+.lg.ext::before { width: 9px; height: 9px; border: 0; border-radius: 50%; background: var(--ok); }
+.lg.inf::before { width: 9px; height: 9px; border: 2px solid var(--mark); border-radius: 50%; box-sizing: border-box; }
+svg .gl { stroke: var(--rule); stroke-width: 1; opacity: .55; }
+svg .ax { stroke: var(--muted); stroke-width: 1.3; }
+svg .tk { fill: var(--muted); font-family: var(--f-label); font-size: 11px; }
+svg .cv { fill: none; stroke: var(--accent); stroke-width: 2.6; stroke-linejoin: round; stroke-linecap: round; }
+svg .as { stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 6 5; fill: none; }
+svg .pe { fill: var(--ok); stroke: var(--paper); stroke-width: 1.5; }
+svg .pi { fill: var(--paper); stroke: var(--mark); stroke-width: 2.2; }
+svg .pz { fill: var(--ink); }
+svg .po { fill: var(--paper); stroke: var(--accent); stroke-width: 2; }
+svg .pl { fill: var(--ink); font-family: var(--f-label); font-size: 12px; paint-order: stroke; stroke: var(--paper); stroke-width: 4px; stroke-linejoin: round; }
+
+/* mistakes */
+.mistakes { display: grid; gap: 10px; }
+.mistake { display: grid; grid-template-columns: auto 1fr; gap: 12px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 12px 14px; }
+.mistake .x { font-family: var(--f-display); font-weight: 700; color: var(--mark); font-size: 1.2rem; line-height: 1.3; }
+
+footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.88rem; }
+
+@media (max-width: 520px) {
+  body { font-size: 1rem; }
+  .task { padding: 14px; }
+  th, td { padding: 6px 8px; }
+}
+
+/* Taylor graphs: second curve dashed, highlighted x-band */
+svg .cv2 { fill: none; stroke: var(--ok); stroke-width: 2.2; stroke-dasharray: 7 5; }
+svg .bd { fill: var(--accent-soft); opacity: .8; }
+.lg.tay::before { border-top: 2.2px dashed var(--ok); }
+.lg.band::before { height: 10px; border: 0; background: var(--accent-soft); }
+/* primitive-function families and vertical asymptotes */
+svg .cv3 { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: .4; }
+.lg.fam::before { opacity: .45; border-top-width: 1.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <a class="back" href="../../index.html#/anal2"><span class="arr" aria-hidden="true">←</span>Vissza: Analízis II.</a>
+  <span class="label">Analízis II. · Primitív függvények · alapintegrálok</span>
+  <h1>Alapintegrálok kidolgozva</h1>
+  <p class="sub">A két alapintegrál-táblázat (<a href="../Alapintegralok.pdf" target="_blank" rel="noopener">Alapintegralok.pdf ↗</a> és <a href="../int-tabl.pdf" target="_blank" rel="noopener">int-tabl.pdf ↗</a>) összes sora feladatként: előbb próbáld fejből megmondani a primitív függvényt, aztán nyisd le. A magyarázat deriválással ellenőrzi az eredményt, és megindokolja, miért éppen azon az intervallumon érvényes.</p>
+  <div class="facts">
+    <div class="fact"><span class="label">Alapintegrál</span><b>23 db</b></div>
+    <div class="fact"><span class="label">Csak int-tabl.pdf</span><b>5 db</b></div>
+    <div class="fact"><span class="label">Elírás a forrásban</span><b>2 db</b></div>
+  </div>
+</header>
+
+<nav class="bar" aria-label="Fejezetek">
+  <ul>
+    <li><a class="nav-back" href="../../index.html#/anal2" aria-label="Vissza: Analízis II.">← ANAL II</a></li>
+    <li><a href="#tablazat">Táblázat</a></li>
+    <li><a href="#hatvany">Hatványfüggvények</a></li>
+    <li><a href="#exp">Exponenciális függvények</a></li>
+    <li><a href="#trig">Trigonometrikus függvények</a></li>
+    <li><a href="#hiperbolikus">Hiperbolikus függvények</a></li>
+    <li><a href="#inverz">Racionális és gyökös integrandusok</a></li>
+    <li><a href="#hibak">Gyakori hibák</a></li>
+  </ul>
+</nav>
+
+<section id="tablazat">
+  <div class="section-head">
+    <span class="label">Áttekintés</span>
+    <h2>Összefoglaló táblázat</h2>
+    <p>Mindegyik sorhoz \(+\,c\) is jár. A sorszámra kattintva a kártyához ugrasz. Gyakorláshoz inkább a lenti kártyákat használd, ahol az eredmény le van takarva.</p>
+  </div>
+  <details>
+    <summary>Táblázat megnyitása</summary>
+    <div class="tbl"><table>
+      <thead><tr><th>#</th><th>\(f(x)\)</th><th>\(\int f(x)\,dx\)</th><th>Ahol</th></tr></thead>
+      <tbody>
+        <tr><td><a href="#a1">1.</a></td><td>\(x^n\)</td><td>\(\dfrac{x^{n+1}}{n+1} + c\)</td><td>\(x \in \R,\ n \in \mathbb N\)</td></tr>
+        <tr><td><a href="#a2">2.</a></td><td>\(\frac1x\)</td><td>\((0,+\infty)\text{-en } \ln x + c, \qquad (-\infty,0)\text{-n } \ln(-x) + c\)</td><td>\(x \in (0,+\infty), \text{ ill. } x \in (-\infty, 0)\)</td></tr>
+        <tr><td><a href="#a3">3.</a></td><td>\(\frac{1}{x^n}\)</td><td>\(\dfrac{1}{(1-n)\,x^{n-1}} + c\)</td><td>\(x \in (-\infty,0) \text{ vagy } (0,+\infty),\ n = 2, 3, 4, \dots\)</td></tr>
+        <tr><td><a href="#a4">4.</a></td><td>\(x^\alpha\)</td><td>\(\dfrac{x^{\alpha+1}}{\alpha+1} + c\)</td><td>\(x \in (0,+\infty),\ \alpha \in \R \setminus \{-1\}\)</td></tr>
+        <tr><td><a href="#a5">5.</a></td><td>\(e^x\)</td><td>\(e^x + c\)</td><td>\(x \in \R\)</td></tr>
+        <tr><td><a href="#a6">6.</a></td><td>\(a^x\)</td><td>\(\dfrac{a^x}{\ln a} + c\)</td><td>\(x \in \R,\ a \in (0,1) \cup (1,+\infty)\)</td></tr>
+        <tr><td><a href="#a7">7.</a></td><td>\(\sin x\)</td><td>\(-\cos x + c\)</td><td>\(x \in \R\)</td></tr>
+        <tr><td><a href="#a8">8.</a></td><td>\(\cos x\)</td><td>\(\sin x + c\)</td><td>\(x \in \R\)</td></tr>
+        <tr><td><a href="#a9">9.</a></td><td>\(\tg x\)</td><td>\(-\ln\cos x + c\)</td><td>\(x \in (-\tfrac\pi2, \tfrac\pi2)\)</td></tr>
+        <tr><td><a href="#a10">10.</a></td><td>\(\ctg x\)</td><td>\(\ln\sin x + c\)</td><td>\(x \in (0, \pi)\)</td></tr>
+        <tr><td><a href="#a11">11.</a></td><td>\(\frac{1}{\cos^2 x}\)</td><td>\(\tg x + c\)</td><td>\(x \in (-\tfrac\pi2, \tfrac\pi2)\)</td></tr>
+        <tr><td><a href="#a12">12.</a></td><td>\(\frac{1}{\sin^2 x}\)</td><td>\(-\ctg x + c\)</td><td>\(x \in (0, \pi)\)</td></tr>
+        <tr><td><a href="#a13">13.</a></td><td>\(\operatorname{sh} x\)</td><td>\(\operatorname{ch} x + c\)</td><td>\(x \in \R\)</td></tr>
+        <tr><td><a href="#a14">14.</a></td><td>\(\operatorname{ch} x\)</td><td>\(\operatorname{sh} x + c\)</td><td>\(x \in \R\)</td></tr>
+        <tr><td><a href="#a15">15.</a></td><td>\(\operatorname{th} x\)</td><td>\(\ln\operatorname{ch} x + c\)</td><td>\(x \in \R\)</td></tr>
+        <tr><td><a href="#a16">16.</a></td><td>\(\operatorname{cth} x\)</td><td>\((0,+\infty)\text{-en } \ln\operatorname{sh} x + c, \qquad (-\infty,0)\text{-n } \ln\operatorname{sh}(-x) + c\)</td><td>\(x \in (0,+\infty), \text{ ill. } x \in (-\infty, 0)\)</td></tr>
+        <tr><td><a href="#a17">17.</a></td><td>\(\frac{1}{\operatorname{ch}^2 x}\)</td><td>\(\operatorname{th} x + c\)</td><td>\(x \in \R\)</td></tr>
+        <tr><td><a href="#a18">18.</a></td><td>\(\frac{1}{\operatorname{sh}^2 x}\)</td><td>\(-\operatorname{cth} x + c\)</td><td>\(x \in (-\infty,0) \text{ vagy } (0,+\infty)\)</td></tr>
+        <tr><td><a href="#a19">19.</a></td><td>\(\frac{1}{1 + x^2}\)</td><td>\(\arctg x + c \;\Big(= \tfrac\pi2 - \operatorname{arc\,ctg} x + c\Big)\)</td><td>\(x \in \R\)</td></tr>
+        <tr><td><a href="#a20">20.</a></td><td>\(\frac{1}{1 - x^2}\)</td><td>\((-1,1)\text{-en } \operatorname{arth} x = \tfrac12\ln\tfrac{1+x}{1-x} + c, \qquad |x| \gt 1\text{-re } \operatorname{arcth} x = \tfrac12\ln\tfrac{x+1}{x-1} + c\)</td><td>\(x \in (-1, 1), \text{ ill. } x \in (-\infty,-1) \text{ vagy } (1,+\infty)\)</td></tr>
+        <tr><td><a href="#a21">21.</a></td><td>\(\frac{1}{\sqrt{1 - x^2}}\)</td><td>\(\arcsin x + c \;\Big(= \tfrac\pi2 - \arccos x + c\Big)\)</td><td>\(x \in (-1, 1)\)</td></tr>
+        <tr><td><a href="#a22">22.</a></td><td>\(\frac{1}{\sqrt{x^2 + 1}}\)</td><td>\(\operatorname{arsh} x + c = \ln\big(x + \sqrt{x^2 + 1}\big) + c\)</td><td>\(x \in \R\)</td></tr>
+        <tr><td><a href="#a23">23.</a></td><td>\(\frac{1}{\sqrt{x^2 - 1}}\)</td><td>\((1,+\infty)\text{-en } \operatorname{arch} x = \ln\big(x + \sqrt{x^2-1}\big) + c, \qquad (-\infty,-1)\text{-en } -\operatorname{arch}(-x) + c\)</td><td>\(x \in (1,+\infty), \text{ ill. } x \in (-\infty,-1)\)</td></tr>
+      </tbody>
+    </table></div>
+  </details>
+</section>
+
+<section id="hatvany">
+  <div class="section-head">
+    <span class="label">Alapintegrálok</span>
+    <h2>Hatványfüggvények</h2>
+    <p>Az \(x^\alpha\) típusú függvények. A \(-1\) kitevő kivétel: ott logaritmus jön ki.</p>
+  </div>
+  <div class="taskgroup">
+  <article class="task" id="a1">
+    <div class="task-head"><span class="no">1.</span><span class="src">mindkét táblázat</span><span class="kind">hatvány</span></div>
+    \[\int x^n\,dx \quad (x \in \R,\ n \in \mathbb N) = \;?\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p><span class="ans">\(\dfrac{x^{n+1}}{n+1} + c\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Ellenőrzés:</b> \(\Big(\frac{x^{n+1}}{n+1}\Big)' = \frac{(n+1)x^n}{n+1} = x^n\). ✓</p>
+        <p><b>Miért \(\R\)?</b> Nemnegatív egész kitevőnél \(x^n\) és \(x^{n+1}\) minden valós számra értelmes és deriválható. Az \(n = 0\) eset: \(\int 1\,dx = x + c\).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="a2">
+    <div class="task-head"><span class="no">2.</span><span class="src">mindkét táblázat</span><span class="kind">logaritmus</span></div>
+    \[\int \frac1x\,dx \quad \big(x \in (0,+\infty), \text{ ill. } x \in (-\infty, 0)\big) = \;?\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p><span class="ans">\((0,+\infty)\text{-en } \ln x + c, \qquad (-\infty,0)\text{-n } \ln(-x) + c\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Ellenőrzés:</b> \((\ln x)' = \frac1x\), és a láncszabállyal \(\big(\ln(-x)\big)' = \frac{1}{-x}\cdot(-1) = \frac1x\). ✓</p>
+        <p><b>Két intervallum, két képlet:</b> a primitív függvényt mindig <i>intervallumon</i> keressük, és \(\frac1x\) értelmezési tartománya két intervallumból áll. Röviden: \(\ln|x| + c\), de a 0 két oldalán a konstans különbözhet.</p>
+        <p><b>Miért nem \(\frac{x^0}{0}\)?</b> Az \(\frac{x^{\alpha+1}}{\alpha+1}\) képlet \(\alpha = -1\)-re nullával osztana. Ezt a „lyukat” tölti ki a logaritmus.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="a3">
+    <div class="task-head"><span class="no">3.</span><span class="src">mindkét táblázat</span><span class="kind">hatvány · negatív egész</span></div>
+    \[\int \frac{1}{x^n}\,dx \quad \big(x \in (-\infty,0) \text{ vagy } (0,+\infty),\ n = 2, 3, 4, \dots\big) = \;?\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p><span class="ans">\(\dfrac{1}{(1-n)\,x^{n-1}} + c\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Levezetés:</b> \(\frac{1}{x^n} = x^{-n}\), és \(\int x^{-n}\,dx = \frac{x^{-n+1}}{-n+1} = \frac{1}{(1-n)x^{n-1}}\).</p>
+        <p><b>Ellenőrzés:</b> \(\big((1-n)^{-1}x^{1-n}\big)' = (1-n)^{-1}(1-n)x^{-n} = \frac{1}{x^n}\). ✓</p>
+        <p><b>Példa:</b> \(\int\frac{dx}{x^2} = -\frac1x + c\). Egész kitevő miatt negatív \(x\)-re is jó, tehát a 0 mindkét oldalán ugyanaz a képlet.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="a4">
+    <div class="task-head"><span class="no">4.</span><span class="src">mindkét táblázat</span><span class="kind">hatvány · valós kitevő</span></div>
+    \[\int x^\alpha\,dx \quad \big(x \in (0,+\infty),\ \alpha \in \R \setminus \{-1\}\big) = \;?\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p><span class="ans">\(\dfrac{x^{\alpha+1}}{\alpha+1} + c\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Ellenőrzés:</b> \(\Big(\frac{x^{\alpha+1}}{\alpha+1}\Big)' = x^\alpha\). ✓</p>
+        <p><b>Miért csak \((0,+\infty)\)?</b> Valós (pl. \(\frac12\), \(\sqrt2\)) kitevőre \(x^\alpha := e^{\alpha\ln x}\), ez csak \(x \gt 0\)-ra értelmes.</p>
+        <p><b>Gyakori alakok:</b> \(\int\sqrt x\,dx = \frac23 x^{3/2}\), \(\int\frac{dx}{\sqrt x} = 2\sqrt x\), \(\int\sqrt[3]{x^2}\,dx = \frac35 x^{5/3}\).</p>
+      </div>
+    </details>
+  </article>
+
+  </div>
+</section>
+
+<section id="exp">
+  <div class="section-head">
+    <span class="label">Alapintegrálok</span>
+    <h2>Exponenciális függvények</h2>
+    <p>Az \(e^x\) a deriválás „fixpontja”, \(a^x\)-nél egy \(\ln a\) szorzó jelenik meg.</p>
+  </div>
+  <div class="taskgroup">
+  <article class="task" id="a5">
+    <div class="task-head"><span class="no">5.</span><span class="src">mindkét táblázat</span><span class="kind">exponenciális</span></div>
+    \[\int e^x\,dx \quad (x \in \R) = \;?\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p><span class="ans">\(e^x + c\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Ellenőrzés:</b> \((e^x)' = e^x\). ✓</p>
+        <p><b>Lineáris helyettesítéssel:</b> \(\int e^{ax+b}\,dx = \frac{e^{ax+b}}{a} + c\) \((a \ne 0)\), pl. \(\int e^{-2x}\,dx = -\frac{e^{-2x}}{2} + c\).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="a6">
+    <div class="task-head"><span class="no">6.</span><span class="src">mindkét táblázat</span><span class="kind">exponenciális</span></div>
+    \[\int a^x\,dx \quad \big(x \in \R,\ a \in (0,1) \cup (1,+\infty)\big) = \;?\]
+    <p class="warn"><b>Megjegyzés a forráshoz.</b> Az <code>int-tabl.pdf</code>-ben itt \(I = (0,+\infty)\) szerepel, de a képlet az egész \(\R\)-en igaz (az <code>Alapintegralok.pdf</code> is \(\R\)-et ír).</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p><span class="ans">\(\dfrac{a^x}{\ln a} + c\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Ellenőrzés:</b> \(a^x = e^{x\ln a}\), így \((a^x)' = a^x\ln a\), tehát \(\big(\frac{a^x}{\ln a}\big)' = a^x\). ✓</p>
+        <p><b>Miért \(a \ne 1\)?</b> \(a = 1\)-re \(\ln a = 0\), és amúgy is \(1^x = 1\), aminek primitív függvénye \(x\).</p>
+        <p><b>Példa:</b> \(\int 2^x\,dx = \frac{2^x}{\ln 2} + c\).</p>
+      </div>
+    </details>
+  </article>
+
+  </div>
+</section>
+
+<section id="trig">
+  <div class="section-head">
+    <span class="label">Alapintegrálok</span>
+    <h2>Trigonometrikus függvények</h2>
+    <p>A \(\tg\) és a \(\ctg\) primitív függvénye csak az <code>int-tabl.pdf</code>-ben szerepel; mindkettő \(\frac{f'}{f}\) típusú.</p>
+  </div>
+  <div class="taskgroup">
+  <article class="task" id="a7">
+    <div class="task-head"><span class="no">7.</span><span class="src">mindkét táblázat</span><span class="kind">trigonometrikus</span></div>
+    \[\int \sin x\,dx \quad (x \in \R) = \;?\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p><span class="ans">\(-\cos x + c\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Ellenőrzés:</b> \((-\cos x)' = \sin x\). ✓</p>
+        <p><b>Előjel-emlékeztető:</b> deriválva \(\sin \to \cos \to -\sin \to -\cos \to \sin\). Integrálni ezen a körön visszafelé kell lépni, ezért \(\int\sin = -\cos\).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="a8">
+    <div class="task-head"><span class="no">8.</span><span class="src">mindkét táblázat</span><span class="kind">trigonometrikus</span></div>
+    \[\int \cos x\,dx \quad (x \in \R) = \;?\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p><span class="ans">\(\sin x + c\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Ellenőrzés:</b> \((\sin x)' = \cos x\). ✓</p>
+        <p><b>Lineáris helyettesítéssel:</b> \(\int\cos(2x+1)\,dx = \frac{\sin(2x+1)}{2} + c\).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="a9">
+    <div class="task-head"><span class="no">9.</span><span class="src">int-tabl.pdf</span><span class="kind">\(\frac{f'}{f}\) típus</span></div>
+    \[\int \tg x\,dx \quad \big(x \in (-\tfrac\pi2, \tfrac\pi2)\big) = \;?\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p><span class="ans">\(-\ln\cos x + c\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Levezetés:</b> \(\tg x = \frac{\sin x}{\cos x} = -\frac{(\cos x)'}{\cos x}\), és a \((-\frac\pi2,\frac\pi2)\) intervallumon \(\cos x \gt 0\), így \(\int\tg x\,dx = -\ln\cos x + c\).</p>
+        <p><b>Ellenőrzés:</b> \((-\ln\cos x)' = -\frac{-\sin x}{\cos x} = \tg x\). ✓</p>
+        <p><b>Miért ez az intervallum?</b> A \(\tg\) a \(\frac\pi2 + k\pi\) pontokban nincs értelmezve; a táblázat a 0-t tartalmazó intervallumot adja meg.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="a10">
+    <div class="task-head"><span class="no">10.</span><span class="src">int-tabl.pdf</span><span class="kind">\(\frac{f'}{f}\) típus</span></div>
+    \[\int \ctg x\,dx \quad \big(x \in (0, \pi)\big) = \;?\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p><span class="ans">\(\ln\sin x + c\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Levezetés:</b> \(\ctg x = \frac{\cos x}{\sin x} = \frac{(\sin x)'}{\sin x}\), és \((0,\pi)\)-n \(\sin x \gt 0\).</p>
+        <p><b>Ellenőrzés:</b> \((\ln\sin x)' = \frac{\cos x}{\sin x} = \ctg x\). ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="a11">
+    <div class="task-head"><span class="no">11.</span><span class="src">mindkét táblázat</span><span class="kind">trigonometrikus</span></div>
+    \[\int \frac{1}{\cos^2 x}\,dx \quad \big(x \in (-\tfrac\pi2, \tfrac\pi2)\big) = \;?\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p><span class="ans">\(\tg x + c\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Ellenőrzés:</b> \((\tg x)' = \frac{\cos x\cos x - \sin x(-\sin x)}{\cos^2 x} = \frac{1}{\cos^2 x}\). ✓</p>
+        <p><b>Ahol előkerül:</b> az \(f^\alpha f'\) típusban \(f = \tg x\) mellett (7. gyakorlat, órai 2(f) és házi 1(a)).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="a12">
+    <div class="task-head"><span class="no">12.</span><span class="src">mindkét táblázat</span><span class="kind">trigonometrikus</span></div>
+    \[\int \frac{1}{\sin^2 x}\,dx \quad \big(x \in (0, \pi)\big) = \;?\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p><span class="ans">\(-\ctg x + c\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Ellenőrzés:</b> \((\ctg x)' = \frac{-\sin^2 x - \cos^2 x}{\sin^2 x} = -\frac{1}{\sin^2 x}\), tehát \((-\ctg x)' = \frac{1}{\sin^2 x}\). ✓</p>
+        <p><b>Miért \((0,\pi)\)?</b> A \(\ctg\) a \(k\pi\) pontokban nincs értelmezve; \((0,\pi)\) az egyik maximális intervallum.</p>
+      </div>
+    </details>
+  </article>
+
+  </div>
+</section>
+
+<section id="hiperbolikus">
+  <div class="section-head">
+    <span class="label">Alapintegrálok</span>
+    <h2>Hiperbolikus függvények</h2>
+    <p>Definíciók: \(\operatorname{sh} x = \frac{e^x - e^{-x}}{2}\), \(\operatorname{ch} x = \frac{e^x + e^{-x}}{2}\), \(\operatorname{th} x = \frac{\operatorname{sh} x}{\operatorname{ch} x}\), \(\operatorname{cth} x = \frac{\operatorname{ch} x}{\operatorname{sh} x}\). Deriváltak: \(\operatorname{sh}' = \operatorname{ch}\), \(\operatorname{ch}' = \operatorname{sh}\) (előjelváltás nincs!), és \(\operatorname{ch}^2 x - \operatorname{sh}^2 x = 1\).</p>
+  </div>
+  <div class="taskgroup">
+  <article class="task" id="a13">
+    <div class="task-head"><span class="no">13.</span><span class="src">mindkét táblázat</span><span class="kind">hiperbolikus</span></div>
+    \[\int \operatorname{sh} x\,dx \quad (x \in \R) = \;?\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p><span class="ans">\(\operatorname{ch} x + c\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Ellenőrzés:</b> \(\Big(\frac{e^x + e^{-x}}{2}\Big)' = \frac{e^x - e^{-x}}{2} = \operatorname{sh} x\). ✓</p>
+        <p><b>Különbség a \(\sin\)-hoz képest:</b> itt nincs mínusz előjel: \(\int\sin = -\cos\), de \(\int\operatorname{sh} = +\operatorname{ch}\).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="a14">
+    <div class="task-head"><span class="no">14.</span><span class="src">mindkét táblázat</span><span class="kind">hiperbolikus</span></div>
+    \[\int \operatorname{ch} x\,dx \quad (x \in \R) = \;?\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p><span class="ans">\(\operatorname{sh} x + c\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Ellenőrzés:</b> \(\Big(\frac{e^x - e^{-x}}{2}\Big)' = \frac{e^x + e^{-x}}{2} = \operatorname{ch} x\). ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="a15">
+    <div class="task-head"><span class="no">15.</span><span class="src">int-tabl.pdf</span><span class="kind">\(\frac{f'}{f}\) típus</span></div>
+    \[\int \operatorname{th} x\,dx \quad (x \in \R) = \;?\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p><span class="ans">\(\ln\operatorname{ch} x + c\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Levezetés:</b> \(\operatorname{th} x = \frac{\operatorname{sh} x}{\operatorname{ch} x} = \frac{(\operatorname{ch} x)'}{\operatorname{ch} x}\), és \(\operatorname{ch} x \ge 1 \gt 0\) minden \(x\)-re.</p>
+        <p><b>Ellenőrzés:</b> \((\ln\operatorname{ch} x)' = \frac{\operatorname{sh} x}{\operatorname{ch} x}\). ✓ Ez a \(\int\tg x = -\ln\cos x\) párja, de előjel nélkül.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="a16">
+    <div class="task-head"><span class="no">16.</span><span class="src">int-tabl.pdf</span><span class="kind">\(\frac{f'}{f}\) típus</span></div>
+    \[\int \operatorname{cth} x\,dx \quad \big(x \in (0,+\infty), \text{ ill. } x \in (-\infty, 0)\big) = \;?\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p><span class="ans">\((0,+\infty)\text{-en } \ln\operatorname{sh} x + c, \qquad (-\infty,0)\text{-n } \ln\operatorname{sh}(-x) + c\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Levezetés:</b> \(\operatorname{cth} x = \frac{(\operatorname{sh} x)'}{\operatorname{sh} x}\). Ha \(x \gt 0\), akkor \(\operatorname{sh} x \gt 0\) és \(\ln\operatorname{sh} x\) a primitív függvény. Ha \(x \lt 0\), akkor \(\operatorname{sh} x \lt 0\), és \(\ln(-\operatorname{sh} x) = \ln\operatorname{sh}(-x)\), mert \(\operatorname{sh}\) páratlan.</p>
+        <p><b>Ellenőrzés \(x \lt 0\)-ra:</b> \(\big(\ln\operatorname{sh}(-x)\big)' = \frac{\operatorname{ch}(-x)\cdot(-1)}{\operatorname{sh}(-x)} = \frac{-\operatorname{ch} x}{-\operatorname{sh} x} = \operatorname{cth} x\). ✓</p>
+        <p><b>Tömören:</b> \(\ln|\operatorname{sh} x| + c\), ugyanúgy, mint \(\int\frac1x = \ln|x|\).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="a17">
+    <div class="task-head"><span class="no">17.</span><span class="src">mindkét táblázat</span><span class="kind">hiperbolikus</span></div>
+    \[\int \frac{1}{\operatorname{ch}^2 x}\,dx \quad (x \in \R) = \;?\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p><span class="ans">\(\operatorname{th} x + c\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Ellenőrzés:</b> \((\operatorname{th} x)' = \frac{\operatorname{ch}^2 x - \operatorname{sh}^2 x}{\operatorname{ch}^2 x} = \frac{1}{\operatorname{ch}^2 x}\). ✓ (A \(\operatorname{ch}^2 - \operatorname{sh}^2 = 1\) azonosság kell.)</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="a18">
+    <div class="task-head"><span class="no">18.</span><span class="src">mindkét táblázat</span><span class="kind">hiperbolikus</span></div>
+    \[\int \frac{1}{\operatorname{sh}^2 x}\,dx \quad \big(x \in (-\infty,0) \text{ vagy } (0,+\infty)\big) = \;?\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p><span class="ans">\(-\operatorname{cth} x + c\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Ellenőrzés:</b> \((\operatorname{cth} x)' = \frac{\operatorname{sh}^2 x - \operatorname{ch}^2 x}{\operatorname{sh}^2 x} = -\frac{1}{\operatorname{sh}^2 x}\), tehát \((-\operatorname{cth} x)' = \frac{1}{\operatorname{sh}^2 x}\). ✓</p>
+        <p><b>Miért nem \(\R\)?</b> \(\operatorname{sh} 0 = 0\), a 0-ban az integrandus nincs értelmezve.</p>
+      </div>
+    </details>
+  </article>
+
+  </div>
+</section>
+
+<section id="inverz">
+  <div class="section-head">
+    <span class="label">Alapintegrálok</span>
+    <h2>Racionális és gyökös integrandusok (arc, ar függvények)</h2>
+    <p>Ezek primitív függvényei az inverz trigonometrikus (arc) és az area (ar) függvények. Az ar függvények logaritmusos alakja csak az <code>int-tabl.pdf</code>-ben szerepel.</p>
+  </div>
+  <div class="taskgroup">
+  <article class="task" id="a19">
+    <div class="task-head"><span class="no">19.</span><span class="src">mindkét táblázat</span><span class="kind">arctg</span></div>
+    \[\int \frac{1}{1 + x^2}\,dx \quad (x \in \R) = \;?\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p><span class="ans">\(\arctg x + c \;\Big(= \tfrac\pi2 - \operatorname{arc\,ctg} x + c\Big)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Ellenőrzés:</b> \((\arctg x)' = \frac{1}{1 + \tg^2(\arctg x)} = \frac{1}{1+x^2}\). ✓</p>
+        <p><b>Miért ugyanaz a két alak?</b> \(\arctg x + \operatorname{arc\,ctg} x = \frac\pi2\), így a kettő csak konstansban különbözik.</p>
+        <p><b>Gyakori változat:</b> \(\int\frac{dx}{x^2 + k^2} = \frac1k\arctg\frac xk + c\) (8. gyakorlat, 3. alaptípus).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="a20">
+    <div class="task-head"><span class="no">20.</span><span class="src">int-tabl.pdf</span><span class="kind">arth · arcth</span></div>
+    \[\int \frac{1}{1 - x^2}\,dx \quad \big(x \in (-1, 1), \text{ ill. } x \in (-\infty,-1) \text{ vagy } (1,+\infty)\big) = \;?\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p><span class="ans">\((-1,1)\text{-en } \operatorname{arth} x = \tfrac12\ln\tfrac{1+x}{1-x} + c, \qquad |x| \gt 1\text{-re } \operatorname{arcth} x = \tfrac12\ln\tfrac{x+1}{x-1} + c\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Levezetés parciális törtekkel:</b> \(\frac{1}{1-x^2} = \frac12\Big(\frac{1}{1+x} + \frac{1}{1-x}\Big)\), így \(\int\frac{dx}{1-x^2} = \frac12\big(\ln|1+x| - \ln|1-x|\big) = \frac12\ln\Big|\frac{1+x}{1-x}\Big| + c\).</p>
+        <p><b>A két eset:</b> \((-1,1)\)-en \(\frac{1+x}{1-x} \gt 0\), ez az \(\operatorname{arth} x\). Ha \(|x| \gt 1\), akkor \(\big|\frac{1+x}{1-x}\big| = \frac{x+1}{x-1}\), ez az \(\operatorname{arcth} x\).</p>
+        <p><b>Ellenőrzés:</b> \(\big(\tfrac12\ln\frac{x+1}{x-1}\big)' = \frac12\Big(\frac{1}{x+1} - \frac{1}{x-1}\Big) = \frac{1}{1-x^2}\). ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="a21">
+    <div class="task-head"><span class="no">21.</span><span class="src">mindkét táblázat</span><span class="kind">arcsin</span></div>
+    \[\int \frac{1}{\sqrt{1 - x^2}}\,dx \quad \big(x \in (-1, 1)\big) = \;?\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p><span class="ans">\(\arcsin x + c \;\Big(= \tfrac\pi2 - \arccos x + c\Big)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Ellenőrzés:</b> \((\arcsin x)' = \frac{1}{\cos(\arcsin x)} = \frac{1}{\sqrt{1 - x^2}}\). ✓</p>
+        <p><b>Miért nyílt intervallum?</b> A \(\pm1\)-ben a nevező 0, ott az \(\arcsin\) sem deriválható.</p>
+        <p><b>Gyakori változat:</b> \(\int\frac{dx}{\sqrt{k^2 - x^2}} = \arcsin\frac xk + c\) \((|x| \lt k)\).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="a22">
+    <div class="task-head"><span class="no">22.</span><span class="src">mindkét táblázat</span><span class="kind">arsh</span></div>
+    \[\int \frac{1}{\sqrt{x^2 + 1}}\,dx \quad (x \in \R) = \;?\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p><span class="ans">\(\operatorname{arsh} x + c = \ln\big(x + \sqrt{x^2 + 1}\big) + c\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Ellenőrzés a logaritmusos alakkal:</b> \(\big(\ln(x + \sqrt{x^2+1})\big)' = \frac{1 + \frac{x}{\sqrt{x^2+1}}}{x + \sqrt{x^2+1}} = \frac{\frac{\sqrt{x^2+1} + x}{\sqrt{x^2+1}}}{x + \sqrt{x^2+1}} = \frac{1}{\sqrt{x^2+1}}\). ✓</p>
+        <p><b>Honnan a logaritmus?</b> Az \(y = \operatorname{sh} t = \frac{e^t - e^{-t}}{2}\) egyenletet \(e^t\)-re (másodfokú egyenletként) megoldva \(e^t = y + \sqrt{y^2+1}\).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="a23">
+    <div class="task-head"><span class="no">23.</span><span class="src">mindkét táblázat</span><span class="kind">arch</span></div>
+    \[\int \frac{1}{\sqrt{x^2 - 1}}\,dx \quad \big(x \in (1,+\infty), \text{ ill. } x \in (-\infty,-1)\big) = \;?\]
+    <p class="warn"><b>Megjegyzés a forráshoz.</b> Az <code>Alapintegralok.pdf</code> utolsó sorában az intervallum \((-\infty, 1)\), ez elírás: \(\sqrt{x^2-1}\) csak \(|x| \ge 1\)-re értelmes, a helyes intervallum \((-\infty,-1)\) (az <code>int-tabl.pdf</code> is így írja).</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p><span class="ans">\((1,+\infty)\text{-en } \operatorname{arch} x = \ln\big(x + \sqrt{x^2-1}\big) + c, \qquad (-\infty,-1)\text{-en } -\operatorname{arch}(-x) + c\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Ellenőrzés \(x \gt 1\)-re:</b> \(\big(\ln(x + \sqrt{x^2-1})\big)' = \frac{1 + \frac{x}{\sqrt{x^2-1}}}{x + \sqrt{x^2-1}} = \frac{1}{\sqrt{x^2-1}}\). ✓</p>
+        <p><b>A negatív oldal:</b> \(\big(\operatorname{arch}(-x)\big)' = \frac{1}{\sqrt{x^2-1}}\cdot(-1)\), ezért \(\int\frac{dx}{\sqrt{x^2-1}} = -\operatorname{arch}(-x) + c\). Az <code>int-tabl.pdf</code> ugyanezt fordítva írja: \(\int -\frac{1}{\sqrt{x^2-1}}\,dx = \operatorname{arch}(-x) = \ln\big(-x + \sqrt{x^2-1}\big)\).</p>
+        <p><b>Tömören:</b> mindkét oldalon \(\ln\big|x + \sqrt{x^2-1}\big| + c\), mert \(-\ln(-x + \sqrt{x^2-1}) = \ln\frac{1}{-x+\sqrt{x^2-1}} = \ln\big(-x - \sqrt{x^2-1}\big)\).</p>
+      </div>
+    </details>
+  </article>
+
+  </div>
+</section>
+
+<section id="hibak">
+  <div class="section-head">
+    <span class="label">Mire figyelj</span>
+    <h2>Gyakori hibák</h2>
+  </div>
+  <div class="mistakes">
+    <div class="mistake"><span class="x">✕</span><p><b>Előjelhiba a trigonometrikus függvényeknél.</b> \(\int\sin x\,dx = -\cos x\), de \(\int\operatorname{sh} x\,dx = +\operatorname{ch} x\). Ha bizonytalan vagy, deriválj vissza.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>\(\int\frac1x = \frac{x^0}{0}\).</b> A hatványképlet \(\alpha = -1\)-re nem működik, ott \(\ln x\) (ill. \(\ln(-x)\)) a válasz.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>\(\int a^x = \frac{a^{x+1}}{x+1}\).</b> Ez a hatványfüggvény képlete. Az exponenciálisnál a kitevőben van a változó: \(\frac{a^x}{\ln a}\).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Elfelejtett intervallum.</b> Minden alapintegrál csak a megadott intervallumon érvényes. \(\frac1x\), \(\operatorname{cth}\), \(\frac{1}{1-x^2}\), \(\frac{1}{\sqrt{x^2-1}}\) esetén a két oldalon más a képlet.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>\(\frac{1}{1+x^2}\) és \(\frac{1}{1-x^2}\) összekeverése.</b> Az első \(\arctg\), a második \(\operatorname{arth}\) (logaritmus). A gyökös párjaik: \(\frac{1}{\sqrt{1-x^2}} \to \arcsin\), \(\frac{1}{\sqrt{1+x^2}} \to \operatorname{arsh}\).</p></div>
+  </div>
+</section>
+
+<footer>Forrás: <a href="../Alapintegralok.pdf" target="_blank" rel="noopener">Alapintegralok.pdf</a> és <a href="../int-tabl.pdf" target="_blank" rel="noopener">int-tabl.pdf</a>. Minden primitív függvényt numerikus deriválással ellenőriztünk.</footer>
+</div>
+
+<!-- Fejezetsáv: az éppen olvasott szakasz gombja kiemelve -->
+<style>
+nav.bar a.active, nav.bar a.active:hover, nav.bar a.active:focus-visible { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+</style>
+<script>
+(function () {
+  var nav = document.querySelector('nav.bar');
+  if (!nav) return;
+  var links = Array.prototype.filter.call(nav.querySelectorAll('a[href^="#"]'), function (a) {
+    return a.getAttribute('href').length > 1 && document.getElementById(a.getAttribute('href').slice(1));
+  });
+  var current = null, ticking = false;
+  function sectionOf(a) { return document.getElementById(a.getAttribute('href').slice(1)); }
+  function update() {
+    ticking = false;
+    var line = nav.getBoundingClientRect().bottom + 12, active = null;
+    var visible = links.filter(function (a) { return sectionOf(a).offsetParent !== null; });
+    visible.forEach(function (a) { if (sectionOf(a).getBoundingClientRect().top <= line) active = a; });
+    // a lap alján az utolsó szakasz az aktuális akkor is, ha rövid
+    if (visible.length && window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) active = visible[visible.length - 1];
+    if (active === current) return;
+    if (current) { current.classList.remove('active'); current.removeAttribute('aria-current'); }
+    current = active;
+    if (!active) return;
+    active.classList.add('active');
+    active.setAttribute('aria-current', 'location');
+    var ul = active.closest('ul'), ur = ul.getBoundingClientRect(), ar = active.getBoundingClientRect();
+    var left = ar.left - ur.left + ul.scrollLeft, right = left + ar.width;
+    if (left < ul.scrollLeft || right > ul.scrollLeft + ul.clientWidth) ul.scrollTo({ left: Math.max(0, left - 16), behavior: 'smooth' });
+  }
+  function schedule() { if (!ticking) { ticking = true; setTimeout(update, 40); } }
+  window.addEventListener('scroll', schedule, { passive: true });
+  window.addEventListener('resize', schedule);
+  document.addEventListener('input', schedule);   // a keresés elrejthet szakaszokat
+  document.addEventListener('toggle', schedule, true);
+  update();
+})();
+</script>
+</body>
+</html>
