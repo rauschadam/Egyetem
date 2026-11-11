@@ -32,6 +32,9 @@
   --cpp: #0d7a72;
   --cpp-soft: #e0f4f1;
   --cpp-grid: rgba(13, 122, 114, 0.06);
+  --eva: #4f7a12;
+  --eva-soft: #eef6dc;
+  --eva-grid: rgba(79, 122, 18, 0.06);
   --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
   --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
   --f-label: "IBM Plex Mono", ui-monospace, Consolas, monospace;
@@ -43,6 +46,7 @@
     --dimat: #93abff; --dimat-soft: #1d2846; --anal: #f2a25e; --anal-soft: #33241a; --anal-grid: rgba(242, 162, 94, 0.05); --pe: #c4a7ff; --pe-soft: #261f3d; --pe-grid: rgba(196, 167, 255, 0.05);
     --algo: #f590b8; --algo-soft: #3b1e2b; --algo-grid: rgba(245, 144, 184, 0.05);
     --cpp: #5fd0c3; --cpp-soft: #13302d; --cpp-grid: rgba(95, 208, 195, 0.05);
+    --eva: #b6dd6a; --eva-soft: #262f17; --eva-grid: rgba(182, 221, 106, 0.05);
     color-scheme: dark;
   }
 }
@@ -52,6 +56,7 @@
   --dimat: #93abff; --dimat-soft: #1d2846; --anal: #f2a25e; --anal-soft: #33241a; --anal-grid: rgba(242, 162, 94, 0.05); --pe: #c4a7ff; --pe-soft: #261f3d; --pe-grid: rgba(196, 167, 255, 0.05);
   --algo: #f590b8; --algo-soft: #3b1e2b; --algo-grid: rgba(245, 144, 184, 0.05);
   --cpp: #5fd0c3; --cpp-soft: #13302d; --cpp-grid: rgba(95, 208, 195, 0.05);
+    --eva: #b6dd6a; --eva-soft: #262f17; --eva-grid: rgba(182, 221, 106, 0.05);
   color-scheme: dark;
 }
 
@@ -110,7 +115,9 @@ body.t-pe { --grid: var(--pe-grid); }
 body.t-algo { --grid: var(--algo-grid); }
 .t-cpp   { --hue: var(--cpp);   --hue-soft: var(--cpp-soft); --accent: var(--cpp); --accent-soft: var(--cpp-soft); }
 body.t-cpp { --grid: var(--cpp-grid); }
-.hero.t-dimat, .hero.t-anal, .hero.t-pe, .hero.t-algo, .hero.t-cpp { border-bottom-color: var(--hue); }
+.t-eva   { --hue: var(--eva);   --hue-soft: var(--eva-soft); --accent: var(--eva); --accent-soft: var(--eva-soft); }
+body.t-eva { --grid: var(--eva-grid); }
+.hero.t-dimat, .hero.t-anal, .hero.t-pe, .hero.t-algo, .hero.t-cpp, .hero.t-eva { border-bottom-color: var(--hue); }
 .hero .label.code { color: var(--hue); }
 
 /* home: subject cards */
@@ -217,10 +224,17 @@ a.item:hover .open, a.item:focus-visible .open { color: var(--hue); }
           items: [
             { kind: 'html', featured: true, icon: 'ZH', title: '1. ZH bizonyítások', desc: 'A megajánlott jegyhez bizonyítással kért 12 tétel az előadásdiák alapján: kiírt kérdés, lenyitható tétel és lenyitható bizonyítás.', href: 'ANAL II/Kidolgozások/zh1_bizonyitasok.html', tags: ['1. ZH', '12 tétel'] },
             { kind: 'html', featured: true, icon: 'ZH', title: '2. ZH bizonyítások', desc: 'A megajánlott jegyhez a 2. ZH-n bizonyítással kért 12 tétel (integrálhatóság, Heine, Newton–Leibniz, integrálfüggvény, parciális és helyettesítéses integrálás) az előadásdiák alapján.', href: 'ANAL II/Kidolgozások/zh2_bizonyitasok.html', tags: ['2. ZH', '12 tétel'] },
+            { kind: 'html', featured: true, n: '1', title: '1. gyakorlat kidolgozva', desc: 'Függvény határértéke: nevezetes határértékek, hatványsorok, a különbségi hányados határértéke. 2 órai (12 rész) és 2 házi feladat (6 rész), lenyitható megoldással, részletes magyarázattal és grafikonokkal.', href: 'ANAL II/Kidolgozások/01_gyakorlat_kidolgozas.html', tags: ['2 órai', '2 házi', '3 grafikon'] },
+            { kind: 'html', featured: true, n: '2', title: '2. gyakorlat kidolgozva', desc: 'Differenciálszámítás 1.: a derivált definíciója, deriválási szabályok, láncszabály, f^g alakú függvények. 3 órai (13 rész) és 1 házi feladat (6 rész), lenyitható megoldással, részletes magyarázattal és grafikonokkal.', href: 'ANAL II/Kidolgozások/02_gyakorlat_kidolgozas.html', tags: ['3 órai', '1 házi', '3 grafikon'] },
+            { kind: 'html', featured: true, n: '3', title: '3. gyakorlat kidolgozva', desc: 'Differenciálszámítás 2.: inverz függvény deriváltja, érintő, egyoldali deriváltak, esetszétválasztással megadott függvények. 4 órai és 3 házi feladat, lenyitható megoldással, részletes magyarázattal és grafikonokkal.', href: 'ANAL II/Kidolgozások/03_gyakorlat_kidolgozas.html', tags: ['4 órai', '3 házi', '3 grafikon'] },
+            { kind: 'html', featured: true, n: '4', title: '4. gyakorlat kidolgozva', desc: 'Differenciálszámítás 3.: monotonitás, lokális és abszolút szélsőértékek előjeltáblázattal, szélsőérték-feladatok. 4 órai (6 rész) és 4 házi feladat, lenyitható megoldással, részletes magyarázattal és grafikonokkal.', href: 'ANAL II/Kidolgozások/04_gyakorlat_kidolgozas.html', tags: ['4 órai', '4 házi', '3 grafikon'] },
             { kind: 'html', featured: true, n: '5', title: '5. gyakorlat kidolgozva', desc: 'Inverz trigonometrikus függvények és teljes függvényvizsgálat: 4 órai és 4 házi feladat, lenyitható megoldással, részletes magyarázattal és grafikonokkal.', href: 'ANAL II/Kidolgozások/05_gyakorlat_kidolgozas.html', tags: ['4 órai', '4 házi', '6 grafikon'] },
             { kind: 'html', featured: true, n: '6', title: '6. gyakorlat kidolgozva', desc: "L'Hospital-szabály és Taylor-polinomok hibabecsléssel: 3 órai (7 rész) és 2 házi feladat (5 rész), lenyitható megoldással, részletes magyarázattal és grafikonokkal.", href: 'ANAL II/Kidolgozások/06_gyakorlat_kidolgozas.html', tags: ['3 órai', '2 házi', '2 grafikon'] },
             { kind: 'html', featured: true, n: '7', title: '7. gyakorlat kidolgozva', desc: 'Primitív függvény, határozatlan integrál 1.: alapintegrálok, első helyettesítési szabály, parciális integrálás. 4 órai (15 rész) és 1 házi feladat (4 rész), lenyitható megoldással és részletes magyarázattal.', href: 'ANAL II/Kidolgozások/07_gyakorlat_kidolgozas.html', tags: ['4 órai', '1 házi', '1 grafikon'] },
             { kind: 'html', featured: true, n: '8', title: '8. gyakorlat kidolgozva', desc: 'Primitív függvény, határozatlan integrál 2.: racionális törtfüggvények, alaptípusok, parciális törtekre bontás. 2 órai (9 rész + tétel) és 1 házi feladat (3 rész), lenyitható megoldással és részletes magyarázattal.', href: 'ANAL II/Kidolgozások/08_gyakorlat_kidolgozas.html', tags: ['2 órai', '1 házi', '1 grafikon'] },
+            { kind: 'html', featured: true, n: '9', title: '9. gyakorlat kidolgozva', desc: 'Primitív függvény, határozatlan integrál 3.: a második helyettesítési szabály, eˣ-es és gyökös helyettesítések. 3 órai (6 rész + példa) és 1 házi feladat (3 rész), lenyitható megoldással és részletes magyarázattal.', href: 'ANAL II/Kidolgozások/09_gyakorlat_kidolgozas.html', tags: ['3 órai', '1 házi', '2 grafikon'] },
+            { kind: 'html', featured: true, n: '10', title: '10. gyakorlat kidolgozva', desc: 'Primitív függvény, határozatlan integrál 4.: trigonometrikus integrálok, t = tg(x/2) helyettesítés, sinᵐ·cosⁿ típus. 3 órai (6 rész + összevetés) és 1 házi feladat (3 rész), lenyitható megoldással és részletes magyarázattal.', href: 'ANAL II/Kidolgozások/10_gyakorlat_kidolgozas.html', tags: ['3 órai', '1 házi', '1 grafikon'] },
+            { kind: 'html', featured: true, n: '11–12', title: '11–12. gyakorlat kidolgozva', desc: 'A határozott integrál és alkalmazásai: Newton–Leibniz, parciális és helyettesítéses integrálás, terület, forgástest térfogata, ívhossz. 6 órai (10 rész) és 3 házi feladat (4 rész), lenyitható megoldással, részletes magyarázattal és grafikonokkal.', href: 'ANAL II/Kidolgozások/11_12_gyakorlat_kidolgozas.html', tags: ['6 órai', '3 házi', '4 grafikon'] },
             { kind: 'html', featured: true, icon: '∫', title: 'Alapintegrálok kidolgozva', desc: 'A két alapintegrál-táblázat 23 sora feladatként: lenyitható primitív függvény, deriválásos ellenőrzés és az intervallum indoklása.', href: 'ANAL II/Kidolgozások/alapintegralok_kidolgozas.html', tags: ['23 alapintegrál'] },
             { kind: 'html', featured: true, icon: 'RÖPZH', title: 'RöpZH kérdések kidolgozva', desc: 'Mind a 11 röpZH (2–12. gyakorlat) 100 kérdése, az előadásdiák megfogalmazásában: deriválás, szélsőérték, konvexitás, Taylor, primitív függvény, határozott integrál.', href: 'ANAL II/Kidolgozások/ropzh_kidolgozas.html', tags: ['2–12. röpZH', '100 kérdés'] },
             { kind: 'html', icon: 'KIDOLG', title: 'Taylor-sor mértani sorból', desc: '5. előadás · 1/(1+x) és 1/(1+x²) Taylor-sora, interaktív ábrával', href: 'ANAL II/Kidolgozások/taylor_mertani_sor.html' }
@@ -254,17 +268,17 @@ a.item:hover .open, a.item:focus-visible .open { color: var(--hue); }
           title: 'Gyakorlatok', note: 'A gyakorlati anyagok PDF-ben (órai feladatok megoldással), új fülön nyílnak.',
           sections: [
             { title: 'Gyakorlatonként', items: [
-              { kind: 'pdf', n: '1', title: '1. gyakorlat', desc: 'Függvény határértéke', href: 'ANAL II/Gyakorlat anyagok/01_Gy_An_II_A_B.pdf' },
-              { kind: 'pdf', n: '2', title: '2. gyakorlat', desc: 'Differenciálszámítás 1.', href: 'ANAL II/Gyakorlat anyagok/02_Gy_An_II_A_B.pdf' },
-              { kind: 'pdf', n: '3', title: '3. gyakorlat', desc: 'Differenciálszámítás 2.', href: 'ANAL II/Gyakorlat anyagok/03_Gy_An_II_A_B.pdf' },
-              { kind: 'pdf', n: '4', title: '4. gyakorlat', desc: 'Differenciálszámítás 3.', href: 'ANAL II/Gyakorlat anyagok/04_Gy_An_II_A_B.pdf' },
+              { kind: 'pdf', n: '1', title: '1. gyakorlat', desc: 'Függvény határértéke', href: 'ANAL II/Gyakorlat anyagok/01_Gy_An_II_A_B.pdf', tags: ['van kidolgozás'] },
+              { kind: 'pdf', n: '2', title: '2. gyakorlat', desc: 'Differenciálszámítás 1.', href: 'ANAL II/Gyakorlat anyagok/02_Gy_An_II_A_B.pdf', tags: ['van kidolgozás'] },
+              { kind: 'pdf', n: '3', title: '3. gyakorlat', desc: 'Differenciálszámítás 2.', href: 'ANAL II/Gyakorlat anyagok/03_Gy_An_II_A_B.pdf', tags: ['van kidolgozás'] },
+              { kind: 'pdf', n: '4', title: '4. gyakorlat', desc: 'Differenciálszámítás 3.', href: 'ANAL II/Gyakorlat anyagok/04_Gy_An_II_A_B.pdf', tags: ['van kidolgozás'] },
               { kind: 'pdf', n: '5', title: '5. gyakorlat', desc: 'Differenciálszámítás 4. · inverz trig. függvények, teljes függvényvizsgálat', href: 'ANAL II/Gyakorlat anyagok/05_Gy_An_II_A_B.pdf', tags: ['van kidolgozás'] },
               { kind: 'pdf', n: '6', title: '6. gyakorlat', desc: "Differenciálszámítás 5. · L'Hospital-szabály, Taylor-polinomok", href: 'ANAL II/Gyakorlat anyagok/06_Gy_An_II_A_B.pdf', tags: ['van kidolgozás'] },
               { kind: 'pdf', n: '7', title: '7. gyakorlat', desc: 'Primitív függvény, határozatlan integrál 1.', href: 'ANAL II/Gyakorlat anyagok/07_Gy_An_II_A_B.pdf', tags: ['van kidolgozás'] },
               { kind: 'pdf', n: '8', title: '8. gyakorlat', desc: 'Primitív függvény, határozatlan integrál 2.', href: 'ANAL II/Gyakorlat anyagok/08_Gy_An_II_A_B.pdf', tags: ['van kidolgozás'] },
-              { kind: 'pdf', n: '9', title: '9. gyakorlat', desc: 'Primitív függvény, határozatlan integrál 3.', href: 'ANAL II/Gyakorlat anyagok/09_Gy_An_II_A_B.pdf' },
-              { kind: 'pdf', n: '10', title: '10. gyakorlat', desc: 'Primitív függvény, határozatlan integrál 4.', href: 'ANAL II/Gyakorlat anyagok/10_Gy_An_II_A_B.pdf' },
-              { kind: 'pdf', n: '11–12', title: '11–12. gyakorlat', desc: 'A határozott integrál és alkalmazásai', href: 'ANAL II/Gyakorlat anyagok/11_12_Gy_An_II_A_B.pdf' }
+              { kind: 'pdf', n: '9', title: '9. gyakorlat', desc: 'Primitív függvény, határozatlan integrál 3.', href: 'ANAL II/Gyakorlat anyagok/09_Gy_An_II_A_B.pdf', tags: ['van kidolgozás'] },
+              { kind: 'pdf', n: '10', title: '10. gyakorlat', desc: 'Primitív függvény, határozatlan integrál 4.', href: 'ANAL II/Gyakorlat anyagok/10_Gy_An_II_A_B.pdf', tags: ['van kidolgozás'] },
+              { kind: 'pdf', n: '11–12', title: '11–12. gyakorlat', desc: 'A határozott integrál és alkalmazásai', href: 'ANAL II/Gyakorlat anyagok/11_12_Gy_An_II_A_B.pdf', tags: ['van kidolgozás'] }
             ]},
             { title: 'Összevont anyag', items: [
               { kind: 'pdf', icon: 'ÖSSZES', title: 'Analízis II. gyakorlatok', desc: 'Az összes gyakorlat feladatai egy fájlban, házi, gyakorló és további feladatokkal', href: 'ANAL II/Gyakorlat anyagok/An_II_A_B_Gyak.pdf' }
@@ -419,6 +433,63 @@ a.item:hover .open, a.item:focus-visible .open { color: var(--hue); }
             { kind: 'pdf', n: '4', title: 'Típusok és kifejezések', desc: 'Konstansok, típusok mérete, operátorok, precedencia, kötés, szekvenciapontok', href: 'C++/Előadás/cppexpr.pdf' },
             { kind: 'pdf', n: '5', title: 'Láthatósági szabályok', desc: 'Hatókör, elfedés, globális változók, névterek, memóriaszegmensek, verem, heap, RAII', href: 'C++/Előadás/cppscope.pdf' },
             { kind: 'pdf', n: '6', title: 'Élettartam szabályok', desc: 'Automatikus, statikus, dinamikus változók, adattagok, temporálisok, az answer-példa', href: 'C++/Előadás/cpplife.pdf' }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'eva', theme: 't-eva', code: 'EVA', name: 'Eseményvezérelt alkalmazások',
+      groups: [
+        {
+          title: 'Kidolgozások',
+          items: [
+            { kind: 'html', featured: true, icon: 'ZH', title: 'WinForms ZH: mire figyelj', desc: 'Felkészítő az 1. gyakorlati ZH-ra: keretek, időterv, ellenőrzőlista, modell- és nézetszabályok, a TMS statikus analízise, és a minta ZH (SameGame) lefordított, tesztelt teljes megoldása.', href: 'EVA/Kidolgozások/winforms_zh_felkeszito.html', tags: ['1. ZH', 'mintamegoldás', '3 gyakorló feladat'] },
+            { kind: 'pdf', icon: 'PDF', title: 'WinForms ZH puska (nyomtatható)', desc: 'Papír alapú jegyzet a ZH-ra: esemény a modellből és feliratkozás, gombrács kódból, Timer, MessageBox, új játék menüből, hibakereső táblázat.', href: 'EVA/Kidolgozások/winforms_puska_1.04CD.pdf', tags: ['1. ZH', 'nyomtatható'] }
+          ]
+        },
+        {
+          title: 'Zárthelyi',
+          items: [
+            { kind: 'pdf', icon: 'ZH', title: 'Minta ZH: SameGame', desc: 'WinForms, MV architektúra; közepes és jeles szint', href: 'EVA/elte_eva_mintazh_winforms.pdf', tags: ['van kidolgozás'] },
+            { kind: 'html', icon: 'ZH', title: 'Gyakorló ZH: Vakondvadász', desc: 'Saját feladat a minta ZH mintájára: időzítős WinForms játék, közepes és jeles szint, 90 perces stopper, pontosítások és fokozatos tippek.', href: 'EVA/Kidolgozások/vakondvadasz_minta_zh_1.01CD.html', tags: ['1. ZH', 'saját', 'Timer'] }
+          ]
+        },
+        {
+          title: 'Előadások', note: 'Az előadásdiák PDF-ben, új fülön nyílnak.',
+          items: [
+              { kind: 'pdf', n: '0', title: 'C# alapok', desc: 'A C# nyelv és a .NET áttekintése', href: 'EVA/Előadás anyagok/elte_eva_ea00_csharp.pdf' },
+              { kind: 'pdf', n: '1', title: 'Bevezetés', desc: 'A kurzus, számonkérés (ZH-k, TMS), eseményvezérelt programozás', href: 'EVA/Előadás anyagok/elte_eva_ea01_bevezetes.pdf' },
+              { kind: 'pdf', n: '1b', title: 'WinForms: statikus felület', desc: 'Ablakok, vezérlők, események, a Designer', href: 'EVA/Előadás anyagok/elte_eva_ea01_winforms_static.pdf', tags: ['1. ZH'] },
+              { kind: 'pdf', n: '2', title: 'WinForms: modell–nézet', desc: 'MV architektúra, események a modellből', href: 'EVA/Előadás anyagok/elte_eva_ea02_winforms_mv.pdf', tags: ['1. ZH'] },
+              { kind: 'pdf', n: '3', title: 'WinForms: dinamikus felület', desc: 'Vezérlők kódból, gombrács, időzítők, párbeszédablakok', href: 'EVA/Előadás anyagok/elte_eva_ea03_winforms_dynamic.pdf', tags: ['1. ZH'] },
+              { kind: 'pdf', n: '4', title: 'Architektúra és tesztelés', desc: 'Háromrétegű architektúra, perzisztencia, egységtesztelés', href: 'EVA/Előadás anyagok/elte_eva_ea04_winforms_architecture_testing.pdf', tags: ['1. ZH'] },
+              { kind: 'pdf', n: '5', title: 'Többszálúság', desc: 'Szálak, aszinkron műveletek, UI-szál', href: 'EVA/Előadás anyagok/elte_eva_ea05_winforms_multithread.pdf', tags: ['1. ZH'] },
+              { kind: 'pdf', n: '6', title: 'WPF alapok', desc: 'XAML, vezérlők, adatkötés', href: 'EVA/Előadás anyagok/elte_eva_ea06_wpf_basics.pdf' },
+              { kind: 'pdf', n: '7', title: 'WPF architektúra', desc: 'MVVM, parancsok, nézetmodell', href: 'EVA/Előadás anyagok/elte_eva_ea07_wpf_architecture.pdf' },
+              { kind: 'pdf', n: '8', title: 'WPF: összetett vezérlők, erőforrások', desc: 'Sablonok, stílusok, erőforrások', href: 'EVA/Előadás anyagok/elte_eva_ea08_wpf_complex_resources.pdf' },
+              { kind: 'pdf', n: '9', title: 'Avalonia UI', desc: 'Cross-platform felület Avaloniával', href: 'EVA/Előadás anyagok/elte_eva_ea09_avaloniaui.pdf' },
+              { kind: 'pdf', n: '10', title: 'Avalonia UI: összetett alkalmazások', desc: 'Haladó Avalonia-témák', href: 'EVA/Előadás anyagok/elte_eva_ea10_avaloniaui_complex.pdf' },
+              { kind: 'pdf', n: '11', title: 'Reaktív programozás', desc: 'Megfigyelhető adatfolyamok', href: 'EVA/Előadás anyagok/elte_eva_ea11_reactive.pdf' },
+              { kind: 'pdf', n: '12', title: 'Lokalizáció', desc: 'Többnyelvű alkalmazások', href: 'EVA/Előadás anyagok/elte_eva_ea12_localization.pdf' }
+          ]
+        },
+        {
+          title: 'Gyakorlatok', note: 'A gyakorlati munkafüzetek PDF-ben, új fülön nyílnak.',
+          items: [
+              { kind: 'pdf', n: '0', title: '0. gyakorlat', desc: 'Hibakeresés · Konzolos tombolasorsoló futási hibáinak javítása', href: 'EVA/Gyakorlat anyagok/elte_eva_gy00_munkafuzet.pdf' },
+              { kind: 'pdf', n: '1', title: '1. gyakorlat', desc: 'Konzolos alkalmazás · Szöveges fájlkezelés, LINQ', href: 'EVA/Gyakorlat anyagok/elte_eva_gy01_munkafuzet.pdf' },
+              { kind: 'pdf', n: '2', title: '2. gyakorlat', desc: 'Windows Forms bevezetés · Első WinForms-alkalmazás Visual Studióban', href: 'EVA/Gyakorlat anyagok/elte_eva_gy02_munkafuzet.pdf' },
+              { kind: 'pdf', n: '3', title: '3. gyakorlat', desc: 'Modell–nézet · MV architektúra: modell események, nézet frissítése', href: 'EVA/Gyakorlat anyagok/elte_eva_gy03_munkafuzet.pdf' },
+              { kind: 'pdf', n: '4', title: '4. gyakorlat', desc: 'Háromrétegű alkalmazás · Perzisztencia leválasztása', href: 'EVA/Gyakorlat anyagok/elte_eva_gy04_munkafuzet.pdf' },
+              { kind: 'pdf', n: '5', title: '5. gyakorlat', desc: 'Egységtesztelés · A modell réteg tesztelése', href: 'EVA/Gyakorlat anyagok/elte_eva_gy05_munkafuzet.pdf' },
+              { kind: 'pdf', n: '6', title: '6. gyakorlat', desc: 'Többszálúság · Aszinkron (párhuzamos) műveletek', href: 'EVA/Gyakorlat anyagok/elte_eva_gy06_munkafuzet.pdf' },
+              { kind: 'pdf', n: '7', title: '7. gyakorlat', desc: 'WPF bevezetés · WPF-alkalmazás hálózati kommunikációval', href: 'EVA/Gyakorlat anyagok/elte_eva_gy07_munkafuzet.pdf' },
+              { kind: 'pdf', n: '8', title: '8. gyakorlat', desc: 'MVVM · MVVM architektúra WPF-ben', href: 'EVA/Gyakorlat anyagok/elte_eva_gy08_munkafuzet.pdf' },
+              { kind: 'pdf', n: '9', title: '9. gyakorlat', desc: 'Animációk, triggerek · Ping-Pong játék MVVM-ben', href: 'EVA/Gyakorlat anyagok/elte_eva_gy09_munkafuzet.pdf' },
+              { kind: 'pdf', n: '10', title: '10. gyakorlat', desc: 'Avalonia UI · Cross-platform képletöltő alkalmazás', href: 'EVA/Gyakorlat anyagok/elte_eva_gy10_munkafuzet.pdf' },
+              { kind: 'pdf', n: '11', title: '11. gyakorlat', desc: 'Avalonia UI 2. · A képletöltő bővítése', href: 'EVA/Gyakorlat anyagok/elte_eva_gy11_munkafuzet.pdf' },
+              { kind: 'pdf', n: '12', title: '12. gyakorlat', desc: 'Reaktív programozás · Konzolos bevezetés', href: 'EVA/Gyakorlat anyagok/elte_eva_gy12_munkafuzet.pdf' },
+              { kind: 'pdf', n: '13', title: '13. gyakorlat', desc: 'Reaktív Avalonia · Reaktív programozás Avalonia UI-ban', href: 'EVA/Gyakorlat anyagok/elte_eva_gy13_munkafuzet.pdf' }
           ]
         }
       ]

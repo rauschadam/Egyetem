@@ -1,0 +1,700 @@
+<!doctype html>
+<html lang="hu" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Analízis II · 3. gyakorlat kidolgozva</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['\\(', '\\)']],
+      displayMath: [['\\[', '\\]']],
+      macros: {
+        arcsin: '\\operatorname{arc\\,sin}', arccos: '\\operatorname{arc\\,cos}',
+        arctg: '\\operatorname{arc\\,tg}', arcctg: '\\operatorname{arc\\,ctg}',
+        tg: '\\operatorname{tg}', ctg: '\\operatorname{ctg}', R: '\\mathbb{R}'
+      }
+    },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js" async></script>
+<style>
+/* Layout: same exam-paper look as the DIMAT prep, in the Analysis orange; every task = statement + folded solution + folded walkthrough */
+:root {
+  --paper: #f5f7fa;
+  --grid: rgba(180, 80, 11, 0.06);
+  --card: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6574;
+  --rule: #d7dde6;
+  --accent: #b4500b;
+  --accent-soft: #fcefe4;
+  --mark: #b8352a;
+  --mark-soft: #fbe9e6;
+  --ok: #2c7a4b;
+  --ok-soft: #e3f3e9;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-label: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f141b; --grid: rgba(242, 162, 94, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+    --rule: #2a3442; --accent: #f2a25e; --accent-soft: #33241a; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+    --ok: #74d39c; --ok-soft: #173225; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f141b; --grid: rgba(242, 162, 94, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+  --rule: #2a3442; --accent: #f2a25e; --accent-soft: #33241a; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+  --ok: #74d39c; --ok-soft: #173225; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background-color: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 1.06rem;
+  line-height: 1.6;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 80px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2rem, 6vw, 3.1rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.65rem; font-weight: 700; letter-spacing: -0.01em; }
+h3 { font-size: 1.1rem; font-weight: 600; }
+p { margin: 0; }
+a { color: var(--accent); }
+.label { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding: 2px 0; margin: 6px 0 !important; min-width: 0; max-width: 100%; }
+/* grid children must be allowed to shrink, otherwise wide formulas push the page sideways */
+.task, .sol, .step, .rule-card, .sheet > * { grid-template-columns: minmax(0, 1fr); min-width: 0; }
+.rule-card li, .rule-card p, .sol p, .sol li, .step p, .stmt, .tip, .warn, .mistake p, td { overflow-x: auto; overflow-y: hidden; }
+
+/* back to subject page */
+.back { justify-self: start; display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px 9px 12px; border: 1.5px solid var(--accent); border-radius: 8px; background: var(--accent-soft); color: var(--ink); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 1.02rem; line-height: 1; white-space: nowrap; transition: background .15s, color .15s; }
+.back .arr { color: var(--accent); font-size: 1.25rem; transition: transform .15s, color .15s; }
+.back:hover, .back:focus-visible { background: var(--accent); color: var(--paper); outline: none; }
+.back:hover .arr, .back:focus-visible .arr { color: var(--paper); transform: translateX(-3px); }
+
+/* header */
+header.hero { display: grid; gap: 14px; padding-block: 0 26px; border-bottom: 2px solid var(--accent); }
+.hero .sub { color: var(--muted); max-width: 62ch; }
+.facts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.fact { display: flex; flex-direction: column; gap: 2px; padding: 8px 14px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; min-width: 120px; }
+.fact b { font-family: var(--f-display); font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+
+nav.bar { position: sticky; top: 0; z-index: 5; background: var(--paper); border-bottom: 1px solid var(--rule); margin-inline: -16px; padding-inline: 16px; }
+nav.bar ul { list-style: none; margin: 0; padding: 10px 0; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin; }
+nav.bar a { display: block; white-space: nowrap; text-decoration: none; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.04em; color: var(--ink); padding: 6px 10px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); }
+nav.bar a:hover, nav.bar a:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+nav.bar a.nav-back { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+
+section { padding-top: 44px; display: grid; gap: 18px; scroll-margin-top: 56px; }
+.section-head { display: grid; gap: 6px; }
+.section-head p { color: var(--muted); max-width: 64ch; }
+
+/* reminder cards */
+.sheet { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; }
+.rule-card { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 14px 16px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.rule-card h3 { font-size: 1rem; }
+.rule-card p, .rule-card li { font-size: 0.95rem; }
+.rule-card ul, .rule-card ol { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.rule-card.wide { grid-column: 1 / -1; }
+
+/* tables (sign charts, value tables) */
+.tbl { overflow-x: auto; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--rule); vertical-align: middle; }
+th { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+tr:last-child td, tr:last-child th { border-bottom: 0; }
+table.sgn { width: auto; min-width: 100%; }
+table.sgn th, table.sgn td { text-align: center; white-space: nowrap; border-left: 1px solid var(--rule); }
+table.sgn th:first-child { border-left: 0; text-transform: none; letter-spacing: 0; font-family: var(--f-body); font-size: 1rem; color: var(--ink); background: var(--accent-soft); }
+table.sgn td.pt { background: color-mix(in srgb, var(--accent-soft) 55%, transparent); }
+.p { color: var(--ok); font-weight: 600; }
+.n { color: var(--mark); font-weight: 600; }
+.note { font-size: 0.82rem; color: var(--muted); }
+.tag { font-family: var(--f-label); font-size: 0.72rem; color: var(--accent); }
+
+/* exercises */
+.task { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 18px; display: grid; gap: 10px; min-width: 0; scroll-margin-top: 60px; }
+.task-head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.task-head .no { font-family: var(--f-display); font-weight: 700; font-size: 1.05rem; }
+.task-head .src { font-family: var(--f-label); font-size: 0.72rem; color: var(--muted); }
+.task-head .kind { margin-left: auto; font-family: var(--f-label); font-size: 0.75rem; color: var(--accent); }
+.stmt { max-width: 70ch; }
+details { border-top: 1px dashed var(--rule); padding-top: 8px; min-width: 0; }
+summary { cursor: pointer; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); list-style: none; display: inline-flex; gap: 8px; align-items: center; padding: 4px 0; }
+summary::-webkit-details-marker { display: none; }
+summary::before { content: "+"; display: inline-grid; place-items: center; width: 18px; height: 18px; border: 1px solid currentColor; border-radius: 3px; font-size: 0.8rem; }
+details[open] > summary::before { content: "−"; }
+summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sol { display: grid; gap: 10px; padding-top: 6px; max-width: 74ch; min-width: 0; }
+.sol ol, .sol ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.step { display: grid; gap: 8px; min-width: 0; }
+.step > b:first-child { font-family: var(--f-display); font-weight: 600; }
+.ans { display: inline-block; background: var(--ok-soft); color: var(--ok); font-weight: 600; padding: 2px 9px; border-radius: 4px; }
+.warn { background: var(--mark-soft); border-left: 3px solid var(--mark); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 0.95rem; }
+.tip { background: var(--accent-soft); border-left: 3px solid var(--accent); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 0.95rem; }
+.taskgroup { display: grid; gap: 12px; }
+
+/* graphs */
+figure.graph { margin: 0; background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 8px 8px 6px; display: grid; gap: 6px; }
+figure.graph > div > svg { width: 100%; height: auto; display: block; }
+figure.graph figcaption { display: flex; flex-wrap: wrap; gap: 4px 16px; font-family: var(--f-label); font-size: 0.72rem; color: var(--muted); padding: 0 4px; }
+.lg::before { content: ""; display: inline-block; width: 16px; height: 0; vertical-align: middle; margin-right: 6px; border-top: 2.5px solid var(--accent); }
+.lg.asy::before { border-top: 1.5px dashed var(--muted); }
+.lg.ext::before { width: 9px; height: 9px; border: 0; border-radius: 50%; background: var(--ok); }
+.lg.inf::before { width: 9px; height: 9px; border: 2px solid var(--mark); border-radius: 50%; box-sizing: border-box; }
+svg .gl { stroke: var(--rule); stroke-width: 1; opacity: .55; }
+svg .ax { stroke: var(--muted); stroke-width: 1.3; }
+svg .tk { fill: var(--muted); font-family: var(--f-label); font-size: 11px; }
+svg .cv { fill: none; stroke: var(--accent); stroke-width: 2.6; stroke-linejoin: round; stroke-linecap: round; }
+svg .as { stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 6 5; fill: none; }
+svg .pe { fill: var(--ok); stroke: var(--paper); stroke-width: 1.5; }
+svg .pi { fill: var(--paper); stroke: var(--mark); stroke-width: 2.2; }
+svg .pz { fill: var(--ink); }
+svg .po { fill: var(--paper); stroke: var(--accent); stroke-width: 2; }
+svg .pl { fill: var(--ink); font-family: var(--f-label); font-size: 12px; paint-order: stroke; stroke: var(--paper); stroke-width: 4px; stroke-linejoin: round; }
+
+/* mistakes */
+.mistakes { display: grid; gap: 10px; }
+.mistake { display: grid; grid-template-columns: auto 1fr; gap: 12px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 12px 14px; }
+.mistake .x { font-family: var(--f-display); font-weight: 700; color: var(--mark); font-size: 1.2rem; line-height: 1.3; }
+
+footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.88rem; }
+
+@media (max-width: 520px) {
+  body { font-size: 1rem; }
+  .task { padding: 14px; }
+  th, td { padding: 6px 8px; }
+}
+
+/* Taylor graphs: second curve dashed, highlighted x-band */
+svg .cv2 { fill: none; stroke: var(--ok); stroke-width: 2.2; stroke-dasharray: 7 5; }
+svg .bd { fill: var(--accent-soft); opacity: .8; }
+.lg.tay::before { border-top: 2.2px dashed var(--ok); }
+.lg.band::before { height: 10px; border: 0; background: var(--accent-soft); }
+/* primitive-function families and vertical asymptotes */
+svg .cv3 { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: .4; }
+.lg.fam::before { opacity: .45; border-top-width: 1.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <a class="back" href="../../index.html#/anal2"><span class="arr" aria-hidden="true">←</span>Vissza: Analízis II.</a>
+  <span class="label">Analízis II. · 3. gyakorlat · Differenciálszámítás 2.</span>
+  <h1>A 3. gyakorlat kidolgozva</h1>
+  <p class="sub">Az inverz függvény deriválása, lineáris közelítés és érintő, egyoldali deriváltak, esetszétválasztással megadott függvények deriválhatósága. Az órai feladatok a gyakorlati anyag megoldását követik, a házi feladatok (az összevont anyagból) saját megoldások. Az órán kérdezett röpZH-tételek: <a href="ropzh_kidolgozas.html#rz3">3. röpZH</a>. Előbb próbáld meg magad, és csak utána nyisd le a megoldást.</p>
+  <div class="facts">
+    <div class="fact"><span class="label">Órai feladat</span><b>4 (5 rész)</b></div>
+    <div class="fact"><span class="label">Házi feladat</span><b>3 (3 rész)</b></div>
+    <div class="fact"><span class="label">Grafikon</span><b>3 db</b></div>
+  </div>
+</header>
+
+<nav class="bar" aria-label="Fejezetek">
+  <ul>
+    <li><a class="nav-back" href="../../index.html#/anal2" aria-label="Vissza: Analízis II.">← ANAL II</a></li>
+    <li><a href="#emlekezteto">Emlékeztető</a></li>
+    <li><a href="#orai">Órai feladatok</a></li>
+    <li><a href="#hazi">Házi feladatok</a></li>
+    <li><a href="#hibak">Gyakori hibák</a></li>
+    <li><a href="ropzh_kidolgozas.html#rz3">3. röpZH ↗</a></li>
+  </ul>
+</nav>
+
+<!-- ================= EMLÉKEZTETŐ ================= -->
+<section id="emlekezteto">
+  <div class="section-head">
+    <span class="label">Ami kell hozzá</span>
+    <h2>Emlékeztető</h2>
+    <p>A 3. gyakorlat elméleti összefoglalója röviden. A feladatokban végig ezekre hivatkozunk.</p>
+  </div>
+  <div class="sheet">
+    <div class="rule-card wide">
+      <h3>Az inverz függvény deriválási szabálya</h3>
+      <p>Legyen \(I \subset \R\) nyílt intervallum és \(f : I \to \R\). Tegyük fel, hogy</p>
+      <ol>
+        <li>\(f\) szigorúan monoton és folytonos \(I\)-n,</li>
+        <li>egy \(a \in I\) pontban \(f \in D\{a\}\) és \(f'(a) \ne 0\).</li>
+      </ol>
+      <p>Ekkor az \(f^{-1}\) inverz függvény deriválható a \(b := f(a)\) pontban, és</p>
+      \[\big(f^{-1}\big)'(b) = \frac{1}{f'(a)} = \frac{1}{f'\big(f^{-1}(b)\big)}.\]
+      <p class="note">A nevezőben az \(f'\)-t az \(a = f^{-1}(b)\) pontban kell venni, nem \(b\)-ben. Az \(a\)-t az \(f(a) = b\) egyenletből kapjuk.</p>
+    </div>
+    <div class="rule-card">
+      <h3>Folytonosság és monotonitás deriválttal</h3>
+      <p>A deriválhatóságból következik a folytonosság: \(f \in D\{a\} \Longrightarrow f \in C\{a\}\).</p>
+      <p>Ha \(f \in D(a, b)\), akkor</p>
+      <ul>
+        <li>\(f' \gt 0\) \((a,b)\)-n \(\Longrightarrow f \uparrow\) (szigorúan nő),</li>
+        <li>\(f' \lt 0\) \((a,b)\)-n \(\Longrightarrow f \downarrow\) (szigorúan csökken).</li>
+      </ul>
+      <p class="note">A megfordítás nem igaz: \(x^3\) szigorúan nő, de \(f'(0) = 0\).</p>
+    </div>
+    <div class="rule-card">
+      <h3>Lineáris közelítés</h3>
+      <p>Legyen \(f \in \R \to \R\) és \(a \in \operatorname{int} \mathcal D_f\). Ekkor \(f \in D\{a\}\) pontosan akkor, ha \(\exists A \in \R\) és \(\exists\, \varepsilon : \mathcal D_f \to \R\), \(\lim_a \varepsilon = 0\), hogy</p>
+      \[f(x) - f(a) = A\,(x - a) + \varepsilon(x)(x - a) \quad (x \in \mathcal D_f).\]
+      <p>Ekkor \(A = f'(a)\), vagyis \(f(x) - f(a) \approx f'(a)(x - a)\), ha \(x \approx a\).</p>
+    </div>
+    <div class="rule-card">
+      <h3>Az érintő</h3>
+      <p>Az \(f\) grafikonjának az \(\big(a, f(a)\big)\) pontban van érintője, ha \(f \in D\{a\}\). Az érintő egyenlete:</p>
+      \[y = f'(a)\,(x - a) + f(a).\]
+      <p class="note">Két szám kell hozzá: \(f(a)\) és \(f'(a)\). A meredekség szám, nem függvény.</p>
+    </div>
+    <div class="rule-card">
+      <h3>Egyoldali deriváltak</h3>
+      <p>Ha \(\exists\,\delta \gt 0 : [a, a + \delta) \subset \mathcal D_f\), akkor a jobb oldali derivált</p>
+      \[f'_+(a) := \lim_{x \to a+0} \frac{f(x) - f(a)}{x - a},\]
+      <p>ha a határérték létezik és véges. Hasonlóan \(f'_-(a)\), \(x \to a - 0\) mellett.</p>
+      \[f \in D\{a\} \iff \exists f'_+(a),\ \exists f'_-(a) \text{ és } f'_+(a) = f'_-(a)\ (= f'(a)).\]
+    </div>
+    <div class="rule-card wide">
+      <h3>Recept: esetszétválasztással megadott függvény</h3>
+      <ol>
+        <li><b>Az ágak belsejében</b> (nyílt intervallumokon) a deriválási szabályok működnek: ott tagonként deriválunk.</li>
+        <li><b>A határpontban</b> \((a)\) a definícióhoz nyúlunk. Először a <b>folytonosság</b>: ha \(f \notin C\{a\}\), akkor \(f \notin D\{a\}\), és kész.</li>
+        <li>Ha \(f\) folytonos \(a\)-ban, kiszámoljuk \(f'_-(a)\)-t és \(f'_+(a)\)-t (a különbségi hányados egyoldali határértékeivel). Ha az \(a\)-t tartalmazó ág egy \(a\)-ban is deriválható \(g\) függvény megszorítása, és \(g(a) = f(a)\), akkor az arról az oldalról vett egyoldali derivált egyszerűen \(g'(a)\).</li>
+        <li>\(f \in D\{a\} \iff f'_-(a) = f'_+(a)\).</li>
+      </ol>
+      <p class="note">Hasznos határértékek: \(\lim_{x \to 0-0} e^{1/x} = 0\), \(\lim_{x \to 0+0} e^{1/x} = +\infty\), \(\lim_{t \to 0} \frac{e^t - 1}{t} = 1\).</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ÓRAI FELADATOK ================= -->
+<section id="orai">
+  <div class="section-head">
+    <span class="label">3. gyakorlat · Feladatok</span>
+    <h2>Órai feladatok</h2>
+    <p>A megoldások menete a 3. gyakorlati anyag kidolgozását követi. Minden eredményt numerikusan (különbségi hányadosokkal) ellenőriztünk. Az összevont anyag órai feladatai szó szerint megegyeznek a gyakorlati lapéival.</p>
+  </div>
+
+  <div class="taskgroup">
+
+  <!-- 1. feladat -->
+  <article class="task" id="o1">
+    <div class="task-head"><span class="no">1.</span><span class="src">3. gyakorlat · órai</span><span class="kind">inverz függvény deriváltja</span></div>
+    <p class="stmt">Igazoljuk, hogy az</p>
+    \[f(x) := \sqrt{e^{2x-1} + 1} \quad (x \in \R)\]
+    <p class="stmt">függvény invertálható, inverze differenciálható, és határozzuk meg \(\big(f^{-1}\big)'\big(\sqrt2\big)\)-t!</p>
+    <p class="warn"><b>Megjegyzés a forráshoz.</b> A hivatalos megoldás 2. módszerében kétszer is „\(y \in (1 + \infty)\)” szerepel; helyesen \(y \in (1, +\infty)\), ahogy a megoldás többi sorában is.</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <div class="step"><b>1. módszer: az inverz függvény deriválási szabálya.</b>
+          <p>A deriválási szabályok szerint \(f \in D(\R)\) és</p>
+          \[f'(x) = \frac{1}{2\sqrt{e^{2x-1}+1}}\cdot\big(e^{2x-1}+1\big)' = \frac{2e^{2x-1}}{2\sqrt{e^{2x-1}+1}} = \frac{e^{2x-1}}{\sqrt{e^{2x-1}+1}} \gt 0 \quad (x \in \R).\]
+          <p>Ezért \(f\) szigorúan monoton nő \(\R\)-en, így invertálható; és mivel deriválható, folytonos is. Azt is látjuk, hogy \(\sqrt2 \in \mathcal D_{f^{-1}} = \mathcal R_f\), hiszen</p>
+          \[\sqrt2 = \sqrt{e^{2x-1}+1} \iff e^{2x-1} = 1 \iff x = \tfrac12, \quad\text{azaz}\quad f\big(\tfrac12\big) = \sqrt2.\]
+          <p>Mivel \(f'\big(\frac12\big) = \frac{e^0}{\sqrt{e^0 + 1}} = \frac{1}{\sqrt2} \ne 0\), a tétel minden feltétele teljesül. Így \(f^{-1} \in D\{\sqrt2\}\) és</p>
+          \[\big(f^{-1}\big)'\big(\sqrt2\big) = \frac{1}{f'\big(\frac12\big)} = \frac{\sqrt{e^{2\cdot\frac12 - 1}+1}}{e^{2\cdot\frac12-1}} = \frac{\sqrt2}{1} = \sqrt2.\]
+        </div>
+        <div class="step"><b>2. módszer: az inverz explicit képlete.</b>
+          <p>Minden \(x, t \in \R\)-re \(\sqrt{e^{2x-1}+1} \lt \sqrt{e^{2t-1}+1} \iff x \lt t\), tehát \(f\) szigorúan nő, így invertálható. \(f\) folytonos, ezért</p>
+          \[\mathcal R_f = \Big(\inf_{x\in\R}\sqrt{e^{2x-1}+1},\ \sup_{x\in\R}\sqrt{e^{2x-1}+1}\Big) = (1, +\infty) = \mathcal D_{f^{-1}},\]
+          <p>tehát \(\sqrt2 \in \mathcal D_{f^{-1}}\). Ha \(y \in (1, +\infty)\), akkor</p>
+          \[y = \sqrt{e^{2x-1}+1} \iff e^{2x-1} = y^2 - 1 \iff 2x - 1 = \ln\big(y^2-1\big) \iff x = \tfrac12\ln\big(y^2 - 1\big) + \tfrac12.\]
+          <p>Így \(f^{-1}(y) = \frac12\ln(y^2-1) + \frac12\) \(\big(y \in (1, +\infty)\big)\), és a deriválási szabályok szerint \(f^{-1} \in D(1, +\infty)\),</p>
+          \[\big(f^{-1}\big)'(y) = \frac12\cdot\frac{1}{y^2-1}\cdot 2y = \frac{y}{y^2-1} \quad \big(y \in (1, +\infty)\big).\]
+          <p>\(y = \sqrt2\)-re: \(\frac{\sqrt2}{2 - 1} = \sqrt2\).</p>
+        </div>
+        <p>Eredmény: <span class="ans">\(\big(f^{-1}\big)'\big(\sqrt2\big) = \sqrt2\)</span></p>
+        <figure class="graph"><div id="g-o1"></div><figcaption><span class="lg">f</span><span class="lg tay">f⁻¹</span><span class="lg fam">y = x, és az érintők az (1/2; √2), illetve (√2; 1/2) pontokban</span></figcaption></figure>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Mit kell igazolni?</b> Három dolgot: (1) \(f\) invertálható (elég a szigorú monotonitás), (2) \(f^{-1}\) deriválható \(\sqrt2\)-ben (ehhez a tétel feltételei: szigorú monotonitás, folytonosság, \(f'(a) \ne 0\)), (3) a derivált értéke.</p>
+        <p><b>A kulcslépés:</b> megkeresni azt az \(a\)-t, amelyre \(f(a) = \sqrt2\). Itt \(a = \frac12\). A képletbe \(f'(a)\) kerül, <b>nem</b> \(f'(\sqrt2)\). (Ha valaki \(f'(\sqrt2)\)-vel számol, rossz számot kap.)</p>
+        <p><b>Miért jó a 2. módszer is?</b> Itt az inverz egyszerű képlettel felírható, ezért közvetlenül deriválható. Általában ez nem így van (lásd a házi 1. feladatot: \(x^3 + x\) inverzére nincs kényelmes képlet), ezért az 1. módszer az általános út.</p>
+        <p><b>A grafikon:</b> \(f^{-1}\) grafikonja az \(f\) grafikonjának tükörképe az \(y = x\) egyenesre. A \((\frac12, \sqrt2)\) pontbeli érintő meredeksége \(\frac{1}{\sqrt2}\), a tükrözött \((\sqrt2, \frac12)\) pontbeli érintőé ennek reciproka, \(\sqrt2\). Ez a tétel geometriai tartalma.</p>
+        <p><b>Ellenőrzés:</b> a két módszer ugyanazt adja; numerikusan \(\frac{f^{-1}(\sqrt2 + h) - f^{-1}(\sqrt2 - h)}{2h} \approx 1{,}41421\) kis \(h\)-ra. ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <!-- 2. feladat -->
+  <article class="task" id="o2a">
+    <div class="task-head"><span class="no">2. (a)</span><span class="src">3. gyakorlat · órai</span><span class="kind">deriválhatóság · logaritmus-azonosságok</span></div>
+    <p class="stmt">Legyen</p>
+    \[f(x) := \ln\frac{\sqrt{1+x}}{\big(x^2+1\big)^5} \quad (x \gt -1).\]
+    <p class="stmt">Vizsgáljuk meg deriválhatóság szempontjából az \(f\) függvényt, és határozzuk meg az \(f'\) deriváltfüggvényét!</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Az elemi függvények deriválhatóságából és a deriválási szabályokból következik, hogy minden \(x \gt -1\) pontban \(f \in D\{x\}\), ezért \(\mathcal D_{f'} = (-1, +\infty)\). (Itt \(1 + x \gt 0\), a gyök és a nevező pozitív, így a logaritmus argumentuma is.)</p>
+        <p>\(f'(x)\)-et kiszámolhatnánk az összetett függvény deriválási szabályával, de kevesebb számolással jutunk célhoz, ha előbb a logaritmus-azonosságokkal átalakítjuk \(f(x)\)-et:</p>
+        \[f(x) = \ln\sqrt{1+x} - \ln\big(x^2+1\big)^5 = \frac12\ln(1+x) - 5\ln\big(x^2+1\big) \quad (x \gt -1).\]
+        <p>Így a deriváltfüggvény:</p>
+        \[f'(x) = \frac12\cdot\frac{1}{1+x} - 5\cdot\frac{1}{x^2+1}\cdot 2x = \frac{1}{2(1+x)} - \frac{10x}{x^2+1} \quad (x \gt -1).\]
+        <p>Eredmény: <span class="ans">\(f \in D(-1, +\infty)\), \(\;f'(x) = \dfrac{1}{2(1+x)} - \dfrac{10x}{x^2+1}\quad (x \gt -1)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért szabad szétszedni a logaritmust?</b> Az \(\ln\frac{u}{v} = \ln u - \ln v\) és \(\ln u^k = k\ln u\) azonosságok csak \(u, v \gt 0\) esetén érvényesek. Itt \(x \gt -1\) miatt \(\sqrt{1+x} \gt 0\) és \((x^2+1)^5 \gt 0\), tehát rendben van. Az átalakított alakban már csak \(\ln(1+x)\) és \(\ln(x^2+1)\) deriváltja kell.</p>
+        <p><b>A hosszú út összevetésként:</b> \(f'(x) = \frac{(x^2+1)^5}{\sqrt{1+x}}\cdot\Big(\frac{\sqrt{1+x}}{(x^2+1)^5}\Big)'\), ahol a hányados deriválása egy hosszú tört. Ugyanoda jut, csak sokkal több hibalehetőséggel.</p>
+        <p><b>Közös nevezőre hozva</b> (nem kötelező): \(f'(x) = \dfrac{-19x^2 - 20x + 1}{2(1+x)(x^2+1)}\).</p>
+        <p><b>Ellenőrzés:</b> numerikus különbségi hányados \(x = -0{,}5;\ 0;\ 0{,}7;\ 3\)-ban egyezik a képlettel. Pl. \(x = 1\)-ben \(f'(1) = \frac14 - 5 = -4{,}75\). ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o2b">
+    <div class="task-head"><span class="no">2. (b)</span><span class="src">3. gyakorlat · órai</span><span class="kind">érintő egyenlete</span></div>
+    <p class="stmt">Mutassuk meg, hogy az előző \(f\) függvény grafikonjának a \(\big(0, f(0)\big)\) pontban van érintője, és írjuk fel az érintőegyenes egyenletét!</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Az (a) rész szerint \(f \in D\{0\}\), tehát a grafikonnak a \(\big(0, f(0)\big)\) pontban van érintője. Továbbá</p>
+        \[f(0) = \ln\frac{\sqrt1}{1^5} = \ln 1 = 0 \qquad\text{és}\qquad f'(0) = \frac{1}{2} - 0 = \frac12,\]
+        <p>ezért az érintőegyenes egyenlete</p>
+        \[y = f'(0)\,(x - 0) + f(0) = \frac{x}{2}.\]
+        <p>Eredmény: <span class="ans">\(y = \dfrac{x}{2}\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Lépések:</b> (1) létezés: az érintő definíció szerint pontosan akkor van, ha \(f \in D\{0\}\) — ezt az (a)-ban már beláttuk; (2) \(f(0)\); (3) \(f'(0)\); (4) behelyettesítés az \(y = f'(a)(x-a) + f(a)\) képletbe.</p>
+        <p><b>Lineáris közelítésként:</b> \(0\) közelében \(f(x) \approx \frac{x}{2}\). Pl. \(f(0{,}01) \approx 0{,}00448\), az érintő \(0{,}005\)-öt ad; az eltérés \(\varepsilon(x)\cdot x\) alakú, ahol \(\varepsilon(x) \to 0\).</p>
+        <p class="tip">Gyakori csúszás: az \(f'(x)\) képletet írni az érintő egyenletébe meredekségnek. Az érintő egyenes, a meredeksége egyetlen szám: \(f'(0) = \frac12\).</p>
+      </div>
+    </details>
+  </article>
+
+  <!-- 3. feladat -->
+  <article class="task" id="o3">
+    <div class="task-head"><span class="no">3.</span><span class="src">3. gyakorlat · órai</span><span class="kind">egyoldali deriváltak</span></div>
+    <p class="stmt">Hol deriválható az</p>
+    \[f(x) := \begin{cases} \dfrac{x}{1 + e^{1/x}}, &amp; \text{ha } x \in \R \setminus \{0\},\\[4pt] 0, &amp; \text{ha } x = 0\end{cases}\]
+    <p class="stmt">függvény? Ahol differenciálható, ott számítsuk ki a deriváltat!</p>
+    <p class="warn"><b>Megjegyzés a forráshoz.</b> A hivatalos megoldásban a jobb oldali derivált számolásának középső határértékénél „\(x \to 0-0\)” áll; helyesen \(x \to 0+0\) (az első határértékjel és az eredmény is a jobb oldali határértékre vonatkozik).</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <div class="step"><b>\(a \ne 0\):</b>
+          <p>Legyen \(a \in \R \setminus \{0\}\) tetszőleges. Az elemi függvényekre, az alapműveletekre és az összetett függvényre vonatkozó tételek alapján \(f \in D\{a\}\), és (mivel \(\big(e^{1/x}\big)' = -\frac{1}{x^2}e^{1/x}\))</p>
+          \[f'(a) = \frac{1\cdot\big(1 + e^{1/a}\big) - a\cdot\big(-\frac{1}{a^2}\big)e^{1/a}}{\big(1 + e^{1/a}\big)^2} = \frac{1 + e^{1/a} + \frac1a e^{1/a}}{\big(1 + e^{1/a}\big)^2}\]
+          \[= \frac{a + (1 + a)\,e^{1/a}}{a\,\big(1 + e^{1/a}\big)^2}.\]
+        </div>
+        <div class="step"><b>\(a = 0\):</b>
+          <p>A definíció szerint a különbségi hányados</p>
+          \[\frac{f(x) - f(0)}{x - 0} = \frac{1}{1 + e^{1/x}} \quad (x \in \R\setminus\{0\})\]
+          <p>függvény \(0\)-beli határértékét kell vizsgálni. Tudjuk, hogy \(\nexists \lim_{x\to0}\frac1x\), ezért a bal és jobb oldali határértéket külön nézzük. Mivel</p>
+          \[\lim_{x\to0-0}\frac1x = -\infty,\ \lim_{y\to-\infty} e^y = 0 \;\Longrightarrow\; \lim_{x\to0-0} e^{1/x} = 0,\]
+          \[\lim_{x\to0+0}\frac1x = +\infty,\ \lim_{y\to+\infty} e^y = +\infty \;\Longrightarrow\; \lim_{x\to0+0} e^{1/x} = +\infty,\]
+          <p>ezért</p>
+          \[f'_-(0) = \lim_{x\to0-0}\frac{f(x)-f(0)}{x-0} = \lim_{x\to0-0}\frac{1}{1 + e^{1/x}} = \frac{1}{1+0} = 1,\]
+          \[f'_+(0) = \lim_{x\to0+0}\frac{f(x)-f(0)}{x-0} = \lim_{x\to0+0}\frac{1}{1 + e^{1/x}} = 0.\]
+          <p>Így \(f'_-(0) \ne f'_+(0)\), tehát \(f\) <b>nem</b> deriválható a \(0\) pontban.</p>
+        </div>
+        <p>Eredmény: <span class="ans">\(f \in D(\R\setminus\{0\})\), \(\;f'(a) = \dfrac{a + (1+a)e^{1/a}}{a\,(1 + e^{1/a})^2}\ (a \ne 0)\); \(\;f \notin D\{0\}\) (\(f'_-(0) = 1\), \(f'_+(0) = 0\))</span></p>
+        <figure class="graph"><div id="g-o3"></div><figcaption><span class="lg">f</span><span class="lg tay">bal oldali érintő-félegyenes: y = x (x ≤ 0)</span><span class="lg fam">jobb oldali érintő-félegyenes: y = 0 (x ≥ 0)</span></figcaption></figure>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért kell a \(0\)-t külön kezelni?</b> A deriválási szabályok csak ott használhatók, ahol a függvény egy egész környezetben ugyanazzal a (deriválható) képlettel adott. A \(0\)-ban \(f\) külön van definiálva, és az \(e^{1/x}\) ott nincs is értelmezve, ezért marad a definíció: a különbségi hányados határértéke.</p>
+        <p><b>Az egyszerűsítés:</b> \(\frac{f(x) - 0}{x} = \frac{x}{x(1 + e^{1/x})} = \frac{1}{1 + e^{1/x}}\). Az egész kérdés tehát az \(e^{1/x}\) egyoldali viselkedésén múlik: balról \(0\)-hoz, jobbról \(+\infty\)-hez tart.</p>
+        <p><b>Folytonos-e \(0\)-ban?</b> Igen: \(\lim_{x\to0\pm0}\frac{x}{1+e^{1/x}} = 0 = f(0)\) (balról \(\frac{0}{1}\), jobbról „\(\frac{0}{+\infty}\)”). Tehát ez egy <b>törés</b>: folytonos, de nem deriválható pont (mint \(|x|\) a \(0\)-ban). A grafikonon jól látszik: balról az \(y = x\), jobbról az \(y = 0\) egyenes simul a görbéhez.</p>
+        <p><b>Ellenőrzés:</b> \(x = \mp 0{,}01\)-nél a különbségi hányados \(1{,}000000\), illetve \(\approx 4\cdot10^{-44}\). Az \(a \ne 0\) képletet \(a = -2;\ -0{,}3;\ 0{,}4;\ 1{,}5\)-ben numerikus deriválással ellenőriztük. ✓</p>
+        <p class="tip">Az \(a \ne 0\) képletbe nem lehet \(a = 0\)-t helyettesíteni (\(\frac1a\) nincs értelmezve). Még ha lehetne is, az \(f'\) határértéke és az \(f'(0)\) két különböző dolog.</p>
+      </div>
+    </details>
+  </article>
+
+  <!-- 4. feladat -->
+  <article class="task" id="o4">
+    <div class="task-head"><span class="no">4.</span><span class="src">3. gyakorlat · órai</span><span class="kind">paraméteres esetszétválasztás</span></div>
+    <p class="stmt">Legyenek \(a\), \(b\) és \(c\) valós paraméterek. Határozzuk meg az</p>
+    \[f(x) := \begin{cases} ax^2 + bx + c, &amp; \text{ha } x \in (-\infty, 0),\\ e^x, &amp; \text{ha } x \in [0, +\infty)\end{cases}\]
+    <p class="stmt">függvény deriváltfüggvényét!</p>
+    <p class="warn"><b>Megjegyzés a forráshoz.</b> Mindkét lapon (a gyakorlati lapon és az összevont anyagban is) „ha \(\in (-\infty, 0)\)”, „ha \(\in [0, +\infty)\)” áll, a feltételekből hiányzik az \(x\). Nyilvánvalóan „ha \(x \in \dots\)” értendő.</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <div class="step"><b>\(x \ne 0\):</b>
+          <p>Ha \(x \in \R\setminus\{0\}\) tetszőleges, akkor a megfelelő deriválhatósági tételek alapján létezik \(f'(x)\), és</p>
+          \[f'(x) = \begin{cases} 2ax + b, &amp; \text{ha } x \in (-\infty, 0),\\ e^x, &amp; \text{ha } x \in (0, +\infty),\end{cases}\]
+          <p>az \(a, b, c \in \R\) paraméterek tetszőleges megválasztása mellett.</p>
+        </div>
+        <div class="step"><b>\(x = 0\), folytonosság:</b>
+          <p>\(f'(0)\) létezése a paraméterektől függ. Ha létezik \(f'(0)\), akkor \(f\) a \(0\)-ban folytonos is. Mivel</p>
+          \[\lim_{x\to0-0}\big(ax^2 + bx + c\big) = c \qquad\text{és}\qquad \lim_{x\to0+0} e^x = 1 = f(0),\]
+          <p>ezért \(f \in C\{0\} \iff c = 1\) (és \(a, b \in \R\) tetszőleges). Tehát ha \(c \ne 1\), akkor \(f \notin D\{0\}\).</p>
+        </div>
+        <div class="step"><b>\(x = 0\), \(c = 1\):</b>
+          <p>Ekkor \(f \in D\{0\} \iff \exists f'_+(0),\ \exists f'_-(0)\) és \(f'_+(0) = f'_-(0)\). Legyen \(g(x) := ax^2 + bx + c\) \((x \in \R)\), az \(f\) bal ágának kiterjesztése. Mivel \(g(0) = c = 1 = f(0)\),</p>
+          \[f'_-(0) = g'_-(0) = g'(0) = b.\]
+          <p>Hasonlóan \(h(x) := e^x\) \((x \in \R)\) a jobb ág kiterjesztése, és \(f'_+(0) = h'_+(0) = h'(0) = 1\). Tehát</p>
+          \[f \in D\{0\} \iff c = 1,\ b = 1 \text{ és } a \in \R,\]
+          <p>és ekkor \(f'(0) = 1\).</p>
+        </div>
+        <p>Eredmény:</p>
+        <ul>
+          <li><span class="ans">Ha \(c = 1\) és \(b = 1\): \(\;f'(x) = \begin{cases} 2ax + 1, &amp; x \lt 0,\\ e^x, &amp; x \ge 0\end{cases}\)</span> \(\;(a \in \R\) tetszőleges\()\).</li>
+          <li><span class="ans">Minden más esetben: \(\;\mathcal D_{f'} = \R\setminus\{0\}\), \(\;f'(x) = 2ax + b\ (x \lt 0)\), \(\;f'(x) = e^x\ (x \gt 0)\)</span>.</li>
+        </ul>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért a folytonossággal kezdünk?</b> Mert ez a gyors kizáró feltétel: \(D\{0\} \Rightarrow C\{0\}\), tehát ha a két ág nem „ér össze”, nincs mit tovább vizsgálni. A ragasztás feltétele: a bal ág határértéke (\(c\)) egyezzen meg \(f(0) = e^0 = 1\)-gyel.</p>
+        <p><b>Miért szabad az ágak deriváltját összevetni?</b> A \(c = 1\) esetben a bal oldali különbségi hányados \(\frac{ax^2 + bx + 1 - 1}{x} = ax + b \to b\), a jobb oldali \(\frac{e^x - 1}{x} \to 1\). Ez pont \(g'(0)\) és \(h'(0)\). A „deriváljuk az ágakat és helyettesítsünk \(0\)-t” módszer tehát <b>csak a folytonosság után</b> jogos.</p>
+        <p><b>Mi történne \(c \ne 1\) esetén?</b> Pl. \(c = 2\), \(b = 1\): ekkor \(2ax + b\) és \(e^x\) is \(1\)-et ad \(0\)-ban, de a bal oldali különbségi hányados \(\frac{ax^2 + x + 2 - 1}{x} = ax + 1 + \frac1x \to -\infty\). A függvény ugrik, nem deriválható.</p>
+        <p><b>Az \(a\) paraméter</b> semmit sem számít a \(0\)-ban: az \(ax^2\) tag deriváltja \(0\)-ban \(0\). Ez a második deriváltnál számítana (\(f''_-(0) = 2a\), \(f''_+(0) = 1\)).</p>
+        <p><b>Ellenőrzés:</b> \(c = b = 1\) és \(a = -2;\ 0;\ 3\) mellett mindkét egyoldali különbségi hányados \(\approx 1\); \(c = 1\), \(b = 2\) mellett balról \(2\), jobbról \(1\). ✓</p>
+      </div>
+    </details>
+  </article>
+
+  </div>
+</section>
+
+<!-- ================= HÁZI FELADATOK ================= -->
+<section id="hazi">
+  <div class="section-head">
+    <span class="label">3. gyakorlat · Házi feladatok · saját megoldás</span>
+    <h2>Házi feladatok</h2>
+    <p>Az összevont gyakorlati anyag 3. gyakorlathoz tartozó házi feladatai. Ezekhez nincs hivatalos megoldás, ezek saját megoldások (numerikusan ellenőrizve).</p>
+  </div>
+
+  <div class="taskgroup">
+
+  <article class="task" id="h1">
+    <div class="task-head"><span class="no">1.</span><span class="src">3. gyakorlat · házi</span><span class="kind">inverz függvény deriváltja</span></div>
+    <p class="stmt">Mutassa meg, hogy az \(f(x) := x^3 + x\) \((x \in \R)\) függvény invertálható, \(f^{-1} \in D\), és számítsa ki \(\big(f^{-1}\big)'(2)\)-t.</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p><b>Invertálhatóság.</b> \(f \in D(\R)\) és \(f'(x) = 3x^2 + 1 \ge 1 \gt 0\) \((x \in \R)\), ezért \(f\) szigorúan monoton nő \(\R\)-en, így invertálható. Mivel deriválható, folytonos is.</p>
+        <p><b>Az értékkészlet.</b> \(\lim_{x\to-\infty} f(x) = -\infty\), \(\lim_{x\to+\infty} f(x) = +\infty\), és \(f\) folytonos és szigorúan nő, ezért \(\mathcal R_f = \R = \mathcal D_{f^{-1}}\).</p>
+        <p><b>Deriválhatóság.</b> Minden \(y \in \R\)-re legyen \(a := f^{-1}(y)\). Az inverz függvény deriválási szabályának feltételei teljesülnek (\(f\) szigorúan monoton, folytonos, \(f'(a) = 3a^2 + 1 \ne 0\)), ezért \(f^{-1} \in D(\R)\) és</p>
+        \[\big(f^{-1}\big)'(y) = \frac{1}{3\big(f^{-1}(y)\big)^2 + 1} \quad (y \in \R).\]
+        <p><b>Az érték \(2\)-ben.</b> Keressük azt az \(a\)-t, amelyre \(f(a) = 2\):</p>
+        \[a^3 + a - 2 = 0 \iff (a - 1)(a^2 + a + 2) = 0 \iff a = 1,\]
+        <p>mert \(a^2 + a + 2 \gt 0\). Tehát \(f^{-1}(2) = 1\), \(f'(1) = 4\), és</p>
+        \[\big(f^{-1}\big)'(2) = \frac{1}{f'(1)} = \frac14.\]
+        <p>Eredmény: <span class="ans">\(f^{-1} \in D(\R)\), \(\;\big(f^{-1}\big)'(2) = \dfrac14\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért nem az explicit képlettel?</b> Az \(x^3 + x = y\) egyenlet megoldása (Cardano-képlet) nagyon csúnya. Az inverz függvény deriválási szabálya pont arra jó, hogy az inverz képlete nélkül is megkapjuk a deriváltat — csak egy \(a\)-t kell találni, amelyre \(f(a) = 2\). Ezt próbálgatással (\(a = 1\)) és szorzattá alakítással kapjuk.</p>
+        <p><b>Miért \(f^{-1} \in D\) mindenütt?</b> Mert \(f'\) <b>sehol</b> sem nulla. (Az \(x^3\) inverze, a \(\sqrt[3]{y}\), éppen azért nem deriválható \(0\)-ban, mert ott \(f'(0) = 0\).)</p>
+        <p><b>Ellenőrzés:</b> az inverzt numerikusan (felezéssel) kiszámolva \(\frac{f^{-1}(2+h) - f^{-1}(2-h)}{2h} \approx 0{,}25\). ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="h2">
+    <div class="task-head"><span class="no">2.</span><span class="src">3. gyakorlat · házi</span><span class="kind">érintő egyenlete</span></div>
+    <p class="stmt">Írja fel az \(f\) függvény grafikonjának az \(a\) abszcisszájú pontjához tartozó érintőegyenesének az egyenletét, ha</p>
+    \[f(x) := \sin\frac{x - 1}{x^2 + 1} \quad (x \in \R), \qquad a = \frac12.\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Mivel \(x^2 + 1 \ne 0\), az összetett függvény és a hányados deriválási szabálya szerint \(f \in D(\R)\), így \(\frac12\)-ben van érintő. Legyen \(g(x) := \frac{x-1}{x^2+1}\). Ekkor</p>
+        \[g'(x) = \frac{(x^2 + 1) - (x - 1)\cdot 2x}{(x^2+1)^2} = \frac{-x^2 + 2x + 1}{(x^2+1)^2}, \qquad f'(x) = \cos g(x)\cdot g'(x).\]
+        <p>Az \(a = \frac12\) pontban:</p>
+        \[g\big(\tfrac12\big) = \frac{-\frac12}{\frac54} = -\frac25, \qquad g'\big(\tfrac12\big) = \frac{-\frac14 + 1 + 1}{\frac{25}{16}} = \frac74\cdot\frac{16}{25} = \frac{28}{25},\]
+        \[f\big(\tfrac12\big) = \sin\big(-\tfrac25\big) = -\sin\tfrac25, \qquad f'\big(\tfrac12\big) = \cos\big(-\tfrac25\big)\cdot\frac{28}{25} = \frac{28}{25}\cos\frac25.\]
+        <p>Az érintőegyenes egyenlete \(y = f'(\frac12)(x - \frac12) + f(\frac12)\), azaz</p>
+        \[y = \frac{28}{25}\cos\frac25\,\Big(x - \frac12\Big) - \sin\frac25 \;\approx\; 1{,}0316\,x - 0{,}9052.\]
+        <p>Eredmény: <span class="ans">\(y = \dfrac{28}{25}\cos\dfrac25\,\Big(x - \dfrac12\Big) - \sin\dfrac25\)</span></p>
+        <figure class="graph"><div id="g-h2"></div><figcaption><span class="lg">f(x) = sin((x − 1)/(x² + 1))</span><span class="lg tay">érintő az (1/2; −sin(2/5)) pontban</span></figcaption></figure>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Szerkezet:</b> \(f = \sin \circ g\), ahol a belső függvény egy hányados. A láncszabály:</p>
+        \[f'(x) = \sin'\big(g(x)\big)\cdot g'(x) = \cos\big(g(x)\big)\cdot g'(x).\]
+        <p><b>Előjelek:</b> \(\cos\) páros, ezért \(\cos(-\frac25) = \cos\frac25\); \(\sin\) páratlan, ezért \(\sin(-\frac25) = -\sin\frac25\). A \(\frac25\) radiánban értendő (nem fokban!).</p>
+        <p><b>Tipp:</b> ne az \(f'(x)\) teljes képletét egyszerűsítsd, hanem rögtön helyettesíts: \(g(\frac12)\) és \(g'(\frac12)\) két külön kis számolás.</p>
+        <p><b>Ellenőrzés:</b> \(\frac{28}{25}\cos 0{,}4 \approx 1{,}031588\), és a numerikus különbségi hányados \(\frac12\)-ben ugyanennyi; \(f(\frac12) \approx -0{,}389418\). ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="h3">
+    <div class="task-head"><span class="no">3.</span><span class="src">3. gyakorlat · házi</span><span class="kind">egyoldali deriváltak</span></div>
+    <p class="stmt">Hol deriválható az</p>
+    \[f(x) := \begin{cases} 1 - x, &amp; x \lt 0,\\ e^{-x}, &amp; x \ge 0\end{cases}\]
+    <p class="stmt">függvény? Ahol differenciálható, ott számítsa ki a deriváltat!</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <div class="step"><b>\(x \ne 0\):</b>
+          <p>A nyílt \((-\infty, 0)\) és \((0, +\infty)\) intervallumokon \(f\) egy-egy elemi függvénnyel egyezik meg, ezért ott deriválható, és</p>
+          \[f'(x) = -1 \ \ (x \lt 0), \qquad f'(x) = -e^{-x} \ \ (x \gt 0).\]
+        </div>
+        <div class="step"><b>\(x = 0\), folytonosság:</b>
+          <p>\(\lim_{x\to0-0}(1 - x) = 1\), \(\lim_{x\to0+0} e^{-x} = 1\) és \(f(0) = e^0 = 1\), tehát \(f \in C\{0\}\).</p>
+        </div>
+        <div class="step"><b>\(x = 0\), egyoldali deriváltak:</b>
+          \[f'_-(0) = \lim_{x\to0-0}\frac{(1 - x) - 1}{x} = \lim_{x\to0-0}(-1) = -1,\]
+          \[f'_+(0) = \lim_{x\to0+0}\frac{e^{-x} - 1}{x} = \lim_{x\to0+0}\Big(-\frac{e^{-x} - 1}{-x}\Big) = -1,\]
+          <p>ahol a \(t := -x \to 0\) helyettesítéssel a nevezetes \(\lim_{t\to0}\frac{e^t - 1}{t} = 1\) határértéket használtuk. Mivel \(f'_-(0) = f'_+(0) = -1\), \(f \in D\{0\}\) és \(f'(0) = -1\).</p>
+        </div>
+        <p>Eredmény: <span class="ans">\(f \in D(\R)\), \(\;f'(x) = \begin{cases} -1, &amp; x \lt 0,\\ -e^{-x}, &amp; x \ge 0\end{cases}\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Ugyanaz a recept, mint az órai 4. feladatban:</b> az ágak belsejében szabályokkal deriválunk, a ragasztási pontban előbb folytonosság, aztán egyoldali deriváltak.</p>
+        <p><b>Rövidebben:</b> a jobb ág a \(h(x) = e^{-x}\) függvény megszorítása, \(h(0) = 1 = f(0)\), így \(f'_+(0) = h'(0) = -1\). A bal ág a \(g(x) = 1 - x\) megszorítása, \(g(0) = 1 = f(0)\), így \(f'_-(0) = g'(0) = -1\).</p>
+        <p><b>Szemléletesen:</b> az \(y = 1 - x\) egyenes éppen az \(e^{-x}\) görbe \(0\)-beli érintője (\(e^{-x} \approx 1 - x\), ha \(x \approx 0\) — ez a lineáris közelítés!). Ezért a két ág törés nélkül, simán illeszkedik. Az \(f'\) itt még folytonos is, de második deriváltja \(0\)-ban már nincs (\(0\) balról, \(1\) jobbról).</p>
+        <p><b>Ellenőrzés:</b> \(x = \pm 10^{-7}\)-nel a két egyoldali különbségi hányados \(-1{,}000000\). ✓</p>
+      </div>
+    </details>
+  </article>
+
+  </div>
+</section>
+
+<!-- ================= GYAKORI HIBÁK ================= -->
+<section id="hibak">
+  <div class="section-head">
+    <span class="label">Mire figyelj</span>
+    <h2>Gyakori hibák</h2>
+  </div>
+  <div class="mistakes">
+    <div class="mistake"><span class="x">✕</span><p><b>\(\big(f^{-1}\big)'(b) = \frac{1}{f'(b)}\).</b> A helyes képlet \(\frac{1}{f'(a)}\), ahol \(f(a) = b\). Az órai 1. feladatban \(f'(\sqrt2) \ne f'(\frac12)\); előbb az \(f(a) = \sqrt2\) egyenletet kell megoldani.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>A tétel feltételeinek kihagyása.</b> Az inverz deriválásához kell: szigorú monotonitás (pl. \(f' \gt 0\) egy intervallumon), folytonosság és \(f'(a) \ne 0\). Ha \(f'(a) = 0\), az inverz nem deriválható \(b\)-ben (pl. \(\sqrt[3]{y}\) a \(0\)-ban).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>A ragasztási pontban csak az ágak deriváltjait vetjük össze.</b> Ez folytonosság nélkül hibás: az órai 4. feladatban \(c = 2\), \(b = 1\) esetén a két ág deriváltja \(0\)-ban egyezik, mégis \(f \notin D\{0\}\), mert \(f\) ugrik. Először mindig a folytonosság!</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Az \(a \ne 0\)-ra kapott \(f'(a)\) képletbe \(0\)-t helyettesíteni.</b> A külön definiált pontban a különbségi hányados határértékét kell számolni (órai 3. feladat).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>\(\lim_{x\to0} e^{1/x}\) „létezik”.</b> Nem: balról \(0\), jobbról \(+\infty\). Ilyenkor kötelező az egyoldali határértékekre bontani, és ebből jönnek az egyoldali deriváltak.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Az érintő egyenletébe \(f'(x)\) kerül \(f'(a)\) helyett, vagy elmarad az \(f(a)\) tag.</b> Az érintő \(y = f'(a)(x - a) + f(a)\): egyenes, mindkét együtthatója szám. Ellenőrzés: \(x = a\)-ra \(y = f(a)\) jön ki?</p></div>
+  </div>
+</section>
+
+<footer>Forrás: <a href="../Gyakorlat%20anyagok/03_Gy_An_II_A_B.pdf" target="_blank" rel="noopener">3. gyakorlat (PDF)</a> és <a href="../Gyakorlat%20anyagok/An_II_A_B_Gyak.pdf" target="_blank" rel="noopener">Analízis II. gyakorlatok, összevont anyag (PDF)</a>. Minden eredményt numerikusan (különbségi hányadosokkal, illetve az inverzet felezéssel számolva) ellenőriztünk, a grafikonok a függvényekből számolva készültek.</footer>
+</div>
+
+<script>
+(function () {
+  // Small SVG plotter: several curves on one grid, optional vertical guide lines.
+  function fmt(v) { return (Math.round(v * 100) / 100).toString().replace('.', ',').replace('-', '−'); }
+  function plot(el, o) {
+    var W = 640, H = o.h || 320, L = 40, R = 14, T = 12, B = 26;
+    var x0 = o.x[0], x1 = o.x[1], y0 = o.y[0], y1 = o.y[1];
+    var X = function (x) { return L + (x - x0) / (x1 - x0) * (W - L - R); };
+    var Y = function (y) { return T + (y1 - y) / (y1 - y0) * (H - T - B); };
+    var s = [], cid = 'clip-' + el.id, v;
+    s.push('<defs><clipPath id="' + cid + '"><rect x="' + L + '" y="' + T + '" width="' + (W - L - R) + '" height="' + (H - T - B) + '"/></clipPath></defs>');
+    for (v = Math.ceil(x0 / o.gx - 1e-9) * o.gx; v <= x1 + 1e-9; v += o.gx) {
+      s.push('<line class="gl" x1="' + X(v) + '" y1="' + T + '" x2="' + X(v) + '" y2="' + (H - B) + '"/>');
+      if (Math.abs(v) > 1e-9) s.push('<text class="tk" x="' + X(v) + '" y="' + (H - 8) + '" text-anchor="middle">' + fmt(v) + '</text>');
+    }
+    for (v = Math.ceil(y0 / o.gy - 1e-9) * o.gy; v <= y1 + 1e-9; v += o.gy) {
+      s.push('<line class="gl" x1="' + L + '" y1="' + Y(v) + '" x2="' + (W - R) + '" y2="' + Y(v) + '"/>');
+      if (Math.abs(v) > 1e-9) s.push('<text class="tk" x="' + (L - 6) + '" y="' + (Y(v) + 4) + '" text-anchor="end">' + fmt(v) + '</text>');
+    }
+    if (y0 <= 0 && y1 >= 0) s.push('<line class="ax" x1="' + L + '" y1="' + Y(0) + '" x2="' + (W - R) + '" y2="' + Y(0) + '"/>');
+    if (x0 <= 0 && x1 >= 0) s.push('<line class="ax" x1="' + X(0) + '" y1="' + T + '" x2="' + X(0) + '" y2="' + (H - B) + '"/>');
+    (o.vl || []).forEach(function (a) { s.push('<line class="as" x1="' + X(a) + '" y1="' + T + '" x2="' + X(a) + '" y2="' + (H - B) + '"/>'); });
+    var g = '<g clip-path="url(#' + cid + ')">';
+    o.curves.forEach(function (c) {
+      var d = '', pen = false, N = 900, span = y1 - y0;
+      for (var i = 0; i <= N; i++) {
+        var x = x0 + (x1 - x0) * i / N;
+        if (c.dom && !c.dom(x)) { pen = false; continue; }
+        var y = c.f(x);
+        if (!isFinite(y)) { pen = false; continue; }
+        y = Math.max(Math.min(y, y1 + span), y0 - span);
+        d += (pen ? 'L' : 'M') + X(x).toFixed(1) + ' ' + Y(y).toFixed(1);
+        pen = true;
+      }
+      g += '<path class="' + c.cls + '" d="' + d + '"/>';
+    });
+    (o.pts || []).forEach(function (p) { g += '<circle class="pz" cx="' + X(p[0]) + '" cy="' + Y(p[1]) + '" r="3.5"/>'; });
+    g += '</g>';
+    s.push(g);
+    el.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + o.label + '">' + s.join('') + '</svg>';
+  }
+  var S2 = Math.SQRT2;
+  var GRAPHS = {
+    'g-o1': { label: 'f(x) = gyök(e^(2x−1)+1), inverze és az érintők', x: [-1.5, 3.5], y: [-1.5, 3.5], gx: 1, gy: 1, h: 420,
+      pts: [[0.5, S2], [S2, 0.5]],
+      curves: [ { cls: 'cv3', f: function (x) { return x; } },
+                { cls: 'cv3', f: function (x) { return (x - 0.5) / S2 + S2; } },
+                { cls: 'cv3', f: function (x) { return S2 * (x - S2) + 0.5; } },
+                { cls: 'cv2', dom: function (x) { return x > 1; }, f: function (y) { return 0.5 * Math.log(y * y - 1) + 0.5; } },
+                { cls: 'cv', f: function (x) { return Math.sqrt(Math.exp(2 * x - 1) + 1); } } ] },
+    'g-o3': { label: 'f(x) = x/(1+e^(1/x)) és az egyoldali érintők a 0-ban', x: [-3, 3], y: [-2, 1.5], gx: 1, gy: 0.5,
+      pts: [[0, 0]],
+      curves: [ { cls: 'cv2', dom: function (x) { return x <= 0; }, f: function (x) { return x; } },
+                { cls: 'cv3', dom: function (x) { return x >= 0; }, f: function (x) { return 0; } },
+                { cls: 'cv', f: function (x) { return x === 0 ? 0 : x / (1 + Math.exp(1 / x)); } } ] },
+    'g-h2': { label: 'f(x) = sin((x−1)/(x²+1)) és érintője az 1/2 pontban', x: [-4, 5], y: [-1.25, 0.75], gx: 1, gy: 0.25,
+      pts: [[0.5, -Math.sin(0.4)]],
+      curves: [ { cls: 'cv2', f: function (x) { return 28 / 25 * Math.cos(0.4) * (x - 0.5) - Math.sin(0.4); } },
+                { cls: 'cv', f: function (x) { return Math.sin((x - 1) / (x * x + 1)); } } ] }
+  };
+  Object.keys(GRAPHS).forEach(function (id) { var el = document.getElementById(id); if (el) plot(el, GRAPHS[id]); });
+})();
+</script>
+<!-- Fejezetsáv: az éppen olvasott szakasz gombja kiemelve -->
+<style>
+nav.bar a.active, nav.bar a.active:hover, nav.bar a.active:focus-visible { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+</style>
+<script>
+(function () {
+  var nav = document.querySelector('nav.bar');
+  if (!nav) return;
+  var links = Array.prototype.filter.call(nav.querySelectorAll('a[href^="#"]'), function (a) {
+    return a.getAttribute('href').length > 1 && document.getElementById(a.getAttribute('href').slice(1));
+  });
+  var current = null, ticking = false;
+  function sectionOf(a) { return document.getElementById(a.getAttribute('href').slice(1)); }
+  function update() {
+    ticking = false;
+    var line = nav.getBoundingClientRect().bottom + 12, active = null;
+    var visible = links.filter(function (a) { return sectionOf(a).offsetParent !== null; });
+    visible.forEach(function (a) { if (sectionOf(a).getBoundingClientRect().top <= line) active = a; });
+    // a lap alján az utolsó szakasz az aktuális akkor is, ha rövid
+    if (visible.length && window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) active = visible[visible.length - 1];
+    if (active === current) return;
+    if (current) { current.classList.remove('active'); current.removeAttribute('aria-current'); }
+    current = active;
+    if (!active) return;
+    active.classList.add('active');
+    active.setAttribute('aria-current', 'location');
+    var ul = active.closest('ul'), ur = ul.getBoundingClientRect(), ar = active.getBoundingClientRect();
+    var left = ar.left - ur.left + ul.scrollLeft, right = left + ar.width;
+    if (left < ul.scrollLeft || right > ul.scrollLeft + ul.clientWidth) ul.scrollTo({ left: Math.max(0, left - 16), behavior: 'smooth' });
+  }
+  function schedule() { if (!ticking) { ticking = true; setTimeout(update, 40); } }
+  window.addEventListener('scroll', schedule, { passive: true });
+  window.addEventListener('resize', schedule);
+  document.addEventListener('input', schedule);   // a keresés elrejthet szakaszokat
+  document.addEventListener('toggle', schedule, true);
+  update();
+})();
+</script>
+</body>
+</html>

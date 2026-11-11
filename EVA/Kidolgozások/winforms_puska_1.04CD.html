@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WinForms ZH puska</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #000000;
+  --muted: #444444;
+  --rule: #8c8c8c;
+  --accent: #000000;
+  --accent-soft: #e4e4e4;
+  --code-bg: #f3f3f3;
+  --kw: #000000;
+  --type: #000000;
+  --str: #333333;
+  --com: #555555;
+  --num: #000000;
+  --warn: #000000;
+  --bg: #ffffff;
+}
+/* Fekete-fehér nyomtatásra készült lap: csak szürkeárnyalatok */
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--ink); }
+body {
+  font: 9.4pt/1.38 "IBM Plex Sans", "Segoe UI", sans-serif;
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+.page { max-width: 190mm; margin: 0 auto; padding: 10mm 0 14mm; }
+@media screen and (max-width: 760px) { .page { padding: 16px; } }
+
+@page {
+  size: A4;
+  margin: 10mm 10mm 13mm;
+  @bottom-left { content: "EVA · WinForms ZH puska"; font: 7.5pt "IBM Plex Sans", sans-serif; color: #444444; }
+  @bottom-right { content: "winforms_puska_1.04CD · " counter(page) " / " counter(pages); font: 7.5pt "IBM Plex Mono", monospace; color: #444444; }
+}
+@media print { .page { padding: 0; max-width: none; } }
+
+header.top {
+  display: flex; justify-content: space-between; align-items: flex-end; gap: 12px;
+  border-bottom: 2.5pt solid var(--accent); padding-bottom: 5px; margin-bottom: 8px;
+}
+header.top h1 {
+  font: 800 19pt/1 "Bricolage Grotesque", sans-serif; margin: 0; letter-spacing: -0.01em;
+}
+header.top .sub { color: var(--muted); font-size: 8.6pt; margin-top: 3px; }
+header.top .ver {
+  font: 600 8.4pt "IBM Plex Mono", monospace; color: var(--accent);
+  border: 1pt solid var(--accent); padding: 2px 6px; border-radius: 3px; white-space: nowrap;
+}
+
+h2 {
+  font: 800 12.5pt/1.1 "Bricolage Grotesque", sans-serif; margin: 11px 0 5px;
+  break-after: avoid;
+}
+h2 .n {
+  display: inline-block; background: var(--accent); color: #fff; border-radius: 3px;
+  font-size: 9.5pt; padding: 1px 6px 2px; margin-right: 6px; vertical-align: 1px;
+}
+h3 {
+  font: 600 9.6pt/1.2 "Bricolage Grotesque", sans-serif; color: var(--accent);
+  margin: 7px 0 3px; break-after: avoid;
+}
+p { margin: 3px 0; }
+code { font: 8.4pt "IBM Plex Mono", monospace; background: var(--code-bg); padding: 0 2px; border-radius: 2px; }
+b { font-weight: 600; }
+
+pre.code {
+  font: 7.9pt/1.36 "IBM Plex Mono", Consolas, monospace;
+  background: var(--code-bg); border-left: 2.5pt solid var(--accent);
+  margin: 3px 0 5px; padding: 5px 8px;
+  white-space: pre-wrap; overflow: visible;
+  break-inside: auto; orphans: 5; widows: 5;   /* hosszú blokk törhet, ne maradjon fél üres oldal */
+}
+.grid2 pre.code { break-inside: avoid; font-size: 7.4pt; }
+pre.code .kw { color: var(--kw); font-weight: 600; }
+pre.code .ty { color: var(--type); }
+pre.code .st { color: var(--str); }
+pre.code .co { color: var(--com); font-style: italic; }
+pre.code .nu { color: var(--num); }
+
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; align-items: start; }
+.grid2 > * { min-width: 0; }
+@media screen and (max-width: 760px) { .grid2 { grid-template-columns: 1fr; } }
+
+.note {
+  border: 1pt solid var(--rule); border-radius: 3px; padding: 4px 8px; margin: 4px 0 6px;
+  font-size: 8.8pt; break-inside: avoid;
+}
+.note.warn { border: 2pt solid var(--warn); }
+.note.warn > b:first-child { color: var(--warn); }
+
+table { border-collapse: collapse; width: 100%; font-size: 8.5pt; margin: 3px 0 6px; break-inside: avoid; }
+th, td { border: 0.75pt solid var(--rule); padding: 2px 5px; text-align: left; vertical-align: top; }
+th { background: var(--accent-soft); font-weight: 600; }
+td code, th code { font-size: 7.9pt; }
+
+.keep { break-inside: avoid; }
+/* minden pont külön oldalon kezdődik */
+section + section { break-before: page; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="top">
+  <div>
+    <h1>WinForms ZH puska</h1>
+    <div class="sub">Eseményvezérelt alkalmazások · 1. gyakorlati ZH · .NET 10, MV architektúra · a kódrészletek az ELTE statikus elemzővel hibamentesen fordulnak</div>
+  </div>
+  <div class="ver">winforms_puska_1.04CD</div>
+</header>
+
+<!-- ============================================================ 1. ESEMÉNY -->
+<section>
+<h2><span class="n">1</span>Esemény: modell → nézet</h2>
+
+<h3>Modell (osztálykönyvtár, nem ismeri a WinFormst)</h3>
+<pre class="code">// 1) Eseményargumentum: külön fájl a modellprojektben
+public class FieldChangedEventArgs : EventArgs
+{
+    public int X { get; }
+    public int Y { get; }
+
+    public FieldChangedEventArgs(int x, int y)
+    {
+        X = x;
+        Y = y;
+    }
+}
+
+// 2) Deklaráció a modellosztályban
+public event EventHandler&lt;FieldChangedEventArgs&gt;? FieldChanged;
+public event EventHandler? TableChanged;                   // ha nem visz adatot
+public event EventHandler&lt;GameOverEventArgs&gt;? GameOver;
+
+// 3) Kiváltás: a ?. miatt nem száll el, ha senki sem iratkozott fel
+private void OnFieldChanged(int x, int y)
+    =&gt; FieldChanged?.Invoke(this, new FieldChangedEventArgs(x, y));
+
+private void OnTableChanged()
+    =&gt; TableChanged?.Invoke(this, EventArgs.Empty);
+
+// 4) A nézet csak olvashat a táblából: indexelő
+public int this[int x, int y] =&gt; _table[x, y];</pre>
+
+<h3>Nézet (GameForm.cs): feliratkozás + kezelők</h3>
+<pre class="code">private readonly GameModel _model;
+
+public GameForm()
+{
+    InitializeComponent();
+
+    _model = new GameModel();
+    _model.FieldChanged += Model_FieldChanged;      // ① feliratkozás
+    _model.TableChanged += Model_TableChanged;
+    _model.TimeAdvanced += Model_TimeAdvanced;
+    _model.GameOver += Model_GameOver;
+
+    _timer.Tick += Timer_Tick;
+
+    GenerateTable();                                // ② gombok
+    StartNewGame(Difficulty.Easy);                  // ③ CSAK EZUTÁN új játék!
+}
+
+// Kezelő alakja: private void Név(object? sender, XxxEventArgs e)
+private void Model_FieldChanged(object? sender, FieldChangedEventArgs e)
+{
+    _buttons[e.X, e.Y].BackColor = ToColor(_model[e.X, e.Y]);
+}</pre>
+
+</section>
+
+<!-- ============================================================ 2. GOMBRÁCS -->
+<section>
+<h2><span class="n">2</span>Gombrács létrehozása kódból</h2>
+
+<p>A Designerben csak egy üres <code>TableLayoutPanel</code> kell (<code>_tablePanel</code>, <code>Dock = Fill</code>). A sorokat, oszlopokat és gombokat kód hozza létre:</p>
+<pre class="code">private readonly Button[,] _buttons = new Button[GameModel.TableSize, GameModel.TableSize];
+
+private void GenerateTable()
+{
+    int n = GameModel.TableSize;
+    _tablePanel.SuspendLayout();                 // ne rajzolja újra 225-ször
+    _tablePanel.Controls.Clear();
+    _tablePanel.ColumnStyles.Clear();            // a Designerben beállított vegyes stílusok törlése
+    _tablePanel.RowStyles.Clear();
+    _tablePanel.ColumnCount = n;
+    _tablePanel.RowCount = n;
+    for (int k = 0; k &lt; n; k++)                  // MIND egyforma: 100/n százalék
+    {
+        _tablePanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F / n));
+        _tablePanel.RowStyles.Add(new RowStyle(SizeType.Percent, 100F / n));
+    }
+
+    for (int x = 0; x &lt; n; x++)                  // x = sor
+    {
+        for (int y = 0; y &lt; n; y++)              // y = oszlop
+        {
+            Button button = new()
+            {
+                Dock = DockStyle.Fill,               // kitölti a cellát
+                Margin = new Padding(0),             // nincs rés a gombok között
+                FlatStyle = FlatStyle.Flat,          // lapos, egyszínű kitöltés
+                BackColor = Color.White,             // a színt később a modell eseménye állítja
+                Text = string.Empty,                 // ha számot/betűt kell kiírni
+                Font = new Font(Font, FontStyle.Bold),
+                Tag = (x, y),                        // KELL: ebből tudjuk, melyikre kattintottak
+                TabStop = false,
+            };
+            button.FlatAppearance.BorderColor = Color.Gray;
+            button.Click += FieldButton_Click;       // EGY közös kezelő mind a 225 gombnak
+
+            _buttons[x, y] = button;
+            _tablePanel.Controls.Add(button, y, x);  // (vezérlő, OSZLOP, SOR), nem (sor, oszlop)!
+        }
+    }
+
+    _tablePanel.ResumeLayout();
+}
+
+// Kattintás: a koordináta a Tagből jön, a szabályt a MODELL dönti el
+private void FieldButton_Click(object? sender, EventArgs e)
+{
+    if (sender is Button { Tag: (int x, int y) })
+    {
+        _model.Step(x, y);
+    }
+}</pre>
+
+
+</section>
+
+<!-- ============================================================ 3. TIMER -->
+<section>
+<h2><span class="n">3</span>Időzítő (Timer)</h2>
+<p>A <b>nézetben</b> egy WinForms <code>Timer</code> ketyeg, minden <code>Tick</code> a modell <code>AdvanceTime()</code>-ját hívja. A modell számolja az időt, és eseménnyel szól a nézetnek. Így nincs szálkezelési gond, és a modell tesztelhető marad.</p>
+
+<h3>Nézet</h3>
+<pre class="code">// mezőként; a TELJES név kell (különben CS0104: Timer is ambiguous)
+private readonly System.Windows.Forms.Timer _timer = new() { Interval = 1000 };   // ezredmásodperc
+
+// konstruktorban:
+_timer.Tick += Timer_Tick;
+
+private void Timer_Tick(object? sender, EventArgs e) =&gt; _model.AdvanceTime();
+
+private void Model_TimeAdvanced(object? sender, EventArgs e)
+{
+    _timeLabel.Text = $"Idő: {TimeSpan.FromSeconds(_model.GameTime):mm\\:ss}";   // Idő: 01:05
+}
+
+_timer.Start();                      // új játéknál
+_timer.Stop();                       // játék vége
+_timer.Enabled = !_timer.Enabled;    // szünet ki/be
+
+// szünet menüpont/gomb
+private void MenuPause_Click(object? sender, EventArgs e)
+{
+    _timer.Enabled = !_timer.Enabled;
+    SetTableEnabled(_timer.Enabled);                          // szünetben ne lehessen lépni
+    _statusLabel.Text = _timer.Enabled ? "Fut" : "Szünet";
+}</pre>
+
+<h3>Modell</h3>
+<pre class="code">private int _gameTime;
+public int GameTime =&gt; _gameTime;
+public event EventHandler? TimeAdvanced;
+
+public void AdvanceTime()
+{
+    if (IsGameOver)
+    {
+        return;
+    }
+
+    _gameTime++;
+    TimeAdvanced?.Invoke(this, EventArgs.Empty);
+}
+// NewGame-ben: _gameTime = 0;</pre>
+</section>
+
+<!-- ============================================================ 4. MESSAGEBOX -->
+<section>
+<h2><span class="n">4</span>Felugró ablak (MessageBox)</h2>
+<pre class="code">// legegyszerűbb
+MessageBox.Show("Vége a játéknak!");
+
+// szöveg, cím, gombok, ikon
+MessageBox.Show(
+    "Szabálytalan lépés!",
+    "SameGame",
+    MessageBoxButtons.OK,
+    MessageBoxIcon.Warning);</pre>
+
+<h3>Játék vége: eseménykezelő + kérdés</h3>
+<pre class="code">private void Model_GameOver(object? sender, GameOverEventArgs e)
+{
+    _timer.Stop();                // ① az idő megáll (a MessageBox alatt is ketyegne!)
+    SetTableEnabled(false);       // ② több lépés nincs
+
+    DialogResult result = MessageBox.Show(                                   // ③ kérdés
+        $"Vége a játéknak!{Environment.NewLine}Pontszám: {e.Score}{Environment.NewLine}Új játék?",
+        "SameGame",
+        MessageBoxButtons.YesNo,
+        MessageBoxIcon.Question);
+
+    if (result == DialogResult.Yes)
+    {
+        StartNewGame(_model.Difficulty);
+    }
+    else
+    {
+        Close();
+    }
+}
+
+// Kilépés megerősítése: konstruktorban (vagy ⚡ Events → FormClosing)
+FormClosing += GameForm_FormClosing;
+
+private void GameForm_FormClosing(object? sender, FormClosingEventArgs e)
+{
+    if (MessageBox.Show("Biztos kilépsz?", "Kilépés", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+        == DialogResult.No)
+    {
+        e.Cancel = true;          // nem zárul be
+    }
+}</pre>
+</section>
+
+<!-- ============================================================ 6. ÚJ JÁTÉK -->
+<section class="keep">
+<h2><span class="n">5</span>Új játék + nehézség menüből</h2>
+<pre class="code">private void StartNewGame(Difficulty difficulty)
+{
+    SetTableEnabled(true);
+    _statusLabel.Text = "Új játék";
+    _timeLabel.Text = "Idő: 00:00";
+    _model.NewGame(difficulty);      // TableChanged → a gombok átszíneződnek
+    _timer.Start();
+}
+
+private void MenuEasy_Click(object? sender, EventArgs e) =&gt; StartNewGame(Difficulty.Easy);
+private void MenuMedium_Click(object? sender, EventArgs e) =&gt; StartNewGame(Difficulty.Medium);
+private void MenuHard_Click(object? sender, EventArgs e) =&gt; StartNewGame(Difficulty.Hard);
+private void MenuExit_Click(object? sender, EventArgs e) =&gt; Close();
+
+public enum Difficulty { Easy = 3, Medium = 5, Hard = 7 }   // modell; (int)difficulty = színek száma</pre>
+</section>
+
+<!-- ============================================================ 7. HIBÁK -->
+<section class="keep">
+<h2><span class="n">6</span>Ha valami nem megy</h2>
+<table>
+  <tr><th style="width:31%">Tünet</th><th style="width:36%">Ok</th><th>Javítás</th></tr>
+  <tr><td><b>CS5001</b> nincs static Main</td><td>A modellprojekt <code>OutputType</code>-ja <code>Exe</code></td><td>Töröld az <code>&lt;OutputType&gt;</code> sort (osztálykönyvtár)</td></tr>
+  <tr><td><b>CS1061</b> nincs <code>…_Click</code></td><td>Kitörölt kezelő, a <code>+=</code> sor bent maradt a Designer.cs-ben</td><td>Töröld ott is, vagy ⚡ Events → ürítés</td></tr>
+  <tr><td><b>CS0104</b> <code>Timer</code> ambiguous</td><td>Két <code>Timer</code> osztály látszik</td><td><code>System.Windows.Forms.Timer</code></td></tr>
+  <tr><td><b>CS0246</b> nem találja a modellt</td><td>Nincs projektreferencia vagy <code>using</code></td><td>WinForms projekt → Add → Project Reference; <code>using SameGame.Model;</code></td></tr>
+  <tr><td>Nem látszik a gombrács</td><td>A gomb nincs hozzáadva a panelhez</td><td><code>_tablePanel.Controls.Add(button, y, x)</code></td></tr>
+  <tr><td>2 óriás sor/oszlop, a többi csík</td><td>Vegyes <code>Percent</code>/<code>Absolute</code> sor- és oszlopstílus</td><td>Mind <code>Percent, 100F / n</code> (2. pont)</td></tr>
+  <tr><td>Induláskor színtelen gombok</td><td><code>NewGame</code> a feliratkozás előtt fut</td><td>Feliratkozás → gombok → <code>NewGame</code></td></tr>
+  <tr><td><code>NullReferenceException</code> kattintáskor</td><td>Nincs <code>Tag</code>, vagy a <code>_buttons</code> tömb nincs <code>new</code>-olva</td><td><code>Tag = (x, y)</code>; <code>new Button[n, n]</code></td></tr>
+  <tr><td>Kattintásra nem történik semmi</td><td>Nincs <code>Click +=</code>, vagy fordított feltétel a <code>Step</code>-ben</td><td>Ellenőrizd az <code>== null</code> / <code>!= null</code> irányát</td></tr>
+  <tr><td>Az idő nem megy / nem áll meg</td><td>Hiányzik a <code>Start()</code>, vagy nincs <code>Stop()</code> GameOverkor</td><td>A <code>StartNewGame</code> indítja, a <code>Model_GameOver</code> állítja le</td></tr>
+</table>
+<div class="note"><b>Beadás:</b> ZIP a TMS-be <b>bin, obj és .vs nélkül</b>. A 90 perc után +5 perc van a feltöltésre, és közben többször is feltölthetsz.</div>
+</section>
+
+</div>
+
+<script>
+// Egyszerű C# kiemelés a pre.code blokkokra
+(function () {
+  const kw = 'abstract|as|base|bool|break|case|catch|class|const|continue|default|do|double|else|enum|event|false|finally|float|for|foreach|get|if|in|int|interface|internal|is|new|null|object|out|override|partial|private|protected|public|readonly|ref|return|sealed|set|static|string|switch|this|throw|true|try|using|var|virtual|void|while';
+  const re = new RegExp(
+    '(//[^\\n]*)' +                                  // komment
+    '|(\\$?@?"(?:[^"\\\\\\n]|\\\\.)*")' +            // string
+    '|\\b(' + kw + ')\\b' +                          // kulcsszó
+    '|\\b([A-Z][A-Za-z0-9]*)\\b' +                   // típus / tag
+    '|\\b(\\d+F?)\\b', 'g');                         // szám
+  const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  document.querySelectorAll('pre.code').forEach(pre => {
+    const src = pre.textContent;
+    let out = '', last = 0, m;
+    while ((m = re.exec(src))) {
+      out += esc(src.slice(last, m.index));
+      const cls = m[1] ? 'co' : m[2] ? 'st' : m[3] ? 'kw' : m[4] ? 'ty' : 'nu';
+      out += '<span class="' + cls + '">' + esc(m[0]) + '</span>';
+      last = re.lastIndex;
+    }
+    pre.innerHTML = out + esc(src.slice(last));
+  });
+})();
+</script>
+</body>
+</html>

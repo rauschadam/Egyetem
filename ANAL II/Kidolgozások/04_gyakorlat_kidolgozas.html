@@ -1,0 +1,788 @@
+<!doctype html>
+<html lang="hu" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Analízis II · 4. gyakorlat kidolgozva</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['\\(', '\\)']],
+      displayMath: [['\\[', '\\]']],
+      macros: {
+        arcsin: '\\operatorname{arc\\,sin}', arccos: '\\operatorname{arc\\,cos}',
+        arctg: '\\operatorname{arc\\,tg}', arcctg: '\\operatorname{arc\\,ctg}',
+        tg: '\\operatorname{tg}', ctg: '\\operatorname{ctg}', R: '\\mathbb{R}'
+      }
+    },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js" async></script>
+<style>
+/* Layout: same exam-paper look as the DIMAT prep, in the Analysis orange; every task = statement + folded solution + folded walkthrough */
+:root {
+  --paper: #f5f7fa;
+  --grid: rgba(180, 80, 11, 0.06);
+  --card: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6574;
+  --rule: #d7dde6;
+  --accent: #b4500b;
+  --accent-soft: #fcefe4;
+  --mark: #b8352a;
+  --mark-soft: #fbe9e6;
+  --ok: #2c7a4b;
+  --ok-soft: #e3f3e9;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-label: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f141b; --grid: rgba(242, 162, 94, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+    --rule: #2a3442; --accent: #f2a25e; --accent-soft: #33241a; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+    --ok: #74d39c; --ok-soft: #173225; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f141b; --grid: rgba(242, 162, 94, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+  --rule: #2a3442; --accent: #f2a25e; --accent-soft: #33241a; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+  --ok: #74d39c; --ok-soft: #173225; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background-color: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 1.06rem;
+  line-height: 1.6;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 80px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2rem, 6vw, 3.1rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.65rem; font-weight: 700; letter-spacing: -0.01em; }
+h3 { font-size: 1.1rem; font-weight: 600; }
+p { margin: 0; }
+a { color: var(--accent); }
+.label { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding: 2px 0; margin: 6px 0 !important; min-width: 0; max-width: 100%; }
+/* grid children must be allowed to shrink, otherwise wide formulas push the page sideways */
+.task, .sol, .step, .rule-card, .sheet > * { grid-template-columns: minmax(0, 1fr); min-width: 0; }
+.rule-card li, .rule-card p, .sol p, .sol li, .step p, .stmt, .tip, .warn, .mistake p, td { overflow-x: auto; overflow-y: hidden; }
+
+/* back to subject page */
+.back { justify-self: start; display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px 9px 12px; border: 1.5px solid var(--accent); border-radius: 8px; background: var(--accent-soft); color: var(--ink); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 1.02rem; line-height: 1; white-space: nowrap; transition: background .15s, color .15s; }
+.back .arr { color: var(--accent); font-size: 1.25rem; transition: transform .15s, color .15s; }
+.back:hover, .back:focus-visible { background: var(--accent); color: var(--paper); outline: none; }
+.back:hover .arr, .back:focus-visible .arr { color: var(--paper); transform: translateX(-3px); }
+
+/* header */
+header.hero { display: grid; gap: 14px; padding-block: 0 26px; border-bottom: 2px solid var(--accent); }
+.hero .sub { color: var(--muted); max-width: 62ch; }
+.facts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.fact { display: flex; flex-direction: column; gap: 2px; padding: 8px 14px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; min-width: 120px; }
+.fact b { font-family: var(--f-display); font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+
+nav.bar { position: sticky; top: 0; z-index: 5; background: var(--paper); border-bottom: 1px solid var(--rule); margin-inline: -16px; padding-inline: 16px; }
+nav.bar ul { list-style: none; margin: 0; padding: 10px 0; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin; }
+nav.bar a { display: block; white-space: nowrap; text-decoration: none; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.04em; color: var(--ink); padding: 6px 10px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); }
+nav.bar a:hover, nav.bar a:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+nav.bar a.nav-back { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+
+section { padding-top: 44px; display: grid; gap: 18px; scroll-margin-top: 56px; }
+.section-head { display: grid; gap: 6px; }
+.section-head p { color: var(--muted); max-width: 64ch; }
+
+/* reminder cards */
+.sheet { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; }
+.rule-card { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 14px 16px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.rule-card h3 { font-size: 1rem; }
+.rule-card p, .rule-card li { font-size: 0.95rem; }
+.rule-card ul, .rule-card ol { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.rule-card.wide { grid-column: 1 / -1; }
+
+/* tables (sign charts, value tables) */
+.tbl { overflow-x: auto; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--rule); vertical-align: middle; }
+th { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+tr:last-child td, tr:last-child th { border-bottom: 0; }
+table.sgn { width: auto; min-width: 100%; }
+table.sgn th, table.sgn td { text-align: center; white-space: nowrap; border-left: 1px solid var(--rule); }
+table.sgn th:first-child { border-left: 0; text-transform: none; letter-spacing: 0; font-family: var(--f-body); font-size: 1rem; color: var(--ink); background: var(--accent-soft); }
+table.sgn td.pt { background: color-mix(in srgb, var(--accent-soft) 55%, transparent); }
+.p { color: var(--ok); font-weight: 600; }
+.n { color: var(--mark); font-weight: 600; }
+.note { font-size: 0.82rem; color: var(--muted); }
+.tag { font-family: var(--f-label); font-size: 0.72rem; color: var(--accent); }
+
+/* exercises */
+.task { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 18px; display: grid; gap: 10px; min-width: 0; scroll-margin-top: 60px; }
+.task-head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.task-head .no { font-family: var(--f-display); font-weight: 700; font-size: 1.05rem; }
+.task-head .src { font-family: var(--f-label); font-size: 0.72rem; color: var(--muted); }
+.task-head .kind { margin-left: auto; font-family: var(--f-label); font-size: 0.75rem; color: var(--accent); }
+.stmt { max-width: 70ch; }
+details { border-top: 1px dashed var(--rule); padding-top: 8px; min-width: 0; }
+summary { cursor: pointer; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); list-style: none; display: inline-flex; gap: 8px; align-items: center; padding: 4px 0; }
+summary::-webkit-details-marker { display: none; }
+summary::before { content: "+"; display: inline-grid; place-items: center; width: 18px; height: 18px; border: 1px solid currentColor; border-radius: 3px; font-size: 0.8rem; }
+details[open] > summary::before { content: "−"; }
+summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sol { display: grid; gap: 10px; padding-top: 6px; max-width: 74ch; min-width: 0; }
+.sol ol, .sol ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.step { display: grid; gap: 8px; min-width: 0; }
+.step > b:first-child { font-family: var(--f-display); font-weight: 600; }
+.ans { display: inline-block; background: var(--ok-soft); color: var(--ok); font-weight: 600; padding: 2px 9px; border-radius: 4px; }
+.warn { background: var(--mark-soft); border-left: 3px solid var(--mark); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 0.95rem; }
+.tip { background: var(--accent-soft); border-left: 3px solid var(--accent); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 0.95rem; }
+.taskgroup { display: grid; gap: 12px; }
+
+/* graphs */
+figure.graph { margin: 0; background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 8px 8px 6px; display: grid; gap: 6px; }
+figure.graph > div > svg { width: 100%; height: auto; display: block; }
+figure.graph figcaption { display: flex; flex-wrap: wrap; gap: 4px 16px; font-family: var(--f-label); font-size: 0.72rem; color: var(--muted); padding: 0 4px; }
+.lg::before { content: ""; display: inline-block; width: 16px; height: 0; vertical-align: middle; margin-right: 6px; border-top: 2.5px solid var(--accent); }
+.lg.asy::before { border-top: 1.5px dashed var(--muted); }
+.lg.ext::before { width: 9px; height: 9px; border: 0; border-radius: 50%; background: var(--ok); }
+.lg.inf::before { width: 9px; height: 9px; border: 2px solid var(--mark); border-radius: 50%; box-sizing: border-box; }
+svg .gl { stroke: var(--rule); stroke-width: 1; opacity: .55; }
+svg .ax { stroke: var(--muted); stroke-width: 1.3; }
+svg .tk { fill: var(--muted); font-family: var(--f-label); font-size: 11px; }
+svg .cv { fill: none; stroke: var(--accent); stroke-width: 2.6; stroke-linejoin: round; stroke-linecap: round; }
+svg .as { stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 6 5; fill: none; }
+svg .pe { fill: var(--ok); stroke: var(--paper); stroke-width: 1.5; }
+svg .pi { fill: var(--paper); stroke: var(--mark); stroke-width: 2.2; }
+svg .pz { fill: var(--ink); }
+svg .po { fill: var(--paper); stroke: var(--accent); stroke-width: 2; }
+svg .pl { fill: var(--ink); font-family: var(--f-label); font-size: 12px; paint-order: stroke; stroke: var(--paper); stroke-width: 4px; stroke-linejoin: round; }
+
+/* mistakes */
+.mistakes { display: grid; gap: 10px; }
+.mistake { display: grid; grid-template-columns: auto 1fr; gap: 12px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 12px 14px; }
+.mistake .x { font-family: var(--f-display); font-weight: 700; color: var(--mark); font-size: 1.2rem; line-height: 1.3; }
+
+footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.88rem; }
+
+@media (max-width: 520px) {
+  body { font-size: 1rem; }
+  .task { padding: 14px; }
+  th, td { padding: 6px 8px; }
+}
+
+/* Taylor graphs: second curve dashed, highlighted x-band */
+svg .cv2 { fill: none; stroke: var(--ok); stroke-width: 2.2; stroke-dasharray: 7 5; }
+svg .bd { fill: var(--accent-soft); opacity: .8; }
+.lg.tay::before { border-top: 2.2px dashed var(--ok); }
+.lg.band::before { height: 10px; border: 0; background: var(--accent-soft); }
+/* primitive-function families and vertical asymptotes */
+svg .cv3 { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: .4; }
+.lg.fam::before { opacity: .45; border-top-width: 1.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <a class="back" href="../../index.html#/anal2"><span class="arr" aria-hidden="true">←</span>Vissza: Analízis II.</a>
+  <span class="label">Analízis II. · 4. gyakorlat · Differenciálszámítás 3.</span>
+  <h1>A 4. gyakorlat kidolgozva</h1>
+  <p class="sub">Monotonitás és a derivált előjele, lokális szélsőértékek (első- és másodrendű feltételek), abszolút szélsőértékek zárt intervallumon és szöveges szélsőérték-feladatok. Az órai feladatok a gyakorlati anyag megoldását követik, a házi feladatok (az összevont anyagból) saját megoldások. Az órán kérdezett röpZH-tételek: <a href="ropzh_kidolgozas.html#rz4">4. röpZH</a>. Előbb próbáld meg magad, és csak utána nyisd le a megoldást.</p>
+  <div class="facts">
+    <div class="fact"><span class="label">Órai feladat</span><b>4 (6 rész)</b></div>
+    <div class="fact"><span class="label">Házi feladat</span><b>4</b></div>
+    <div class="fact"><span class="label">Grafikon</span><b>3 db</b></div>
+  </div>
+</header>
+
+<nav class="bar" aria-label="Fejezetek">
+  <ul>
+    <li><a class="nav-back" href="../../index.html#/anal2" aria-label="Vissza: Analízis II.">← ANAL II</a></li>
+    <li><a href="#emlekezteto">Emlékeztető</a></li>
+    <li><a href="#orai">Órai feladatok</a></li>
+    <li><a href="#hazi">Házi feladatok</a></li>
+    <li><a href="#hibak">Gyakori hibák</a></li>
+    <li><a href="ropzh_kidolgozas.html#rz4">4. röpZH ↗</a></li>
+  </ul>
+</nav>
+
+<!-- ================= EMLÉKEZTETŐ ================= -->
+<section id="emlekezteto">
+  <div class="section-head">
+    <span class="label">Ami kell hozzá</span>
+    <h2>Emlékeztető</h2>
+    <p>A 4. gyakorlat elméleti összefoglalója röviden. A feladatokban végig ezekre hivatkozunk. Jelölés: \(\nearrow\), \(\searrow\) monoton nő/csökken, \(\uparrow\), \(\downarrow\) szigorúan monoton nő/csökken.</p>
+  </div>
+  <div class="sheet">
+    <div class="rule-card">
+      <h3>Monotonitás és derivált</h3>
+      <p>Legyen \((a, b) \subset \R\) nyílt intervallum és \(f \in D(a, b)\). Ekkor</p>
+      <ul>
+        <li>\(f \nearrow\) [\(\searrow\)] \((a,b)\)-n \(\iff f' \ge 0\) [\(f' \le 0\)] \((a,b)\)-n;</li>
+        <li>\(f' \gt 0\) [\(f' \lt 0\)] \((a,b)\)-n \(\Longrightarrow f \uparrow\) [\(\downarrow\)] \((a,b)\)-n.</li>
+      </ul>
+      <p class="note">Lényeges, hogy <b>intervallumon</b> dolgozunk: \(f(x) = \frac1x\) esetén \(f'(x) = -\frac{1}{x^2} \lt 0\) minden \(x \ne 0\)-ra, mégsem szigorúan csökkenő \(\R\setminus\{0\}\)-n (pl. \(f(-1) \lt f(1)\)).</p>
+    </div>
+    <div class="rule-card">
+      <h3>Elsőrendű szükséges feltétel</h3>
+      <p>Ha \(f\)-nek az \(a \in \operatorname{int} D_f\) pontban lokális szélsőértéke van és \(f \in D\{a\}\), akkor</p>
+      \[f'(a) = 0.\]
+      <p class="note">Csak szükséges: \(f(x) = x^3\)-ra \(f'(0) = 0\), de \(0\) nem szélsőértékhely. Az \(f'(a) = 0\) pontok a <b>stacionárius pontok</b>, a szélsőértékhelyek csak ezek közül kerülhetnek ki.</p>
+    </div>
+    <div class="rule-card">
+      <h3>Elsőrendű elégséges feltétel</h3>
+      <p>Ha \(f \in D(a,b)\), \(c \in (a,b)\), \(f'(c) = 0\) és \(f'\) előjelet vált \(c\)-ben, akkor \(c\) lokális szélsőértékhely:</p>
+      <ul>
+        <li>\((-, +)\) előjelváltás \(\Rightarrow\) lokális <b>minimum</b>hely,</li>
+        <li>\((+, -)\) előjelváltás \(\Rightarrow\) lokális <b>maximum</b>hely.</li>
+      </ul>
+    </div>
+    <div class="rule-card">
+      <h3>Másodrendű elégséges feltétel</h3>
+      <p>Ha \(c \in \operatorname{int} D_f\), \(f \in D^2\{c\}\), \(f'(c) = 0\) és \(f''(c) \ne 0\), akkor \(c\) lokális szélsőértékhely:</p>
+      <ul>
+        <li>\(f''(c) \gt 0 \Rightarrow\) lokális minimumhely,</li>
+        <li>\(f''(c) \lt 0 \Rightarrow\) lokális maximumhely.</li>
+      </ul>
+      <p class="note">Ha \(f''(c) = 0\), ez a teszt nem dönt (pl. \(x^3\), \(x^4\) a \(0\)-ban): nézd az \(f'\) előjelét.</p>
+    </div>
+    <div class="rule-card">
+      <h3>Weierstrass-tétel</h3>
+      <p>Korlátos és zárt \([a, b]\) intervallumon folytonos \(f\)-nek léteznek abszolút szélsőértékei: \(\exists\, \alpha, \beta \in [a, b]\), hogy</p>
+      \[f(\beta) \le f(x) \le f(\alpha) \quad \forall\, x \in [a, b].\]
+      <p class="note">Nyílt vagy nem korlátos intervallumon nem alkalmazható (lásd 3. és 4. feladat).</p>
+    </div>
+    <div class="rule-card">
+      <h3>Abszolút szélsőérték keresése \([a,b]\)-n</h3>
+      <ol>
+        <li>\(f \in C[a,b]\) \(\Rightarrow\) Weierstrass miatt létezik max. és min.</li>
+        <li>Az \((a,b)\)-beli jelöltek: ahol \(f' = 0\) (ha \(f \in D(a,b)\)).</li>
+        <li>Kiszámoljuk \(f\)-et a jelöltekben <b>és a két végpontban</b>.</li>
+        <li>A legnagyobb érték az abszolút maximum, a legkisebb az abszolút minimum.</li>
+      </ol>
+    </div>
+    <div class="rule-card wide">
+      <h3>Monotonitásvizsgálat menete (előjeltáblázat)</h3>
+      <ol>
+        <li>Értelmezési tartomány, deriválhatóság; \(f'\) kiszámítása és <b>szorzattá alakítása</b>.</li>
+        <li>\(f'\) zérushelyei és a \(D_f\)-ből kimaradó pontok felosztják \(D_f\)-et részintervallumokra. Ha \(f'\) folytonos, ezeken belül nem vált előjelet, így elég egy-egy pontban kiszámolni.</li>
+        <li>Táblázat: \(f'\) előjele \(\Rightarrow\) \(f\) monotonitása; előjelváltás a stacionárius pontban \(\Rightarrow\) lokális szélsőérték.</li>
+      </ol>
+      <p class="note">Szöveges feladatnál (3–4.) nyílt vagy végtelen intervallumon dolgozunk: ha \(f\) egy \(x_0\)-ig \(\uparrow\), utána \(\downarrow\) (vagy fordítva), akkor \(x_0\) <b>abszolút</b> szélsőértékhely, Weierstrass nélkül is.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ÓRAI FELADATOK ================= -->
+<section id="orai">
+  <div class="section-head">
+    <span class="label">4. gyakorlat · Feladatok</span>
+    <h2>Órai feladatok</h2>
+    <p>A megoldások menete a 4. gyakorlati anyag kidolgozását követi. Minden eredményt numerikusan (mintavételezéssel és véges differenciákkal) ellenőriztünk.</p>
+  </div>
+
+  <div class="taskgroup">
+
+  <!-- 1. feladat -->
+  <article class="task" id="o1a">
+    <div class="task-head"><span class="no">1. (a)</span><span class="src">4. gyakorlat · órai</span><span class="kind">monotonitás · lokális szélsőérték</span></div>
+    <p class="stmt">Határozzuk meg az alábbi függvény monotonitási intervallumait, valamint a lokális szélsőértékhelyeit és lokális szélsőértékeit:</p>
+    \[f(x) := 3x^4 - 4x^3 - 12x^2 + 2 \quad (x \in \R).\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>\(f\) polinom, így \(f \in D(\R)\) és</p>
+        \[f'(x) = 12x^3 - 12x^2 - 24x = 12x(x^2 - x - 2) = 12x(x-2)(x+1) \quad (x \in \R).\]
+        <p>\(f'\) folytonos \(\R\)-en, ezért csak a zérushelyein válthat előjelet:</p>
+        \[f'(x) = 0 \iff x = -1,\ x = 0 \ \text{vagy}\ x = 2.\]
+        <p>Négy részintervallumot kapunk: \((-\infty, -1)\), \((-1, 0)\), \((0, 2)\), \((2, +\infty)\). Mindegyiken egy pontban kiszámolva \(f'\) előjelét:</p>
+        <div class="tbl"><table class="sgn">
+          <tr><th>\(x\)</th><td>\(x \lt -1\)</td><td class="pt">\(-1\)</td><td>\(-1 \lt x \lt 0\)</td><td class="pt">\(0\)</td><td>\(0 \lt x \lt 2\)</td><td class="pt">\(2\)</td><td>\(x \gt 2\)</td></tr>
+          <tr><th>\(f'\)</th><td class="n">−</td><td class="pt">0</td><td class="p">+</td><td class="pt">0</td><td class="n">−</td><td class="pt">0</td><td class="p">+</td></tr>
+          <tr><th>\(f\)</th><td>\(\downarrow\)</td><td class="pt">\(-3\)</td><td>\(\uparrow\)</td><td class="pt">\(2\)</td><td>\(\downarrow\)</td><td class="pt">\(-30\)</td><td>\(\uparrow\)</td></tr>
+          <tr><th></th><td></td><td class="pt"><span class="tag">lok. min.</span></td><td></td><td class="pt"><span class="tag">lok. max.</span></td><td></td><td class="pt"><span class="tag">lok. min.</span></td><td></td></tr>
+        </table></div>
+        <ul>
+          <li>\(-1\)-ben \(f'\) negatívból pozitívba vált: lokális minimum, \(f(-1) = 3 + 4 - 12 + 2 = -3\).</li>
+          <li>\(0\)-ban \(f'\) pozitívból negatívba vált: lokális maximum, \(f(0) = 2\).</li>
+          <li>\(2\)-ben \(f'\) negatívból pozitívba vált: lokális minimum, \(f(2) = 48 - 32 - 48 + 2 = -30\).</li>
+        </ul>
+        <p>Eredmény: <span class="ans">\(f \downarrow\) a \((-\infty, -1]\) és a \([0, 2]\) intervallumon, \(f \uparrow\) a \([-1, 0]\) és a \([2, +\infty)\) intervallumon</span></p>
+        <p><span class="ans">lok. min.: \(f(-1) = -3\), \(f(2) = -30\); lok. max.: \(f(0) = 2\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért az \(f'\) előjele?</b> A monotonitás és a derivált kapcsolatáról szóló tétel szerint egy <i>intervallumon</i> \(f' \gt 0 \Rightarrow f \uparrow\), \(f' \lt 0 \Rightarrow f \downarrow\). Itt \(D_f = \R\), így a részintervallumokon közvetlenül alkalmazható.</p>
+        <p><b>A szorzattá alakítás a kulcs.</b> \(12x\)-et kiemelve a maradék másodfokú: \(x^2 - x - 2 = 0 \iff x = \frac{1 \pm 3}{2}\), azaz \(2\) vagy \(-1\). Szorzat alakból az előjel tényezőnként leolvasható: pl. \(x = -2\)-ben \(12\cdot(-2)\cdot(-4)\cdot(-1) = -96 \lt 0\).</p>
+        <p><b>Gyors ellenőrzés a másodrendű feltétellel:</b> \(f''(x) = 36x^2 - 24x - 24\), így \(f''(-1) = 36 \gt 0\) (min.), \(f''(0) = -24 \lt 0\) (max.), \(f''(2) = 72 \gt 0\) (min.). ✓</p>
+        <p class="tip">A határoló pontok (\(-1\), \(0\), \(2\)) mindkét szomszédos monotonitási intervallumhoz hozzávehetők, mert \(f\) ott folytonos. Az eredményben ezért zárt intervallumok szerepelnek.</p>
+        <p><b>Észrevétel:</b> \(f(2) = -30\) a függvény legkisebb értéke is (\(\R\)-en abszolút minimum), mert \(\pm\infty\)-ben \(f \to +\infty\), és a másik lokális minimum \(-3 \gt -30\).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o1b">
+    <div class="task-head"><span class="no">1. (b)</span><span class="src">4. gyakorlat · órai</span><span class="kind">monotonitás · racionális tört</span></div>
+    <p class="stmt">Határozzuk meg az alábbi függvény monotonitási intervallumait, valamint a lokális szélsőértékhelyeit és lokális szélsőértékeit:</p>
+    \[f(x) := \frac{x}{x^2 - 10x + 16} \quad \big(x \in \R \setminus \{2, 8\}\big).\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Mivel \(x^2 - 10x + 16 = (x-2)(x-8)\), a tört valóban értelmes a megadott halmazon, és \(f \in D(\R\setminus\{2,8\})\). A hányados deriválási szabálya szerint</p>
+        \[f'(x) = \frac{1\cdot(x^2 - 10x + 16) - x(2x - 10)}{(x^2 - 10x + 16)^2} = \frac{16 - x^2}{(x^2 - 10x + 16)^2} \quad \big(x \in \R\setminus\{2,8\}\big).\]
+        <p>\(f'\) folytonos minden \(x \ne 2, 8\) pontban, így előjelet csak a \(2\), \(8\) pontokban és \(f'\) zérushelyein válthat:</p>
+        \[f'(x) = \frac{(4 - x)(4 + x)}{(x^2 - 10x + 16)^2} = 0 \iff x = -4 \ \text{vagy}\ x = 4.\]
+        <p>A nevező pozitív, tehát \(f'\) előjele \(16 - x^2\) előjelével egyezik. Öt részintervallum: \((-\infty,-4)\), \((-4,2)\), \((2,4)\), \((4,8)\), \((8,+\infty)\).</p>
+        <div class="tbl"><table class="sgn">
+          <tr><th>\(x\)</th><td>\(x \lt -4\)</td><td class="pt">\(-4\)</td><td>\(-4 \lt x \lt 2\)</td><td class="pt">\(2\)</td><td>\(2 \lt x \lt 4\)</td><td class="pt">\(4\)</td><td>\(4 \lt x \lt 8\)</td><td class="pt">\(8\)</td><td>\(x \gt 8\)</td></tr>
+          <tr><th>\(f'\)</th><td class="n">−</td><td class="pt">0</td><td class="p">+</td><td class="pt">✕</td><td class="p">+</td><td class="pt">0</td><td class="n">−</td><td class="pt">✕</td><td class="n">−</td></tr>
+          <tr><th>\(f\)</th><td>\(\downarrow\)</td><td class="pt">\(-\frac{1}{18}\)</td><td>\(\uparrow\)</td><td class="pt">✕</td><td>\(\uparrow\)</td><td class="pt">\(-\frac12\)</td><td>\(\downarrow\)</td><td class="pt">✕</td><td>\(\downarrow\)</td></tr>
+          <tr><th></th><td></td><td class="pt"><span class="tag">lok. min.</span></td><td></td><td class="pt"><span class="tag">nincs ért.</span></td><td></td><td class="pt"><span class="tag">lok. max.</span></td><td></td><td class="pt"><span class="tag">nincs ért.</span></td><td></td></tr>
+        </table></div>
+        <p>Lokális szélsőérték csak a \(\pm 4\) pontokban lehet:</p>
+        <ul>
+          <li>\(-4\)-ben \(f'\) negatívból pozitívba vált: lokális minimum, \(f(-4) = \dfrac{-4}{16 + 40 + 16} = -\dfrac{4}{72} = -\dfrac{1}{18}\).</li>
+          <li>\(4\)-ben \(f'\) pozitívból negatívba vált: lokális maximum, \(f(4) = \dfrac{4}{16 - 40 + 16} = \dfrac{4}{-8} = -\dfrac12\).</li>
+        </ul>
+        <p>Eredmény: <span class="ans">\(f \downarrow\) a \((-\infty, -4]\), \([4, 8)\), \((8, +\infty)\) intervallumokon; \(f \uparrow\) a \([-4, 2)\), \((2, 4]\) intervallumokon</span></p>
+        <p><span class="ans">lok. min.: \(f(-4) = -\frac{1}{18}\); lok. max.: \(f(4) = -\frac12\)</span></p>
+        <figure class="graph"><div id="g-o1b"></div><figcaption><span class="lg">f(x) = x/(x² − 10x + 16)</span><span class="lg asy">x = 2, x = 8: itt nincs értelmezve</span><span>● lok. min. (−4; −1/18), lok. max. (4; −1/2)</span></figcaption></figure>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért kell a \(2\) és a \(8\) is a táblázatba?</b> \(D_f\) nem intervallum, hanem három intervallum uniója. A monotonitási tétel csak intervallumon működik, ezért \(D_f\)-et először a kimaradó pontokban szét kell vágni, és csak utána a zérushelyekben.</p>
+        <p><b>Miért nem írhatjuk, hogy „\(f \downarrow\) a \([4, 8) \cup (8, +\infty)\) halmazon”?</b> Mert ez hamis: \(8\)-tól kicsit balra \(f \to -\infty\), jobbra \(f \to +\infty\), így pl. \(f(7{,}9) \lt f(9)\). Ezért külön intervallumként soroljuk fel őket (ugyanez \([-4,2)\) és \((2,4]\) esetén).</p>
+        <p><b>Meglepő, de helyes:</b> a lokális maximum értéke (\(-\frac12\)) <i>kisebb</i>, mint a lokális minimumé (\(-\frac1{18}\)). A „lokális” szó csak egy kis környezetre vonatkozik, és a két pont között ott van a \(2\)-beli szakadás (lásd grafikon).</p>
+        <p><b>Ellenőrzés:</b> \(f'(0) = \frac{16}{256} \gt 0\) ✓, \(f'(5) = \frac{-9}{81} \lt 0\) ✓; a numerikus mintavétel is ezt adja.</p>
+        <p class="tip">A számlálót érdemes rögtön egyszerűsíteni: \(x^2 - 10x + 16 - 2x^2 + 10x = 16 - x^2\). A nevező négyzet, így az előjelet nem befolyásolja.</p>
+      </div>
+    </details>
+  </article>
+
+  <!-- 2. feladat -->
+  <article class="task" id="o2a">
+    <div class="task-head"><span class="no">2. (a)</span><span class="src">4. gyakorlat · órai</span><span class="kind">abszolút szélsőérték · Weierstrass</span></div>
+    <p class="stmt">Számítsuk ki a következő függvény abszolút szélsőértékhelyeit és abszolút szélsőértékeit:</p>
+    \[f(x) := x^4 - 4x^3 + 10 \quad \big(x \in [-1, 4]\big).\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Mivel \(f \in C[-1, 4]\), Weierstrass tétele szerint \(f\)-nek léteznek abszolút szélsőértékei.</p>
+        <div class="step"><b>A lokális szélsőértékhelyek meghatározása.</b>
+          <p>A \(g(x) := x^4 - 4x^3 + 10\) \((x \in \R)\) függvény deriválható, és</p>
+          \[g'(x) = 4x^3 - 12x^2 = 4x^2(x - 3) \quad (x \in \R), \qquad g'(x) = 0 \iff x_1 = 0 \ \text{vagy}\ x_2 = 3.\]
+          <p>\(g'(x) \lt 0\), ha \(x \in (-1, 1)\setminus\{0\}\), és \(g'(0) = 0\), ezért \(g \downarrow\) a \((-1, 1)\) intervallumon: az \(x_1 = 0\) <b>nem</b> lokális szélsőértékhely. \(g'\)-nek \(x_2 = 3\)-ban \((-,+)\) előjelváltása van, így \(3\) lokális minimumhely.</p>
+          <div class="tbl"><table class="sgn">
+            <tr><th>\(x\)</th><td>\(-1\)</td><td>\((-1, 0)\)</td><td class="pt">\(0\)</td><td>\((0, 3)\)</td><td class="pt">\(3\)</td><td>\((3, 4)\)</td><td>\(4\)</td></tr>
+            <tr><th>\(f'\)</th><td></td><td class="n">−</td><td class="pt">0</td><td class="n">−</td><td class="pt">0</td><td class="p">+</td><td></td></tr>
+            <tr><th>\(f\)</th><td>\(15\)</td><td>\(\downarrow\)</td><td class="pt">\(10\)</td><td>\(\downarrow\)</td><td class="pt">\(-17\)</td><td>\(\uparrow\)</td><td>\(10\)</td></tr>
+          </table></div>
+        </div>
+        <div class="step"><b>A függvényértékek összehasonlítása.</b>
+          \[f(-1) = 1 + 4 + 10 = 15, \qquad f(3) = 81 - 108 + 10 = -17, \qquad f(4) = 256 - 256 + 10 = 10.\]
+        </div>
+        <p>Eredmény: <span class="ans">abszolút minimumhely \(3\), abszolút minimum \(-17\); abszolút maximumhely \(-1\), abszolút maximum \(15\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért a \(g\) segédfüggvény?</b> \(f\) a zárt \([-1, 4]\)-en van értelmezve, a végpontokban csak egyoldali derivált létezik. Ezért a megoldás a \(D_g = \R\)-en értelmezett \(g\)-t deriválja, és a belső pontokban \(f' = g'\).</p>
+        <p><b>A \(0\) csapda.</b> \(f'(0) = 0\), de \(4x^2 \ge 0\) miatt \(f'\) előjele \(0\) körül mindkét oldalon \((x - 3) \lt 0\) szerint negatív: nincs előjelváltás, ez „vízszintes érintős” inflexiós pont, nem szélsőérték. Az abszolút szélsőértékhez ez nem is számít: ha be is vennénk a jelöltek közé (\(f(0) = 10\)), sem a max., sem a min. nem változna.</p>
+        <p><b>A végpontokról ne feledkezz meg!</b> Az abszolút maximum itt a \(-1\) végpontban van, ahol \(f'(-1) = -16 \ne 0\). Csak a stacionárius pontokat nézve a maximumot elvétenénk.</p>
+        <p><b>Ellenőrzés:</b> \([-1, 4]\)-en 200 000 pontban mintavételezve a legnagyobb érték \(15\) (\(x = -1\)), a legkisebb \(-17\) (\(x \approx 3\)). ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o2b">
+    <div class="task-head"><span class="no">2. (b)</span><span class="src">4. gyakorlat · órai</span><span class="kind">abszolút szélsőérték · tört</span></div>
+    <p class="stmt">Számítsuk ki a következő függvény abszolút szélsőértékhelyeit és abszolút szélsőértékeit:</p>
+    \[f(x) := \frac{x}{x^2 + 1} \quad \big(x \in [-\tfrac32, 2]\big).\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Mivel \(f \in C[-\frac32, 2]\), Weierstrass tétele szerint \(f\)-nek léteznek abszolút szélsőértékei.</p>
+        <div class="step"><b>A lokális szélsőértékhelyek meghatározása.</b>
+          <p>A \(g(x) := \frac{x}{x^2+1}\) \((x \in \R)\) függvény deriválható, és</p>
+          \[g'(x) = \frac{1\cdot(x^2 + 1) - x\cdot 2x}{(x^2+1)^2} = \frac{1 - x^2}{(x^2+1)^2} \quad (x \in \R),\]
+          \[g'(x) = 0 \iff 1 - x^2 = 0 \iff x_1 = -1 \ \text{vagy}\ x_2 = 1.\]
+          <p>Mindkettő a \((-\frac32, 2)\) intervallumba esik. \(g'\)-nek \((-1)\)-ben \((-,+)\) előjelváltása van: lokális minimumhely; \(1\)-ben \((+,-)\) előjelváltása van: lokális maximumhely.</p>
+          <div class="tbl"><table class="sgn">
+            <tr><th>\(x\)</th><td>\(-\frac32\)</td><td>\((-\frac32, -1)\)</td><td class="pt">\(-1\)</td><td>\((-1, 1)\)</td><td class="pt">\(1\)</td><td>\((1, 2)\)</td><td>\(2\)</td></tr>
+            <tr><th>\(f'\)</th><td></td><td class="n">−</td><td class="pt">0</td><td class="p">+</td><td class="pt">0</td><td class="n">−</td><td></td></tr>
+            <tr><th>\(f\)</th><td>\(-\frac{6}{13}\)</td><td>\(\downarrow\)</td><td class="pt">\(-\frac12\)</td><td>\(\uparrow\)</td><td class="pt">\(\frac12\)</td><td>\(\downarrow\)</td><td>\(\frac25\)</td></tr>
+          </table></div>
+        </div>
+        <div class="step"><b>A függvényértékek összehasonlítása.</b>
+          \[f\big(-\tfrac32\big) = \frac{-\frac32}{\frac94 + 1} = -\frac{6}{13}, \qquad f(-1) = -\frac12,\]
+          \[f(1) = \frac12, \qquad f(2) = \frac25.\]
+          <p>Mivel \(-\frac12 \lt -\frac{6}{13}\) (\(-0{,}5 \lt -0{,}4615\)) és \(\frac12 \gt \frac25\):</p>
+        </div>
+        <p>Eredmény: <span class="ans">abszolút minimumhely \(-1\), abszolút minimum \(-\frac12\); abszolút maximumhely \(1\), abszolút maximum \(\frac12\)</span></p>
+        <figure class="graph"><div id="g-o2b"></div><figcaption><span class="lg">f a [−3/2; 2] intervallumon</span><span class="lg fam">x/(x² + 1) az intervallumon kívül</span><span class="lg asy">a végpontok</span><span>● végpontok, abs. min. (−1; −1/2), abs. max. (1; 1/2)</span></figcaption></figure>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Lépések:</b> folytonosság zárt intervallumon \(\Rightarrow\) van max/min; jelöltek: a belső stacionárius pontok és a végpontok; értékek összehasonlítása. Itt a lokális szélsőértékhelyek egyben abszolútak is, de ez csak az összehasonlítás után derül ki.</p>
+        <p><b>A szoros pont:</b> a bal végpontbeli érték \(-\frac{6}{13} \approx -0{,}46\) közel van \(-\frac12\)-hez, ezért pontosan kell összehasonlítani: \(-\frac12 = -\frac{6{,}5}{13} \lt -\frac{6}{13}\).</p>
+        <p><b>Érdemes tudni:</b> \(\left|\frac{x}{x^2+1}\right| \le \frac12\) minden \(x \in \R\)-re, mert \(x^2 + 1 \ge 2|x| \iff (|x| - 1)^2 \ge 0\). Egyenlőség pontosan \(x = \pm 1\)-ben, ez gyors ellenőrzés az eredményre.</p>
+        <p><b>Numerikus ellenőrzés:</b> mintavételezéssel a min. \(-0{,}5\) (\(x \approx -1\)), a max. \(0{,}5\) (\(x \approx 1\)). ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <!-- 3. feladat -->
+  <article class="task" id="o3">
+    <div class="task-head"><span class="no">3.</span><span class="src">4. gyakorlat · órai</span><span class="kind">szöveges · maximális térfogat</span></div>
+    <p class="stmt">Egy \(100\ \text{cm}^2\) területű, négyzet alakú lemez sarkaiból egybevágó négyzeteket vágunk le, majd a lemez széleit felhajtjuk és dobozt készítünk belőle. Mekkora legyen a levágott négyzetek oldala, hogy a doboz térfogata maximális legyen?</p>
+    <p class="warn"><b>Megjegyzés a forráshoz.</b> A megoldás egyik sorában „\(V(x) = 0 \iff x = \frac53\)” olvasható. Ez elírás: a derivált zérushelyét keressük, helyesen \(V'(x) = 0 \iff x = \frac53\) (hiszen \(V(\frac53) = \frac{2000}{27} \ne 0\)).</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>A lemez oldala \(10\) cm. Ha a levágott négyzetek oldala \(x\) cm, akkor a doboz alapja \(10 - 2x\) oldalú négyzet, magassága \(x\), ahol \(x \in (0, 5)\). A térfogat:</p>
+        \[V(x) := (10 - 2x)^2\cdot x = 4x^3 - 40x^2 + 100x \quad \big(x \in (0, 5)\big).\]
+        <p>Ennek az abszolút maximumhelyét keressük. Weierstrass tétele most közvetlenül nem alkalmazható, mert az értelmezési tartomány nem zárt intervallum. \(V \in D(0, 5)\) és</p>
+        \[V'(x) = 12x^2 - 80x + 100 = 4(3x^2 - 20x + 25) \quad \big(x \in (0, 5)\big).\]
+        \[3x^2 - 20x + 25 = 0 \iff x_{1,2} = \frac{20 \pm \sqrt{400 - 300}}{6} = \frac{10 \pm 5}{3} \iff x_1 = 5,\ x_2 = \frac53,\]
+        <p>tehát \(3x^2 - 20x + 25 = (x - 5)(3x - 5)\), és mivel \(x \in (0, 5)\):</p>
+        \[V'(x) = 0 \iff x = \frac53.\]
+        <p>Legyen \(x_0 := \frac53\). Mivel</p>
+        <ul>
+          <li>\(V'(x) \gt 0\), ha \(x \in (0, x_0)\) \(\Rightarrow V \uparrow\) a \((0, x_0]\) intervallumon,</li>
+          <li>\(V'(x) \lt 0\), ha \(x \in (x_0, 5)\) \(\Rightarrow V \downarrow\) az \([x_0, 5)\) intervallumon,</li>
+        </ul>
+        <p>ezért \(x_0\) a \(V\) függvény abszolút maximumhelye.</p>
+        <p>Eredmény: <span class="ans">a levágott négyzet oldala \(\frac53\ \text{cm}\)</span> (a maximális térfogat \(V(\frac53) = \big(\frac{20}{3}\big)^2\cdot\frac53 = \frac{2000}{27} \approx 74{,}07\ \text{cm}^3\)).</p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>A modell felállítása.</b> \(100\ \text{cm}^2\) területű négyzet oldala \(10\) cm. Mind a négy sarokból \(x\) oldalú négyzet esik ki, így a felhajtás után minden irányban \(10 - 2x\) marad az aljnak. A feltételek: \(x \gt 0\) (különben nincs fal) és \(10 - 2x \gt 0\), azaz \(x \lt 5\) (különben nincs alj).</p>
+        <p><b>Miért abszolút a maximum Weierstrass nélkül?</b> A \((0, 5)\) nyílt intervallumon a tétel nem használható. Helyette a monotonitás dönt: \(V\) az \(x_0\)-ig szigorúan nő, utána szigorúan csökken, tehát minden más \(x\)-re \(V(x) \lt V(x_0)\).</p>
+        <p><b>Szorzat alakból gyorsabban:</b> \(V'(x) = 4(x - 5)(3x - 5)\); \((0,5)\)-ön \(x - 5 \lt 0\), így \(V'\) előjele \(-(3x - 5)\) előjele: \(x \lt \frac53\)-ra pozitív, \(x \gt \frac53\)-ra negatív.</p>
+        <p><b>Józan ész ellenőrzés:</b> \(V(1) = 64\), \(V(2) = 72\), \(V(\frac53) \approx 74{,}07\), \(V(3) = 48\). A \((0,5)\)-ön sűrűn mintavételezve a maximumhely \(\approx 1{,}6667\). ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <!-- 4. feladat -->
+  <article class="task" id="o4">
+    <div class="task-head"><span class="no">4.</span><span class="src">4. gyakorlat · órai</span><span class="kind">szöveges · minimális felszín</span></div>
+    <p class="stmt">Hogyan kell megválasztani az 1 liter térfogatú, mindkét végén zárt, henger alakú konzervdoboz méreteit, hogy az anyagköltség minimális legyen? Az anyagköltség a doboz felszínével egyenesen arányos.</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Jelölje \(r \gt 0\) az alapkör sugarát és \(m \gt 0\) a magasságot (cm-ben). Az anyagköltséget a legkisebb felszínű dobozzal minimalizáljuk. A henger felszíne</p>
+        \[A = 2\pi r^2 + 2\pi r m.\]
+        <p>A két változó nem független: a térfogat \(1\ \text{liter} = 1000\ \text{cm}^3\), azaz</p>
+        \[V = \pi r^2 m = 1000 \Longrightarrow m = \frac{1000}{\pi r^2}.\]
+        <p>A felszín tehát az \(r\) függvényeként:</p>
+        \[A(r) := 2\pi r^2 + 2\pi r\cdot\frac{1000}{\pi r^2} = 2\pi r^2 + \frac{2000}{r} \quad (r \gt 0).\]
+        <p>Ennek az abszolút minimumhelyét keressük. Weierstrass tétele most közvetlenül nem alkalmazható, mert az értelmezési tartomány nem korlátos intervallum. \(A \in D\big((0, +\infty)\big)\) és</p>
+        \[A'(r) = 4\pi r - \frac{2000}{r^2} \quad (r \gt 0), \qquad A'(r) = 0 \iff r^3 = \frac{500}{\pi} = \frac{1000}{2\pi} \iff r = \frac{10}{\sqrt[3]{2\pi}}.\]
+        <p>Legyen \(r_0 := \frac{10}{\sqrt[3]{2\pi}}\). Mivel</p>
+        <ul>
+          <li>\(A'(r) \lt 0\), ha \(r \in (0, r_0)\) \(\Rightarrow A \downarrow\) a \((0, r_0]\) intervallumon,</li>
+          <li>\(A'(r) \gt 0\), ha \(r \in (r_0, +\infty)\) \(\Rightarrow A \uparrow\) az \([r_0, +\infty)\) intervallumon,</li>
+        </ul>
+        <p>ezért \(r_0\) az \(A\) függvény abszolút minimumhelye. Ekkor</p>
+        \[m_0 := \frac{1000}{\pi r_0^2} = \frac{1000}{\pi}\cdot\frac{\big(\sqrt[3]{2\pi}\big)^2}{100} = \frac{10\,(2\pi)^{2/3}}{\pi} = \frac{20}{\sqrt[3]{2\pi}}.\]
+        <p>Eredmény: <span class="ans">alapkör sugara \(r_0 = \frac{10}{\sqrt[3]{2\pi}} \approx 5{,}42\) cm, magassága \(m_0 = \frac{20}{\sqrt[3]{2\pi}} \approx 10{,}84\) cm</span></p>
+        <p>Vegyük észre, hogy az optimális esetben \(m_0 = 2r_0\): a henger pontosan olyan széles, mint amilyen magas. (A minimális felszín \(A(r_0) = 6\pi r_0^2 \approx 553{,}6\ \text{cm}^2\).)</p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>A módszer:</b> két változó (\(r\), \(m\)) és egy feltétel (térfogat) \(\Rightarrow\) a feltételből kifejezzük az egyik változót, és egyváltozós függvényt kapunk. Az „egyenesen arányos” költség azt jelenti, hogy a költség minimuma ott van, ahol a felszíné; a konstans szorzó nem számít.</p>
+        <p><b>Az \(f'\) előjele:</b> \(A'(r) = \frac{4\pi r^3 - 2000}{r^2}\). A nevező pozitív, a számláló \(r\)-ben szigorúan nő, és \(r_0\)-ban \(0\), így előtte negatív, utána pozitív.</p>
+        <p><b>Miért abszolút?</b> A monotonitás miatt: \((0, r_0]\)-on csökken, \([r_0, \infty)\)-en nő. Szemléletesen: \(r \to 0^+\) esetén \(A \to +\infty\) (hosszú, vékony cső), \(r \to +\infty\) esetén is \(A \to +\infty\) (lapos korong).</p>
+        <p><b>Az \(m_0 = 2r_0\) gyors indoklása:</b> \(A'(r_0) = 0\)-ból \(4\pi r_0^3 = 2000\), és \(m_0 = \frac{1000}{\pi r_0^2} = \frac{1000\, r_0}{\pi r_0^3} = \frac{1000\, r_0}{500} = 2r_0\).</p>
+        <p><b>Numerikus ellenőrzés:</b> \(r_0 \approx 5{,}4193\), \(m_0 \approx 10{,}8385\); \(A\)-t \((0{,}5;\ 20{,}5)\)-ön mintavételezve a minimumhely \(\approx 5{,}419\). ✓</p>
+      </div>
+    </details>
+  </article>
+
+  </div>
+</section>
+
+<!-- ================= HÁZI FELADATOK ================= -->
+<section id="hazi">
+  <div class="section-head">
+    <span class="label">4. gyakorlat · Házi feladatok · saját megoldás</span>
+    <h2>Házi feladatok</h2>
+    <p>Az összevont gyakorlati anyag 4. gyakorlathoz tartozó házi feladatai. Ezekhez nincs hivatalos megoldás, ezek saját megoldások (numerikusan ellenőrizve).</p>
+  </div>
+
+  <div class="taskgroup">
+
+  <article class="task" id="h1">
+    <div class="task-head"><span class="no">1.</span><span class="src">4. gyakorlat · házi</span><span class="kind">monotonitás · lokális szélsőérték</span></div>
+    <p class="stmt">Határozza meg az alábbi függvény monotonitási intervallumait, valamint a lokális szélsőértékhelyeit és lokális szélsőértékeit!</p>
+    \[f(x) := x^5 - 5x^4 + 5x^3 + 1 \quad (x \in \R)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>\(f\) polinom, így \(f \in D(\R)\) és</p>
+        \[f'(x) = 5x^4 - 20x^3 + 15x^2 = 5x^2(x^2 - 4x + 3) = 5x^2(x - 1)(x - 3) \quad (x \in \R).\]
+        \[f'(x) = 0 \iff x = 0,\ x = 1 \ \text{vagy}\ x = 3.\]
+        <div class="tbl"><table class="sgn">
+          <tr><th>\(x\)</th><td>\(x \lt 0\)</td><td class="pt">\(0\)</td><td>\(0 \lt x \lt 1\)</td><td class="pt">\(1\)</td><td>\(1 \lt x \lt 3\)</td><td class="pt">\(3\)</td><td>\(x \gt 3\)</td></tr>
+          <tr><th>\(f'\)</th><td class="p">+</td><td class="pt">0</td><td class="p">+</td><td class="pt">0</td><td class="n">−</td><td class="pt">0</td><td class="p">+</td></tr>
+          <tr><th>\(f\)</th><td>\(\uparrow\)</td><td class="pt">\(1\)</td><td>\(\uparrow\)</td><td class="pt">\(2\)</td><td>\(\downarrow\)</td><td class="pt">\(-26\)</td><td>\(\uparrow\)</td></tr>
+          <tr><th></th><td></td><td class="pt"><span class="tag">nincs szélsőérték</span></td><td></td><td class="pt"><span class="tag">lok. max.</span></td><td></td><td class="pt"><span class="tag">lok. min.</span></td><td></td></tr>
+        </table></div>
+        <ul>
+          <li>\(0\)-ban \(f'\) nem vált előjelet: nem szélsőértékhely (\(f\) a \((-\infty, 1]\)-en végig \(\uparrow\)).</li>
+          <li>\(1\)-ben \((+,-)\) előjelváltás: lokális maximum, \(f(1) = 1 - 5 + 5 + 1 = 2\).</li>
+          <li>\(3\)-ban \((-,+)\) előjelváltás: lokális minimum, \(f(3) = 243 - 405 + 135 + 1 = -26\).</li>
+        </ul>
+        <p>Eredmény: <span class="ans">\(f \uparrow\) a \((-\infty, 1]\) és a \([3, +\infty)\) intervallumon, \(f \downarrow\) az \([1, 3]\) intervallumon</span></p>
+        <p><span class="ans">lok. max.: \(f(1) = 2\); lok. min.: \(f(3) = -26\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Ugyanaz a recept, mint az órai 1(a):</b> kiemelés (\(5x^2\)), a maradék másodfokú tényezőkre bontása (\(x^2 - 4x + 3 = (x-1)(x-3)\), mert a gyökök összege 4, szorzata 3), majd előjeltáblázat.</p>
+        <p><b>Páros multiplicitású gyök:</b> az \(x^2\) tényező \(0\) körül mindkét oldalon pozitív, ezért ott \(f'\) nem vált előjelet. Ez ugyanaz a jelenség, mint \(x^3\)-nál a \(0\)-ban (Emlékeztető): \(f'(0) = 0\), mégsincs szélsőérték.</p>
+        <p><b>Másodrendű ellenőrzés:</b> \(f''(x) = 20x^3 - 60x^2 + 30x\); \(f''(1) = -10 \lt 0\) (max.) ✓, \(f''(3) = 540 - 540 + 90 = 90 \gt 0\) (min.) ✓, \(f''(0) = 0\): itt a másodrendű teszt nem dönt, az előjeltáblázat igen.</p>
+        <p><b>Numerikus ellenőrzés:</b> \(f'\) képlete véges differenciával egyezik, az előjelek a \(-1\); \(0{,}5\); \(2\); \(4\) pontokban \(+, +, -, +\). ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="h2">
+    <div class="task-head"><span class="no">2.</span><span class="src">4. gyakorlat · házi</span><span class="kind">monotonitás · nem intervallum</span></div>
+    <p class="stmt">Határozza meg az alábbi függvény monotonitási intervallumait, valamint a lokális szélsőértékhelyeit és lokális szélsőértékeit!</p>
+    \[f(x) := \frac{e^x}{x} \quad \big(x \in \R \setminus \{0\}\big)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>\(f \in D(\R\setminus\{0\})\), és a hányados deriválási szabálya szerint</p>
+        \[f'(x) = \frac{e^x\cdot x - e^x\cdot 1}{x^2} = \frac{e^x\,(x - 1)}{x^2} \quad \big(x \in \R\setminus\{0\}\big).\]
+        <p>Mivel \(e^x \gt 0\) és \(x^2 \gt 0\), \(f'\) előjele \(x - 1\) előjelével egyezik; \(f'(x) = 0 \iff x = 1\). A \(0\) kimarad \(D_f\)-ből, így a részintervallumok: \((-\infty, 0)\), \((0, 1)\), \((1, +\infty)\).</p>
+        <div class="tbl"><table class="sgn">
+          <tr><th>\(x\)</th><td>\(x \lt 0\)</td><td class="pt">\(0\)</td><td>\(0 \lt x \lt 1\)</td><td class="pt">\(1\)</td><td>\(x \gt 1\)</td></tr>
+          <tr><th>\(f'\)</th><td class="n">−</td><td class="pt">✕</td><td class="n">−</td><td class="pt">0</td><td class="p">+</td></tr>
+          <tr><th>\(f\)</th><td>\(\downarrow\)</td><td class="pt">✕</td><td>\(\downarrow\)</td><td class="pt">\(e\)</td><td>\(\uparrow\)</td></tr>
+          <tr><th></th><td></td><td class="pt"><span class="tag">nincs ért.</span></td><td></td><td class="pt"><span class="tag">lok. min.</span></td><td></td></tr>
+        </table></div>
+        <p>\(1\)-ben \(f'\) negatívból pozitívba vált: lokális minimum, \(f(1) = \frac{e^1}{1} = e\).</p>
+        <p>Eredmény: <span class="ans">\(f \downarrow\) a \((-\infty, 0)\) és a \((0, 1]\) intervallumon (külön-külön), \(f \uparrow\) az \([1, +\infty)\) intervallumon</span></p>
+        <p><span class="ans">lok. min.: \(f(1) = e\); lokális maximum nincs</span></p>
+        <figure class="graph"><div id="g-h2"></div><figcaption><span class="lg">f(x) = eˣ/x</span><span class="lg asy">x = 0: itt nincs értelmezve</span><span>● lok. min. (1; e)</span></figcaption></figure>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>A buktató:</b> \(f' \lt 0\) a \((-\infty, 0)\) és a \((0, 1)\) intervallumon is, de \(f\) <b>nem</b> csökkenő a \((-\infty, 0)\cup(0, 1]\) halmazon: \(f(-1) = -\frac1e \lt 0 \lt f(\frac12) = 2\sqrt e\). Pontosan az Emlékeztetőbeli \(\frac1x\)-es példa: a monotonitási tétel csak intervallumon érvényes.</p>
+        <p><b>Ami a grafikonon látszik:</b> \(x \lt 0\)-ra \(f \lt 0\), és \(f \to 0^-\), ha \(x \to -\infty\); \(x \to 0^-\) esetén \(f \to -\infty\), \(x \to 0^+\) esetén \(f \to +\infty\). A \((0, +\infty)\) ágon \(f\) lecsökken \(e\)-ig, majd \(+\infty\)-be nő.</p>
+        <p><b>Másodrendű ellenőrzés:</b> \(f''(x) = \frac{e^x(x^2 - 2x + 2)}{x^3}\), így \(f''(1) = e \gt 0\): lokális minimum ✓.</p>
+        <p><b>Numerikus ellenőrzés:</b> \(f(1) = e \approx 2{,}71828\) és \(f(0{,}9), f(0{,}99), f(1{,}01), f(1{,}1)\) mind nagyobb ennél. ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="h3">
+    <div class="task-head"><span class="no">3.</span><span class="src">4. gyakorlat · házi</span><span class="kind">abszolút szélsőérték · Weierstrass</span></div>
+    <p class="stmt">Határozza meg az alábbi függvény abszolút szélsőértékhelyeit és abszolút szélsőértékeit!</p>
+    \[f(x) := \frac{x}{x^2 + x + 1} \quad \big(x \in [-2, 0]\big)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>A nevező diszkriminánsa \(1 - 4 \lt 0\), így \(x^2 + x + 1 \gt 0\) minden \(x\)-re: \(f \in C[-2, 0]\), és Weierstrass tétele szerint léteznek abszolút szélsőértékek.</p>
+        <div class="step"><b>A lokális szélsőértékhelyek meghatározása.</b>
+          <p>A \(g(x) := \frac{x}{x^2+x+1}\) \((x \in \R)\) függvény deriválható, és</p>
+          \[g'(x) = \frac{1\cdot(x^2 + x + 1) - x(2x + 1)}{(x^2 + x + 1)^2} = \frac{1 - x^2}{(x^2 + x + 1)^2},\]
+          \[g'(x) = 0 \iff x = -1 \ \text{vagy}\ x = 1.\]
+          <p>A \((-2, 0)\) intervallumba csak \(x = -1\) esik. Itt \(g'\)-nek \((-,+)\) előjelváltása van, tehát lokális minimumhely.</p>
+          <div class="tbl"><table class="sgn">
+            <tr><th>\(x\)</th><td>\(-2\)</td><td>\((-2, -1)\)</td><td class="pt">\(-1\)</td><td>\((-1, 0)\)</td><td>\(0\)</td></tr>
+            <tr><th>\(f'\)</th><td></td><td class="n">−</td><td class="pt">0</td><td class="p">+</td><td></td></tr>
+            <tr><th>\(f\)</th><td>\(-\frac23\)</td><td>\(\downarrow\)</td><td class="pt">\(-1\)</td><td>\(\uparrow\)</td><td>\(0\)</td></tr>
+          </table></div>
+        </div>
+        <div class="step"><b>A függvényértékek összehasonlítása.</b>
+          \[f(-2) = \frac{-2}{4 - 2 + 1} = -\frac23, \qquad f(-1) = \frac{-1}{1 - 1 + 1} = -1, \qquad f(0) = 0.\]
+        </div>
+        <p>Eredmény: <span class="ans">abszolút minimumhely \(-1\), abszolút minimum \(-1\); abszolút maximumhely \(0\), abszolút maximum \(0\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Először a folytonosság:</b> törtnél ellenőrizni kell, hogy a nevező nem nulla az intervallumon, különben Weierstrass nem alkalmazható. Itt a nevező sehol sem nulla.</p>
+        <p><b>Kiszűrjük a nem oda tartozó stacionárius pontot:</b> az \(x = 1\) is gyöke \(g'\)-nek, de kívül esik \([-2, 0]\)-n, így nem jelölt.</p>
+        <p><b>Végpontok:</b> a maximum itt a \(0\) végpontban van, ahol \(f'(0) = 1 \ne 0\). Ez újra mutatja, hogy a végpontokat mindig ki kell értékelni.</p>
+        <p><b>Monotonitással is megkapható:</b> \(f \downarrow\) a \([-2, -1]\)-en, \(f \uparrow\) a \([-1, 0]\)-n, tehát a min. a \(-1\)-ben, a max. a két végpont közül a nagyobbikban: \(\max\{-\frac23, 0\} = 0\).</p>
+        <p><b>Numerikus ellenőrzés:</b> \([-2, 0]\)-n mintavételezve min. \(-1\) (\(x \approx -1\)), max. \(0\) (\(x = 0\)). ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="h4">
+    <div class="task-head"><span class="no">4.</span><span class="src">4. gyakorlat · házi</span><span class="kind">szöveges · legközelebbi pont</span></div>
+    <p class="stmt">A \(6x + y = 9\) egyenletű egyenesen keresse meg a \((-3, 1)\)-hez legközelebbi pontot.</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Az egyenes pontjai \((x, 9 - 6x)\) \((x \in \R)\). Ezek távolsága a \((-3, 1)\) ponttól</p>
+        \[d(x) = \sqrt{(x + 3)^2 + (9 - 6x - 1)^2} = \sqrt{(x+3)^2 + (8 - 6x)^2}.\]
+        <p>A gyökfüggvény szigorúan nő, ezért \(d\) ott minimális, ahol a távolság négyzete:</p>
+        \[D(x) := (x + 3)^2 + (8 - 6x)^2 = 37x^2 - 90x + 73 \quad (x \in \R).\]
+        <p>\(D \in D(\R)\) és</p>
+        \[D'(x) = 2(x + 3) - 12(8 - 6x) = 74x - 90, \qquad D'(x) = 0 \iff x_0 = \frac{90}{74} = \frac{45}{37}.\]
+        <p>\(D'(x) \lt 0\), ha \(x \lt x_0\), és \(D'(x) \gt 0\), ha \(x \gt x_0\), tehát \(D \downarrow\) a \((-\infty, x_0]\)-on és \(D \uparrow\) az \([x_0, +\infty)\)-en: \(x_0\) a \(D\) (és így \(d\)) abszolút minimumhelye. A pont második koordinátája</p>
+        \[y_0 = 9 - 6\cdot\frac{45}{37} = \frac{333 - 270}{37} = \frac{63}{37}.\]
+        <p>Eredmény: <span class="ans">a legközelebbi pont \(\left(\frac{45}{37}, \frac{63}{37}\right)\), a távolság \(\frac{26}{\sqrt{37}} \approx 4{,}274\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért a négyzetet minimalizáljuk?</b> Mert \(\sqrt{\cdot}\) szigorúan monoton nő, így \(d\) és \(D = d^2\) minimumhelye ugyanaz, és \(D\) deriválása sokkal egyszerűbb (nincs láncszabály a gyök miatt).</p>
+        <p><b>A távolság:</b> \(D(x_0) = \left(\frac{156}{37}\right)^2 + \left(\frac{26}{37}\right)^2 = \frac{26^2(36 + 1)}{37^2} = \frac{676}{37}\), így \(d(x_0) = \frac{26}{\sqrt{37}}\).</p>
+        <p><b>Geometriai ellenőrzés:</b> a pont–egyenes távolság képlete: \(\frac{|6\cdot(-3) + 1 - 9|}{\sqrt{6^2 + 1^2}} = \frac{26}{\sqrt{37}}\) ✓. A \((-3,1) \to (\frac{45}{37}, \frac{63}{37})\) vektor \(\frac{26}{37}(6, 1)\), ami párhuzamos az egyenes \((6, 1)\) normálvektorával, tehát a legközelebbi pont valóban a merőleges vetület ✓.</p>
+        <p><b>Numerikus ellenőrzés:</b> \(D\)-t \([-5, 5]\)-ön sűrűn mintavételezve a minimumhely \(\approx 1{,}21622 = \frac{45}{37}\). ✓</p>
+      </div>
+    </details>
+  </article>
+
+  </div>
+</section>
+
+<!-- ================= GYAKORI HIBÁK ================= -->
+<section id="hibak">
+  <div class="section-head">
+    <span class="label">Mire figyelj</span>
+    <h2>Gyakori hibák</h2>
+  </div>
+  <div class="mistakes">
+    <div class="mistake"><span class="x">✕</span><p><b>„\(f'(a) = 0\), tehát \(a\) szélsőértékhely.”</b> Ez csak szükséges feltétel. Előjelváltás (vagy \(f''(a) \ne 0\)) is kell: \(x^3\) a \(0\)-ban, órai 2(a) és házi 1 a \(0\)-ban.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Monotonitás nem intervallumon.</b> Ha \(D_f\)-ből kimarad egy pont, a monotonitási intervallumokat ott szét kell vágni. „\(f \downarrow\) a \((-\infty,0)\cup(0,1]\)-en” hamis (házi 2, \(\frac1x\)).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Kifelejtett végpontok.</b> Zárt intervallumon az abszolút szélsőérték gyakran a végpontban van, ahol \(f' \ne 0\) (órai 2(a): max. a \(-1\)-ben; házi 3: max. a \(0\)-ban).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Lokális = abszolút.</b> A lokális maximum lehet kisebb egy lokális minimumnál (órai 1(b): \(-\frac12 \lt -\frac1{18}\)). Abszolút szélsőértéket csak értékek összehasonlításával vagy globális monotonitással lehet kimondani.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Weierstrass nyílt vagy végtelen intervallumon.</b> A \((0,5)\) vagy \((0,+\infty)\) esetén a tétel nem garantál semmit. Ilyenkor a monotonitás (\(\uparrow\) majd \(\downarrow\), vagy fordítva) bizonyítja, hogy a stacionárius pont abszolút szélsőértékhely (órai 3., 4.).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Nem szorzat alakú \(f'\), rossz előjel.</b> Előjelet szorzat alakból olvass le, a négyzetes nevezőt (pozitív) és az \(e^x\)-et hagyd figyelmen kívül. Az intervallumon kívüli stacionárius pontokat (házi 3: \(x = 1\)) szűrd ki.</p></div>
+  </div>
+</section>
+
+<footer>Forrás: <a href="../Gyakorlat%20anyagok/04_Gy_An_II_A_B.pdf" target="_blank" rel="noopener">4. gyakorlat (PDF)</a> és <a href="../Gyakorlat%20anyagok/An_II_A_B_Gyak.pdf" target="_blank" rel="noopener">Analízis II. gyakorlatok, összevont anyag (PDF)</a>. Minden eredményt numerikusan ellenőriztünk (deriváltak véges differenciával, szélsőértékek sűrű mintavételezéssel), a grafikonok a függvényekből számolva készültek.</footer>
+</div>
+
+<script>
+(function () {
+  // Small SVG plotter: several curves on one grid, optional vertical guide lines.
+  function fmt(v) { return (Math.round(v * 100) / 100).toString().replace('.', ',').replace('-', '−'); }
+  function plot(el, o) {
+    var W = 640, H = o.h || 320, L = 40, R = 14, T = 12, B = 26;
+    var x0 = o.x[0], x1 = o.x[1], y0 = o.y[0], y1 = o.y[1];
+    var X = function (x) { return L + (x - x0) / (x1 - x0) * (W - L - R); };
+    var Y = function (y) { return T + (y1 - y) / (y1 - y0) * (H - T - B); };
+    var s = [], cid = 'clip-' + el.id, v;
+    s.push('<defs><clipPath id="' + cid + '"><rect x="' + L + '" y="' + T + '" width="' + (W - L - R) + '" height="' + (H - T - B) + '"/></clipPath></defs>');
+    for (v = Math.ceil(x0 / o.gx - 1e-9) * o.gx; v <= x1 + 1e-9; v += o.gx) {
+      s.push('<line class="gl" x1="' + X(v) + '" y1="' + T + '" x2="' + X(v) + '" y2="' + (H - B) + '"/>');
+      if (Math.abs(v) > 1e-9) s.push('<text class="tk" x="' + X(v) + '" y="' + (H - 8) + '" text-anchor="middle">' + fmt(v) + '</text>');
+    }
+    for (v = Math.ceil(y0 / o.gy - 1e-9) * o.gy; v <= y1 + 1e-9; v += o.gy) {
+      s.push('<line class="gl" x1="' + L + '" y1="' + Y(v) + '" x2="' + (W - R) + '" y2="' + Y(v) + '"/>');
+      if (Math.abs(v) > 1e-9) s.push('<text class="tk" x="' + (L - 6) + '" y="' + (Y(v) + 4) + '" text-anchor="end">' + fmt(v) + '</text>');
+    }
+    if (y0 <= 0 && y1 >= 0) s.push('<line class="ax" x1="' + L + '" y1="' + Y(0) + '" x2="' + (W - R) + '" y2="' + Y(0) + '"/>');
+    if (x0 <= 0 && x1 >= 0) s.push('<line class="ax" x1="' + X(0) + '" y1="' + T + '" x2="' + X(0) + '" y2="' + (H - B) + '"/>');
+    (o.vl || []).forEach(function (a) { s.push('<line class="as" x1="' + X(a) + '" y1="' + T + '" x2="' + X(a) + '" y2="' + (H - B) + '"/>'); });
+    var g = '<g clip-path="url(#' + cid + ')">';
+    o.curves.forEach(function (c) {
+      var d = '', pen = false, N = 900, span = y1 - y0;
+      for (var i = 0; i <= N; i++) {
+        var x = x0 + (x1 - x0) * i / N;
+        if (c.dom && !c.dom(x)) { pen = false; continue; }
+        var y = c.f(x);
+        if (!isFinite(y)) { pen = false; continue; }
+        y = Math.max(Math.min(y, y1 + span), y0 - span);
+        d += (pen ? 'L' : 'M') + X(x).toFixed(1) + ' ' + Y(y).toFixed(1);
+        pen = true;
+      }
+      g += '<path class="' + c.cls + '" d="' + d + '"/>';
+    });
+    (o.pts || []).forEach(function (p) { g += '<circle class="pz" cx="' + X(p[0]) + '" cy="' + Y(p[1]) + '" r="3.5"/>'; });
+    g += '</g>';
+    s.push(g);
+    el.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + o.label + '">' + s.join('') + '</svg>';
+  }
+  var GRAPHS = {
+    'g-o1b': { label: 'x/(x²−10x+16) grafikonja, lokális minimum −4-ben, lokális maximum 4-ben', x: [-10, 14], y: [-3, 3], gx: 2, gy: 1, vl: [2, 8],
+      pts: [[-4, -1 / 18], [4, -0.5]],
+      curves: [ { cls: 'cv', f: function (x) { return x / (x * x - 10 * x + 16); }, dom: function (x) { return Math.abs(x - 2) > 0.05 && Math.abs(x - 8) > 0.05; } } ] },
+    'g-o2b': { label: 'x/(x²+1) a [−3/2, 2] intervallumon, abszolút minimum −1-ben, abszolút maximum 1-ben', x: [-4, 4], y: [-0.8, 0.8], gx: 1, gy: 0.2, h: 280, vl: [-1.5, 2],
+      pts: [[-1.5, -6 / 13], [-1, -0.5], [1, 0.5], [2, 0.4]],
+      curves: [ { cls: 'cv3', f: function (x) { return x / (x * x + 1); } },
+                { cls: 'cv', f: function (x) { return x / (x * x + 1); }, dom: function (x) { return x >= -1.5 && x <= 2; } } ] },
+    'g-h2': { label: 'e^x/x grafikonja, lokális minimum 1-ben', x: [-4, 3], y: [-5, 8], gx: 1, gy: 2, vl: [0],
+      pts: [[1, Math.E]],
+      curves: [ { cls: 'cv', f: function (x) { return Math.exp(x) / x; }, dom: function (x) { return Math.abs(x) > 0.03; } } ] }
+  };
+  Object.keys(GRAPHS).forEach(function (id) { var el = document.getElementById(id); if (el) plot(el, GRAPHS[id]); });
+})();
+</script>
+<!-- Fejezetsáv: az éppen olvasott szakasz gombja kiemelve -->
+<style>
+nav.bar a.active, nav.bar a.active:hover, nav.bar a.active:focus-visible { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+</style>
+<script>
+(function () {
+  var nav = document.querySelector('nav.bar');
+  if (!nav) return;
+  var links = Array.prototype.filter.call(nav.querySelectorAll('a[href^="#"]'), function (a) {
+    return a.getAttribute('href').length > 1 && document.getElementById(a.getAttribute('href').slice(1));
+  });
+  var current = null, ticking = false;
+  function sectionOf(a) { return document.getElementById(a.getAttribute('href').slice(1)); }
+  function update() {
+    ticking = false;
+    var line = nav.getBoundingClientRect().bottom + 12, active = null;
+    var visible = links.filter(function (a) { return sectionOf(a).offsetParent !== null; });
+    visible.forEach(function (a) { if (sectionOf(a).getBoundingClientRect().top <= line) active = a; });
+    // a lap alján az utolsó szakasz az aktuális akkor is, ha rövid
+    if (visible.length && window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) active = visible[visible.length - 1];
+    if (active === current) return;
+    if (current) { current.classList.remove('active'); current.removeAttribute('aria-current'); }
+    current = active;
+    if (!active) return;
+    active.classList.add('active');
+    active.setAttribute('aria-current', 'location');
+    var ul = active.closest('ul'), ur = ul.getBoundingClientRect(), ar = active.getBoundingClientRect();
+    var left = ar.left - ur.left + ul.scrollLeft, right = left + ar.width;
+    if (left < ul.scrollLeft || right > ul.scrollLeft + ul.clientWidth) ul.scrollTo({ left: Math.max(0, left - 16), behavior: 'smooth' });
+  }
+  function schedule() { if (!ticking) { ticking = true; setTimeout(update, 40); } }
+  window.addEventListener('scroll', schedule, { passive: true });
+  window.addEventListener('resize', schedule);
+  document.addEventListener('input', schedule);   // a keresés elrejthet szakaszokat
+  document.addEventListener('toggle', schedule, true);
+  update();
+})();
+</script>
+</body>
+</html>

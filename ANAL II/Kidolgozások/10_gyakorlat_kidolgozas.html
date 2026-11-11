@@ -1,0 +1,731 @@
+<!doctype html>
+<html lang="hu" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Analízis II · 10. gyakorlat kidolgozva</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['\\(', '\\)']],
+      displayMath: [['\\[', '\\]']],
+      macros: {
+        arcsin: '\\operatorname{arc\\,sin}', arccos: '\\operatorname{arc\\,cos}',
+        arctg: '\\operatorname{arc\\,tg}', arcctg: '\\operatorname{arc\\,ctg}',
+        tg: '\\operatorname{tg}', ctg: '\\operatorname{ctg}', R: '\\mathbb{R}'
+      }
+    },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js" async></script>
+<style>
+/* Layout: same exam-paper look as the DIMAT prep, in the Analysis orange; every task = statement + folded solution + folded walkthrough */
+:root {
+  --paper: #f5f7fa;
+  --grid: rgba(180, 80, 11, 0.06);
+  --card: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6574;
+  --rule: #d7dde6;
+  --accent: #b4500b;
+  --accent-soft: #fcefe4;
+  --mark: #b8352a;
+  --mark-soft: #fbe9e6;
+  --ok: #2c7a4b;
+  --ok-soft: #e3f3e9;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-label: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f141b; --grid: rgba(242, 162, 94, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+    --rule: #2a3442; --accent: #f2a25e; --accent-soft: #33241a; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+    --ok: #74d39c; --ok-soft: #173225; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f141b; --grid: rgba(242, 162, 94, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+  --rule: #2a3442; --accent: #f2a25e; --accent-soft: #33241a; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+  --ok: #74d39c; --ok-soft: #173225; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background-color: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 1.06rem;
+  line-height: 1.6;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 80px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2rem, 6vw, 3.1rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.65rem; font-weight: 700; letter-spacing: -0.01em; }
+h3 { font-size: 1.1rem; font-weight: 600; }
+p { margin: 0; }
+a { color: var(--accent); }
+.label { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding: 2px 0; margin: 6px 0 !important; min-width: 0; max-width: 100%; }
+/* grid children must be allowed to shrink, otherwise wide formulas push the page sideways */
+.task, .sol, .step, .rule-card, .sheet > * { grid-template-columns: minmax(0, 1fr); min-width: 0; }
+.rule-card li, .rule-card p, .sol p, .sol li, .step p, .stmt, .tip, .warn, .mistake p, td { overflow-x: auto; overflow-y: hidden; }
+
+/* back to subject page */
+.back { justify-self: start; display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px 9px 12px; border: 1.5px solid var(--accent); border-radius: 8px; background: var(--accent-soft); color: var(--ink); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 1.02rem; line-height: 1; white-space: nowrap; transition: background .15s, color .15s; }
+.back .arr { color: var(--accent); font-size: 1.25rem; transition: transform .15s, color .15s; }
+.back:hover, .back:focus-visible { background: var(--accent); color: var(--paper); outline: none; }
+.back:hover .arr, .back:focus-visible .arr { color: var(--paper); transform: translateX(-3px); }
+
+/* header */
+header.hero { display: grid; gap: 14px; padding-block: 0 26px; border-bottom: 2px solid var(--accent); }
+.hero .sub { color: var(--muted); max-width: 62ch; }
+.facts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.fact { display: flex; flex-direction: column; gap: 2px; padding: 8px 14px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; min-width: 120px; }
+.fact b { font-family: var(--f-display); font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+
+nav.bar { position: sticky; top: 0; z-index: 5; background: var(--paper); border-bottom: 1px solid var(--rule); margin-inline: -16px; padding-inline: 16px; }
+nav.bar ul { list-style: none; margin: 0; padding: 10px 0; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin; }
+nav.bar a { display: block; white-space: nowrap; text-decoration: none; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.04em; color: var(--ink); padding: 6px 10px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); }
+nav.bar a:hover, nav.bar a:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+nav.bar a.nav-back { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+
+section { padding-top: 44px; display: grid; gap: 18px; scroll-margin-top: 56px; }
+.section-head { display: grid; gap: 6px; }
+.section-head p { color: var(--muted); max-width: 64ch; }
+
+/* reminder cards */
+.sheet { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; }
+.rule-card { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 14px 16px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.rule-card h3 { font-size: 1rem; }
+.rule-card p, .rule-card li { font-size: 0.95rem; }
+.rule-card ul, .rule-card ol { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.rule-card.wide { grid-column: 1 / -1; }
+
+/* tables (sign charts, value tables) */
+.tbl { overflow-x: auto; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--rule); vertical-align: middle; }
+th { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+tr:last-child td, tr:last-child th { border-bottom: 0; }
+table.sgn { width: auto; min-width: 100%; }
+table.sgn th, table.sgn td { text-align: center; white-space: nowrap; border-left: 1px solid var(--rule); }
+table.sgn th:first-child { border-left: 0; text-transform: none; letter-spacing: 0; font-family: var(--f-body); font-size: 1rem; color: var(--ink); background: var(--accent-soft); }
+table.sgn td.pt { background: color-mix(in srgb, var(--accent-soft) 55%, transparent); }
+.p { color: var(--ok); font-weight: 600; }
+.n { color: var(--mark); font-weight: 600; }
+.note { font-size: 0.82rem; color: var(--muted); }
+.tag { font-family: var(--f-label); font-size: 0.72rem; color: var(--accent); }
+
+/* exercises */
+.task { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 18px; display: grid; gap: 10px; min-width: 0; scroll-margin-top: 60px; }
+.task-head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.task-head .no { font-family: var(--f-display); font-weight: 700; font-size: 1.05rem; }
+.task-head .src { font-family: var(--f-label); font-size: 0.72rem; color: var(--muted); }
+.task-head .kind { margin-left: auto; font-family: var(--f-label); font-size: 0.75rem; color: var(--accent); }
+.stmt { max-width: 70ch; }
+details { border-top: 1px dashed var(--rule); padding-top: 8px; min-width: 0; }
+summary { cursor: pointer; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); list-style: none; display: inline-flex; gap: 8px; align-items: center; padding: 4px 0; }
+summary::-webkit-details-marker { display: none; }
+summary::before { content: "+"; display: inline-grid; place-items: center; width: 18px; height: 18px; border: 1px solid currentColor; border-radius: 3px; font-size: 0.8rem; }
+details[open] > summary::before { content: "−"; }
+summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sol { display: grid; gap: 10px; padding-top: 6px; max-width: 74ch; min-width: 0; }
+.sol ol, .sol ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.step { display: grid; gap: 8px; min-width: 0; }
+.step > b:first-child { font-family: var(--f-display); font-weight: 600; }
+.ans { display: inline-block; background: var(--ok-soft); color: var(--ok); font-weight: 600; padding: 2px 9px; border-radius: 4px; }
+.warn { background: var(--mark-soft); border-left: 3px solid var(--mark); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 0.95rem; }
+.tip { background: var(--accent-soft); border-left: 3px solid var(--accent); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 0.95rem; }
+.taskgroup { display: grid; gap: 12px; }
+
+/* graphs */
+figure.graph { margin: 0; background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 8px 8px 6px; display: grid; gap: 6px; }
+figure.graph > div > svg { width: 100%; height: auto; display: block; }
+figure.graph figcaption { display: flex; flex-wrap: wrap; gap: 4px 16px; font-family: var(--f-label); font-size: 0.72rem; color: var(--muted); padding: 0 4px; }
+.lg::before { content: ""; display: inline-block; width: 16px; height: 0; vertical-align: middle; margin-right: 6px; border-top: 2.5px solid var(--accent); }
+.lg.asy::before { border-top: 1.5px dashed var(--muted); }
+.lg.ext::before { width: 9px; height: 9px; border: 0; border-radius: 50%; background: var(--ok); }
+.lg.inf::before { width: 9px; height: 9px; border: 2px solid var(--mark); border-radius: 50%; box-sizing: border-box; }
+svg .gl { stroke: var(--rule); stroke-width: 1; opacity: .55; }
+svg .ax { stroke: var(--muted); stroke-width: 1.3; }
+svg .tk { fill: var(--muted); font-family: var(--f-label); font-size: 11px; }
+svg .cv { fill: none; stroke: var(--accent); stroke-width: 2.6; stroke-linejoin: round; stroke-linecap: round; }
+svg .as { stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 6 5; fill: none; }
+svg .pe { fill: var(--ok); stroke: var(--paper); stroke-width: 1.5; }
+svg .pi { fill: var(--paper); stroke: var(--mark); stroke-width: 2.2; }
+svg .pz { fill: var(--ink); }
+svg .po { fill: var(--paper); stroke: var(--accent); stroke-width: 2; }
+svg .pl { fill: var(--ink); font-family: var(--f-label); font-size: 12px; paint-order: stroke; stroke: var(--paper); stroke-width: 4px; stroke-linejoin: round; }
+
+/* mistakes */
+.mistakes { display: grid; gap: 10px; }
+.mistake { display: grid; grid-template-columns: auto 1fr; gap: 12px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 12px 14px; }
+.mistake .x { font-family: var(--f-display); font-weight: 700; color: var(--mark); font-size: 1.2rem; line-height: 1.3; }
+
+footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.88rem; }
+
+@media (max-width: 520px) {
+  body { font-size: 1rem; }
+  .task { padding: 14px; }
+  th, td { padding: 6px 8px; }
+}
+
+/* Taylor graphs: second curve dashed, highlighted x-band */
+svg .cv2 { fill: none; stroke: var(--ok); stroke-width: 2.2; stroke-dasharray: 7 5; }
+svg .bd { fill: var(--accent-soft); opacity: .8; }
+.lg.tay::before { border-top: 2.2px dashed var(--ok); }
+.lg.band::before { height: 10px; border: 0; background: var(--accent-soft); }
+/* primitive-function families and vertical asymptotes */
+svg .cv3 { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: .4; }
+.lg.fam::before { opacity: .45; border-top-width: 1.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <a class="back" href="../../index.html#/anal2"><span class="arr" aria-hidden="true">←</span>Vissza: Analízis II.</a>
+  <span class="label">Analízis II. · 10. gyakorlat · Primitív függvény, határozatlan integrál 4.</span>
+  <h1>A 10. gyakorlat kidolgozva</h1>
+  <p class="sub">A \(\sin\) és \(\cos\) racionális kifejezéseinek integrálása: a \(t = \tg\frac x2\) helyettesítés (második helyettesítési szabály), áttérés félszögekre, valamint \(\sin^n x\cdot\cos^m x\) típusú integrálok (páratlan kitevő, linearizálás, rekurziós formula). Az órai feladatok a gyakorlati anyag megoldását követik, a házi feladatok (az összevont anyagból) saját megoldások. Az órán kérdezett röpZH-tételek: <a href="ropzh_kidolgozas.html#rz10">10. röpZH</a>. Előbb próbáld meg magad, és csak utána nyisd le a megoldást.</p>
+  <div class="facts">
+    <div class="fact"><span class="label">Órai feladat</span><b>3 (6 rész + összevetés)</b></div>
+    <div class="fact"><span class="label">Házi feladat</span><b>1 (3 rész)</b></div>
+    <div class="fact"><span class="label">Grafikon</span><b>1 db</b></div>
+  </div>
+</header>
+
+<nav class="bar" aria-label="Fejezetek">
+  <ul>
+    <li><a class="nav-back" href="../../index.html#/anal2" aria-label="Vissza: Analízis II.">← ANAL II</a></li>
+    <li><a href="#emlekezteto">Emlékeztető</a></li>
+    <li><a href="#orai">Órai feladatok</a></li>
+    <li><a href="#hazi">Házi feladatok</a></li>
+    <li><a href="#hibak">Gyakori hibák</a></li>
+    <li><a href="ropzh_kidolgozas.html#rz10">10. röpZH ↗</a></li>
+  </ul>
+</nav>
+
+<!-- ================= EMLÉKEZTETŐ ================= -->
+<section id="emlekezteto">
+  <div class="section-head">
+    <span class="label">Ami kell hozzá</span>
+    <h2>Emlékeztető</h2>
+    <p>\(\int R(\sin x, \cos x)\,dx\) alakú integrálok, ahol \(R(u, v)\) két kétváltozós polinom hányadosa. A fő eszköz a második helyettesítési szabály, amellyel az ilyen integrál racionális törtfüggvény integráljára vezethető vissza (8. gyakorlat).</p>
+  </div>
+  <div class="sheet">
+    <div class="rule-card wide">
+      <h3>A második helyettesítési szabály</h3>
+      <p>Legyenek \(I, J \subset \R\) nyílt intervallumok, \(f : I \to \R\), \(g : J \to I\) <b>bijekció</b>, \(g \in D(J)\) és \(g'(t) \ne 0\) minden \(t \in J\)-re, és tegyük fel, hogy \((f \circ g)\cdot g'\)-nek van primitív függvénye. Ekkor \(f\)-nek is van, és</p>
+      \[\int f(x)\,dx = \int f\big(g(t)\big)\cdot g'(t)\,dt\;\Big|_{t = g^{-1}(x)} \qquad (x \in I).\]
+      <p class="note">A végén mindig vissza kell helyettesíteni: \(t = g^{-1}(x)\). Ezért kell, hogy \(g\) invertálható legyen a választott \(J\)-n.</p>
+    </div>
+    <div class="rule-card">
+      <h3>A \(t = \tg\frac x2\) helyettesítés</h3>
+      <p>\(x = g(t) = 2\arctg t\), \(\quad g'(t) = \dfrac{2}{1+t^2} \ne 0\), és</p>
+      \[\sin x = \frac{2t}{1+t^2}, \qquad \cos x = \frac{1-t^2}{1+t^2}.\]
+      <p>Így \(R(\sin x, \cos x)\cdot g'\) racionális törtfüggvény lesz \(t\)-ben.</p>
+      <p class="note">Csak ott értelmes, ahol \(\cos\frac x2 \ne 0\), azaz \(x \ne \pi + 2k\pi\).</p>
+    </div>
+    <div class="rule-card">
+      <h3>Intervallumok párosítása</h3>
+      <p>Mivel \(\arctg : \R \to (-\frac\pi2, \frac\pi2)\) szigorúan nő, \(g(t) = 2\arctg t\) bijekció az alábbi párok között:</p>
+      <ul>
+        <li>\(x \in (-\pi, \pi)\ \leftrightarrow\ t \in \R\),</li>
+        <li>\(x \in (0, \pi)\ \leftrightarrow\ t \in (0, +\infty)\),</li>
+        <li>\(x \in (-\frac\pi2, \frac\pi2)\ \leftrightarrow\ t \in (-1, 1)\).</li>
+      </ul>
+      <p class="note">Ebből látszik a \(t\) előjele, ami a \(\ln|\dots|\) feloldásához kell.</p>
+    </div>
+    <div class="rule-card">
+      <h3>Honnan jönnek a formulák?</h3>
+      <p>Félszögekre térünk át, és \(\cos^2\frac x2\)-vel osztunk (\(\sin^2 + \cos^2 = 1\)):</p>
+      \[\sin x = \frac{2\sin\frac x2\cos\frac x2}{\cos^2\frac x2 + \sin^2\frac x2} = \frac{2\tg\frac x2}{1 + \tg^2\frac x2},\]
+      \[\cos x = \frac{\cos^2\frac x2 - \sin^2\frac x2}{\cos^2\frac x2 + \sin^2\frac x2} = \frac{1 - \tg^2\frac x2}{1 + \tg^2\frac x2}.\]
+    </div>
+    <div class="rule-card">
+      <h3>Félszög- és linearizáló formulák</h3>
+      \[1 - \cos x = 2\sin^2\tfrac x2, \qquad 1 + \cos x = 2\cos^2\tfrac x2,\]
+      \[\sin^2 x = \frac{1 - \cos 2x}{2}, \qquad \cos^2 x = \frac{1 + \cos 2x}{2}.\]
+      <p>Például \(\displaystyle\int\sin^2 x\,dx = \frac x2 - \frac{\sin 2x}{4} + c\).</p>
+    </div>
+    <div class="rule-card">
+      <h3>\(\int\sin^n x\cos^m x\,dx\)</h3>
+      <ul>
+        <li><b>Valamelyik kitevő páratlan</b> (pl. \(m\)): egy \(\cos x\)-et leválasztunk, a többit \(\cos^2 = 1 - \sin^2\)-tel \(\sin\)-re írjuk, és \(f^\alpha\cdot f'\) típusú tagokat kapunk.</li>
+        <li><b>Mindkettő páros:</b> linearizáló formulák (a kitevő feleződik), vagy rekurziós formula.</li>
+      </ul>
+    </div>
+    <div class="rule-card">
+      <h3>Rekurziós formulák (\(n \ge 2\))</h3>
+      \[\int\cos^n x\,dx = \frac1n\sin x\cos^{n-1}x + \frac{n-1}{n}\int\cos^{n-2}x\,dx,\]
+      \[\int\sin^n x\,dx = -\frac1n\sin^{n-1}x\cos x + \frac{n-1}{n}\int\sin^{n-2}x\,dx.\]
+      <p class="note">Parciális integrálással és \(\sin^2 = 1 - \cos^2\)-tel kapjuk (3. (b), második megoldás).</p>
+    </div>
+    <div class="rule-card">
+      <h3>Más helyettesítések (kitekintés)</h3>
+      <p>Az összevont anyag „További feladatai” szerint \(R\) szimmetriájától függően egyszerűbb helyettesítés is célhoz vezet:</p>
+      <ul>
+        <li>\(t = \tg x\), ha \(R(-u, -v) = R(u, v)\);</li>
+        <li>\(t = \sin x\), ha \(R(u, -v) = -R(u, v)\);</li>
+        <li>\(t = \cos x\), ha \(R(-u, v) = -R(u, v)\).</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ÓRAI FELADATOK ================= -->
+<section id="orai">
+  <div class="section-head">
+    <span class="label">10. gyakorlat · Feladatok</span>
+    <h2>Órai feladatok</h2>
+    <p>A megoldások menete a 10. gyakorlati anyag kidolgozását követi. Minden eredményt deriválással ellenőriztünk. Az összevont anyagban a feladatok szövege ugyanez.</p>
+  </div>
+
+  <div class="taskgroup">
+
+  <!-- 1. feladat -->
+  <article class="task" id="o1a">
+    <div class="task-head"><span class="no">1. (a)</span><span class="src">10. gyakorlat · órai</span><span class="kind">\(t = \tg\frac x2\)</span></div>
+    \[\int\frac{1}{\sin x}\,dx \quad \big(x \in (0, \pi)\big)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p><b>A helyettesítő függvény:</b> \(g(t) = 2\arctg t\). Ha \(x \in I = (0, \pi)\), akkor \(\frac x2 \in (0, \frac\pi2)\), így \(x = 2\arctg t \iff t = \tg\frac x2 \in (0, +\infty)\). Legyen tehát \(J = (0, +\infty)\); ekkor \(g : J \to I\) bijekció.</p>
+        <p><b>Derivált:</b> \(g'(t) = \dfrac{2}{1+t^2} \ne 0\) \((t \in J)\). <b>A szinusz:</b> \(\sin x = \dfrac{2t}{1+t^2}\).</p>
+        <p>A második helyettesítési szabállyal:</p>
+        \[\int\frac{dx}{\sin x} = \int\frac{1+t^2}{2t}\cdot\frac{2}{1+t^2}\,dt\;\Big|_{t = \tg\frac x2} = \int\frac{dt}{t}\;\Big|_{t = \tg\frac x2}.\]
+        <p>Mivel \(t \gt 0\), \(\int\frac{dt}{t} = \ln t + c\), így</p>
+        \[\int\frac{dx}{\sin x} = (\ln t + c)\Big|_{t = \tg\frac x2} = \ln\Big(\tg\frac x2\Big) + c.\]
+        <p>Eredmény: <span class="ans">\(\ln\big(\tg\frac x2\big) + c\quad \big(x \in (0, \pi),\ c \in \R\big)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért ez a helyettesítés?</b> Az integrandus \(R(\sin x, \cos x)\) alakú (\(R(u, v) = \frac1u\)). A \(t = \tg\frac x2\) után minden racionális lesz \(t\)-ben, és itt a tört ráadásul \(\frac1t\)-re egyszerűsödik.</p>
+        <p><b>Miért \(J = (0, +\infty)\)?</b> A szabály feltétele, hogy \(g\) bijekció legyen \(J\) és \(I = (0, \pi)\) között. A \(\tg\) a \((0, \frac\pi2)\) intervallumot pontosan \((0, +\infty)\)-re képezi, ezért ez a jó \(J\). Ebből jön az is, hogy \(t \gt 0\), és \(\ln|t| = \ln t\).</p>
+        <p><b>Visszahelyettesítés:</b> a \(t\)-ben kapott primitív függvénybe \(t = g^{-1}(x) = \tg\frac x2\)-t írunk.</p>
+        <p><b>Ellenőrzés:</b></p>
+        \[\Big(\ln\tg\frac x2\Big)' = \frac{1}{\tg\frac x2}\cdot\frac{1}{\cos^2\frac x2}\cdot\frac12 = \frac{1}{2\sin\frac x2\cos\frac x2} = \frac{1}{\sin x}. \quad\checkmark\]
+        <p class="tip"><b>Más alak:</b> \(\tg\frac x2 = \frac{1 - \cos x}{\sin x}\), így az eredmény \(\ln\frac{1 - \cos x}{\sin x} + c\) alakban is írható.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o1b">
+    <div class="task-head"><span class="no">1. (b)</span><span class="src">10. gyakorlat · órai</span><span class="kind">\(t = \tg\frac x2\) + parciális törtek</span></div>
+    \[\int\frac{1 + \sin x}{1 - \cos x}\,dx \quad \big(x \in (0, \pi)\big)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Ismét \(g(t) = 2\arctg t\), \(J = (0, +\infty)\), \(I = (0, \pi)\): \(g : J \to I\) bijekció, \(g'(t) = \frac{2}{1+t^2} \ne 0\), és</p>
+        \[\sin x = \frac{2t}{1+t^2}, \qquad \cos x = \frac{1-t^2}{1+t^2}.\]
+        <p>Behelyettesítve:</p>
+        \[\frac{1 + \frac{2t}{1+t^2}}{1 - \frac{1-t^2}{1+t^2}}\cdot\frac{2}{1+t^2} = \frac{\frac{1 + t^2 + 2t}{1+t^2}}{\frac{(1+t^2) - (1-t^2)}{1+t^2}}\cdot\frac{2}{1+t^2}\]
+        \[= \frac{1 + t^2 + 2t}{2t^2}\cdot\frac{2}{1+t^2} = \frac{(1+t^2) + 2t}{t^2(1+t^2)} = \frac{1}{t^2} + \frac{2}{t(1+t^2)}.\]
+        <p><b>Parciális törtek:</b></p>
+        \[\frac{A}{t} + \frac{Bt + C}{1+t^2} = \frac{(A + B)t^2 + Ct + A}{t(1+t^2)} = \frac{2}{t(1+t^2)} \quad (\forall t \gt 0),\]
+        <p>ehhez \(A + B = 0\), \(C = 0\), \(A = 2\), tehát \(B = -2\):</p>
+        \[\int\Big(\frac{1}{t^2} + \frac2t - \frac{2t}{1+t^2}\Big)\,dt = -\frac1t + 2\ln t - \ln(1+t^2) + c \quad (t \gt 0).\]
+        <p>Visszahelyettesítve \(t = \tg\frac x2\) (és \(\frac{1}{\tg\frac x2} = \ctg\frac x2\)):</p>
+        \[\int\frac{1+\sin x}{1-\cos x}\,dx = -\ctg\frac x2 + 2\ln\Big(\tg\frac x2\Big) - \ln\Big(1 + \tg^2\frac x2\Big) + c.\]
+        <p>Eredmény: <span class="ans">\(-\ctg\frac x2 + 2\ln\big(\tg\frac x2\big)\) \(- \ln\big(1 + \tg^2\frac x2\big) + c\) \(\big(x \in (0, \pi)\big)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>A számolás menete:</b> (1) \(\sin\), \(\cos\) helyére a \(t\)-s törtek; (2) emeletes tört egyszerűsítése \((1+t^2)\)-tel; (3) a \(g'(t) = \frac{2}{1+t^2}\) szorzó <b>nem maradhat el</b>; (4) racionális törtfüggvény integrálása parciális törtekkel.</p>
+        <p><b>Felbontás:</b> \(\frac{(1+t^2) + 2t}{t^2(1+t^2)}\)-t két részre szedjük: \(\frac{1+t^2}{t^2(1+t^2)} = \frac{1}{t^2}\), és \(\frac{2t}{t^2(1+t^2)} = \frac{2}{t(1+t^2)}\). Csak a második kell parciális törtekre bontani.</p>
+        <p><b>Abszolút érték:</b> \(t \gt 0\), és \(1 + t^2 \gt 0\), ezért egyik logaritmusban sem kell \(|\cdot|\).</p>
+        <p><b>Egyszerűbb alak:</b> \(1 + \tg^2\frac x2 = \frac{1}{\cos^2\frac x2}\), ezért</p>
+        \[2\ln\tg\frac x2 - \ln\Big(1 + \tg^2\frac x2\Big) = 2\ln\sin\frac x2 - 2\ln\cos\frac x2 + 2\ln\cos\frac x2\]
+        \[= 2\ln\sin\frac x2,\]
+        <p>vagyis az eredmény \(-\ctg\frac x2 + 2\ln\sin\frac x2 + c\). Ez épp a 2. (b) eredménye; ott van a deriválással való ellenőrzés is.</p>
+      </div>
+    </details>
+  </article>
+
+  <!-- 2. feladat -->
+  <article class="task" id="o2a">
+    <div class="task-head"><span class="no">2. (a)</span><span class="src">10. gyakorlat · órai</span><span class="kind">bővítés \(\frac{1+\cos x}{1+\cos x}\)-szel</span></div>
+    <p class="stmt">Számítsuk ki az integrált úgy, hogy az integrandust \(\frac{1 + \cos x}{1 + \cos x} = 1\)-gyel megszorozzuk:</p>
+    \[\int\frac{1 + \sin x}{1 - \cos x}\,dx \quad \big(x \in (0, \pi)\big)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        \[\int\frac{1 + \sin x}{1 - \cos x}\cdot\frac{1 + \cos x}{1 + \cos x}\,dx = \int\frac{1 + \sin x + \cos x + \sin x\cos x}{1 - \cos^2 x}\,dx.\]
+        <p>A nevező \(1 - \cos^2 x = \sin^2 x\), így négy tagra esik szét:</p>
+        \[\int\Big(\frac{1}{\sin^2 x} + \frac{1}{\sin x} + \frac{\cos x}{\sin^2 x} + \frac{\cos x}{\sin x}\Big)\,dx\]
+        \[= \int\Big(-\frac{-1}{\sin^2 x} + \frac{1}{\sin x} + \cos x\cdot\sin^{-2}x + \cos x\cdot\sin^{-1}x\Big)\,dx.\]
+        <ul>
+          <li>\(\int\frac{dx}{\sin^2 x} = -\ctg x\) (alapintegrál);</li>
+          <li>\(\int\frac{dx}{\sin x} = \ln\tg\frac x2\) (1. (a));</li>
+          <li>\(\int\cos x\cdot\sin^{-2}x\,dx = \frac{\sin^{-1}x}{-1} = -\frac{1}{\sin x}\) (\(f^\alpha f'\) típus);</li>
+          <li>\(\int\frac{\cos x}{\sin x}\,dx = \ln\sin x\) (\(\frac{f'}{f}\) típus, \(\sin x \gt 0\)).</li>
+        </ul>
+        <p>Eredmény: <span class="ans">\(-\ctg x + \ln\big(\tg\frac x2\big)\) \(- \frac{1}{\sin x} + \ln(\sin x) + c\) \(\big(x \in (0, \pi)\big)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért ez a bővítés?</b> Az \((1 - \cos x)(1 + \cos x) = 1 - \cos^2 x = \sin^2 x\) azonosság miatt a nevező egyetlen hatvány lesz, és a tagonkénti osztás után csupa ismert típus marad. Ez ugyanaz a trükk, mint a gyökös kifejezések „gyöktelenítése”.</p>
+        <p><b>Ahol nem működik:</b> a bővítő tört \(1 + \cos x = 0\)-nál, azaz \(x = \pi\)-nél nem értelmes; a \((0, \pi)\) intervallumon ez nem gond.</p>
+        <p><b>Abszolút érték:</b> \((0, \pi)\)-n \(\sin x \gt 0\) és \(\tg\frac x2 \gt 0\), így a logaritmusok rendben vannak.</p>
+        <p><b>Ellenőrzés:</b> a négy tag deriváltja \(\frac{1}{\sin^2 x}\), \(\frac{1}{\sin x}\), \(\frac{\cos x}{\sin^2 x}\), \(\frac{\cos x}{\sin x}\), ezek összege \(\frac{(1 + \sin x)(1 + \cos x)}{\sin^2 x} = \frac{1 + \sin x}{1 - \cos x}\). ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o2b">
+    <div class="task-head"><span class="no">2. (b)</span><span class="src">10. gyakorlat · órai</span><span class="kind">félszögek</span></div>
+    <p class="stmt">Számítsuk ki ugyanezt az integrált félszögekre való áttéréssel:</p>
+    \[\int\frac{1 + \sin x}{1 - \cos x}\,dx \quad \big(x \in (0, \pi)\big)\]
+    <p class="note">Megjegyzés a feladatlapról: az integrandus a \((0, 2\pi)\) intervallumon folytonos, ezért ott is van primitív függvénye; a (b) átalakítással ezen az intervallumon is megkapjuk.</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Félszögekkel: \(\sin x = 2\sin\frac x2\cos\frac x2\), \(\cos x = \cos^2\frac x2 - \sin^2\frac x2\), így \(1 - \cos x = 2\sin^2\frac x2\):</p>
+        \[\int\frac{1 + 2\sin\frac x2\cos\frac x2}{1 - \big(\cos^2\frac x2 - \sin^2\frac x2\big)}\,dx = \int\frac{1 + 2\sin\frac x2\cos\frac x2}{2\sin^2\frac x2}\,dx\]
+        \[= \int\Big(-\frac12\cdot\frac{-1}{\sin^2\frac x2} + \frac{\cos\frac x2}{\sin\frac x2}\Big)\,dx = -\ctg\frac x2 + 2\ln\Big(\sin\frac x2\Big) + c.\]
+        <p>Eredmény: <span class="ans">\(-\ctg\frac x2 + 2\ln\big(\sin\frac x2\big) + c\quad \big(x \in (0, \pi)\big)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Az első tag:</b> \(\big(\ctg\frac x2\big)' = -\frac{1}{\sin^2\frac x2}\cdot\frac12\), ezért \(\int\frac{1}{2\sin^2\frac x2}\,dx = -\ctg\frac x2\) (lineáris helyettesítés a \(\int\frac{dx}{\sin^2 x}\) alapintegrálba).</p>
+        <p><b>A második tag:</b> \(\frac{\cos\frac x2}{\sin\frac x2} = 2\cdot\frac{\big(\sin\frac x2\big)'}{\sin\frac x2}\), ez \(\frac{f'}{f}\) típus, primitív függvénye \(2\ln\big|\sin\frac x2\big|\).</p>
+        <p><b>Ellenőrzés:</b></p>
+        \[\Big(-\ctg\frac x2 + 2\ln\sin\frac x2\Big)' = \frac{1}{2\sin^2\frac x2} + \frac{\cos\frac x2}{\sin\frac x2}\]
+        \[= \frac{1 + 2\sin\frac x2\cos\frac x2}{2\sin^2\frac x2} = \frac{1 + \sin x}{1 - \cos x}. \quad\checkmark\]
+        <p><b>Miért jó a bővebb \((0, 2\pi)\) intervallumon is?</b> Itt sehol nem használtuk, hogy \(x \lt \pi\). Az egyetlen kérdéses lépés a logaritmus: ha \(x \in (0, 2\pi)\), akkor \(\frac x2 \in (0, \pi)\), így \(\sin\frac x2 \gt 0\), és \(2\ln\sin\frac x2\) értelmes; \(\ctg\frac x2\) is értelmes. Tehát \(F(x) = -\ctg\frac x2 + 2\ln\sin\frac x2\) az egész \((0, 2\pi)\)-n primitív függvény.</p>
+        <figure class="graph"><div id="g-o2b"></div><figcaption><span class="lg tay">\(f(x) = \frac{1 + \sin x}{1 - \cos x}\)</span><span class="lg">\(F(x) = -\ctg\frac x2 + 2\ln\sin\frac x2\)</span><span class="lg asy">\(x = \pi,\ x = 2\pi\)</span></figcaption></figure>
+        <p class="note">Szaggatott zöld: az integrandus; narancs: a primitív függvény; függőleges szaggatott vonal: \(x = \pi\) (itt \(\tg\frac x2\) nem értelmes) és \(x = 2\pi\). A grafikonon \(F\) simán halad át \(x = \pi\)-n, holott az 1. (b) és a 2. (a) módszere itt elakad: a \(t = \tg\frac x2\) helyettesítés \(x = \pi\)-ben nem értelmes, a \(\frac{1+\cos x}{1+\cos x}\) bővítés pedig \(\cos x = -1\)-nél nulla per nulla.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o2c">
+    <div class="task-head"><span class="no">2. (c)</span><span class="src">10. gyakorlat · órai</span><span class="kind">összevetés</span></div>
+    <p class="stmt">Hasonlítsuk össze a háromféleképpen (1. (b), 2. (a), 2. (b)) kapott eredményt!</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p><b>2. (a) és 2. (b).</b> Minden \(x \in (0, \pi)\)-re</p>
+        \[\ln\tg\frac x2 + \ln\sin x = \ln\Big(\frac{\sin\frac x2}{\cos\frac x2}\cdot 2\sin\frac x2\cos\frac x2\Big)\]
+        \[= \ln\Big(2\sin^2\frac x2\Big) = \ln 2 + 2\ln\sin\frac x2,\]
+        <p>valamint</p>
+        \[-\ctg x - \frac{1}{\sin x} = -\frac{1 + \cos x}{\sin x} = -\frac{1 + \cos^2\frac x2 - \sin^2\frac x2}{2\sin\frac x2\cos\frac x2}\]
+        \[= -\frac{2\cos^2\frac x2}{2\sin\frac x2\cos\frac x2} = -\ctg\frac x2.\]
+        <p>Tehát a 2. (a) eredménye \(= -\ctg\frac x2 + 2\ln\sin\frac x2 + \ln 2\): a két primitív függvény csak az \(\ln 2\) konstansban különbözik.</p>
+        <p><b>1. (b) és 2. (b).</b> Minden \(x \in (0, \pi)\)-re</p>
+        \[2\ln\tg\frac x2 - \ln\Big(1 + \tg^2\frac x2\Big) = 2\ln\sin\frac x2 - 2\ln\cos\frac x2 - \ln\Big(1 + \tg^2\frac x2\Big),\]
+        <p>ahol</p>
+        \[-2\ln\cos\frac x2 - \ln\Big(1 + \tg^2\frac x2\Big)\]
+        \[= -\ln\Big(\cos^2\frac x2\cdot\frac{\cos^2\frac x2 + \sin^2\frac x2}{\cos^2\frac x2}\Big) = -\ln 1 = 0.\]
+        <p>Eredmény: <span class="ans">a három primitív függvény \((0, \pi)\)-n egy konstansban tér el: 1. (b) \(=\) 2. (b), és 2. (a) \(=\) 2. (b) \(+ \ln 2\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért nem baj a különbség?</b> Egy intervallumon két primitív függvény különbsége konstans. A határozatlan integrál egy halmaz (\(F + c\), \(c \in \R\)), így a \(\ln 2\) beolvad a \(c\)-be: a három határozatlan integrál ugyanaz.</p>
+        <p><b>Melyik módszer a legjobb?</b> A 2. (b): ez adja a legrövidebb alakot, és esetekre bontás nélkül a teljes \((0, 2\pi)\) intervallumon működik. Az 1. feladat helyettesítése \(x = \pi\)-t kizárja, a 2. (a) bővítése szintén.</p>
+        <p class="tip"><b>Gyors ellenőrzés:</b> ha két eredmény különbsége konstans, akkor a deriváltjuk ugyanaz. Gyakran elég egy-két pontban kiszámolni a különbséget (itt pl. \(x = \frac\pi2\)-ben: \(-0 + \ln 1 - 1 + 0 = -1\) és \(-1 + 2\ln\frac{\sqrt2}{2} = -1 - \ln 2\); a különbség \(\ln 2\)).</p>
+      </div>
+    </details>
+  </article>
+
+  <!-- 3. feladat -->
+  <article class="task" id="o3a">
+    <div class="task-head"><span class="no">3. (a)</span><span class="src">10. gyakorlat · órai</span><span class="kind">páratlan kitevő</span></div>
+    \[\int\sin^2 x\cdot\cos^3 x\,dx \quad (x \in \R)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>A \(\cos\) kitevőjét a négyzetes azonossággal 1-re csökkentjük:</p>
+        \[\int\sin^2 x\cdot\cos^3 x\,dx = \int\sin^2 x\cdot(1 - \sin^2 x)\cdot\cos x\,dx\]
+        \[= \int\big(\sin^2 x\cdot\cos x - \sin^4 x\cdot\cos x\big)\,dx.\]
+        <p>Mindkét tag \(f^\alpha\cdot f'\) típusú (\(f = \sin\)):</p>
+        \[\int\big(\sin^2 x\cdot\cos x - \sin^4 x\cdot\cos x\big)\,dx = \frac{\sin^3 x}{3} - \frac{\sin^5 x}{5} + c.\]
+        <p>Eredmény: <span class="ans">\(\dfrac{\sin^3 x}{3} - \dfrac{\sin^5 x}{5} + c\quad (x, c \in \R)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért nem \(t = \tg\frac x2\)?</b> Elvileg működne, de (1) \(\R\)-en nem alkalmazható (\(x = \pi + 2k\pi\) kiesik), csak pl. \((-\pi, \pi)\)-n, \(J = \R\)-rel; (2) a kapott tört nagyon magas fokú:</p>
+        \[\int\Big(\frac{2t}{1+t^2}\Big)^2\Big(\frac{1-t^2}{1+t^2}\Big)^3\frac{2}{1+t^2}\,dt.\]
+        <p><b>A trükk:</b> a páratlan kitevőjű \(\cos^3 x\)-ből leválasztunk egy \(\cos x\)-et, ez lesz \(f' = (\sin x)'\). A maradék \(\cos^2 x = 1 - \sin^2 x\) már \(\sin\)-ben kifejezhető, így minden tag \(\sin^k x\cdot\cos x\) alakú, aminek primitív függvénye \(\frac{\sin^{k+1}x}{k+1}\).</p>
+        <p><b>Ellenőrzés:</b> \(\big(\frac{\sin^3 x}{3} - \frac{\sin^5 x}{5}\big)' = \sin^2 x\cos x - \sin^4 x\cos x = \sin^2 x\cos x\,(1 - \sin^2 x) = \sin^2 x\cos^3 x\). ✓</p>
+        <p class="note">Általában: \(\int\sin^n x\cos^m x\,dx\) így számolható, ha legalább az egyik kitevő páratlan.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o3b">
+    <div class="task-head"><span class="no">3. (b)</span><span class="src">10. gyakorlat · órai</span><span class="kind">páros kitevők</span></div>
+    \[\int\sin^2 x\cdot\cos^4 x\,dx \quad (x \in \R)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Mindkét kitevő páros, az (a) módszere nem működik. Két megoldást mutatunk.</p>
+        <div class="step">
+          <b>Első megoldás: linearizáló formulák</b>
+          \[\int\sin^2 x\cdot\cos^4 x\,dx = \int\frac{1 - \cos 2x}{2}\cdot\Big(\frac{1 + \cos 2x}{2}\Big)^2\,dx.\]
+          <p>Mivel \((1 - \cos 2x)(1 + \cos 2x) = \sin^2 2x\), beszorzás után</p>
+          \[= \frac18\int\big(\sin^2(2x) + \sin^2(2x)\cdot\cos(2x)\big)\,dx.\]
+          <p>Az első tag a \(\sin^2\) integráljának lineáris helyettesítése, a második \(f^2\cdot f'\) típus (\(f = \sin 2x\), \(f' = 2\cos 2x\)):</p>
+          \[\int\sin^2 x\cos^4 x\,dx = \frac18\Big(\frac x2 - \frac{\sin 4x}{8}\Big) + \frac18\cdot\frac{\sin^3(2x)}{3\cdot 2} + c.\]
+        </div>
+        <div class="step">
+          <b>Második megoldás: rekurziós formula</b>
+          \[\int\sin^2 x\cdot\cos^4 x\,dx = \int(1 - \cos^2 x)\cos^4 x\,dx = \int\big(\cos^4 x - \cos^6 x\big)\,dx.\]
+          <p>Parciális integrálással (\(n \ge 2\)):</p>
+          \[\int\cos^n x\,dx = \int\cos x\cdot\cos^{n-1}x\,dx\]
+          \[= \sin x\cos^{n-1}x - \int\sin x\,(n-1)\cos^{n-2}x\,(-\sin x)\,dx.\]
+          <p>A \(\sin^2 x = 1 - \cos^2 x\) helyettesítéssel</p>
+          \[\int\cos^n x\,dx = \sin x\cos^{n-1}x + (n-1)\int\cos^{n-2}x\,dx - (n-1)\int\cos^n x\,dx,\]
+          <p>amiből \(\int\cos^n x\,dx\)-et kifejezve</p>
+          \[\int\cos^n x\,dx = \frac1n\sin x\cos^{n-1}x + \frac{n-1}{n}\int\cos^{n-2}x\,dx.\]
+          <p>\(n = 6\)-ra \(\int\cos^6 x\,dx = \frac16\sin x\cos^5 x + \frac56\int\cos^4 x\,dx\), így</p>
+          \[\int\big(\cos^4 x - \cos^6 x\big)\,dx = -\frac16\sin x\cos^5 x + \frac16\int\cos^4 x\,dx.\]
+          <p>\(n = 4\), majd \(n = 2\):</p>
+          \[\int\cos^4 x\,dx = \frac14\sin x\cos^3 x + \frac34\Big(\frac12\sin x\cos x + \frac12\int 1\,dx\Big)\]
+          \[= \frac14\sin x\cos^3 x + \frac38\sin x\cos x + \frac38 x + c.\]
+          <p>Visszaírva:</p>
+          \[\int\sin^2 x\cos^4 x\,dx = -\frac16\sin x\cos^5 x + \frac{1}{24}\sin x\cos^3 x\]
+          \[+ \frac{1}{16}\sin x\cos x + \frac{1}{16}x + c.\]
+        </div>
+        <p>Eredmény: <span class="ans">\(\dfrac{x}{16} - \dfrac{\sin 4x}{64} + \dfrac{\sin^3 2x}{48} + c\quad (x, c \in \R)\)</span></p>
+        <p>vagy ugyanez a második alakban: <span class="ans">\(-\frac16\sin x\cos^5 x + \frac{1}{24}\sin x\cos^3 x\) \(+ \frac{1}{16}\sin x\cos x + \frac{x}{16} + c\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért nem megy az (a) trükkje?</b> Ha \(\cos^4 x\)-ből leválasztunk egy \(\cos x\)-et, \(\cos^3 x\) marad, ami páratlan hatvány, ezért nem írható fel \(\sin\)-nel gyök nélkül. Ugyanez a \(\sin^2 x\)-szel. Páros-páros esetben a kitevőt kell csökkenteni.</p>
+        <p><b>Linearizálás:</b> \(\sin^2\) és \(\cos^2\) helyett \(\cos 2x\)-es kifejezések jönnek, a fokszám feleződik. A kapott \(\sin^2(2x)\cos(2x)\) már páratlan kitevős, tehát az (a) módszerével megy.</p>
+        <p><b>A szorzók:</b> \(\int\sin^2(2x)\,dx = \frac x2 - \frac{\sin 4x}{8}\) (a \(\frac x2 - \frac{\sin 2x}{4}\) képletben \(x \to 2x\), és \(\frac12\)-del osztunk), \(\int\sin^2(2x)\cos(2x)\,dx = \frac{\sin^3(2x)}{3\cdot 2}\), mert \((\sin 2x)' = 2\cos 2x\).</p>
+        <p><b>Rekurzió:</b> a parciális integrálás után az eredeti \(\int\cos^n x\,dx\) a jobb oldalon is megjelenik; átvisszük a bal oldalra, és \(n\)-nel osztunk.</p>
+        <p class="tip"><b>A két alak ugyanaz:</b> mindkettő \(0\)-t ad \(x = 0\)-ban, és a deriváltjuk egyenlő, ezért a két függvény azonos (numerikusan is ellenőriztük). Nem csak konstansban különböznek, hanem egyenlők.</p>
+      </div>
+    </details>
+  </article>
+
+  </div>
+</section>
+
+<!-- ================= HÁZI FELADATOK ================= -->
+<section id="hazi">
+  <div class="section-head">
+    <span class="label">10. gyakorlat · Házi feladatok · saját megoldás</span>
+    <h2>Házi feladatok</h2>
+    <p>Az összevont gyakorlati anyag 10. gyakorlathoz tartozó házi feladatai. Ezekhez nincs hivatalos megoldás, ezek saját megoldások (deriválással ellenőrizve).</p>
+  </div>
+
+  <div class="taskgroup">
+
+  <article class="task" id="h1a">
+    <div class="task-head"><span class="no">1. (a)</span><span class="src">10. gyakorlat · házi</span><span class="kind">\(t = \tg\frac x2\)</span></div>
+    \[\int\frac{1}{\cos x}\,dx \quad \Big(x \in \big(-\tfrac\pi2, \tfrac\pi2\big)\Big)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p><b>Helyettesítés:</b> \(g(t) = 2\arctg t\). Ha \(x \in I = (-\frac\pi2, \frac\pi2)\), akkor \(\frac x2 \in (-\frac\pi4, \frac\pi4)\), így \(t = \tg\frac x2 \in (-1, 1) = J\), és \(g : J \to I\) bijekció; \(g'(t) = \frac{2}{1+t^2} \ne 0\), \(\cos x = \frac{1-t^2}{1+t^2}\).</p>
+        \[\int\frac{dx}{\cos x} = \int\frac{1+t^2}{1-t^2}\cdot\frac{2}{1+t^2}\,dt\;\Big|_{t = \tg\frac x2} = \int\frac{2}{1-t^2}\,dt\;\Big|_{t = \tg\frac x2}.\]
+        <p><b>Parciális törtek:</b> \(\frac{2}{(1-t)(1+t)} = \frac{1}{1-t} + \frac{1}{1+t}\). Mivel \(t \in (-1, 1)\), \(1 - t \gt 0\) és \(1 + t \gt 0\):</p>
+        \[\int\Big(\frac{1}{1-t} + \frac{1}{1+t}\Big)\,dt = -\ln(1-t) + \ln(1+t) + c = \ln\frac{1+t}{1-t} + c.\]
+        <p>Visszahelyettesítve:</p>
+        \[\int\frac{dx}{\cos x} = \ln\frac{1 + \tg\frac x2}{1 - \tg\frac x2} + c.\]
+        <p>Eredmény: <span class="ans">\(\ln\dfrac{1 + \tg\frac x2}{1 - \tg\frac x2} + c\) \(= \ln\dfrac{1 + \sin x}{\cos x} + c\) \(\big(x \in (-\frac\pi2, \frac\pi2)\big)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Az intervallum:</b> a \(t\) itt nem csak pozitív: \(J = (-1, 1)\). Ezért kell figyelni a logaritmusokra: \(\int\frac{dt}{1-t} = -\ln|1-t| = -\ln(1-t)\), mert \(t \lt 1\).</p>
+        <p><b>Egyszerűbb alak:</b> \(\frac{1+t}{1-t} = \frac{(1+t)^2}{1-t^2} = \frac{1+t^2}{1-t^2} + \frac{2t}{1-t^2} = \frac{1}{\cos x} + \tg x = \frac{1 + \sin x}{\cos x}\).</p>
+        <p><b>Ellenőrzés:</b></p>
+        \[\Big(\ln(1 + \sin x) - \ln\cos x\Big)' = \frac{\cos x}{1 + \sin x} + \frac{\sin x}{\cos x}\]
+        \[= \frac{\cos^2 x + \sin x + \sin^2 x}{(1 + \sin x)\cos x} = \frac{1}{\cos x}. \quad\checkmark\]
+        <p class="tip"><b>Más út:</b> \(\frac{1}{\cos x} = \frac{\cos x}{1 - \sin^2 x}\), és a \(t = \sin x\) (első) helyettesítéssel \(\frac12\ln\frac{1 + \sin x}{1 - \sin x}\) jön ki, ami ugyanez, mert \(\frac{1+\sin x}{1-\sin x} = \frac{(1+\sin x)^2}{\cos^2 x}\). Az addíciós tétellel az eredmény \(\ln\tg\big(\frac x2 + \frac\pi4\big)\) alakban is írható.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="h1b">
+    <div class="task-head"><span class="no">1. (b)</span><span class="src">10. gyakorlat · házi</span><span class="kind">\(t = \tg\frac x2\)</span></div>
+    \[\int\frac{1}{1 + \sin x + \cos x}\,dx \quad \big(x \in (0, \pi)\big)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p><b>Helyettesítés:</b> \(g(t) = 2\arctg t\), \(J = (0, +\infty)\), \(I = (0, \pi)\): bijekció, \(g'(t) = \frac{2}{1+t^2} \ne 0\). A nevező:</p>
+        \[1 + \frac{2t}{1+t^2} + \frac{1-t^2}{1+t^2} = \frac{1 + t^2 + 2t + 1 - t^2}{1+t^2} = \frac{2(1+t)}{1+t^2}.\]
+        <p>Így</p>
+        \[\int\frac{dx}{1 + \sin x + \cos x} = \int\frac{1+t^2}{2(1+t)}\cdot\frac{2}{1+t^2}\,dt\;\Big|_{t = \tg\frac x2} = \int\frac{dt}{1+t}\;\Big|_{t = \tg\frac x2}.\]
+        <p>Mivel \(t \gt 0\), \(1 + t \gt 0\): \(\int\frac{dt}{1+t} = \ln(1+t) + c\).</p>
+        <p>Eredmény: <span class="ans">\(\ln\big(1 + \tg\frac x2\big) + c\quad \big(x \in (0, \pi),\ c \in \R\big)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Szerencsés kiesés:</b> a \(t^2\)-es tagok kiesnek a nevezőből, és az \((1+t^2)\) is egyszerűsödik, így elsőfokú nevező marad.</p>
+        <p><b>Ugyanez félszögekkel:</b> \(1 + \cos x = 2\cos^2\frac x2\), \(\sin x = 2\sin\frac x2\cos\frac x2\), így</p>
+        \[\frac{1}{1 + \sin x + \cos x} = \frac{1}{2\cos^2\frac x2\,\big(1 + \tg\frac x2\big)} = \frac{\big(1 + \tg\frac x2\big)'}{1 + \tg\frac x2},\]
+        <p>ami \(\frac{f'}{f}\) típus: helyettesítés nélkül is \(\ln\big(1 + \tg\frac x2\big)\) jön ki.</p>
+        <p><b>Ellenőrzés:</b> \(\Big(\ln\big(1 + \tg\frac x2\big)\Big)' = \dfrac{\frac{1}{2\cos^2\frac x2}}{1 + \tg\frac x2} = \dfrac{1}{2\cos^2\frac x2 + 2\sin\frac x2\cos\frac x2} = \dfrac{1}{1 + \cos x + \sin x}\). ✓</p>
+        <p class="note">\(x = \pi\)-ben a nevező \(1 + 0 - 1 = 0\), az integrandus ott nem értelmes, így a \((0, \pi)\) intervallum jobbról nem bővíthető.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="h1c">
+    <div class="task-head"><span class="no">1. (c)</span><span class="src">10. gyakorlat · házi</span><span class="kind">páratlan kitevő</span></div>
+    \[\int\sin^3 x\cdot\cos^2 x\,dx \quad (x \in \R)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>A \(\sin\) kitevője páratlan: leválasztunk egy \(\sin x\)-et, a többit \(\sin^2 x = 1 - \cos^2 x\)-szel \(\cos\)-ra írjuk:</p>
+        \[\int\sin^3 x\cos^2 x\,dx = \int(1 - \cos^2 x)\cos^2 x\cdot\sin x\,dx\]
+        \[= \int\big(\cos^2 x\sin x - \cos^4 x\sin x\big)\,dx.\]
+        <p>Mivel \((\cos x)' = -\sin x\), mindkét tag \(-f^\alpha f'\) típus:</p>
+        \[= -\frac{\cos^3 x}{3} + \frac{\cos^5 x}{5} + c.\]
+        <p>Eredmény: <span class="ans">\(-\dfrac{\cos^3 x}{3} + \dfrac{\cos^5 x}{5} + c\quad (x, c \in \R)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Előjel:</b> \(\int\cos^k x\sin x\,dx = -\int\cos^k x\,(\cos x)'\,dx = -\frac{\cos^{k+1}x}{k+1}\). A mínusz itt a leggyakoribb hibaforrás.</p>
+        <p><b>Ellenőrzés:</b> \(\big(-\frac{\cos^3 x}{3} + \frac{\cos^5 x}{5}\big)' = \cos^2 x\sin x - \cos^4 x\sin x = \sin x\cos^2 x\,(1 - \cos^2 x) = \sin^3 x\cos^2 x\). ✓</p>
+        <p class="note">Ez az órai 3. (a) „tükörképe”: ott a \(\cos\), itt a \(\sin\) kitevője páratlan.</p>
+      </div>
+    </details>
+  </article>
+
+  </div>
+</section>
+
+<!-- ================= GYAKORI HIBÁK ================= -->
+<section id="hibak">
+  <div class="section-head">
+    <span class="label">Mire figyelj</span>
+    <h2>Gyakori hibák</h2>
+  </div>
+  <div class="mistakes">
+    <div class="mistake"><span class="x">✕</span><p><b>Elmarad a \(g'(t)\) szorzó.</b> A \(t = \tg\frac x2\) helyettesítésnél \(dx = \frac{2}{1+t^2}\,dt\); ha ez kimarad, rossz racionális törtet integrálunk (órai 1. (a), (b)).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Nincs megnézve, hogy \(g\) bijekció-e.</b> \(x = 2\arctg t\) csak \((-\pi, \pi)\)-be képez; \(x = \pi + 2k\pi\)-ben \(\tg\frac x2\) nem értelmes. \((0, 2\pi)\)-n vagy \(\R\)-en ez a helyettesítés közvetlenül nem alkalmazható (órai 2. (b), 3.).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>A \(t\) tartomány figyelmen kívül hagyása a logaritmusnál.</b> \((0, \pi)\)-n \(t \gt 0\), de \((-\frac\pi2, \frac\pi2)\)-n \(t \in (-1, 1)\), így pl. \(\int\frac{dt}{1-t} = -\ln(1-t)\), nem \(\ln(t-1)\) (házi 1. (a)).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Elmaradt visszahelyettesítés.</b> A végeredmény \(x\) függvénye: a \(t\)-s primitív függvénybe \(t = \tg\frac x2\)-t kell írni.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>„Más jött ki, tehát rossz.”</b> Különböző módszerekkel kapott primitív függvények konstansban eltérhetnek (2. feladat: \(\ln 2\)). Deriválással vagy egy pontbeli különbséggel ellenőrizd.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Páros-páros kitevőnél a páratlan trükk erőltetése, és hibás lineáris szorzók.</b> \(\sin^2 x\cos^4 x\)-nél linearizálni kell; ilyenkor \(\int\sin^2(2x)\,dx = \frac x2 - \frac{\sin 4x}{8}\), nem \(\frac x2 - \frac{\sin 4x}{4}\) (órai 3. (b)).</p></div>
+  </div>
+</section>
+
+<footer>Forrás: <a href="../Gyakorlat%20anyagok/10_Gy_An_II_A_B.pdf" target="_blank" rel="noopener">10. gyakorlat (PDF)</a> és <a href="../Gyakorlat%20anyagok/An_II_A_B_Gyak.pdf" target="_blank" rel="noopener">Analízis II. gyakorlatok, összevont anyag (PDF)</a>. Minden primitív függvényt numerikus deriválással ellenőriztünk, a grafikon a függvényekből számolva készült.</footer>
+</div>
+
+<script>
+(function () {
+  // Small SVG plotter: several curves on one grid, optional vertical guide lines.
+  function fmt(v) { return (Math.round(v * 100) / 100).toString().replace('.', ',').replace('-', '−'); }
+  function plot(el, o) {
+    var W = 640, H = o.h || 320, L = 40, R = 14, T = 12, B = 26;
+    var x0 = o.x[0], x1 = o.x[1], y0 = o.y[0], y1 = o.y[1];
+    var X = function (x) { return L + (x - x0) / (x1 - x0) * (W - L - R); };
+    var Y = function (y) { return T + (y1 - y) / (y1 - y0) * (H - T - B); };
+    var s = [], cid = 'clip-' + el.id, v;
+    s.push('<defs><clipPath id="' + cid + '"><rect x="' + L + '" y="' + T + '" width="' + (W - L - R) + '" height="' + (H - T - B) + '"/></clipPath></defs>');
+    for (v = Math.ceil(x0 / o.gx - 1e-9) * o.gx; v <= x1 + 1e-9; v += o.gx) {
+      s.push('<line class="gl" x1="' + X(v) + '" y1="' + T + '" x2="' + X(v) + '" y2="' + (H - B) + '"/>');
+      if (Math.abs(v) > 1e-9) s.push('<text class="tk" x="' + X(v) + '" y="' + (H - 8) + '" text-anchor="middle">' + fmt(v) + '</text>');
+    }
+    for (v = Math.ceil(y0 / o.gy - 1e-9) * o.gy; v <= y1 + 1e-9; v += o.gy) {
+      s.push('<line class="gl" x1="' + L + '" y1="' + Y(v) + '" x2="' + (W - R) + '" y2="' + Y(v) + '"/>');
+      if (Math.abs(v) > 1e-9) s.push('<text class="tk" x="' + (L - 6) + '" y="' + (Y(v) + 4) + '" text-anchor="end">' + fmt(v) + '</text>');
+    }
+    if (y0 <= 0 && y1 >= 0) s.push('<line class="ax" x1="' + L + '" y1="' + Y(0) + '" x2="' + (W - R) + '" y2="' + Y(0) + '"/>');
+    if (x0 <= 0 && x1 >= 0) s.push('<line class="ax" x1="' + X(0) + '" y1="' + T + '" x2="' + X(0) + '" y2="' + (H - B) + '"/>');
+    (o.vl || []).forEach(function (a) { s.push('<line class="as" x1="' + X(a) + '" y1="' + T + '" x2="' + X(a) + '" y2="' + (H - B) + '"/>'); });
+    var g = '<g clip-path="url(#' + cid + ')">';
+    o.curves.forEach(function (c) {
+      var d = '', pen = false, N = 900, span = y1 - y0;
+      for (var i = 0; i <= N; i++) {
+        var x = x0 + (x1 - x0) * i / N;
+        if (c.dom && !c.dom(x)) { pen = false; continue; }
+        var y = c.f(x);
+        if (!isFinite(y)) { pen = false; continue; }
+        y = Math.max(Math.min(y, y1 + span), y0 - span);
+        d += (pen ? 'L' : 'M') + X(x).toFixed(1) + ' ' + Y(y).toFixed(1);
+        pen = true;
+      }
+      g += '<path class="' + c.cls + '" d="' + d + '"/>';
+    });
+    (o.pts || []).forEach(function (p) { g += '<circle class="pz" cx="' + X(p[0]) + '" cy="' + Y(p[1]) + '" r="3.5"/>'; });
+    g += '</g>';
+    s.push(g);
+    el.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + o.label + '">' + s.join('') + '</svg>';
+  }
+  var GRAPHS = {
+    'g-o2b': { label: 'f(x) = (1 + sin x)/(1 − cos x) és primitív függvénye a (0, 2π) intervallumon', x: [0, 6.6], y: [-6, 8], gx: 1, gy: 2, vl: [Math.PI, 2 * Math.PI],
+      curves: [ { cls: 'cv2', f: function (x) { return (1 + Math.sin(x)) / (1 - Math.cos(x)); }, dom: function (x) { return x > 0.01 && x < 2 * Math.PI - 0.01; } },
+                { cls: 'cv', f: function (x) { return -1 / Math.tan(x / 2) + 2 * Math.log(Math.sin(x / 2)); }, dom: function (x) { return x > 0 && x < 2 * Math.PI; } } ] }
+  };
+  Object.keys(GRAPHS).forEach(function (id) { var el = document.getElementById(id); if (el) plot(el, GRAPHS[id]); });
+})();
+</script>
+<!-- Fejezetsáv: az éppen olvasott szakasz gombja kiemelve -->
+<style>
+nav.bar a.active, nav.bar a.active:hover, nav.bar a.active:focus-visible { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+</style>
+<script>
+(function () {
+  var nav = document.querySelector('nav.bar');
+  if (!nav) return;
+  var links = Array.prototype.filter.call(nav.querySelectorAll('a[href^="#"]'), function (a) {
+    return a.getAttribute('href').length > 1 && document.getElementById(a.getAttribute('href').slice(1));
+  });
+  var current = null, ticking = false;
+  function sectionOf(a) { return document.getElementById(a.getAttribute('href').slice(1)); }
+  function update() {
+    ticking = false;
+    var line = nav.getBoundingClientRect().bottom + 12, active = null;
+    var visible = links.filter(function (a) { return sectionOf(a).offsetParent !== null; });
+    visible.forEach(function (a) { if (sectionOf(a).getBoundingClientRect().top <= line) active = a; });
+    // a lap alján az utolsó szakasz az aktuális akkor is, ha rövid
+    if (visible.length && window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) active = visible[visible.length - 1];
+    if (active === current) return;
+    if (current) { current.classList.remove('active'); current.removeAttribute('aria-current'); }
+    current = active;
+    if (!active) return;
+    active.classList.add('active');
+    active.setAttribute('aria-current', 'location');
+    var ul = active.closest('ul'), ur = ul.getBoundingClientRect(), ar = active.getBoundingClientRect();
+    var left = ar.left - ur.left + ul.scrollLeft, right = left + ar.width;
+    if (left < ul.scrollLeft || right > ul.scrollLeft + ul.clientWidth) ul.scrollTo({ left: Math.max(0, left - 16), behavior: 'smooth' });
+  }
+  function schedule() { if (!ticking) { ticking = true; setTimeout(update, 40); } }
+  window.addEventListener('scroll', schedule, { passive: true });
+  window.addEventListener('resize', schedule);
+  document.addEventListener('input', schedule);   // a keresés elrejthet szakaszokat
+  document.addEventListener('toggle', schedule, true);
+  update();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,869 @@
+<!doctype html>
+<html lang="hu" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Analízis II · 2. gyakorlat kidolgozva</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['\\(', '\\)']],
+      displayMath: [['\\[', '\\]']],
+      macros: {
+        arcsin: '\\operatorname{arc\\,sin}', arccos: '\\operatorname{arc\\,cos}',
+        arctg: '\\operatorname{arc\\,tg}', arcctg: '\\operatorname{arc\\,ctg}',
+        tg: '\\operatorname{tg}', ctg: '\\operatorname{ctg}', R: '\\mathbb{R}'
+      }
+    },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js" async></script>
+<style>
+/* Layout: same exam-paper look as the DIMAT prep, in the Analysis orange; every task = statement + folded solution + folded walkthrough */
+:root {
+  --paper: #f5f7fa;
+  --grid: rgba(180, 80, 11, 0.06);
+  --card: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6574;
+  --rule: #d7dde6;
+  --accent: #b4500b;
+  --accent-soft: #fcefe4;
+  --mark: #b8352a;
+  --mark-soft: #fbe9e6;
+  --ok: #2c7a4b;
+  --ok-soft: #e3f3e9;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-label: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f141b; --grid: rgba(242, 162, 94, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+    --rule: #2a3442; --accent: #f2a25e; --accent-soft: #33241a; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+    --ok: #74d39c; --ok-soft: #173225; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f141b; --grid: rgba(242, 162, 94, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+  --rule: #2a3442; --accent: #f2a25e; --accent-soft: #33241a; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+  --ok: #74d39c; --ok-soft: #173225; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background-color: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 1.06rem;
+  line-height: 1.6;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 80px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2rem, 6vw, 3.1rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.65rem; font-weight: 700; letter-spacing: -0.01em; }
+h3 { font-size: 1.1rem; font-weight: 600; }
+p { margin: 0; }
+a { color: var(--accent); }
+.label { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding: 2px 0; margin: 6px 0 !important; min-width: 0; max-width: 100%; }
+/* grid children must be allowed to shrink, otherwise wide formulas push the page sideways */
+.task, .sol, .step, .rule-card, .sheet > * { grid-template-columns: minmax(0, 1fr); min-width: 0; }
+.rule-card li, .rule-card p, .sol p, .sol li, .step p, .stmt, .tip, .warn, .mistake p, td { overflow-x: auto; overflow-y: hidden; }
+
+/* back to subject page */
+.back { justify-self: start; display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px 9px 12px; border: 1.5px solid var(--accent); border-radius: 8px; background: var(--accent-soft); color: var(--ink); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 1.02rem; line-height: 1; white-space: nowrap; transition: background .15s, color .15s; }
+.back .arr { color: var(--accent); font-size: 1.25rem; transition: transform .15s, color .15s; }
+.back:hover, .back:focus-visible { background: var(--accent); color: var(--paper); outline: none; }
+.back:hover .arr, .back:focus-visible .arr { color: var(--paper); transform: translateX(-3px); }
+
+/* header */
+header.hero { display: grid; gap: 14px; padding-block: 0 26px; border-bottom: 2px solid var(--accent); }
+.hero .sub { color: var(--muted); max-width: 62ch; }
+.facts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.fact { display: flex; flex-direction: column; gap: 2px; padding: 8px 14px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; min-width: 120px; }
+.fact b { font-family: var(--f-display); font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+
+nav.bar { position: sticky; top: 0; z-index: 5; background: var(--paper); border-bottom: 1px solid var(--rule); margin-inline: -16px; padding-inline: 16px; }
+nav.bar ul { list-style: none; margin: 0; padding: 10px 0; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin; }
+nav.bar a { display: block; white-space: nowrap; text-decoration: none; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.04em; color: var(--ink); padding: 6px 10px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); }
+nav.bar a:hover, nav.bar a:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+nav.bar a.nav-back { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+
+section { padding-top: 44px; display: grid; gap: 18px; scroll-margin-top: 56px; }
+.section-head { display: grid; gap: 6px; }
+.section-head p { color: var(--muted); max-width: 64ch; }
+
+/* reminder cards */
+.sheet { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; }
+.rule-card { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 14px 16px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.rule-card h3 { font-size: 1rem; }
+.rule-card p, .rule-card li { font-size: 0.95rem; }
+.rule-card ul, .rule-card ol { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.rule-card.wide { grid-column: 1 / -1; }
+
+/* tables (sign charts, value tables) */
+.tbl { overflow-x: auto; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--rule); vertical-align: middle; }
+th { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+tr:last-child td, tr:last-child th { border-bottom: 0; }
+table.sgn { width: auto; min-width: 100%; }
+table.sgn th, table.sgn td { text-align: center; white-space: nowrap; border-left: 1px solid var(--rule); }
+table.sgn th:first-child { border-left: 0; text-transform: none; letter-spacing: 0; font-family: var(--f-body); font-size: 1rem; color: var(--ink); background: var(--accent-soft); }
+table.sgn td.pt { background: color-mix(in srgb, var(--accent-soft) 55%, transparent); }
+.p { color: var(--ok); font-weight: 600; }
+.n { color: var(--mark); font-weight: 600; }
+.note { font-size: 0.82rem; color: var(--muted); }
+.tag { font-family: var(--f-label); font-size: 0.72rem; color: var(--accent); }
+
+/* exercises */
+.task { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 18px; display: grid; gap: 10px; min-width: 0; scroll-margin-top: 60px; }
+.task-head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.task-head .no { font-family: var(--f-display); font-weight: 700; font-size: 1.05rem; }
+.task-head .src { font-family: var(--f-label); font-size: 0.72rem; color: var(--muted); }
+.task-head .kind { margin-left: auto; font-family: var(--f-label); font-size: 0.75rem; color: var(--accent); }
+.stmt { max-width: 70ch; }
+details { border-top: 1px dashed var(--rule); padding-top: 8px; min-width: 0; }
+summary { cursor: pointer; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); list-style: none; display: inline-flex; gap: 8px; align-items: center; padding: 4px 0; }
+summary::-webkit-details-marker { display: none; }
+summary::before { content: "+"; display: inline-grid; place-items: center; width: 18px; height: 18px; border: 1px solid currentColor; border-radius: 3px; font-size: 0.8rem; }
+details[open] > summary::before { content: "−"; }
+summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sol { display: grid; gap: 10px; padding-top: 6px; max-width: 74ch; min-width: 0; }
+.sol ol, .sol ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.step { display: grid; gap: 8px; min-width: 0; }
+.step > b:first-child { font-family: var(--f-display); font-weight: 600; }
+.ans { display: inline-block; background: var(--ok-soft); color: var(--ok); font-weight: 600; padding: 2px 9px; border-radius: 4px; }
+.warn { background: var(--mark-soft); border-left: 3px solid var(--mark); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 0.95rem; }
+.tip { background: var(--accent-soft); border-left: 3px solid var(--accent); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 0.95rem; }
+.taskgroup { display: grid; gap: 12px; }
+
+/* graphs */
+figure.graph { margin: 0; background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 8px 8px 6px; display: grid; gap: 6px; }
+figure.graph > div > svg { width: 100%; height: auto; display: block; }
+figure.graph figcaption { display: flex; flex-wrap: wrap; gap: 4px 16px; font-family: var(--f-label); font-size: 0.72rem; color: var(--muted); padding: 0 4px; }
+.lg::before { content: ""; display: inline-block; width: 16px; height: 0; vertical-align: middle; margin-right: 6px; border-top: 2.5px solid var(--accent); }
+.lg.asy::before { border-top: 1.5px dashed var(--muted); }
+.lg.ext::before { width: 9px; height: 9px; border: 0; border-radius: 50%; background: var(--ok); }
+.lg.inf::before { width: 9px; height: 9px; border: 2px solid var(--mark); border-radius: 50%; box-sizing: border-box; }
+svg .gl { stroke: var(--rule); stroke-width: 1; opacity: .55; }
+svg .ax { stroke: var(--muted); stroke-width: 1.3; }
+svg .tk { fill: var(--muted); font-family: var(--f-label); font-size: 11px; }
+svg .cv { fill: none; stroke: var(--accent); stroke-width: 2.6; stroke-linejoin: round; stroke-linecap: round; }
+svg .as { stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 6 5; fill: none; }
+svg .pe { fill: var(--ok); stroke: var(--paper); stroke-width: 1.5; }
+svg .pi { fill: var(--paper); stroke: var(--mark); stroke-width: 2.2; }
+svg .pz { fill: var(--ink); }
+svg .po { fill: var(--paper); stroke: var(--accent); stroke-width: 2; }
+svg .pl { fill: var(--ink); font-family: var(--f-label); font-size: 12px; paint-order: stroke; stroke: var(--paper); stroke-width: 4px; stroke-linejoin: round; }
+
+/* mistakes */
+.mistakes { display: grid; gap: 10px; }
+.mistake { display: grid; grid-template-columns: auto 1fr; gap: 12px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 12px 14px; }
+.mistake .x { font-family: var(--f-display); font-weight: 700; color: var(--mark); font-size: 1.2rem; line-height: 1.3; }
+
+footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.88rem; }
+
+@media (max-width: 520px) {
+  body { font-size: 1rem; }
+  .task { padding: 14px; }
+  th, td { padding: 6px 8px; }
+}
+
+/* Taylor graphs: second curve dashed, highlighted x-band */
+svg .cv2 { fill: none; stroke: var(--ok); stroke-width: 2.2; stroke-dasharray: 7 5; }
+svg .bd { fill: var(--accent-soft); opacity: .8; }
+.lg.tay::before { border-top: 2.2px dashed var(--ok); }
+.lg.band::before { height: 10px; border: 0; background: var(--accent-soft); }
+/* primitive-function families and vertical asymptotes */
+svg .cv3 { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: .4; }
+.lg.fam::before { opacity: .45; border-top-width: 1.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <a class="back" href="../../index.html#/anal2"><span class="arr" aria-hidden="true">←</span>Vissza: Analízis II.</a>
+  <span class="label">Analízis II. · 2. gyakorlat · Differenciálszámítás 1.</span>
+  <h1>A 2. gyakorlat kidolgozva</h1>
+  <p class="sub">A pontbeli derivált definíciója, a deriválási szabályok (összeg, szorzat, hányados, összetett függvény) és a \(g(x)^{h(x)}\) alakú függvények deriválása. Az órai feladatok a gyakorlati anyag megoldását követik, a házi feladatok (az összevont anyagból) saját megoldások. Az órán kérdezett röpZH-tételek: <a href="ropzh_kidolgozas.html#rz2">2. röpZH</a>. Előbb próbáld meg magad, és csak utána nyisd le a megoldást.</p>
+  <div class="facts">
+    <div class="fact"><span class="label">Órai feladat</span><b>3 (13 rész)</b></div>
+    <div class="fact"><span class="label">Házi feladat</span><b>1 (6 rész)</b></div>
+    <div class="fact"><span class="label">Grafikon</span><b>3 db</b></div>
+  </div>
+</header>
+
+<nav class="bar" aria-label="Fejezetek">
+  <ul>
+    <li><a class="nav-back" href="../../index.html#/anal2" aria-label="Vissza: Analízis II.">← ANAL II</a></li>
+    <li><a href="#emlekezteto">Emlékeztető</a></li>
+    <li><a href="#orai">Órai feladatok</a></li>
+    <li><a href="#hazi">Házi feladatok</a></li>
+    <li><a href="#hibak">Gyakori hibák</a></li>
+    <li><a href="ropzh_kidolgozas.html#rz2">2. röpZH ↗</a></li>
+  </ul>
+</nav>
+
+<!-- ================= EMLÉKEZTETŐ ================= -->
+<section id="emlekezteto">
+  <div class="section-head">
+    <span class="label">Ami kell hozzá</span>
+    <h2>Emlékeztető</h2>
+    <p>A 2. gyakorlat elméleti összefoglalója röviden. A feladatokban végig ezekre hivatkozunk.</p>
+  </div>
+  <div class="sheet">
+    <div class="rule-card">
+      <h3>Pontbeli derivált</h3>
+      <p>Az \(f \in \R \to \R\) függvény az \(a \in \operatorname{int} D_f\) pontban <b>deriválható</b> (\(f \in D\{a\}\)), ha létezik és véges a</p>
+      \[f'(a) := \lim_{x \to a} \frac{f(x) - f(a)}{x - a} = \lim_{h \to 0} \frac{f(a+h) - f(a)}{h} \in \R\]
+      <p>határérték.</p>
+      <p class="note">Ha \(f \in C\{a\}\), ez mindig \(\frac00\)-típusú kritikus határérték, ezért kell átalakítani (gyöktelenítés, kiemelés, egyszerűsítés).</p>
+    </div>
+    <div class="rule-card">
+      <h3>Deriváltfüggvény</h3>
+      <p>Ha az \(\{x \in \operatorname{int} D_f \mid f \in D\{x\}\}\) halmaz nem üres, akkor az</p>
+      \[\{x \in \operatorname{int} D_f \mid f \in D\{x\}\} \ni x \mapsto f'(x)\]
+      <p>függvény az \(f\) <b>deriváltfüggvénye</b>, jele \(f'\).</p>
+      <p class="note">A deriváltfüggvény értelmezési tartománya kisebb lehet, mint \(D_f\): pl. \(\sqrt{x^2-1}\) az \(x = 1\)-ben nem deriválható (1. feladat).</p>
+    </div>
+    <div class="rule-card">
+      <h3>Algebrai műveletek</h3>
+      <p>Ha \(f, g \in D\{a\}\), akkor</p>
+      <ul>
+        <li>\((c f)'(a) = c\,f'(a)\) \((c \in \R)\)</li>
+        <li>\((f + g)'(a) = f'(a) + g'(a)\)</li>
+        <li>\((f g)'(a) = f'(a)\,g(a) + f(a)\,g'(a)\)</li>
+        <li>ha \(g(a) \ne 0\): \(\Big(\dfrac fg\Big)'(a) = \dfrac{f'(a)\,g(a) - f(a)\,g'(a)}{g^2(a)}\)</li>
+      </ul>
+    </div>
+    <div class="rule-card">
+      <h3>Összetett függvény (láncszabály)</h3>
+      <p>Ha \(g \in D\{a\}\) és \(f \in D\{g(a)\}\), akkor \(f \circ g \in D\{a\}\) és</p>
+      \[(f \circ g)'(a) = f'\big(g(a)\big)\cdot g'(a).\]
+      <p class="note">Többszörösen összetett függvénynél „kívülről befelé” haladva alkalmazzuk, minden lépésben egy újabb belső derivált szorzóval.</p>
+    </div>
+    <div class="rule-card wide">
+      <h3>Elemi függvények deriváltjai (1. előadás)</h3>
+      <div class="tbl"><table>
+        <thead><tr><th>\(f(x)\)</th><th>\(f'(x)\)</th><th>\(f(x)\)</th><th>\(f'(x)\)</th></tr></thead>
+        <tbody>
+          <tr><td>\(x^\alpha\)</td><td>\(\alpha x^{\alpha-1}\)</td><td>\(\tg x\)</td><td>\(\dfrac{1}{\cos^2 x}\)</td></tr>
+          <tr><td>\(e^x\)</td><td>\(e^x\)</td><td>\(\ctg x\)</td><td>\(-\dfrac{1}{\sin^2 x}\)</td></tr>
+          <tr><td>\(a^x\) \((a \gt 0)\)</td><td>\(a^x \ln a\)</td><td>\(\arcsin x\)</td><td>\(\dfrac{1}{\sqrt{1-x^2}}\)</td></tr>
+          <tr><td>\(\ln x\) \((x \gt 0)\)</td><td>\(\dfrac1x\)</td><td>\(\arccos x\)</td><td>\(-\dfrac{1}{\sqrt{1-x^2}}\)</td></tr>
+          <tr><td>\(\sin x\)</td><td>\(\cos x\)</td><td>\(\arctg x\)</td><td>\(\dfrac{1}{1+x^2}\)</td></tr>
+          <tr><td>\(\cos x\)</td><td>\(-\sin x\)</td><td>\(\operatorname{sh} x\), \(\operatorname{ch} x\)</td><td>\(\operatorname{ch} x\), \(\operatorname{sh} x\)</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div class="rule-card wide">
+      <h3>\(g(x)^{h(x)}\) alakú függvények, logaritmikus deriválás</h3>
+      <p>Ha az alap és a kitevő is változik (\(g(x) \gt 0\)), az \(a = e^{\ln a}\) azonossággal írjuk át:</p>
+      \[g(x)^{h(x)} = e^{h(x)\ln g(x)} = \exp\big(h(x)\cdot\ln g(x)\big),\]
+      <p>és ezt összetett függvényként deriváljuk (külső: \(\exp\), belső: \(h\cdot(\ln\circ g)\)):</p>
+      \[\Big(g^{h}\Big)'(x) = g(x)^{h(x)}\cdot\Big(h'(x)\ln g(x) + h(x)\cdot\frac{g'(x)}{g(x)}\Big).\]
+      <p class="note">Ugyanez jön ki <b>logaritmikus deriválással</b>: \((\ln f)' = \frac{f'}{f}\), így \(f' = f\cdot(\ln f)'\). Hasznos sokszoros szorzatoknál és hányadosoknál is.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ÓRAI FELADATOK ================= -->
+<section id="orai">
+  <div class="section-head">
+    <span class="label">2. gyakorlat · Feladatok</span>
+    <h2>Órai feladatok</h2>
+    <p>A megoldások menete a 2. gyakorlati anyag kidolgozását követi. Minden deriváltat numerikusan (véges differenciákkal) ellenőriztünk.</p>
+  </div>
+
+  <div class="taskgroup">
+
+  <!-- 1. feladat -->
+  <article class="task" id="o1">
+    <div class="task-head"><span class="no">1.</span><span class="src">2. gyakorlat · órai</span><span class="kind">derivált definíció alapján</span></div>
+    <p class="stmt">A definíció alapján lássuk be, hogy az \(f(x) := \sqrt{x^2 - 1}\) \(\big(x \in [1, +\infty)\big)\) függvény deriválható minden \(a \in (1, +\infty)\) pontban, és számítsuk ki \(f'(a)\)-t!</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Világos, hogy \(a \in \operatorname{int} D_f = (1, +\infty)\). A különbségi hányadost gyöktelenítjük (\((\alpha - \beta)(\alpha + \beta) = \alpha^2 - \beta^2\)):</p>
+        \[\frac{f(x) - f(a)}{x - a} = \frac{\sqrt{x^2-1} - \sqrt{a^2-1}}{x - a}\cdot\frac{\sqrt{x^2-1} + \sqrt{a^2-1}}{\sqrt{x^2-1} + \sqrt{a^2-1}}\]
+        \[= \frac{(x^2-1) - (a^2-1)}{x-a}\cdot\frac{1}{\sqrt{x^2-1} + \sqrt{a^2-1}}\]
+        \[= \frac{(x-a)(x+a)}{x-a}\cdot\frac{1}{\sqrt{x^2-1} + \sqrt{a^2-1}} = \frac{x+a}{\sqrt{x^2-1} + \sqrt{a^2-1}} \quad (x \ne a).\]
+        <p>Ez már nem kritikus, \(x \to a\) esetén:</p>
+        \[\lim_{x\to a}\frac{x+a}{\sqrt{x^2-1} + \sqrt{a^2-1}} = \frac{2a}{2\sqrt{a^2-1}} = \frac{a}{\sqrt{a^2-1}} \in \R.\]
+        <p>A határérték létezik és véges, tehát \(f \in D\{a\}\), és</p>
+        <p>Eredmény: <span class="ans">\(f'(a) = \dfrac{a}{\sqrt{a^2-1}}\quad \big(a \in (1, +\infty)\big)\)</span></p>
+        <figure class="graph"><div id="g-o1"></div><figcaption><span class="lg">\(f(x) = \sqrt{x^2-1}\)</span><span class="lg tay">érintő az \(a = 2\) pontban</span><span class="lg asy">\(x = 1\): függőleges érintő</span></figcaption></figure>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért gyöktelenítünk?</b> Behelyettesítve \(\frac00\) jönne ki (a függvény folytonos). A gyökök különbségét a konjugálttal szorozva a számlálóban \((x^2 - 1) - (a^2 - 1) = x^2 - a^2\) marad, amiből az \(x - a\) kiemelhető és egyszerűsíthető. Ez a kritikus tényező.</p>
+        <p><b>Miért kell \(a \gt 1\)?</b> A nevezőben \(2\sqrt{a^2-1}\) áll, ami \(a = 1\)-nél 0. Valóban: \(a = 1\)-ben a különbségi hányados \(\frac{\sqrt{x^2-1}}{x-1} = \sqrt{\frac{x+1}{x-1}} \to +\infty\) \((x \to 1+0)\), tehát ott nincs (véges) derivált. Ráadásul az \(1\) nem is belső pontja \(D_f\)-nek. A grafikonon ez a függőleges érintő.</p>
+        <p><b>Ellenőrzés:</b> a láncszabállyal \(\big(\sqrt{x^2-1}\big)' = \frac{1}{2\sqrt{x^2-1}}\cdot 2x = \frac{x}{\sqrt{x^2-1}}\). ✓ Numerikusan \(a = 2\)-re \(\frac{f(2+h) - f(2)}{h} \approx 1{,}15469\) \((h = 10^{-4})\), és \(\frac{2}{\sqrt3} \approx 1{,}15470\).</p>
+        <p class="tip"><b>Érintő \(a = 2\)-ben:</b> \(y = \sqrt3 + \frac{2}{\sqrt3}(x - 2)\). Nagy \(x\)-re \(f'(x) \to 1\), a grafikon az \(y = x\) egyeneshez simul.</p>
+      </div>
+    </details>
+  </article>
+
+  <!-- 2. feladat -->
+  <article class="task" id="o2a">
+    <div class="task-head"><span class="no">2. (a)</span><span class="src">2. gyakorlat · órai</span><span class="kind">polinom</span></div>
+    <p class="stmt">Számítsuk ki \(f'(x)\)-et, ha \(f(x) := 4x^3 - 2x^2 + 5x - 3\) \((x \in \R)\).</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Ha \(x \in \R\), akkor</p>
+        \[f'(x) = 4\,(x^3)' - 2\,(x^2)' + 5\,(x)' - (3)' = 4\cdot 3x^2 - 2\cdot 2x + 5\cdot 1 - 0.\]
+        <p>Eredmény: <span class="ans">\(f'(x) = 12x^2 - 4x + 5\quad (x \in \R)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Mit használunk?</b> Összeg és konstansszoros deriválási szabálya (tagonként deriválunk, a szorzó kiemelhető), valamint \((x^n)' = nx^{n-1}\) és \((c)' = 0\).</p>
+        <p><b>Ellenőrzés:</b> \(x = 1{,}5\)-ben a véges differencia és \(12\cdot 2{,}25 - 6 + 5 = 26\) megegyezik. ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o2b">
+    <div class="task-head"><span class="no">2. (b)</span><span class="src">2. gyakorlat · órai</span><span class="kind">hatványozás</span></div>
+    <p class="stmt">Számítsuk ki \(f'(x)\)-et, ha \(f(x) := \sqrt{x\sqrt{x\sqrt{x}}}\) \((x \gt 0)\).</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>A hatványazonosságokkal először átalakítjuk \(f(x)\)-et (belülről kifelé):</p>
+        \[\sqrt{x\sqrt{x\sqrt x}} = \Big(x\big(x\cdot x^{1/2}\big)^{1/2}\Big)^{1/2} = \Big(x\cdot\big(x^{3/2}\big)^{1/2}\Big)^{1/2}\]
+        \[= \big(x\cdot x^{3/4}\big)^{1/2} = \big(x^{7/4}\big)^{1/2} = x^{7/8}.\]
+        <p>Így</p>
+        \[f'(x) = \big(x^{7/8}\big)' = \frac78\,x^{7/8 - 1} = \frac78\,x^{-1/8}.\]
+        <p>Eredmény: <span class="ans">\(f'(x) = \dfrac{7}{8\sqrt[8]{x}}\quad (x \gt 0)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért alakítunk át?</b> A háromszoros láncszabály is működne, de sokkal hosszabb és hibalehetőséggel teli. Egyetlen \(x^\alpha\) hatványt viszont egy lépésben deriválunk.</p>
+        <p><b>Lépésenként:</b> \(x\sqrt x = x^{3/2}\), gyöke \(x^{3/4}\); \(x\cdot x^{3/4} = x^{7/4}\), gyöke \(x^{7/8}\). Szorzásnál a kitevők összeadódnak, gyökvonásnál feleződnek.</p>
+        <p><b>Ellenőrzés:</b> \(x = 1\)-ben \(f'(1) = \frac78 = 0{,}875\), a véges differencia ugyanezt adja. ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o2c">
+    <div class="task-head"><span class="no">2. (c)</span><span class="src">2. gyakorlat · órai</span><span class="kind">negatív kitevők</span></div>
+    <p class="stmt">Számítsuk ki \(f'(x)\)-et, ha \(f(x) := x^3 + \dfrac{1}{x^2} - \dfrac{1}{5x^5}\) \(\big(x \in \R\setminus\{0\}\big)\).</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Negatív kitevős hatványokként írva: \(f(x) = x^3 + x^{-2} - \frac15 x^{-5}\). Ha \(x \ne 0\), akkor</p>
+        \[f'(x) = 3x^2 + (-2)\,x^{-3} - \frac15\cdot(-5)\,x^{-6} = 3x^2 - \frac{2}{x^3} + \frac{1}{x^6}.\]
+        <p>Eredmény: <span class="ans">\(f'(x) = 3x^2 - \dfrac{2}{x^3} + \dfrac{1}{x^6}\quad (x \ne 0)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>A trükk:</b> \(\frac{1}{x^n} = x^{-n}\), így hányadosszabály helyett a hatványfüggvény deriváltját használjuk: \((x^{-n})' = -n\,x^{-n-1}\).</p>
+        <p class="warn"><b>Figyelj:</b> \(\frac{1}{5x^5}\)-ben az 5 csak a nevező szorzója, tehát \(\frac15 x^{-5}\), és nem \((5x)^{-5}\). A \(\frac15\cdot(-5) = -1\) és az előtte álló mínusz együtt adja a \(+\frac{1}{x^6}\) tagot.</p>
+        <p><b>Ellenőrzés:</b> numerikusan \(x = 0{,}7\), \(x = 2\), \(x = -1{,}3\) pontokban egyezik. ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o2d">
+    <div class="task-head"><span class="no">2. (d)</span><span class="src">2. gyakorlat · órai</span><span class="kind">paraméter · \(x^a\) vs. \(a^x\)</span></div>
+    <p class="stmt">Számítsuk ki \(f'(x)\)-et, ha \(f(x) := x^a + a^x + a x + \dfrac{x}{a} + \dfrac{a}{x}\) \((x \gt 0,\ a \gt 0\) paraméter\()\).</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Tetszőleges \(a \gt 0\) paraméter esetén minden \(x \gt 0\) pontban</p>
+        \[f'(x) = (x^a)' + (a^x)' + a\,(x)' + \frac1a\,(x)' + a\Big(\frac1x\Big)' = a\,x^{a-1} + a^x\ln a + a + \frac1a - \frac{a}{x^2}.\]
+        <p>Eredmény: <span class="ans">\(f'(x) = a\,x^{a-1} + a^x\ln a + a + \dfrac1a - \dfrac{a}{x^2}\quad (x \gt 0)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>A lényeg:</b> mindig azt kell nézni, <b>mi a változó</b> (itt \(x\)), és mi konstans (\(a\)).</p>
+        <ul>
+          <li>\(x^a\): hatványfüggvény (változó alap, állandó kitevő) → \(a\,x^{a-1}\).</li>
+          <li>\(a^x\): exponenciális függvény (állandó alap, változó kitevő) → \(a^x\ln a\).</li>
+          <li>\(ax\) és \(\frac xa\): konstansszor \(x\) → \(a\) és \(\frac1a\).</li>
+          <li>\(\frac ax = a\,x^{-1}\) → \(-\frac{a}{x^2}\).</li>
+        </ul>
+        <p><b>Ellenőrzés:</b> \(a = 1{,}7\) mellett \(x = 0{,}5;\ 1;\ 3\) pontokban a véges differencia egyezik. ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o2e">
+    <div class="task-head"><span class="no">2. (e)</span><span class="src">2. gyakorlat · órai</span><span class="kind">szorzatszabály</span></div>
+    <p class="stmt">Számítsuk ki \(f'(x)\)-et, ha \(f(x) := x^2\cdot\sin x\) \((x \in \R)\).</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Ha \(x \in \R\), akkor a szorzatszabállyal</p>
+        \[f'(x) = (x^2)'\cdot\sin x + x^2\cdot(\sin x)' = 2x\sin x + x^2\cos x.\]
+        <p>Eredmény: <span class="ans">\(f'(x) = 2x\sin x + x^2\cos x\quad (x \in \R)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Szorzatszabály:</b> \((fg)' = f'g + fg'\): „az első deriváltja szor a második, plusz az első szor a második deriváltja”. A szorzat deriváltja <b>nem</b> a deriváltak szorzata (\(2x\cos x\) rossz lenne).</p>
+        <p><b>Ellenőrzés:</b> numerikusan \(x = -1;\ 0{,}5;\ 2\) pontokban egyezik. ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o2f">
+    <div class="task-head"><span class="no">2. (f)</span><span class="src">2. gyakorlat · órai</span><span class="kind">hányadosszabály</span></div>
+    <p class="stmt">Számítsuk ki \(f'(x)\)-et, ha \(f(x) := \dfrac{x^3 + 2}{x^2 + x + 5}\) \((x \in \R)\).</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>A nevezőnek nincs valós gyöke (\(D = 1^2 - 4\cdot 5 \lt 0\)), ezért \(f \in D\{x\}\) minden \(x \in \R\) pontban. A hányadosszabállyal:</p>
+        \[f'(x) = \frac{(x^3+2)'\,(x^2+x+5) - (x^3+2)\,(x^2+x+5)'}{(x^2+x+5)^2}\]
+        \[= \frac{3x^2(x^2+x+5) - (x^3+2)(2x+1)}{(x^2+x+5)^2}.\]
+        <p>A számláló kibontva: \(3x^4 + 3x^3 + 15x^2 - (2x^4 + x^3 + 4x + 2) = x^4 + 2x^3 + 15x^2 - 4x - 2\).</p>
+        <p>Eredmény: <span class="ans">\(f'(x) = \dfrac{x^4 + 2x^3 + 15x^2 - 4x - 2}{(x^2+x+5)^2}\quad (x \in \R)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért kell a diszkrimináns?</b> A hányadosszabály feltétele \(g(x) \ne 0\). Mivel \(x^2 + x + 5 \gt 0\) minden \(x\)-re, a függvény (és a deriváltja) az egész \(\R\)-en értelmes.</p>
+        <p><b>Sorrend:</b> a számlálóban \(f'g - fg'\), ez nem felcserélhető (a kivonás miatt előjelet váltana).</p>
+        <p><b>Ellenőrzés:</b> \(x = 0\)-ban \(f'(0) = \frac{-2}{25} = -0{,}08\); a véges differencia ugyanezt adja. ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o2g">
+    <div class="task-head"><span class="no">2. (g)</span><span class="src">2. gyakorlat · órai</span><span class="kind">láncszabály</span></div>
+    <p class="stmt">Számítsuk ki \(f'(x)\)-et, ha \(f(x) := (5x^2 + 3x)^{2023}\) \((x \in \R)\).</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Az \(f\) a \(h(t) := t^{2023}\) \((t \in \R)\) külső és a \(g(x) := 5x^2 + 3x\) \((x \in \R)\) belső függvény kompozíciója: \(f = h \circ g\). Mivel \(g'(x) = 10x + 3\) és \(h'(t) = 2023\,t^{2022}\) minden pontban létezik, a láncszabály szerint</p>
+        \[f'(x) = h'\big(g(x)\big)\cdot g'(x) = 2023\,\big(g(x)\big)^{2022}\cdot g'(x).\]
+        <p>Eredmény: <span class="ans">\(f'(x) = 2023\,(5x^2 + 3x)^{2022}\cdot(10x + 3)\quad (x \in \R)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért nem bontjuk ki?</b> A 2023-adik hatvány kibontása reménytelen. A láncszabállyal egy lépés: a külső hatványt deriváljuk (a belsőt változatlanul hagyva), majd szorzunk a belső deriváltjával.</p>
+        <p class="warn"><b>Tipikus hiba:</b> a \((10x+3)\) szorzó elhagyása. \(2023(5x^2+3x)^{2022}\) csak a külső derivált.</p>
+        <p><b>Ellenőrzés:</b> \(x = 0{,}2386\)-ban (ahol \(5x^2 + 3x \approx 1\), így a hatalmas kitevő nem nullázza ki a számokat) a véges differencia \(27049{,}69\), a képlet \(27049{,}69\). ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o2h">
+    <div class="task-head"><span class="no">2. (h)</span><span class="src">2. gyakorlat · órai</span><span class="kind">láncszabály · gyök</span></div>
+    <p class="stmt">Számítsuk ki \(f'(x)\)-et, ha \(f(x) := \sqrt{x + \sqrt{x}}\) \((x \gt 0)\).</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Az \(f\) a \(h(t) := \sqrt t\) \((t \gt 0)\) külső és a \(g(x) := x + \sqrt x\) \((x \gt 0)\) belső függvény kompozíciója. Itt \(g'(x) = 1 + \frac{1}{2\sqrt x}\) és \(h'(t) = \frac{1}{2\sqrt t}\) \((t \gt 0)\), ezért minden \(x \gt 0\) esetén</p>
+        \[f'(x) = h'\big(g(x)\big)\cdot g'(x) = \frac{1}{2\sqrt{g(x)}}\cdot g'(x) = \frac{1}{2\sqrt{x + \sqrt x}}\cdot\Big(1 + \frac{1}{2\sqrt x}\Big).\]
+        <p>Eredmény: <span class="ans">\(f'(x) = \dfrac{1}{2\sqrt{x+\sqrt x}}\Big(1 + \dfrac{1}{2\sqrt x}\Big)\quad (x \gt 0)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért \(x \gt 0\)?</b> A \(\sqrt t\) csak \(t \gt 0\)-ban deriválható (0-ban a különbségi hányados \(+\infty\)-hez tart), és a belső \(\sqrt x\) is csak \(x \gt 0\)-ban. Ezért kell nyílt intervallum.</p>
+        <p><b>Ellenőrzés:</b> \(x = 1\)-ben \(f'(1) = \frac{1}{2\sqrt2}\cdot\frac32 \approx 0{,}5303\), a véges differencia ugyanez. ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o2i">
+    <div class="task-head"><span class="no">2. (i)</span><span class="src">2. gyakorlat · órai</span><span class="kind">lánc + hányados</span></div>
+    <p class="stmt">Számítsuk ki \(f'(x)\)-et, ha \(f(x) := \sin\dfrac{x^2 + 1}{x + 3}\) \((x \gt -3)\).</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Az \(f\) a \(h(t) := \sin t\) \((t \in \R)\) külső és a \(g(x) := \frac{x^2+1}{x+3}\) \((x \gt -3)\) belső függvény kompozíciója; mindkettő deriválható az értelmezési tartománya minden pontjában. Így</p>
+        \[f'(x) = \cos\frac{x^2+1}{x+3}\cdot\Big(\frac{x^2+1}{x+3}\Big)' = \cos\frac{x^2+1}{x+3}\cdot\frac{2x(x+3) - (x^2+1)\cdot 1}{(x+3)^2}.\]
+        <p>Eredmény: <span class="ans">\(f'(x) = \cos\dfrac{x^2+1}{x+3}\cdot\dfrac{x^2 + 6x - 1}{(x+3)^2}\quad (x \gt -3)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Két szabály egymásba ágyazva:</b> kívül láncszabály (\(\sin\) → \(\cos\), a belső változatlan), a belső derivált kiszámításához pedig hányadosszabály.</p>
+        <p><b>A számláló:</b> \(2x(x+3) - (x^2+1) = 2x^2 + 6x - x^2 - 1 = x^2 + 6x - 1\).</p>
+        <p><b>Ellenőrzés:</b> \(x = 0\)-ban \(f'(0) = \cos\frac13\cdot\frac{-1}{9} \approx -0{,}1050\); numerikusan ugyanez. ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o2j">
+    <div class="task-head"><span class="no">2. (j)</span><span class="src">2. gyakorlat · órai</span><span class="kind">többszörös láncszabály</span></div>
+    <p class="stmt">Számítsuk ki \(f'(x)\)-et, ha \(f(x) := \sin^2\Big(\ln\sqrt{1 + \cos^2 x} + 1\Big)\) \((x \in \R)\).</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Jelölje \(u(x) := \ln\sqrt{1 + \cos^2 x} + 1\). Kívülről befelé haladva alkalmazzuk a láncszabályt:</p>
+        \[f'(x) = 2\sin u(x)\cdot\big(\sin u(x)\big)' = 2\sin u(x)\cos u(x)\cdot u'(x)\]
+        \[= \sin\big(2u(x)\big)\cdot u'(x),\]
+        \[u'(x) = \frac{1}{\sqrt{1+\cos^2 x}}\cdot\big(\sqrt{1+\cos^2 x}\big)'\]
+        \[= \frac{1}{\sqrt{1+\cos^2 x}}\cdot\frac{1}{2\sqrt{1+\cos^2 x}}\cdot(1 + \cos^2 x)',\]
+        \[(1+\cos^2 x)' = 2\cos x\cdot(-\sin x) = -\sin 2x.\]
+        <p>Összeszorozva:</p>
+        \[f'(x) = \sin\Big(2\big(\ln\sqrt{1+\cos^2 x} + 1\big)\Big)\cdot\frac{-\sin 2x}{2\,(1+\cos^2 x)}.\]
+        <p>Eredmény: <span class="ans">\(f'(x) = -\dfrac{\sin\big(2\ln\sqrt{1+\cos^2 x} + 2\big)}{2\,(1+\cos^2 x)}\cdot\sin 2x\quad (x \in \R)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>A „hagyma” rétegei</b> kívülről befelé: négyzetre emelés → \(\sin\) → \(\ln(\cdot) + 1\) → \(\sqrt{\cdot}\) → \(1 + (\cdot)^2\) → \(\cos\). Minden rétegnél egy szorzótényező keletkezik:</p>
+        <ul>
+          <li>\((\cdot)^2\) → \(2\sin u\),</li>
+          <li>\(\sin\) → \(\cos u\),</li>
+          <li>\(\ln\) → \(\frac{1}{\sqrt{1+\cos^2 x}}\) (a \(+1\) deriváltja 0),</li>
+          <li>\(\sqrt{\cdot}\) → \(\frac{1}{2\sqrt{1+\cos^2 x}}\),</li>
+          <li>\(1 + \cos^2 x\) → \(2\cos x\cdot(-\sin x)\).</li>
+        </ul>
+        <p><b>Egyszerűsítések:</b> \(2\sin u\cos u = \sin 2u\) és \(2\sin x\cos x = \sin 2x\). A két gyökös tényező szorzata \(\frac{1}{2(1+\cos^2 x)}\).</p>
+        <p class="tip"><b>Rövidebb út:</b> \(\ln\sqrt{1+\cos^2 x} = \frac12\ln(1+\cos^2 x)\), így \(u'(x) = \frac12\cdot\frac{-\sin 2x}{1+\cos^2 x}\) egy lépésben.</p>
+        <p><b>Ellenőrzés:</b> numerikusan \(x = -1;\ 0{,}4;\ 2{,}5\) pontokban egyezik. ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <!-- 3. feladat -->
+  <article class="task" id="o3a">
+    <div class="task-head"><span class="no">3. (a)</span><span class="src">2. gyakorlat · órai</span><span class="kind">\(g^h\) alak · \(e^{\ln}\)</span></div>
+    <p class="stmt">Mutassuk meg, hogy az \(f(x) := \Big(1 + \dfrac1x\Big)^{1-x}\) \((x \gt 0)\) függvény differenciálható, és számítsuk ki a deriváltfüggvényét!</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Az alap és a kitevő is változik, és az alap pozitív. Az \(a = e^{\ln a}\) \((a \gt 0)\) azonossággal</p>
+        \[f(x) = \Big(e^{\ln(1 + \frac1x)}\Big)^{1-x} = \exp\Big((1-x)\cdot\ln\Big(1 + \frac1x\Big)\Big).\]
+        <p>Tehát \(f\) az \(\exp\) külső és az \((1-x)\ln(1+\frac1x)\) \((x \gt 0)\) belső függvény kompozíciója. Ezek minden \(x \gt 0\) pontban deriválhatók, ezért \(f\) is, és</p>
+        \[f'(x) = \exp\Big((1-x)\ln\Big(1+\frac1x\Big)\Big)\cdot\Big((1-x)\ln\Big(1+\frac1x\Big)\Big)'\]
+        \[= \Big(1+\frac1x\Big)^{1-x}\cdot\Big((-1)\cdot\ln\Big(1+\frac1x\Big) + (1-x)\cdot\frac{1}{1+\frac1x}\cdot\Big(-\frac{1}{x^2}\Big)\Big).\]
+        <p>Mivel \(\frac{1}{1 + \frac1x}\cdot\frac{1}{x^2} = \frac{x}{x+1}\cdot\frac{1}{x^2} = \frac{1}{x(x+1)}\):</p>
+        <p>Eredmény: <span class="ans">\(f'(x) = \Big(1+\dfrac1x\Big)^{1-x}\cdot\Big(-\ln\Big(1+\dfrac1x\Big) - \dfrac{1-x}{x(x+1)}\Big)\quad (x \gt 0)\)</span></p>
+        <figure class="graph"><div id="g-o3a"></div><figcaption><span class="lg">\(f(x) = (1 + \frac1x)^{1-x}\)</span><span class="lg tay">\(f'(x)\)</span><span class="lg asy">\(y = \frac1e\): határérték \(+\infty\)-ben</span></figcaption></figure>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért nem jó a hatvány- vagy az exponenciális szabály?</b> \((x^a)' = ax^{a-1}\) csak állandó kitevőre, \((a^x)' = a^x\ln a\) csak állandó alapra igaz. Itt egyik sem állandó, ezért írjuk át \(e\)-alapú hatvánnyá: így csak láncszabály és szorzatszabály kell.</p>
+        <p><b>A belső függvény deriválása</b> szorzatszabály: \(\big((1-x)\cdot L(x)\big)' = -L(x) + (1-x)L'(x)\), ahol \(L(x) = \ln(1+\frac1x)\) és \(L'(x) = \frac{1}{1+\frac1x}\cdot(-\frac{1}{x^2}) = -\frac{1}{x(x+1)}\).</p>
+        <p><b>Ellenőrzés:</b> \(x = 1\)-ben \(f(1) = 2^0 = 1\), \(f'(1) = 1\cdot(-\ln 2 - 0) \approx -0{,}693\); a véges differencia ugyanez. ✓</p>
+        <p><b>A grafikon:</b> \(f' \lt 0\), a függvény szigorúan csökken \(+\infty\)-ből (\(x \to 0+0\)) az \(\frac1e\) határértékig (\(x \to +\infty\): \((1+\frac1x)^{x} \to e\), így \((1+\frac1x)^{1-x} \to \frac1e\)).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o3b">
+    <div class="task-head"><span class="no">3. (b)</span><span class="src">2. gyakorlat · órai</span><span class="kind">\(g^h\) alak · \(e^{\ln}\)</span></div>
+    <p class="stmt">Mutassuk meg, hogy az \(f(x) := (\ln x)^{x+1}\) \((x \gt 1)\) függvény differenciálható, és számítsuk ki a deriváltfüggvényét!</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Minden \(x \gt 1\) pontban \(\ln x \gt 0\), ezért</p>
+        \[f(x) = \big(e^{\ln(\ln x)}\big)^{x+1} = \exp\big((x+1)\cdot\ln(\ln x)\big).\]
+        <p>Az elemi függvények deriváltjai és a deriválási szabályok alapján \(f \in D\{x\}\) minden \(x \gt 1\) pontban, és</p>
+        \[f'(x) = \exp\big((x+1)\ln(\ln x)\big)\cdot\Big(1\cdot\ln(\ln x) + (x+1)\cdot\frac{1}{\ln x}\cdot\frac1x\Big).\]
+        <p>Eredmény: <span class="ans">\(f'(x) = (\ln x)^{x+1}\cdot\Big(\ln(\ln x) + \dfrac{x+1}{x\ln x}\Big)\quad (x \gt 1)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért \(x \gt 1\)?</b> Az átíráshoz \(\ln(\ln x)\) kell, ehhez \(\ln x \gt 0\), azaz \(x \gt 1\). (Egy nem pozitív alapú, valós kitevős hatványt nem is értelmezünk.)</p>
+        <p><b>Logaritmikus deriválással:</b> \(\ln f(x) = (x+1)\ln(\ln x)\), deriválva \(\frac{f'(x)}{f(x)} = \ln(\ln x) + \frac{x+1}{x\ln x}\), és \(f(x)\)-szel szorozva ugyanez jön ki.</p>
+        <p><b>Ellenőrzés:</b> \(x = e\)-ben \(\ln x = 1\), így \(f'(e) = 1\cdot\big(0 + \frac{e+1}{e}\big) \approx 1{,}368\); numerikusan ugyanez. ✓</p>
+      </div>
+    </details>
+  </article>
+
+  </div>
+</section>
+
+<!-- ================= HÁZI FELADATOK ================= -->
+<section id="hazi">
+  <div class="section-head">
+    <span class="label">2. gyakorlat · Házi feladatok · saját megoldás</span>
+    <h2>Házi feladatok</h2>
+    <p>Az összevont gyakorlati anyag 2. gyakorlathoz tartozó házi feladatai. Ezekhez nincs hivatalos megoldás, ezek saját megoldások (véges differenciákkal ellenőrizve).</p>
+  </div>
+
+  <div class="taskgroup">
+
+  <article class="task" id="h1a">
+    <div class="task-head"><span class="no">1. (a)</span><span class="src">2. gyakorlat · házi</span><span class="kind">hányados · gyök</span></div>
+    <p class="stmt">Számítsa ki \(f'(x)\)-et, ha \(f(x) := \dfrac{2x^2 - 1}{x\sqrt{1 + x^2}}\) \((x \gt 0)\).</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>A nevező \(g(x) := x\sqrt{1+x^2} \gt 0\), deriváltja a szorzat- és láncszabállyal:</p>
+        \[g'(x) = \sqrt{1+x^2} + x\cdot\frac{2x}{2\sqrt{1+x^2}} = \frac{(1+x^2) + x^2}{\sqrt{1+x^2}} = \frac{1 + 2x^2}{\sqrt{1+x^2}}.\]
+        <p>A hányadosszabállyal (\(g^2(x) = x^2(1+x^2)\)):</p>
+        \[f'(x) = \frac{4x\cdot x\sqrt{1+x^2} - (2x^2-1)\cdot\frac{1+2x^2}{\sqrt{1+x^2}}}{x^2(1+x^2)} = \frac{4x^2(1+x^2) - (2x^2-1)(2x^2+1)}{x^2(1+x^2)\sqrt{1+x^2}}.\]
+        <p>A számláló: \(4x^2 + 4x^4 - (4x^4 - 1) = 4x^2 + 1\).</p>
+        <p>Eredmény: <span class="ans">\(f'(x) = \dfrac{4x^2 + 1}{x^2\,(1+x^2)^{3/2}}\quad (x \gt 0)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Stratégia:</b> előbb külön kiszámoljuk a nevező deriváltját (ez is szorzat), és csak utána írjuk fel a hányadosszabályt. A számláló törtjét \(\sqrt{1+x^2}\)-tel bővítve tűnik el az emeletes tört.</p>
+        <p class="tip"><b>Más út (logaritmikus deriválás):</b> \(\ln f = \ln(2x^2-1) - \ln x - \frac12\ln(1+x^2)\) (ahol \(2x^2 - 1 \gt 0\)), így \(\frac{f'}{f} = \frac{4x}{2x^2-1} - \frac1x - \frac{x}{1+x^2}\). Közös nevezőre hozva a számláló \(4x^2 + 1\), ugyanaz az eredmény (és a végeredmény \(2x^2 - 1 \le 0\) esetén is érvényes).</p>
+        <p><b>Ellenőrzés:</b> \(x = 1\)-ben \(f'(1) = \frac{5}{2^{3/2}} \approx 1{,}768\); numerikusan \(x = 0{,}3;\ 1;\ 3\) pontokban egyezik. ✓ Mivel \(f' \gt 0\), a függvény szigorúan nő.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="h1b">
+    <div class="task-head"><span class="no">1. (b)</span><span class="src">2. gyakorlat · házi</span><span class="kind">hányadosszabály · \(e^x\)</span></div>
+    <p class="stmt">Számítsa ki \(f'(x)\)-et, ha \(f(x) := \dfrac{e^x}{1 + e^x}\) \((x \in \R)\).</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>A nevező \(1 + e^x \gt 0\), így minden \(x \in \R\) esetén</p>
+        \[f'(x) = \frac{e^x(1 + e^x) - e^x\cdot e^x}{(1+e^x)^2} = \frac{e^x + e^{2x} - e^{2x}}{(1+e^x)^2}.\]
+        <p>Eredmény: <span class="ans">\(f'(x) = \dfrac{e^x}{(1 + e^x)^2}\quad (x \in \R)\)</span></p>
+        <figure class="graph"><div id="g-h1b"></div><figcaption><span class="lg">\(f(x) = \frac{e^x}{1+e^x}\)</span><span class="lg tay">\(f'(x) = \frac{e^x}{(1+e^x)^2}\)</span><span class="lg asy">\(y = 1\)</span></figcaption></figure>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Hányadosszabály</b> \(f = e^x\), \(g = 1 + e^x\) szereposztással; mindkettő deriváltja \(e^x\), ezért a számlálóban az \(e^{2x}\) tagok kiesnek.</p>
+        <p class="tip"><b>Szép alak:</b> \(f'(x) = f(x)\big(1 - f(x)\big)\), mert \(1 - f(x) = \frac{1}{1+e^x}\). Ez a logisztikus függvény jól ismert tulajdonsága.</p>
+        <p><b>Ellenőrzés:</b> \(f'(0) = \frac{1}{4}\) (ez a derivált maximuma, itt a legmeredekebb a görbe); numerikusan \(x = -2;\ 0;\ 1{,}5\) pontokban egyezik. ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="h1c">
+    <div class="task-head"><span class="no">1. (c)</span><span class="src">2. gyakorlat · házi</span><span class="kind">\(a^{g(x)}\) · láncszabály</span></div>
+    <p class="stmt">Számítsa ki \(f'(x)\)-et, ha \(f(x) := 3^{x^2}\) \((x \in \R)\).</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Az \(f\) a \(h(t) := 3^t\) külső és a \(g(x) := x^2\) belső függvény kompozíciója, \(h'(t) = 3^t\ln 3\), \(g'(x) = 2x\). A láncszabállyal</p>
+        \[f'(x) = 3^{x^2}\ln 3\cdot 2x.\]
+        <p>Eredmény: <span class="ans">\(f'(x) = 2x\ln 3\cdot 3^{x^2}\quad (x \in \R)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Melyik szabály?</b> Az alap (3) állandó, a kitevő változik, tehát exponenciális függvény: \((a^t)' = a^t\ln a\). A hatványszabály (\(x^2\cdot 3^{x^2-1}\)) itt hibás lenne.</p>
+        <p><b>Másképp:</b> \(3^{x^2} = e^{x^2\ln 3}\), így \(f'(x) = e^{x^2\ln 3}\cdot 2x\ln 3\), ugyanaz.</p>
+        <p class="warn"><b>Figyelj:</b> \(3^{x^2} = 3^{(x^2)}\), és nem \((3^x)^2 = 3^{2x}\).</p>
+        <p><b>Ellenőrzés:</b> numerikusan \(x = -1;\ 0{,}4;\ 1{,}3\) pontokban egyezik. ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="h1d">
+    <div class="task-head"><span class="no">1. (d)</span><span class="src">2. gyakorlat · házi</span><span class="kind">láncszabály · gyök</span></div>
+    <p class="stmt">Számítsa ki \(f'(x)\)-et, ha \(f(x) := \dfrac1x + \sqrt{1 + \dfrac{1}{x^2}}\) \((x \gt 0)\).</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Tagonként deriválunk; a második tagra láncszabály (külső: \(\sqrt t\), belső: \(1 + x^{-2}\)):</p>
+        \[f'(x) = -\frac{1}{x^2} + \frac{1}{2\sqrt{1 + \frac{1}{x^2}}}\cdot\Big(-\frac{2}{x^3}\Big) = -\frac{1}{x^2} - \frac{1}{x^3\sqrt{1 + \frac{1}{x^2}}}.\]
+        <p>Mivel \(x \gt 0\), \(\sqrt{1 + \frac{1}{x^2}} = \frac{\sqrt{x^2+1}}{x}\), így a második tag \(-\frac{1}{x^2\sqrt{1+x^2}}\).</p>
+        <p>Eredmény: <span class="ans">\(f'(x) = -\dfrac{1}{x^2}\Big(1 + \dfrac{1}{\sqrt{1+x^2}}\Big)\quad (x \gt 0)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Belső derivált:</b> \(\big(1 + x^{-2}\big)' = -2x^{-3} = -\frac{2}{x^3}\). A \(2\)-es a gyök deriváltjának \(\frac12\)-ével kiesik.</p>
+        <p><b>Az egyszerűsítésnél kell az \(x \gt 0\):</b> \(\sqrt{\frac{x^2+1}{x^2}} = \frac{\sqrt{x^2+1}}{|x|}\), és \(|x| = x\) csak pozitív \(x\)-re.</p>
+        <p><b>Ellenőrzés:</b> \(f'(1) = -\big(1 + \frac{1}{\sqrt2}\big) \approx -1{,}707\); numerikusan \(x = 0{,}3;\ 1;\ 3\) pontokban egyezik. ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="h1e">
+    <div class="task-head"><span class="no">1. (e)</span><span class="src">2. gyakorlat · házi</span><span class="kind">\(\tg\), \(\ctg\)</span></div>
+    <p class="stmt">Számítsa ki \(f'(x)\)-et, ha \(f(x) := 2\tg x - 3\ctg x\) \(\big(x \in (0, \frac\pi2)\big)\).</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Ha \(x \in (0, \frac\pi2)\), akkor \(\sin x \ne 0\) és \(\cos x \ne 0\), így</p>
+        \[f'(x) = 2\cdot\frac{1}{\cos^2 x} - 3\cdot\Big(-\frac{1}{\sin^2 x}\Big).\]
+        <p>Eredmény: <span class="ans">\(f'(x) = \dfrac{2}{\cos^2 x} + \dfrac{3}{\sin^2 x}\quad \big(x \in (0, \tfrac\pi2)\big)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Alapderiváltak:</b> \((\tg x)' = \frac{1}{\cos^2 x}\), \((\ctg x)' = -\frac{1}{\sin^2 x}\). Ha nem emlékszel rájuk, a hányadosszabályból: \(\big(\frac{\sin x}{\cos x}\big)' = \frac{\cos^2 x + \sin^2 x}{\cos^2 x}\).</p>
+        <p><b>Előjel:</b> a \(-3\) és a \(\ctg\) deriváltjának mínusza együtt pozitív. Ezért \(f' \gt 0\), \(f\) szigorúan nő a \((0, \frac\pi2)\) intervallumon.</p>
+        <p><b>Ellenőrzés:</b> \(x = \frac\pi4\)-ben \(f'(\frac\pi4) = 4 + 6 = 10\); numerikusan \(x = 0{,}2;\ 0{,}8;\ 1{,}4\) pontokban egyezik. ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="h1f">
+    <div class="task-head"><span class="no">1. (f)</span><span class="src">2. gyakorlat · házi</span><span class="kind">\(g^h\) alak · \(e^{\ln}\)</span></div>
+    <p class="stmt">Számítsa ki \(f'(x)\)-et, ha \(f(x) := (2 + \sin x)^{\cos x}\) \((x \in \R)\).</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Mivel \(2 + \sin x \ge 1 \gt 0\), minden \(x \in \R\) esetén</p>
+        \[f(x) = \exp\big(\cos x\cdot\ln(2 + \sin x)\big).\]
+        <p>A láncszabállyal, a belső függvényre szorzatszabállyal:</p>
+        \[f'(x) = \exp\big(\cos x\ln(2+\sin x)\big)\cdot\Big(-\sin x\cdot\ln(2+\sin x) + \cos x\cdot\frac{\cos x}{2 + \sin x}\Big).\]
+        <p>Eredmény: <span class="ans">\(f'(x) = (2+\sin x)^{\cos x}\Big(\dfrac{\cos^2 x}{2+\sin x} - \sin x\,\ln(2+\sin x)\Big)\quad (x \in \R)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Ugyanaz a minta, mint az órai 3. feladat:</b> \(g(x) = 2 + \sin x \gt 0\) alap, \(h(x) = \cos x\) kitevő, és \((g^h)' = g^h\big(h'\ln g + h\frac{g'}{g}\big)\), ahol \(h' = -\sin x\), \(g' = \cos x\).</p>
+        <p><b>Miért \(x \in \R\)?</b> Az alap sosem lesz \(\le 0\) (\(\sin x \ge -1\)), ezért az átírás minden valós \(x\)-re érvényes.</p>
+        <p><b>Ellenőrzés:</b> \(x = 0\)-ban \(f'(0) = 2\cdot\big(\frac12 - 0\big) = 1\); numerikusan \(x = -2;\ 0;\ 1;\ 3\) pontokban egyezik. ✓</p>
+      </div>
+    </details>
+  </article>
+
+  </div>
+</section>
+
+<!-- ================= GYAKORI HIBÁK ================= -->
+<section id="hibak">
+  <div class="section-head">
+    <span class="label">Mire figyelj</span>
+    <h2>Gyakori hibák</h2>
+  </div>
+  <div class="mistakes">
+    <div class="mistake"><span class="x">✕</span><p><b>\((fg)' = f'g'\) vagy \(\big(\frac fg\big)' = \frac{f'}{g'}\).</b> Szorzatra és hányadosra nincs ilyen szabály: \((fg)' = f'g + fg'\), és a hányadosnál \(\frac{f'g - fg'}{g^2}\), a számlálóban ebben a sorrendben.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Elfelejtett belső derivált.</b> \(\big((5x^2+3x)^{2023}\big)' \ne 2023(5x^2+3x)^{2022}\): a láncszabályban mindig szorozni kell a belső függvény deriváltjával (órai 2(g)). Többszörös összetételnél minden réteg ad egy tényezőt (órai 2(j)).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>\(x^a\) és \(a^x\) összekeverése.</b> \((x^a)' = ax^{a-1}\) (állandó kitevő), \((a^x)' = a^x\ln a\) (állandó alap). Ha mindkettő változik (\(g(x)^{h(x)}\)), egyik sem jó: \(e^{h\ln g}\) alakba kell írni (órai 3. feladat).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Definíció szerinti deriválásnál behelyettesítés.</b> A \(\frac{f(x) - f(a)}{x-a}\) határérték folytonos \(f\)-re mindig \(\frac00\)-típusú; előbb ki kell emelni és egyszerűsíteni az \(x - a\) tényezőt (gyöktelenítés, szorzattá alakítás), csak utána lehet \(x \to a\)-t venni (órai 1.).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>A deriválhatóság pontjainak figyelmen kívül hagyása.</b> \(\sqrt t\) a 0-ban nem deriválható, \(\ln\) csak pozitív helyen értelmes, a hányadosszabályhoz \(g(a) \ne 0\) kell. Ezért fontos a megadott intervallum (pl. \(x \gt 0\), \(x \gt 1\)), és a végeredmény mellé is ki kell írni.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Elnézett kitevő-értelmezés.</b> \(3^{x^2} = 3^{(x^2)} \ne (3^x)^2\), \(\sin^2 u = (\sin u)^2 \ne \sin(u^2)\), és \(\frac{1}{5x^5} = \frac15 x^{-5} \ne (5x)^{-5}\). Deriválás előtt írd fel pontosan, mi minek a függvénye.</p></div>
+  </div>
+</section>
+
+<footer>Forrás: <a href="../Gyakorlat%20anyagok/02_Gy_An_II_A_B.pdf" target="_blank" rel="noopener">2. gyakorlat (PDF)</a> és <a href="../Gyakorlat%20anyagok/An_II_A_B_Gyak.pdf" target="_blank" rel="noopener">Analízis II. gyakorlatok, összevont anyag (PDF)</a>. Minden deriváltat numerikusan (véges differenciákkal, több pontban) ellenőriztünk, a grafikonok a függvényekből számolva készültek.</footer>
+</div>
+
+<script>
+(function () {
+  // Small SVG plotter: several curves on one grid, optional vertical guide lines.
+  function fmt(v) { return (Math.round(v * 100) / 100).toString().replace('.', ',').replace('-', '−'); }
+  function plot(el, o) {
+    var W = 640, H = o.h || 320, L = 40, R = 14, T = 12, B = 26;
+    var x0 = o.x[0], x1 = o.x[1], y0 = o.y[0], y1 = o.y[1];
+    var X = function (x) { return L + (x - x0) / (x1 - x0) * (W - L - R); };
+    var Y = function (y) { return T + (y1 - y) / (y1 - y0) * (H - T - B); };
+    var s = [], cid = 'clip-' + el.id, v;
+    s.push('<defs><clipPath id="' + cid + '"><rect x="' + L + '" y="' + T + '" width="' + (W - L - R) + '" height="' + (H - T - B) + '"/></clipPath></defs>');
+    for (v = Math.ceil(x0 / o.gx - 1e-9) * o.gx; v <= x1 + 1e-9; v += o.gx) {
+      s.push('<line class="gl" x1="' + X(v) + '" y1="' + T + '" x2="' + X(v) + '" y2="' + (H - B) + '"/>');
+      if (Math.abs(v) > 1e-9) s.push('<text class="tk" x="' + X(v) + '" y="' + (H - 8) + '" text-anchor="middle">' + fmt(v) + '</text>');
+    }
+    for (v = Math.ceil(y0 / o.gy - 1e-9) * o.gy; v <= y1 + 1e-9; v += o.gy) {
+      s.push('<line class="gl" x1="' + L + '" y1="' + Y(v) + '" x2="' + (W - R) + '" y2="' + Y(v) + '"/>');
+      if (Math.abs(v) > 1e-9) s.push('<text class="tk" x="' + (L - 6) + '" y="' + (Y(v) + 4) + '" text-anchor="end">' + fmt(v) + '</text>');
+    }
+    if (y0 <= 0 && y1 >= 0) s.push('<line class="ax" x1="' + L + '" y1="' + Y(0) + '" x2="' + (W - R) + '" y2="' + Y(0) + '"/>');
+    if (x0 <= 0 && x1 >= 0) s.push('<line class="ax" x1="' + X(0) + '" y1="' + T + '" x2="' + X(0) + '" y2="' + (H - B) + '"/>');
+    (o.vl || []).forEach(function (a) { s.push('<line class="as" x1="' + X(a) + '" y1="' + T + '" x2="' + X(a) + '" y2="' + (H - B) + '"/>'); });
+    var g = '<g clip-path="url(#' + cid + ')">';
+    o.curves.forEach(function (c) {
+      var d = '', pen = false, N = 900, span = y1 - y0;
+      for (var i = 0; i <= N; i++) {
+        var x = x0 + (x1 - x0) * i / N;
+        if (c.dom && !c.dom(x)) { pen = false; continue; }
+        var y = c.f(x);
+        if (!isFinite(y)) { pen = false; continue; }
+        y = Math.max(Math.min(y, y1 + span), y0 - span);
+        d += (pen ? 'L' : 'M') + X(x).toFixed(1) + ' ' + Y(y).toFixed(1);
+        pen = true;
+      }
+      g += '<path class="' + c.cls + '" d="' + d + '"/>';
+    });
+    (o.pts || []).forEach(function (p) { g += '<circle class="pz" cx="' + X(p[0]) + '" cy="' + Y(p[1]) + '" r="3.5"/>'; });
+    g += '</g>';
+    s.push(g);
+    el.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + o.label + '">' + s.join('') + '</svg>';
+  }
+  var GRAPHS = {
+    'g-o1': { label: 'f(x) = gyök(x²−1) és érintője az a = 2 pontban', x: [0, 5], y: [-1, 5], gx: 1, gy: 1, vl: [1], pts: [[1, 0], [2, Math.sqrt(3)]],
+      curves: [ { cls: 'cv2', f: function (x) { return Math.sqrt(3) + 2 / Math.sqrt(3) * (x - 2); } },
+                { cls: 'cv', dom: function (x) { return x >= 1; }, f: function (x) { return Math.sqrt(Math.max(0, x * x - 1)); } } ] },
+    'g-o3a': { label: 'f(x) = (1 + 1/x)^(1−x) és deriváltja', x: [0, 6], y: [-2, 4], gx: 1, gy: 1, pts: [[1, 1]],
+      curves: [ { cls: 'as', f: function () { return 1 / Math.E; } },
+                { cls: 'cv2', dom: function (x) { return x > 0.01; }, f: function (x) { return Math.pow(1 + 1 / x, 1 - x) * (-Math.log(1 + 1 / x) - (1 - x) / (x * (x + 1))); } },
+                { cls: 'cv', dom: function (x) { return x > 0.01; }, f: function (x) { return Math.pow(1 + 1 / x, 1 - x); } } ] },
+    'g-h1b': { label: 'f(x) = e^x/(1+e^x) és deriváltja', x: [-6, 6], y: [-0.2, 1.2], gx: 1, gy: 0.2, h: 280, pts: [[0, 0.5], [0, 0.25]],
+      curves: [ { cls: 'as', f: function () { return 1; } },
+                { cls: 'cv2', f: function (x) { return Math.exp(x) / Math.pow(1 + Math.exp(x), 2); } },
+                { cls: 'cv', f: function (x) { return Math.exp(x) / (1 + Math.exp(x)); } } ] }
+  };
+  Object.keys(GRAPHS).forEach(function (id) { var el = document.getElementById(id); if (el) plot(el, GRAPHS[id]); });
+})();
+</script>
+<!-- Fejezetsáv: az éppen olvasott szakasz gombja kiemelve -->
+<style>
+nav.bar a.active, nav.bar a.active:hover, nav.bar a.active:focus-visible { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+</style>
+<script>
+(function () {
+  var nav = document.querySelector('nav.bar');
+  if (!nav) return;
+  var links = Array.prototype.filter.call(nav.querySelectorAll('a[href^="#"]'), function (a) {
+    return a.getAttribute('href').length > 1 && document.getElementById(a.getAttribute('href').slice(1));
+  });
+  var current = null, ticking = false;
+  function sectionOf(a) { return document.getElementById(a.getAttribute('href').slice(1)); }
+  function update() {
+    ticking = false;
+    var line = nav.getBoundingClientRect().bottom + 12, active = null;
+    var visible = links.filter(function (a) { return sectionOf(a).offsetParent !== null; });
+    visible.forEach(function (a) { if (sectionOf(a).getBoundingClientRect().top <= line) active = a; });
+    // a lap alján az utolsó szakasz az aktuális akkor is, ha rövid
+    if (visible.length && window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) active = visible[visible.length - 1];
+    if (active === current) return;
+    if (current) { current.classList.remove('active'); current.removeAttribute('aria-current'); }
+    current = active;
+    if (!active) return;
+    active.classList.add('active');
+    active.setAttribute('aria-current', 'location');
+    var ul = active.closest('ul'), ur = ul.getBoundingClientRect(), ar = active.getBoundingClientRect();
+    var left = ar.left - ur.left + ul.scrollLeft, right = left + ar.width;
+    if (left < ul.scrollLeft || right > ul.scrollLeft + ul.clientWidth) ul.scrollTo({ left: Math.max(0, left - 16), behavior: 'smooth' });
+  }
+  function schedule() { if (!ticking) { ticking = true; setTimeout(update, 40); } }
+  window.addEventListener('scroll', schedule, { passive: true });
+  window.addEventListener('resize', schedule);
+  document.addEventListener('input', schedule);   // a keresés elrejthet szakaszokat
+  document.addEventListener('toggle', schedule, true);
+  update();
+})();
+</script>
+</body>
+</html>

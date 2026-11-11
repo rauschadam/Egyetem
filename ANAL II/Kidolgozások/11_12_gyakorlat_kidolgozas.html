@@ -1,0 +1,841 @@
+<!doctype html>
+<html lang="hu" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Analízis II · 11–12. gyakorlat kidolgozva</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['\\(', '\\)']],
+      displayMath: [['\\[', '\\]']],
+      macros: {
+        arcsin: '\\operatorname{arc\\,sin}', arccos: '\\operatorname{arc\\,cos}',
+        arctg: '\\operatorname{arc\\,tg}', arcctg: '\\operatorname{arc\\,ctg}',
+        tg: '\\operatorname{tg}', ctg: '\\operatorname{ctg}', R: '\\mathbb{R}'
+      }
+    },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js" async></script>
+<style>
+/* Layout: same exam-paper look as the DIMAT prep, in the Analysis orange; every task = statement + folded solution + folded walkthrough */
+:root {
+  --paper: #f5f7fa;
+  --grid: rgba(180, 80, 11, 0.06);
+  --card: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6574;
+  --rule: #d7dde6;
+  --accent: #b4500b;
+  --accent-soft: #fcefe4;
+  --mark: #b8352a;
+  --mark-soft: #fbe9e6;
+  --ok: #2c7a4b;
+  --ok-soft: #e3f3e9;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-label: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f141b; --grid: rgba(242, 162, 94, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+    --rule: #2a3442; --accent: #f2a25e; --accent-soft: #33241a; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+    --ok: #74d39c; --ok-soft: #173225; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f141b; --grid: rgba(242, 162, 94, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+  --rule: #2a3442; --accent: #f2a25e; --accent-soft: #33241a; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+  --ok: #74d39c; --ok-soft: #173225; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background-color: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 1.06rem;
+  line-height: 1.6;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 80px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2rem, 6vw, 3.1rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.65rem; font-weight: 700; letter-spacing: -0.01em; }
+h3 { font-size: 1.1rem; font-weight: 600; }
+p { margin: 0; }
+a { color: var(--accent); }
+.label { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding: 2px 0; margin: 6px 0 !important; min-width: 0; max-width: 100%; }
+/* grid children must be allowed to shrink, otherwise wide formulas push the page sideways */
+.task, .sol, .step, .rule-card, .sheet > * { grid-template-columns: minmax(0, 1fr); min-width: 0; }
+.rule-card li, .rule-card p, .sol p, .sol li, .step p, .stmt, .tip, .warn, .mistake p, td { overflow-x: auto; overflow-y: hidden; }
+
+/* back to subject page */
+.back { justify-self: start; display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px 9px 12px; border: 1.5px solid var(--accent); border-radius: 8px; background: var(--accent-soft); color: var(--ink); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 1.02rem; line-height: 1; white-space: nowrap; transition: background .15s, color .15s; }
+.back .arr { color: var(--accent); font-size: 1.25rem; transition: transform .15s, color .15s; }
+.back:hover, .back:focus-visible { background: var(--accent); color: var(--paper); outline: none; }
+.back:hover .arr, .back:focus-visible .arr { color: var(--paper); transform: translateX(-3px); }
+
+/* header */
+header.hero { display: grid; gap: 14px; padding-block: 0 26px; border-bottom: 2px solid var(--accent); }
+.hero .sub { color: var(--muted); max-width: 62ch; }
+.facts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.fact { display: flex; flex-direction: column; gap: 2px; padding: 8px 14px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; min-width: 120px; }
+.fact b { font-family: var(--f-display); font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+
+nav.bar { position: sticky; top: 0; z-index: 5; background: var(--paper); border-bottom: 1px solid var(--rule); margin-inline: -16px; padding-inline: 16px; }
+nav.bar ul { list-style: none; margin: 0; padding: 10px 0; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin; }
+nav.bar a { display: block; white-space: nowrap; text-decoration: none; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.04em; color: var(--ink); padding: 6px 10px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); }
+nav.bar a:hover, nav.bar a:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+nav.bar a.nav-back { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+
+section { padding-top: 44px; display: grid; gap: 18px; scroll-margin-top: 56px; }
+.section-head { display: grid; gap: 6px; }
+.section-head p { color: var(--muted); max-width: 64ch; }
+
+/* reminder cards */
+.sheet { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; }
+.rule-card { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 14px 16px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.rule-card h3 { font-size: 1rem; }
+.rule-card p, .rule-card li { font-size: 0.95rem; }
+.rule-card ul, .rule-card ol { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.rule-card.wide { grid-column: 1 / -1; }
+
+/* tables (sign charts, value tables) */
+.tbl { overflow-x: auto; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--rule); vertical-align: middle; }
+th { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+tr:last-child td, tr:last-child th { border-bottom: 0; }
+table.sgn { width: auto; min-width: 100%; }
+table.sgn th, table.sgn td { text-align: center; white-space: nowrap; border-left: 1px solid var(--rule); }
+table.sgn th:first-child { border-left: 0; text-transform: none; letter-spacing: 0; font-family: var(--f-body); font-size: 1rem; color: var(--ink); background: var(--accent-soft); }
+table.sgn td.pt { background: color-mix(in srgb, var(--accent-soft) 55%, transparent); }
+.p { color: var(--ok); font-weight: 600; }
+.n { color: var(--mark); font-weight: 600; }
+.note { font-size: 0.82rem; color: var(--muted); }
+.tag { font-family: var(--f-label); font-size: 0.72rem; color: var(--accent); }
+
+/* exercises */
+.task { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 18px; display: grid; gap: 10px; min-width: 0; scroll-margin-top: 60px; }
+.task-head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.task-head .no { font-family: var(--f-display); font-weight: 700; font-size: 1.05rem; }
+.task-head .src { font-family: var(--f-label); font-size: 0.72rem; color: var(--muted); }
+.task-head .kind { margin-left: auto; font-family: var(--f-label); font-size: 0.75rem; color: var(--accent); }
+.stmt { max-width: 70ch; }
+details { border-top: 1px dashed var(--rule); padding-top: 8px; min-width: 0; }
+summary { cursor: pointer; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); list-style: none; display: inline-flex; gap: 8px; align-items: center; padding: 4px 0; }
+summary::-webkit-details-marker { display: none; }
+summary::before { content: "+"; display: inline-grid; place-items: center; width: 18px; height: 18px; border: 1px solid currentColor; border-radius: 3px; font-size: 0.8rem; }
+details[open] > summary::before { content: "−"; }
+summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sol { display: grid; gap: 10px; padding-top: 6px; max-width: 74ch; min-width: 0; }
+.sol ol, .sol ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.step { display: grid; gap: 8px; min-width: 0; }
+.step > b:first-child { font-family: var(--f-display); font-weight: 600; }
+.ans { display: inline-block; background: var(--ok-soft); color: var(--ok); font-weight: 600; padding: 2px 9px; border-radius: 4px; }
+.warn { background: var(--mark-soft); border-left: 3px solid var(--mark); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 0.95rem; }
+.tip { background: var(--accent-soft); border-left: 3px solid var(--accent); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 0.95rem; }
+.taskgroup { display: grid; gap: 12px; }
+
+/* graphs */
+figure.graph { margin: 0; background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 8px 8px 6px; display: grid; gap: 6px; }
+figure.graph > div > svg { width: 100%; height: auto; display: block; }
+figure.graph figcaption { display: flex; flex-wrap: wrap; gap: 4px 16px; font-family: var(--f-label); font-size: 0.72rem; color: var(--muted); padding: 0 4px; }
+.lg::before { content: ""; display: inline-block; width: 16px; height: 0; vertical-align: middle; margin-right: 6px; border-top: 2.5px solid var(--accent); }
+.lg.asy::before { border-top: 1.5px dashed var(--muted); }
+.lg.ext::before { width: 9px; height: 9px; border: 0; border-radius: 50%; background: var(--ok); }
+.lg.inf::before { width: 9px; height: 9px; border: 2px solid var(--mark); border-radius: 50%; box-sizing: border-box; }
+svg .gl { stroke: var(--rule); stroke-width: 1; opacity: .55; }
+svg .ax { stroke: var(--muted); stroke-width: 1.3; }
+svg .tk { fill: var(--muted); font-family: var(--f-label); font-size: 11px; }
+svg .cv { fill: none; stroke: var(--accent); stroke-width: 2.6; stroke-linejoin: round; stroke-linecap: round; }
+svg .as { stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 6 5; fill: none; }
+svg .pe { fill: var(--ok); stroke: var(--paper); stroke-width: 1.5; }
+svg .pi { fill: var(--paper); stroke: var(--mark); stroke-width: 2.2; }
+svg .pz { fill: var(--ink); }
+svg .po { fill: var(--paper); stroke: var(--accent); stroke-width: 2; }
+svg .pl { fill: var(--ink); font-family: var(--f-label); font-size: 12px; paint-order: stroke; stroke: var(--paper); stroke-width: 4px; stroke-linejoin: round; }
+
+/* mistakes */
+.mistakes { display: grid; gap: 10px; }
+.mistake { display: grid; grid-template-columns: auto 1fr; gap: 12px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 12px 14px; }
+.mistake .x { font-family: var(--f-display); font-weight: 700; color: var(--mark); font-size: 1.2rem; line-height: 1.3; }
+
+footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.88rem; }
+
+@media (max-width: 520px) {
+  body { font-size: 1rem; }
+  .task { padding: 14px; }
+  th, td { padding: 6px 8px; }
+}
+
+/* Taylor graphs: second curve dashed, highlighted x-band */
+svg .cv2 { fill: none; stroke: var(--ok); stroke-width: 2.2; stroke-dasharray: 7 5; }
+svg .bd { fill: var(--accent-soft); opacity: .8; }
+.lg.tay::before { border-top: 2.2px dashed var(--ok); }
+.lg.band::before { height: 10px; border: 0; background: var(--accent-soft); }
+/* primitive-function families and vertical asymptotes */
+svg .cv3 { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: .4; }
+.lg.fam::before { opacity: .45; border-top-width: 1.5px; }
+/* area problems: third curve colour and labels inside the plot */
+svg .cv4 { fill: none; stroke: var(--mark); stroke-width: 2.2; stroke-linejoin: round; }
+.lg.c4::before { border-top: 2.2px solid var(--mark); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <a class="back" href="../../index.html#/anal2"><span class="arr" aria-hidden="true">←</span>Vissza: Analízis II.</a>
+  <span class="label">Analízis II. · 11–12. gyakorlat · A határozott integrál és alkalmazásai</span>
+  <h1>A 11–12. gyakorlat kidolgozva</h1>
+  <p class="sub">A Newton–Leibniz-formula használata (helyettesítéssel, parciális integrálással, parciális törtekkel), síkidomok területe, forgástest térfogata, görbe ívhossza és összeg határértéke integrálközelítő összeggel. Az órai feladatok a gyakorlati anyag megoldását követik, a házi feladatok (az összevont anyagból) saját megoldások. Az órán kérdezett röpZH-tételek: <a href="ropzh_kidolgozas.html#rz11">11. röpZH</a>, <a href="ropzh_kidolgozas.html#rz12">12. röpZH</a>. Előbb próbáld meg magad, és csak utána nyisd le a megoldást.</p>
+  <div class="facts">
+    <div class="fact"><span class="label">Órai feladat</span><b>6 (10 rész)</b></div>
+    <div class="fact"><span class="label">Házi feladat</span><b>3 (4 rész)</b></div>
+    <div class="fact"><span class="label">Grafikon</span><b>4 db</b></div>
+  </div>
+</header>
+
+<nav class="bar" aria-label="Fejezetek">
+  <ul>
+    <li><a class="nav-back" href="../../index.html#/anal2" aria-label="Vissza: Analízis II.">← ANAL II</a></li>
+    <li><a href="#emlekezteto">Emlékeztető</a></li>
+    <li><a href="#orai">Órai feladatok</a></li>
+    <li><a href="#hazi">Házi feladatok</a></li>
+    <li><a href="#hibak">Gyakori hibák</a></li>
+    <li><a href="ropzh_kidolgozas.html#rz11">11. röpZH ↗</a></li>
+    <li><a href="ropzh_kidolgozas.html#rz12">12. röpZH ↗</a></li>
+  </ul>
+</nav>
+
+<!-- ================= EMLÉKEZTETŐ ================= -->
+<section id="emlekezteto">
+  <div class="section-head">
+    <span class="label">Ami kell hozzá</span>
+    <h2>Emlékeztető</h2>
+    <p>Minden alkalmazás ugyanoda vezet: egy határozott integrált kell kiszámolni, és ehhez a Newton–Leibniz-formulát használjuk. A primitív függvényt a 6–9. gyakorlat módszereivel keressük meg.</p>
+  </div>
+  <div class="sheet">
+    <div class="rule-card">
+      <h3>Primitív függvény \([a,b]\)-n</h3>
+      <p>\(F : [a,b] \to \R\) az \(f\) primitív függvénye \([a,b]\)-n, ha</p>
+      \[F \in C[a,b],\quad F \in D(a,b),\quad F'(x) = f(x)\ \ \big(x \in (a,b)\big).\]
+      <p class="note">A végpontokban csak folytonosság kell, deriválhatóság nem.</p>
+    </div>
+    <div class="rule-card">
+      <h3>Newton–Leibniz-tétel</h3>
+      <p>Ha \(f \in R[a,b]\), és \(f\)-nek van primitív függvénye \([a,b]\)-n, akkor</p>
+      \[\int_a^b f(x)\,dx = F(b) - F(a) =: \big[F(x)\big]_a^b,\]
+      <p>ahol \(F\) az \(f\) tetszőleges primitív függvénye.</p>
+      <p class="note">Ha \(f \in C[a,b]\), akkor \(f \in R[a,b]\), és van primitív függvénye is, tehát a folytonosság elég a tétel feltételeihez.</p>
+    </div>
+    <div class="rule-card">
+      <h3>Számolási menet</h3>
+      <ol>
+        <li>Ellenőrizzük, hogy az integrandus folytonos \([a,b]\)-n.</li>
+        <li>Meghatározzuk a primitív függvényt (helyettesítés, parciális integrálás, parciális törtek, linearizáló formulák).</li>
+        <li>Behelyettesítjük a határokat: \(F(b) - F(a)\).</li>
+      </ol>
+      <p class="note">Kiegészítés (nincs a lapon): helyettesítésnél a határok is átírhatók, \(\int_a^b f(g(t))g'(t)\,dt = \int_{g(a)}^{g(b)} f(x)\,dx\); parciálisan \(\int_a^b f'g = [fg]_a^b - \int_a^b fg'\).</p>
+    </div>
+    <div class="rule-card">
+      <h3>Síkidom területe</h3>
+      <p>Ha \(0 \le f \in R[a,b]\), a grafikon alatti \(A_f = \{(x,y) : a \le x \le b,\ 0 \le y \le f(x)\}\) területe</p>
+      \[t(A_f) = \int_a^b f(x)\,dx.\]
+      <p>Két görbe között, ha \(f \le g\) az \([a,b]\)-n és \(f, g \in R[a,b]\):</p>
+      \[t(A) = \int_a^b \big(g(x) - f(x)\big)\,dx.\]
+      <p class="note">Ha az alsó vagy felső határoló görbe menet közben vált, a tartományt fel kell bontani részekre.</p>
+    </div>
+    <div class="rule-card">
+      <h3>Görbe ívhossza</h3>
+      <p>Ha \(f : [a,b] \to \R\) folytonosan differenciálható, akkor a \(\Gamma_f = \{(x, f(x)) : x \in [a,b]\}\) grafikon hossza</p>
+      \[\ell(\Gamma_f) = \int_a^b \sqrt{1 + [f'(x)]^2}\,dx \lt +\infty.\]
+    </div>
+    <div class="rule-card">
+      <h3>Forgástest térfogata</h3>
+      <p>Ha \(0 \le f \in R[a,b]\), a grafikon \(x\)-tengely körüli megforgatásával kapott \(H_f = \{(x,y,z) : a \le x \le b,\ y^2 + z^2 \le f^2(x)\}\) test térfogata</p>
+      \[V = \pi\int_a^b f^2(x)\,dx.\]
+      <p class="note">Az \(x\) helyen a keresztmetszet egy \(f(x)\) sugarú körlap, területe \(\pi f^2(x)\).</p>
+    </div>
+    <div class="rule-card">
+      <h3>Forgásfelület felszíne</h3>
+      <p>Ha \(0 \le f \in C^1[a,b]\), a megforgatással kapott felület felszíne</p>
+      \[A = 2\pi\int_a^b f(x)\sqrt{1 + [f'(x)]^2}\,dx.\]
+    </div>
+    <div class="rule-card wide">
+      <h3>Összeg határértéke integrállal</h3>
+      <p><b>Tétel.</b> Ha \(f \in R[0,1]\), akkor</p>
+      \[\lim_{n\to+\infty}\frac1n\sum_{k=1}^{n} f\Big(\frac kn\Big) = \int_0^1 f(x)\,dx.\]
+      <p>Az \(\frac1n\sum_{k=1}^n f\big(\frac kn\big)\) összeg az \(f\) Riemann-féle közelítő összege a \(\tau_n = \big\{\frac kn : k = 0, 1, \dots, n\big\}\) egyenletes felosztáshoz és a \(\xi_n = \big(\frac1n, \frac2n, \dots, \frac nn\big)\) közbülső helyekhez (a részintervallumok jobb végpontjai). A feladat tehát: az összeget \(\frac1n\sum f\big(\frac kn\big)\) alakra hozni, és felismerni \(f\)-et.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ÓRAI FELADATOK ================= -->
+<section id="orai">
+  <div class="section-head">
+    <span class="label">11–12. gyakorlat · Feladatok</span>
+    <h2>Órai feladatok</h2>
+    <p>A megoldások menete a 11–12. gyakorlati anyag kidolgozását követi. Minden eredményt numerikus integrálással (Simpson-formula) ellenőriztünk. Az összevont anyag órai feladatai szó szerint megegyeznek a gyakorlati lapéival.</p>
+  </div>
+
+  <div class="taskgroup">
+
+  <!-- 1. feladat -->
+  <article class="task" id="o1a">
+    <div class="task-head"><span class="no">1. (a)</span><span class="src">11–12. gyakorlat · órai</span><span class="kind">helyettesítés</span></div>
+    \[\int_{10}^{66}\frac{1}{x - \sqrt[3]{x-2} - 2}\,dx\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Az integrandus folytonos \([10,66]\)-on, ezért integrálható, és van primitív függvénye. Először a primitív függvényt határozzuk meg a</p>
+        \[t = \sqrt[3]{x-2} \iff x = t^3 + 2 =: g(t) \qquad \big(x \in (10,66) \iff t \in (2,4)\big)\]
+        <p>helyettesítéssel. \(g'(t) = 3t^2 \gt 0\), így \(g\) szigorúan monoton nő, invertálható, és \(g^{-1}(x) = \sqrt[3]{x-2}\). A második helyettesítési szabály szerint:</p>
+        \[\int\frac{dx}{x - \sqrt[3]{x-2} - 2} = \int\frac{3t^2}{t^3 + 2 - t - 2}\,dt = \int\frac{3t}{t^2 - 1}\,dt = \frac32\int\frac{2t}{t^2-1}\,dt\]
+        \[= \frac32\ln(t^2 - 1)\Big|_{t = \sqrt[3]{x-2}} + c = \frac32\ln\Big(\sqrt[3]{(x-2)^2} - 1\Big) + c.\]
+        <p>A Newton–Leibniz-formulával:</p>
+        \[\int_{10}^{66}\frac{dx}{x - \sqrt[3]{x-2} - 2} = \frac32\Big[\ln\Big(\sqrt[3]{(x-2)^2} - 1\Big)\Big]_{10}^{66} = \frac32\Big(\ln\big(\sqrt[3]{64^2} - 1\big) - \ln\big(\sqrt[3]{8^2} - 1\big)\Big)\]
+        \[= \frac32(\ln 15 - \ln 3) = \frac32\ln 5.\]
+        <p>Eredmény: <span class="ans">\(\dfrac32\ln 5 \approx 2{,}414\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért ez a helyettesítés?</b> A gond a köbgyök, ezért azt nevezzük el \(t\)-nek. Ekkor \(x - 2 = t^3\), és a nevező \(t^3 - t = t(t^2-1)\) lesz. Egyszerűsítés után \(\frac{f'}{f}\) alakú integrált kapunk.</p>
+        <p><b>Folytonosság:</b> \(t \in [2,4]\)-re \(t^3 - t \gt 0\), tehát a nevező nem nulla, és a logaritmusban sem kell abszolút érték, mert \(t^2 - 1 \ge 3\).</p>
+        <p><b>Rövidebb út a határok átírásával:</b> \(x = 10 \Rightarrow t = 2\), \(x = 66 \Rightarrow t = 4\), így</p>
+        \[\int_2^4\frac{3t}{t^2-1}\,dt = \frac32\big[\ln(t^2-1)\big]_2^4 = \frac32(\ln 15 - \ln 3).\]
+        <p><b>Becslés:</b> az integrandus \(x = 10\)-ben \(\frac16\), \(x = 66\)-ban \(\frac{1}{60}\), közben fogy; a hossz 56. Az integrál tehát \(\frac{56}{60} \approx 0{,}93\) és \(\frac{56}{6} \approx 9{,}3\) közé esik. A \(2{,}414\) ennek megfelel, és a numerikus integrálás is ennyit ad.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o1b">
+    <div class="task-head"><span class="no">1. (b)</span><span class="src">11–12. gyakorlat · órai</span><span class="kind">\(f\circ g\cdot g'\) típus</span></div>
+    \[\int_1^e\frac{\sin(\ln x)}{x}\,dx\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Az integrandus folytonos \([1,e]\)-n. Mivel \((\ln x)' = \frac1x\), az integrál \(f\circ g\cdot g'\) alakú:</p>
+        \[\int\frac{\sin(\ln x)}{x}\,dx = \int\sin(\ln x)\cdot(\ln x)'\,dx = -\cos(\ln x) + c \qquad \big(x \in (1,e)\big).\]
+        <p>A Newton–Leibniz-formulával:</p>
+        \[\int_1^e\frac{\sin(\ln x)}{x}\,dx = \big[-\cos(\ln x)\big]_1^e = -\cos(\ln e) + \cos(\ln 1) = 1 - \cos 1.\]
+        <p>Eredmény: <span class="ans">\(1 - \cos 1 \approx 0{,}4597\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Felismerés:</b> a \(\frac1x\) tényező éppen a belső függvény (\(\ln x\)) deriváltja. Ilyenkor a külső függvény (\(\sin\)) primitív függvényét írjuk fel a belső függvénnyel: \(-\cos(\ln x)\).</p>
+        <p><b>Határok átírással:</b> \(u = \ln x\) mellett \(x = 1 \Rightarrow u = 0\), \(x = e \Rightarrow u = 1\), és \(\int_0^1\sin u\,du = [-\cos u]_0^1 = 1 - \cos 1\).</p>
+        <p><b>Ellenőrzés:</b> \(\big(-\cos(\ln x)\big)' = \sin(\ln x)\cdot\frac1x\). ✓ Az eredmény pozitív, mert \(\ln x \in [0,1]\)-re \(\sin(\ln x) \ge 0\).</p>
+        <p class="note">\(\cos 1\) itt 1 radián koszinusza, nem 1 fokéé.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o1c">
+    <div class="task-head"><span class="no">1. (c)</span><span class="src">11–12. gyakorlat · órai</span><span class="kind">teljes négyzet, arctg</span></div>
+    \[\int_{-2}^{\sqrt3 - 2}\frac{dx}{x^2 + 4x + 5}\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Az integrandus folytonos (a nevező mindig pozitív). Teljes négyzetté alakítással:</p>
+        \[\int\frac{dx}{x^2 + 4x + 5} = \int\frac{dx}{1 + (x+2)^2} = \arctg(x+2) + c \qquad (x \in \R).\]
+        <p>A Newton–Leibniz-formulával:</p>
+        \[\int_{-2}^{\sqrt3 - 2}\frac{dx}{x^2 + 4x + 5} = \big[\arctg(x+2)\big]_{-2}^{\sqrt3 - 2} = \arctg\sqrt3 - \arctg 0 = \frac\pi3.\]
+        <p>Eredmény: <span class="ans">\(\dfrac\pi3 \approx 1{,}0472\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Teljes négyzet:</b> \(x^2 + 4x + 5 = (x+2)^2 + 1\). A határok úgy vannak megválasztva, hogy \(x + 2\) éppen \(0\)-tól \(\sqrt3\)-ig fusson.</p>
+        <p><b>Nevezetes értékek:</b> \(\tg\frac\pi3 = \sqrt3\), ezért \(\arctg\sqrt3 = \frac\pi3\); \(\arctg 0 = 0\).</p>
+        <p><b>Becslés:</b> az integrandus \(1\)-ről \(\frac14\)-re csökken egy \(\sqrt3 \approx 1{,}73\) hosszú intervallumon, tehát az integrál \(0{,}43\) és \(1{,}73\) között van. \(\frac\pi3 \approx 1{,}047\) ✓.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o1d">
+    <div class="task-head"><span class="no">1. (d)</span><span class="src">11–12. gyakorlat · órai</span><span class="kind">parciális törtek</span></div>
+    \[\int_3^4\frac{dx}{x^2 - 3x + 2}\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>A nevező gyökei \(1\) és \(2\), ezek nincsenek \([3,4]\)-ben, így az integrandus folytonos. Parciális törtekre bontás:</p>
+        \[\frac{1}{x^2 - 3x + 2} = \frac{1}{(x-2)(x-1)} = \frac{A}{x-2} + \frac{B}{x-1} = \frac{(A+B)x - A - 2B}{x^2 - 3x + 2},\]
+        <p>tehát \(A + B = 0\) és \(-A - 2B = 1\), ahonnan \(A = 1\), \(B = -1\). Ha \(x \in (3,4)\):</p>
+        \[\int\frac{dx}{x^2 - 3x + 2} = \int\Big(\frac{1}{x-2} - \frac{1}{x-1}\Big)\,dx = \ln(x-2) - \ln(x-1) + c = \ln\frac{x-2}{x-1} + c.\]
+        <p>A Newton–Leibniz-formulával:</p>
+        \[\int_3^4\frac{dx}{x^2 - 3x + 2} = \Big[\ln\frac{x-2}{x-1}\Big]_3^4 = \ln\frac23 - \ln\frac12 = \ln\frac43.\]
+        <p>Eredmény: <span class="ans">\(\ln\dfrac43 \approx 0{,}2877\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Abszolút érték:</b> általában \(\ln|x-2| - \ln|x-1|\), de \(x \gt 2\)-re mindkét kifejezés pozitív, így az abszolút érték elhagyható.</p>
+        <p><b>Behelyettesítéssel gyorsabb:</b> \(1 = A(x-1) + B(x-2)\); \(x = 2\): \(A = 1\); \(x = 1\): \(B = -1\).</p>
+        <p><b>Becslés:</b> az integrandus \(x = 3\)-ban \(\frac12\), \(x = 4\)-ben \(\frac16\). Az integrál a kettő között van, \(\ln\frac43 \approx 0{,}288\) ✓.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o1e">
+    <div class="task-head"><span class="no">1. (e)</span><span class="src">11–12. gyakorlat · órai</span><span class="kind">linearizálás + parciális integrálás</span></div>
+    \[\int_0^\pi e^{-x}\cdot\cos^2 x\,dx\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Az integrandus folytonos. A linearizáló formula \(\big(\cos^2 x = \frac{1 + \cos(2x)}{2}\big)\) után:</p>
+        \[\int e^{-x}\cos^2 x\,dx = \frac12\int e^{-x}\,dx + \frac12\int e^{-x}\cos(2x)\,dx.\]
+        <p>Az első tag: \(\int e^{-x}\,dx = -e^{-x} + c\). A második tag parciális integrálással (\(e^{-x} = (-e^{-x})'\)):</p>
+        \[\int e^{-x}\cos(2x)\,dx = -e^{-x}\cos(2x) - \int(-e^{-x})(-2\sin(2x))\,dx = -e^{-x}\cos(2x) - 2\int e^{-x}\sin(2x)\,dx,\]
+        \[\int e^{-x}\sin(2x)\,dx = -e^{-x}\sin(2x) - \int(-e^{-x})\cdot 2\cos(2x)\,dx = -e^{-x}\sin(2x) + 2\int e^{-x}\cos(2x)\,dx.\]
+        <p>A másodikat az elsőbe írva, \(I := \int e^{-x}\cos(2x)\,dx\) jelöléssel:</p>
+        \[I = -e^{-x}\cos(2x) + 2e^{-x}\sin(2x) - 4I \;\Longrightarrow\; I = \frac{e^{-x}}{5}\big(2\sin(2x) - \cos(2x)\big) + c.\]
+        <p>A határozatlan integrál tehát:</p>
+        \[\int e^{-x}\cos^2 x\,dx = -\frac{e^{-x}}{2} + \frac{e^{-x}}{10}\big(2\sin(2x) - \cos(2x)\big) + c = \frac{e^{-x}}{10}\big(2\sin(2x) - \cos(2x) - 5\big) + c.\]
+        <p>A Newton–Leibniz-formulával:</p>
+        \[\int_0^\pi e^{-x}\cos^2 x\,dx = \Big[\frac{e^{-x}}{10}\big(2\sin(2x) - \cos(2x) - 5\big)\Big]_0^\pi = \frac{e^{-\pi}}{10}\cdot(-6) - \frac{1}{10}\cdot(-6) = \frac35\big(1 - e^{-\pi}\big).\]
+        <p>Eredmény: <span class="ans">\(\dfrac35\big(1 - e^{-\pi}\big) \approx 0{,}5741\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért linearizálunk?</b> A \(\cos^2 x\) közvetlenül nehezen integrálható szorzatként; \(\cos(2x)\)-szel viszont az \(e^{-x}\cos(2x)\) a jól ismert „visszatérő” típus.</p>
+        <p><b>Visszatérő parciális integrálás:</b> kétszer parciálisan integrálunk, mindkétszer az exponenciális tényezőt integrálva. A második lépés után ugyanaz az \(I\) jelenik meg (\(-4\)-es szorzóval), és \(I\)-re egy egyenletet kapunk: \(5I = e^{-x}(2\sin 2x - \cos 2x)\).</p>
+        <p><b>Behelyettesítés:</b> \(\sin(2\pi) = \sin 0 = 0\), \(\cos(2\pi) = \cos 0 = 1\), tehát a zárójel mindkét végpontban \(-1 - 5 = -6\).</p>
+        <p><b>Becslés:</b> \(0 \le \cos^2 x \le 1\), és \(\int_0^\pi e^{-x}\,dx = 1 - e^{-\pi} \approx 0{,}957\). Az eredmény ennek \(\frac35\)-e, ami hihető: a \(\cos^2\) átlaga \(\frac12\), de az \(e^{-x}\) súly a 0 közelében nagy, ahol \(\cos^2 x \approx 1\).</p>
+      </div>
+    </details>
+  </article>
+
+  <!-- 2. feladat -->
+  <article class="task" id="o2">
+    <div class="task-head"><span class="no">2.</span><span class="src">11–12. gyakorlat · órai</span><span class="kind">terület két görbe között</span></div>
+    <p class="stmt">Számoljuk ki az \(y = x - 1\) egyenletű egyenes és az \(y^2 = 2x + 6\) egyenletű parabola által közrezárt korlátos síkidom területét!</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p><b>Metszéspontok:</b></p>
+        \[(x-1)^2 = 2x + 6 \iff x^2 - 4x - 5 = 0 \iff x_1 = -1,\ x_2 = 5;\qquad y_1 = -2,\ y_2 = 4.\]
+        <p>A parabola csúcsa \((-3, 0)\), felső ága \(y = \sqrt{2x+6}\), alsó ága \(y = -\sqrt{2x+6}\). A síkidomot felülről végig \(y = \sqrt{2x+6}\) határolja, alulról \([-3,-1]\)-en \(y = -\sqrt{2x+6}\), \([-1,5]\)-ön \(y = x - 1\). Ezért \(A = A_1 \cup A_2\), ahol</p>
+        \[A_1 = \big\{(x,y) : -3 \le x \le -1,\ -\sqrt{2x+6} \le y \le \sqrt{2x+6}\big\},\]
+        \[A_2 = \big\{(x,y) : -1 \le x \le 5,\ x - 1 \le y \le \sqrt{2x+6}\big\}.\]
+        <p class="warn"><b>Megjegyzés a forráshoz.</b> A gyakorlati lap megoldásában \(A_2\) definíciójában „\(-1 \le x \le -5\)” áll; helyesen \(-1 \le x \le 5\) (az integrálásnál a lap is 5-öt használ).</p>
+        <figure class="graph"><div id="g-o2"></div><figcaption><span class="lg">\(y = \pm\sqrt{2x+6}\) (parabola)</span><span class="lg tay">\(y = x - 1\)</span><span class="lg band">a közrezárt síkidom</span></figcaption></figure>
+        \[t(A_1) = \int_{-3}^{-1}\Big(\sqrt{2x+6} - \big(-\sqrt{2x+6}\big)\Big)\,dx = 2\int_{-3}^{-1}(2x+6)^{1/2}\,dx\]
+        \[= 2\Big[\frac{(2x+6)^{3/2}}{3/2\cdot 2}\Big]_{-3}^{-1} = \frac23\big(\sqrt{4^3} - 0\big) = \frac{16}{3},\]
+        \[t(A_2) = \int_{-1}^{5}\Big(\sqrt{2x+6} - (x - 1)\Big)\,dx = \Big[\frac13(2x+6)^{3/2} - \frac{x^2}{2} + x\Big]_{-1}^{5}\]
+        \[= \Big(\frac{64}{3} - \frac{25}{2} + 5\Big) - \Big(\frac83 - \frac12 - 1\Big) = \frac{38}{3}.\]
+        <p>A keresett terület: \(t(A) = \frac{16}{3} + \frac{38}{3} = 18\).</p>
+        <p>Eredmény: <span class="ans">\(t(A) = 18\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért kell szétvágni?</b> A \(t(A) = \int(g - f)\) képlethez végig ugyanannak a görbének kell alul és felül lennie. \(x = -1\)-nél az alsó határ a parabola alsó ágáról átvált az egyenesre, ezért ott vágunk.</p>
+        <p><b>A primitív függvény:</b> \(\int(2x+6)^{1/2}\,dx = \frac{(2x+6)^{3/2}}{\frac32\cdot 2} = \frac13(2x+6)^{3/2}\) (lineáris belső függvény, a 2-vel osztani kell).</p>
+        <p><b>Ellenőrzés \(y\) szerinti integrálással:</b> a parabolát \(x = \frac{y^2 - 6}{2}\), az egyenest \(x = y + 1\) alakban írva minden \(y \in [-2,4]\)-re a parabola van balra, így egyetlen integrál elég:</p>
+        \[\int_{-2}^{4}\Big(y + 1 - \frac{y^2 - 6}{2}\Big)\,dy = \Big[-\frac{y^3}{6} + \frac{y^2}{2} + 4y\Big]_{-2}^{4} = \frac{40}{3} + \frac{14}{3} = 18. \;✓\]
+      </div>
+    </details>
+  </article>
+
+  <!-- 3. feladat -->
+  <article class="task" id="o3">
+    <div class="task-head"><span class="no">3.</span><span class="src">11–12. gyakorlat · órai</span><span class="kind">terület, arány</span></div>
+    <p class="stmt">Milyen arányú részekre osztja az \(y^2 = 2x\) egyenletű parabola az \(x^2 + y^2 = 8\) egyenletű kör által határolt síkrész területét?</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>A kör a \(K = \{(x,y) : x^2 + y^2 \le 8\}\) körlapot határolja; sugara \(\sqrt8\), területe \(t(K) = 8\pi\).</p>
+        <p><b>Metszéspontok:</b> \(y^2 = 2x\)-et a kör egyenletébe írva \(x^2 + 2x - 8 = 0\), és \(x \ge 0\) miatt \(x = 2\), \(y = \pm 2\). Tehát \(P(2, 2)\) és \(Q(2, -2)\).</p>
+        <p>Legyen \(A\) a két görbe által közrezárt (a parabola „belsejébe” eső) rész, \(A = A_1 \cup A_2\):</p>
+        \[A_1 = \big\{(x,y) : 0 \le x \le 2,\ -\sqrt{2x} \le y \le \sqrt{2x}\big\},\]
+        \[A_2 = \big\{(x,y) : 2 \le x \le \sqrt8,\ -\sqrt{8 - x^2} \le y \le \sqrt{8 - x^2}\big\}.\]
+        <figure class="graph"><div id="g-o3"></div><figcaption><span class="lg">kör: \(x^2 + y^2 = 8\)</span><span class="lg tay">parabola: \(y = \pm\sqrt{2x}\)</span><span class="lg band">a parabolán belüli rész (\(A\))</span></figcaption></figure>
+        \[t(A_1) = \int_0^2 2\sqrt{2x}\,dx = 2\sqrt2\int_0^2 x^{1/2}\,dx = 2\sqrt2\Big[\frac{x^{3/2}}{3/2}\Big]_0^2 = \frac{4\sqrt2}{3}\cdot 2\sqrt2 = \frac{16}{3}.\]
+        <p>\(A_2\) az \(OPQ\) körcikkhez tartozó körszelet. A körcikk középponti szöge derékszög, így területe \(\frac{t(K)}{4} = 2\pi\); az \(OPQ\) derékszögű háromszög átfogója 4, a hozzá tartozó magasság 2, területe \(\frac{4\cdot 2}{2} = 4\). Tehát</p>
+        \[t(A_2) = 2\pi - 4, \qquad t(A) = \frac{16}{3} + 2\pi - 4 = \frac43 + 2\pi.\]
+        <p>A másik rész területe \(t(K) - t(A) = 8\pi - \frac43 - 2\pi = 6\pi - \frac43\), a keresett arány:</p>
+        \[\frac{t(A)}{t(K) - t(A)} = \frac{\frac43 + 2\pi}{6\pi - \frac43} = \frac{4 + 6\pi}{18\pi - 4} = \frac{3\pi + 2}{9\pi - 2} \approx 0{,}435.\]
+        <p>Eredmény: <span class="ans">\((3\pi + 2) : (9\pi - 2) \approx 0{,}435\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért derékszög?</b> \(\overrightarrow{OP} = (2,2)\) és \(\overrightarrow{OQ} = (2,-2)\) skaláris szorzata \(4 - 4 = 0\). A két sugár \(+45°\)-os és \(-45°\)-os irányú.</p>
+        <p><b>Integrállal is megy:</b> \(t(A_2) = \int_2^{\sqrt8}2\sqrt{8 - x^2}\,dx\), de ehhez \(x = \sqrt8\sin t\) helyettesítés kellene; a geometriai út sokkal rövidebb. Numerikusan mindkettő \(2\pi - 4 \approx 2{,}283\).</p>
+        <p><b>A két rész:</b> \(t(A) \approx 7{,}617\) és \(t(K) - t(A) \approx 17{,}516\), összegük \(8\pi \approx 25{,}133\). ✓ A parabola tehát kb. \(30\%\)–\(70\%\) arányban vágja a körlapot.</p>
+        <p class="note">Az arány fordítva is megadható: \(\frac{9\pi - 2}{3\pi + 2} \approx 2{,}30\).</p>
+      </div>
+    </details>
+  </article>
+
+  <!-- 4. feladat -->
+  <article class="task" id="o4">
+    <div class="task-head"><span class="no">4.</span><span class="src">11–12. gyakorlat · órai</span><span class="kind">forgástest térfogata</span></div>
+    <p class="stmt">Határozzuk meg az \(f(x) := \sin^2 x\) \((x \in [0,\pi])\) függvény grafikonjának az \(x\)-tengely körüli megforgatásával adódó forgástest térfogatát!</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>\(0 \le f \in C[0,\pi] \Rightarrow f \in R[0,\pi]\), így a forgástestnek van térfogata:</p>
+        \[V = \pi\int_0^\pi f^2(x)\,dx = \pi\int_0^\pi\sin^4 x\,dx.\]
+        <p>A linearizáló formulákkal:</p>
+        \[\sin^4 x = \Big(\frac{1 - \cos(2x)}{2}\Big)^2 = \frac14\Big(1 - 2\cos(2x) + \frac{1 + \cos(4x)}{2}\Big) = \frac38 - \frac12\cos(2x) + \frac18\cos(4x),\]
+        \[\int\sin^4 x\,dx = \frac38x - \frac14\sin(2x) + \frac{1}{32}\sin(4x) + c.\]
+        <p>A keresett térfogat:</p>
+        \[V = \pi\Big[\frac38x - \frac14\sin(2x) + \frac{1}{32}\sin(4x)\Big]_0^\pi = \pi\cdot\frac{3\pi}{8} = \frac{3\pi^2}{8}.\]
+        <p>Eredmény: <span class="ans">\(V = \dfrac{3\pi^2}{8} \approx 3{,}701\)</span></p>
+        <figure class="graph"><div id="g-o4"></div><figcaption><span class="lg">\(y = \pm\sin^2 x\)</span><span class="lg band">a forgástest metszete az <i>xy</i>-síkkal</span></figcaption></figure>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>A képlet:</b> az \(x\) helyen a test keresztmetszete \(f(x) = \sin^2 x\) sugarú körlap, területe \(\pi\sin^4 x\). A térfogat ezeknek az „integrálösszege”.</p>
+        <p><b>Linearizálás kétszer:</b> \(\sin^2 x = \frac{1 - \cos 2x}{2}\), majd a négyzetre emelésnél megjelenő \(\cos^2(2x)\)-re \(\frac{1 + \cos 4x}{2}\).</p>
+        <p><b>Behelyettesítés:</b> \(\sin(2\pi) = \sin(4\pi) = 0\), és \(0\)-ban minden tag nulla, így csak \(\frac38\pi\) marad.</p>
+        <p><b>Ellenőrzés:</b> a \(\sin^4\) átlaga egy perióduson \(\frac38\), tehát \(\int_0^\pi\sin^4 x\,dx = \frac{3\pi}{8}\) és \(V = \frac{3\pi^2}{8}\). ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <!-- 5. feladat -->
+  <article class="task" id="o5">
+    <div class="task-head"><span class="no">5.</span><span class="src">11–12. gyakorlat · órai</span><span class="kind">ívhossz</span></div>
+    <p class="stmt">Határozzuk meg az \(f(x) := \dfrac{2(x-1)^{3/2}}{3}\) \((2 \le x \le 5)\) függvény grafikonjának a hosszát!</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Az \(f\) függvény deriválható, és</p>
+        \[f'(x) = \frac23\cdot\frac32(x-1)^{1/2} = \sqrt{x-1} \qquad (x \gt 1),\]
+        <p>továbbá \(f' \in C[2,5]\), azaz \(f \in C^1[2,5]\). Az ívhossz:</p>
+        \[\ell = \int_2^5\sqrt{1 + [f'(x)]^2}\,dx = \int_2^5\sqrt{1 + x - 1}\,dx = \int_2^5 x^{1/2}\,dx = \Big[\frac{x^{3/2}}{3/2}\Big]_2^5 = \frac23\big(\sqrt{5^3} - \sqrt{2^3}\big).\]
+        <p>Eredmény: <span class="ans">\(\ell = \dfrac23\big(5\sqrt5 - 2\sqrt2\big) \approx 5{,}568\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért ilyen a függvény?</b> Az ívhossz-feladatok többségében a \(\sqrt{1 + f'^2}\) nem integrálható elemien. Itt \(f'^2 = x - 1\), és az 1-gyel összeadva a gyök alatt csak \(x\) marad.</p>
+        <p><b>Végpontok:</b> \(f(2) = \frac23\), \(f(5) = \frac23\cdot 8 = \frac{16}{3}\).</p>
+        <p><b>Ellenőrzés:</b> az ív legalább olyan hosszú, mint a végpontokat összekötő húr: \(\sqrt{3^2 + (\frac{14}{3})^2} \approx 5{,}548 \le 5{,}568\). ✓ A kis különbség azért van, mert a görbe \([2,5]\)-en alig hajlik.</p>
+      </div>
+    </details>
+  </article>
+
+  <!-- 6. feladat -->
+  <article class="task" id="o6">
+    <div class="task-head"><span class="no">6.</span><span class="src">11–12. gyakorlat · órai</span><span class="kind">összeg határértéke</span></div>
+    <p class="stmt">Bizonyítsuk be, hogy</p>
+    \[\lim_{n\to+\infty}\Big(\frac{1}{n+1} + \frac{1}{n+2} + \dots + \frac{1}{n+n}\Big) = \ln 2.\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Írjuk fel az összeget integrálközelítő összegként! Minden tagból \(\frac1n\)-et kiemelve:</p>
+        \[s_n := \frac{1}{n+1} + \dots + \frac{1}{n+n} = \frac1n\Big(\frac{1}{1 + \frac1n} + \frac{1}{1 + \frac2n} + \dots + \frac{1}{1 + \frac nn}\Big) = \frac1n\sum_{k=1}^{n}\frac{1}{1 + \frac kn}.\]
+        <p>Tehát \(s_n\) az \(f(x) := \frac{1}{1+x}\) \((x \in \R\setminus\{-1\})\) függvény Riemann-féle közelítő összege \([0,1]\)-en:</p>
+        \[s_n = \frac1n\sum_{k=1}^n f\Big(\frac kn\Big).\]
+        <p>Mivel \(f \in C[0,1] \Rightarrow f \in R[0,1]\), a tétel szerint</p>
+        \[\lim_{n\to+\infty}s_n = \int_0^1\frac{dx}{1+x} = \big[\ln(1+x)\big]_0^1 = \ln 2 - \ln 1 = \ln 2.\]
+        <p>Eredmény: <span class="ans">\(\lim s_n = \ln 2\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Hogyan ismerjük fel?</b> \(n\) darab tag van, és mindegyik nevezője \(n\)-nel arányos (\(n + k\)). Kiemelve \(\frac1n\)-et, a maradék csak \(\frac kn\)-től függ: ez lesz \(f\big(\frac kn\big)\).</p>
+        <p><b>Felosztás és közbülső helyek:</b> \([0,1]\)-et \(n\) egyenlő részre osztjuk, mindegyik \(\frac1n\) hosszú, és \(f\)-et a részintervallumok jobb végpontjában (\(\frac kn\)) vesszük.</p>
+        <p><b>Egy elemi becslés is ugyanezt adja:</b> \(f\) szigorúan fogy, így a jobb végpontos összeg alsó, a bal végpontos felső közelítés: \(s_n \lt \ln 2 \lt s_n + \frac1n\big(f(0) - f(1)\big) = s_n + \frac{1}{2n}\). Innen a rendőr-elvvel is \(s_n \to \ln 2\).</p>
+        <p><b>Numerikusan:</b> \(s_{10} \approx 0{,}6688\), \(s_{100} \approx 0{,}6907\), \(\ln 2 \approx 0{,}6931\). A különbség kb. \(\frac{1}{4n}\).</p>
+      </div>
+    </details>
+  </article>
+
+  </div>
+</section>
+
+<!-- ================= HÁZI FELADATOK ================= -->
+<section id="hazi">
+  <div class="section-head">
+    <span class="label">11–12. gyakorlat · Házi feladatok · saját megoldás</span>
+    <h2>Házi feladatok</h2>
+    <p>Az összevont gyakorlati anyag 11–12. gyakorlathoz tartozó házi feladatai. Ezekhez nincs hivatalos megoldás, ezek saját megoldások (numerikus integrálással ellenőrizve).</p>
+  </div>
+
+  <div class="taskgroup">
+
+  <article class="task" id="h1a">
+    <div class="task-head"><span class="no">1. (a)</span><span class="src">11–12. gyakorlat · házi</span><span class="kind">visszatérő parciális integrálás</span></div>
+    \[\int_0^\pi e^x\sin x\,dx\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Az integrandus folytonos. Legyen \(I := \int e^x\sin x\,dx\). Kétszer parciálisan integrálunk, mindig \(e^x = (e^x)'\)-et integrálva:</p>
+        \[I = e^x\sin x - \int e^x\cos x\,dx = e^x\sin x - \Big(e^x\cos x - \int e^x(-\sin x)\,dx\Big) = e^x\sin x - e^x\cos x - I.\]
+        <p>Átrendezve \(2I = e^x(\sin x - \cos x)\), azaz</p>
+        \[\int e^x\sin x\,dx = \frac{e^x(\sin x - \cos x)}{2} + c \qquad (x, c \in \R).\]
+        <p>A Newton–Leibniz-formulával:</p>
+        \[\int_0^\pi e^x\sin x\,dx = \Big[\frac{e^x(\sin x - \cos x)}{2}\Big]_0^\pi = \frac{e^\pi(0 + 1)}{2} - \frac{1\cdot(0 - 1)}{2} = \frac{e^\pi + 1}{2}.\]
+        <p>Eredmény: <span class="ans">\(\dfrac{e^\pi + 1}{2} \approx 12{,}070\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért tér vissza?</b> \(\sin\) kétszeri deriválása \(-\sin\), az \(e^x\) pedig önmaga. Két lépés után az eredeti integrál jelenik meg \(-1\)-szeres szorzóval, és egyenletet kapunk rá.</p>
+        <p><b>Figyelj:</b> mindkét lépésben ugyanazt a tényezőt (itt \(e^x\)-et) kell integrálni, különben visszajutunk a kiindulási alakhoz, és \(0 = 0\) jön ki.</p>
+        <p><b>Ellenőrzés:</b> \(\Big(\frac{e^x(\sin x - \cos x)}{2}\Big)' = \frac{e^x(\sin x - \cos x) + e^x(\cos x + \sin x)}{2} = e^x\sin x\). ✓</p>
+        <p><b>Becslés:</b> \([0,\pi]\)-en \(\sin x \ge 0\), az \(e^x\) pedig \(\pi\) közelében már \(\approx 23\), tehát a nagyságrend (\(\approx 12\)) hihető.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="h1b">
+    <div class="task-head"><span class="no">1. (b)</span><span class="src">11–12. gyakorlat · házi</span><span class="kind">páratlan kitevő, \(f^\alpha f'\)</span></div>
+    \[\int_0^{\pi/2}\sin^3 x\,dx\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Az integrandus folytonos. Egy \(\sin x\) tényezőt leválasztunk, és \(\sin^2 x = 1 - \cos^2 x\):</p>
+        \[\int\sin^3 x\,dx = \int\big(1 - \cos^2 x\big)\sin x\,dx = \int\sin x\,dx + \int\cos^2 x\cdot(\cos x)'\,dx = -\cos x + \frac{\cos^3 x}{3} + c.\]
+        <p>A Newton–Leibniz-formulával:</p>
+        \[\int_0^{\pi/2}\sin^3 x\,dx = \Big[-\cos x + \frac{\cos^3 x}{3}\Big]_0^{\pi/2} = (0 + 0) - \Big(-1 + \frac13\Big) = \frac23.\]
+        <p>Eredmény: <span class="ans">\(\dfrac23\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Páratlan kitevő:</b> ha \(\sin\) páratlan hatványon áll, egyet leválasztunk, a maradék páros hatványt \(\cos\)-szal fejezzük ki, és \(f^\alpha f'\) alakot kapunk (\(f = \cos x\), \(f' = -\sin x\)).</p>
+        <p><b>Előjel:</b> \(\int\cos^2 x\cdot(-\sin x)\,dx = \frac{\cos^3 x}{3}\), ezért \(-\int\cos^2 x\sin x\,dx = +\frac{\cos^3 x}{3}\).</p>
+        <p><b>Ellenőrzés:</b> \(\big(-\cos x + \frac{\cos^3 x}{3}\big)' = \sin x - \cos^2 x\sin x = \sin x(1 - \cos^2 x) = \sin^3 x\). ✓ Az eredmény kisebb, mint \(\int_0^{\pi/2}\sin x\,dx = 1\), ahogy kell, mert \(0 \le \sin^3 x \le \sin x\).</p>
+        <p class="note">Linearizálással is megy: \(\sin^3 x = \frac{3\sin x - \sin 3x}{4}\), és \(\int_0^{\pi/2} = \frac{3 - \frac13}{4} = \frac23\).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="h2">
+    <div class="task-head"><span class="no">2.</span><span class="src">11–12. gyakorlat · házi</span><span class="kind">terület, felbontással</span></div>
+    <p class="stmt">Határozza meg annak a korlátos síkidomnak a területét, amelyet az \(x = 0\) egyenletű egyenes, valamint az \(y = \sqrt x + 1\), \(y = 3 - x\) és az \(y = \dfrac{x^2}{4}\) egyenletű görbék határolnak.</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p><b>Metszéspontok:</b></p>
+        <ul>
+          <li>\(\sqrt x + 1 = 3 - x\): \(u = \sqrt x\)-szel \(u^2 + u - 2 = 0\), \(u = 1\) (a \(-2\) nem jó), tehát \((1, 2)\).</li>
+          <li>\(3 - x = \frac{x^2}{4}\): \(x^2 + 4x - 12 = 0\), \(x = 2\) (a \(-6\) kívül esik), tehát \((2, 1)\).</li>
+          <li>Az \(x = 0\) egyenesen: \(y = \sqrt x + 1\) a \((0,1)\), \(y = \frac{x^2}{4}\) a \((0,0)\) pontban kezdődik.</li>
+        </ul>
+        <p>A síkidom tehát \(0 \le x \le 2\) között van: alulról végig \(y = \frac{x^2}{4}\), felülről \([0,1]\)-en \(y = \sqrt x + 1\), \([1,2]\)-n \(y = 3 - x\) határolja.</p>
+        <figure class="graph"><div id="g-h2"></div><figcaption><span class="lg">\(y = \sqrt x + 1\)</span><span class="lg tay">\(y = 3 - x\)</span><span class="lg c4">\(y = \frac{x^2}{4}\)</span><span class="lg band">a síkidom</span></figcaption></figure>
+        \[t_1 = \int_0^1\Big(\sqrt x + 1 - \frac{x^2}{4}\Big)\,dx = \Big[\frac23x^{3/2} + x - \frac{x^3}{12}\Big]_0^1 = \frac23 + 1 - \frac{1}{12} = \frac{19}{12},\]
+        \[t_2 = \int_1^2\Big(3 - x - \frac{x^2}{4}\Big)\,dx = \Big[3x - \frac{x^2}{2} - \frac{x^3}{12}\Big]_1^2 = \Big(6 - 2 - \frac23\Big) - \Big(3 - \frac12 - \frac{1}{12}\Big) = \frac{40}{12} - \frac{29}{12} = \frac{11}{12}.\]
+        <p>A terület: \(t = \frac{19}{12} + \frac{11}{12} = \frac{30}{12} = \frac52\).</p>
+        <p>Eredmény: <span class="ans">\(t = \dfrac52\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Melyik a gyök?</b> Az összevont anyagban a gyökjel csak az \(x\)-et fedi, tehát \(y = \sqrt x + 1\) (és nem \(\sqrt{x+1}\)). Ezzel szépek a metszéspontok; \(\sqrt{x+1}\)-gyel \(\frac{7 - \sqrt{17}}{2}\) jönne ki.</p>
+        <p><b>Melyik a korlátos síkidom?</b> A három görbe és az \(y\)-tengely egy négyszögszerű tartományt zár közre, csúcsai \((0,0)\), \((0,1)\), \((1,2)\), \((2,1)\). (A \(\sqrt x + 1\) és \(\frac{x^2}{4}\) még \(x \approx 3{,}37\)-nél is metszi egymást, de az ott keletkező kis tartományt nem határolja az \(x = 0\) egyenes.)</p>
+        <p><b>Sorrend-ellenőrzés:</b> \([0,1]\)-en pl. \(x = \frac14\): \(\sqrt x + 1 = 1{,}5 \lt 3 - x = 2{,}75\), tehát tényleg \(\sqrt x + 1\) van felül; \([1,2]\)-n \(x = 1{,}5\): \(3 - x = 1{,}5 \lt \sqrt{1{,}5} + 1 \approx 2{,}22\).</p>
+        <p><b>Másképp:</b> a felső határ alatti terület mínusz a parabola alatti terület: \(\int_0^1(\sqrt x + 1)\,dx + \int_1^2(3 - x)\,dx - \int_0^2\frac{x^2}{4}\,dx = \frac53 + \frac32 - \frac23 = \frac52\). ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="h3">
+    <div class="task-head"><span class="no">3.</span><span class="src">11–12. gyakorlat · házi</span><span class="kind">forgástest térfogata</span></div>
+    <p class="stmt">Határozza meg az \(f(x) := \sqrt{\sin x}\cdot e^x\) \((x \in [0,\pi])\) függvény grafikonjának az \(x\)-tengely körüli megforgatásával adódó forgástest térfogatát!</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>\([0,\pi]\)-en \(\sin x \ge 0\), így \(0 \le f \in C[0,\pi] \subset R[0,\pi]\), és \(f^2(x) = \sin x\cdot e^{2x}\). A térfogat:</p>
+        \[V = \pi\int_0^\pi f^2(x)\,dx = \pi\int_0^\pi e^{2x}\sin x\,dx.\]
+        <p>A primitív függvény visszatérő parciális integrálással, \(I := \int e^{2x}\sin x\,dx\), mindig \(e^{2x} = \big(\frac{e^{2x}}{2}\big)'\)-t integrálva:</p>
+        \[I = \frac{e^{2x}}{2}\sin x - \frac12\int e^{2x}\cos x\,dx,\qquad \int e^{2x}\cos x\,dx = \frac{e^{2x}}{2}\cos x + \frac12 I.\]
+        \[I = \frac{e^{2x}}{2}\sin x - \frac{e^{2x}}{4}\cos x - \frac14 I \;\Longrightarrow\; I = \frac{e^{2x}}{5}\big(2\sin x - \cos x\big) + c.\]
+        <p>A Newton–Leibniz-formulával:</p>
+        \[V = \pi\Big[\frac{e^{2x}}{5}(2\sin x - \cos x)\Big]_0^\pi = \pi\Big(\frac{e^{2\pi}}{5}\cdot 1 - \frac15\cdot(-1)\Big) = \frac{\pi\big(e^{2\pi} + 1\big)}{5}.\]
+        <p>Eredmény: <span class="ans">\(V = \dfrac{\pi\big(e^{2\pi} + 1\big)}{5} \approx 337{,}09\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>A gyök eltűnik:</b> a térfogatképletben \(f^2\) áll, így \(\big(\sqrt{\sin x}\,e^x\big)^2 = \sin x\cdot e^{2x}\). Ezért adták meg a függvényt gyökkel: a négyzetre emelés után kényelmes integrandus marad.</p>
+        <p><b>Értelmezési tartomány:</b> \(\sqrt{\sin x}\) csak ott értelmes, ahol \(\sin x \ge 0\); a \([0,\pi]\) éppen ilyen.</p>
+        <p><b>Ellenőrzés:</b> \(\Big(\frac{e^{2x}}{5}(2\sin x - \cos x)\Big)' = \frac{e^{2x}}{5}\big(4\sin x - 2\cos x + 2\cos x + \sin x\big) = e^{2x}\sin x\). ✓</p>
+        <p><b>Nagyságrend:</b> \(e^{2\pi} \approx 535{,}5\), így \(V \approx \pi\cdot 107{,}3 \approx 337\). A test \(x = \pi\) közelében nagyon kiszélesedik (\(f\) maximuma \(\approx 15{,}4\) körül van), ezért ilyen nagy a térfogat.</p>
+      </div>
+    </details>
+  </article>
+
+  </div>
+</section>
+
+<!-- ================= GYAKORI HIBÁK ================= -->
+<section id="hibak">
+  <div class="section-head">
+    <span class="label">Mire figyelj</span>
+    <h2>Gyakori hibák</h2>
+  </div>
+  <div class="mistakes">
+    <div class="mistake"><span class="x">✕</span><p><b>Helyettesítés után a régi határok maradnak.</b> Ha az új változóval számolsz határozott integrált, a határokat is át kell írni (\(x = 10 \mapsto t = 2\), \(x = 66 \mapsto t = 4\), órai 1(a)). Ha nem írod át, előbb vissza kell helyettesíteni \(x\)-re.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Terület előjeles integrállal.</b> \(\int_a^b(g - f)\) csak akkor terület, ha \(f \le g\) az egész \([a,b]\)-n. Ha a felső vagy alsó görbe vált, szét kell vágni a tartományt (órai 2., házi 2.); különben részek kiejthetik egymást.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>A parabola alsó ágának elfelejtése.</b> \(y^2 = 2x + 6\)-ból \(y = \pm\sqrt{2x+6}\): a \([-3,-1]\) szakaszon a síkidom mindkét ág között van (órai 2.).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Térfogatnál \(f\) négyzete nélkül.</b> \(V = \pi\int_a^b f^2\), nem \(\pi\int_a^b f\) és nem \(\int_a^b f^2\). A keresztmetszet egy \(f(x)\) sugarú kör, területe \(\pi f^2(x)\) (órai 4., házi 3.).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Ívhossznál \(\sqrt{1 + f'}\) vagy \(\sqrt{1 + f^2}\).</b> A helyes integrandus \(\sqrt{1 + [f'(x)]^2}\): a derivált négyzete kell (órai 5.).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Rossz \(f\) az összeg határértékénél.</b> Előbb \(\frac1n\)-et kell kiemelni, és ami marad, az csak \(\frac kn\)-től függhet. Az \(\frac{1}{n+k}\) tagból \(f(x) = \frac{1}{1+x}\) lesz \([0,1]\)-en, nem \(\frac1x\) (órai 6.).</p></div>
+  </div>
+</section>
+
+<footer>Forrás: <a href="../Gyakorlat%20anyagok/11_12_Gy_An_II_A_B.pdf" target="_blank" rel="noopener">11–12. gyakorlat (PDF)</a> és <a href="../Gyakorlat%20anyagok/An_II_A_B_Gyak.pdf" target="_blank" rel="noopener">Analízis II. gyakorlatok, összevont anyag (PDF)</a>. Minden eredményt (integrálok, területek, térfogatok, ívhossz) numerikus integrálással ellenőriztünk, a grafikonok a függvényekből számolva készültek.</footer>
+</div>
+
+<script>
+(function () {
+  // Small SVG plotter: several curves on one grid, optional vertical guide lines,
+  // optional shaded regions between two functions (fill) and text labels (txt).
+  function fmt(v) { return (Math.round(v * 100) / 100).toString().replace('.', ',').replace('-', '−'); }
+  function plot(el, o) {
+    var W = 640, H = o.h || 320, L = 40, R = 14, T = 12, B = 26;
+    var x0 = o.x[0], x1 = o.x[1], y0 = o.y[0], y1 = o.y[1];
+    var X = function (x) { return L + (x - x0) / (x1 - x0) * (W - L - R); };
+    var Y = function (y) { return T + (y1 - y) / (y1 - y0) * (H - T - B); };
+    var s = [], cid = 'clip-' + el.id, v;
+    s.push('<defs><clipPath id="' + cid + '"><rect x="' + L + '" y="' + T + '" width="' + (W - L - R) + '" height="' + (H - T - B) + '"/></clipPath></defs>');
+    for (v = Math.ceil(x0 / o.gx - 1e-9) * o.gx; v <= x1 + 1e-9; v += o.gx) {
+      s.push('<line class="gl" x1="' + X(v) + '" y1="' + T + '" x2="' + X(v) + '" y2="' + (H - B) + '"/>');
+      if (Math.abs(v) > 1e-9) s.push('<text class="tk" x="' + X(v) + '" y="' + (H - 8) + '" text-anchor="middle">' + fmt(v) + '</text>');
+    }
+    for (v = Math.ceil(y0 / o.gy - 1e-9) * o.gy; v <= y1 + 1e-9; v += o.gy) {
+      s.push('<line class="gl" x1="' + L + '" y1="' + Y(v) + '" x2="' + (W - R) + '" y2="' + Y(v) + '"/>');
+      if (Math.abs(v) > 1e-9) s.push('<text class="tk" x="' + (L - 6) + '" y="' + (Y(v) + 4) + '" text-anchor="end">' + fmt(v) + '</text>');
+    }
+    if (y0 <= 0 && y1 >= 0) s.push('<line class="ax" x1="' + L + '" y1="' + Y(0) + '" x2="' + (W - R) + '" y2="' + Y(0) + '"/>');
+    if (x0 <= 0 && x1 >= 0) s.push('<line class="ax" x1="' + X(0) + '" y1="' + T + '" x2="' + X(0) + '" y2="' + (H - B) + '"/>');
+    (o.vl || []).forEach(function (a) { s.push('<line class="as" x1="' + X(a) + '" y1="' + T + '" x2="' + X(a) + '" y2="' + (H - B) + '"/>'); });
+    var g = '<g clip-path="url(#' + cid + ')">';
+    (o.fill || []).forEach(function (r) {
+      var up = [], dn = [], M = 300;
+      for (var i = 0; i <= M; i++) {
+        var x = r.a + (r.b - r.a) * i / M;
+        up.push(X(x).toFixed(1) + ' ' + Y(r.hi(x)).toFixed(1));
+        dn.push(X(x).toFixed(1) + ' ' + Y(r.lo(x)).toFixed(1));
+      }
+      g += '<path class="bd" d="M' + up.join('L') + 'L' + dn.reverse().join('L') + 'Z"/>';
+    });
+    o.curves.forEach(function (c) {
+      var d = '', pen = false, N = 900, span = y1 - y0;
+      for (var i = 0; i <= N; i++) {
+        var x = x0 + (x1 - x0) * i / N;
+        if (c.dom && !c.dom(x)) { pen = false; continue; }
+        var y = c.f(x);
+        if (!isFinite(y)) { pen = false; continue; }
+        y = Math.max(Math.min(y, y1 + span), y0 - span);
+        d += (pen ? 'L' : 'M') + X(x).toFixed(1) + ' ' + Y(y).toFixed(1);
+        pen = true;
+      }
+      g += '<path class="' + c.cls + '" d="' + d + '"/>';
+    });
+    (o.pts || []).forEach(function (p) { g += '<circle class="pz" cx="' + X(p[0]) + '" cy="' + Y(p[1]) + '" r="3.5"/>'; });
+    (o.txt || []).forEach(function (t) { g += '<text class="pl" x="' + X(t[0]) + '" y="' + Y(t[1]) + '" text-anchor="middle">' + t[2] + '</text>'; });
+    g += '</g>';
+    s.push(g);
+    el.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + o.label + '">' + s.join('') + '</svg>';
+  }
+  var sq = function (v) { return Math.sqrt(Math.max(0, v)); }, R8 = Math.sqrt(8);
+  var GRAPHS = {
+    'g-o2': { label: 'Az y = x − 1 egyenes és az y² = 2x + 6 parabola által közrezárt síkidom', x: [-3.5, 6], y: [-3, 5], gx: 1, gy: 1, h: 420,
+      fill: [ { a: -3, b: -1, lo: function (x) { return -sq(2 * x + 6); }, hi: function (x) { return sq(2 * x + 6); } },
+              { a: -1, b: 5, lo: function (x) { return x - 1; }, hi: function (x) { return sq(2 * x + 6); } } ],
+      curves: [ { cls: 'cv', f: function (x) { return sq(2 * x + 6); }, dom: function (x) { return x >= -3.01; } },
+                { cls: 'cv', f: function (x) { return -sq(2 * x + 6); }, dom: function (x) { return x >= -3.01; } },
+                { cls: 'cv2', f: function (x) { return x - 1; } } ],
+      vl: [-1], pts: [[-1, -2], [5, 4], [-3, 0]], txt: [[-2.1, 0.45, 'A₁'], [1.6, 1.7, 'A₂'], [5, 4.45, '(5, 4)'], [-0.3, -2.55, '(−1, −2)']] },
+    'g-o3': { label: 'Az x² + y² = 8 kör és az y² = 2x parabola, a parabolán belüli rész kiemelve', x: [-3.1, 3.3], y: [-3.2, 3.2], gx: 1, gy: 1, h: 624,
+      fill: [ { a: 0, b: 2, lo: function (x) { return -sq(2 * x); }, hi: function (x) { return sq(2 * x); } },
+              { a: 2, b: R8, lo: function (x) { return -sq(8 - x * x); }, hi: function (x) { return sq(8 - x * x); } } ],
+      curves: [ { cls: 'cv', f: function (x) { return sq(8 - x * x); }, dom: function (x) { return Math.abs(x) <= R8 + 0.01; } },
+                { cls: 'cv', f: function (x) { return -sq(8 - x * x); }, dom: function (x) { return Math.abs(x) <= R8 + 0.01; } },
+                { cls: 'cv2', f: function (x) { return sq(2 * x); }, dom: function (x) { return x >= 0; } },
+                { cls: 'cv2', f: function (x) { return -sq(2 * x); }, dom: function (x) { return x >= 0; } } ],
+      vl: [2], pts: [[2, 2], [-0, 0], [2, -2]], txt: [[1.25, 0.12, 'A₁'], [2.42, 0.12, 'A₂'], [2.25, 2.45, 'P'], [2.25, -2.75, 'Q'], [-1.3, 1.2, 'K \\ A']] },
+    'g-o4': { label: 'Az f(x) = sin²x grafikonja és tükörképe a [0, π] intervallumon', x: [-0.2, 3.4], y: [-1.2, 1.2], gx: 0.5, gy: 0.5, h: 300,
+      fill: [ { a: 0, b: Math.PI, lo: function (x) { return -Math.pow(Math.sin(x), 2); }, hi: function (x) { return Math.pow(Math.sin(x), 2); } } ],
+      curves: [ { cls: 'cv', f: function (x) { return Math.pow(Math.sin(x), 2); }, dom: function (x) { return x >= 0 && x <= Math.PI; } },
+                { cls: 'cv', f: function (x) { return -Math.pow(Math.sin(x), 2); }, dom: function (x) { return x >= 0 && x <= Math.PI; } } ],
+      vl: [Math.PI], pts: [[Math.PI / 2, 1]], txt: [[2.95, 1.05, 'x = π']] },
+    'g-h2': { label: 'Az x = 0, y = √x + 1, y = 3 − x és y = x²/4 által határolt síkidom', x: [-0.4, 3.6], y: [-0.4, 3.4], gx: 0.5, gy: 0.5, h: 380,
+      fill: [ { a: 0, b: 2, lo: function (x) { return x * x / 4; }, hi: function (x) { return Math.min(Math.sqrt(x) + 1, 3 - x); } } ],
+      curves: [ { cls: 'cv', f: function (x) { return Math.sqrt(x) + 1; }, dom: function (x) { return x >= 0; } },
+                { cls: 'cv2', f: function (x) { return 3 - x; } },
+                { cls: 'cv4', f: function (x) { return x * x / 4; } } ],
+      vl: [1], pts: [[0, 0], [0, 1], [1, 2], [2, 1]], txt: [[1.25, 2.2, '(1, 2)'], [2.3, 0.75, '(2, 1)']] }
+  };
+  Object.keys(GRAPHS).forEach(function (id) { var el = document.getElementById(id); if (el) plot(el, GRAPHS[id]); });
+})();
+</script>
+<!-- Fejezetsáv: az éppen olvasott szakasz gombja kiemelve -->
+<style>
+nav.bar a.active, nav.bar a.active:hover, nav.bar a.active:focus-visible { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+</style>
+<script>
+(function () {
+  var nav = document.querySelector('nav.bar');
+  if (!nav) return;
+  var links = Array.prototype.filter.call(nav.querySelectorAll('a[href^="#"]'), function (a) {
+    return a.getAttribute('href').length > 1 && document.getElementById(a.getAttribute('href').slice(1));
+  });
+  var current = null, ticking = false;
+  function sectionOf(a) { return document.getElementById(a.getAttribute('href').slice(1)); }
+  function update() {
+    ticking = false;
+    var line = nav.getBoundingClientRect().bottom + 12, active = null;
+    var visible = links.filter(function (a) { return sectionOf(a).offsetParent !== null; });
+    visible.forEach(function (a) { if (sectionOf(a).getBoundingClientRect().top <= line) active = a; });
+    // a lap alján az utolsó szakasz az aktuális akkor is, ha rövid
+    if (visible.length && window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) active = visible[visible.length - 1];
+    if (active === current) return;
+    if (current) { current.classList.remove('active'); current.removeAttribute('aria-current'); }
+    current = active;
+    if (!active) return;
+    active.classList.add('active');
+    active.setAttribute('aria-current', 'location');
+    var ul = active.closest('ul'), ur = ul.getBoundingClientRect(), ar = active.getBoundingClientRect();
+    var left = ar.left - ur.left + ul.scrollLeft, right = left + ar.width;
+    if (left < ul.scrollLeft || right > ul.scrollLeft + ul.clientWidth) ul.scrollTo({ left: Math.max(0, left - 16), behavior: 'smooth' });
+  }
+  function schedule() { if (!ticking) { ticking = true; setTimeout(update, 40); } }
+  window.addEventListener('scroll', schedule, { passive: true });
+  window.addEventListener('resize', schedule);
+  document.addEventListener('input', schedule);   // a keresés elrejthet szakaszokat
+  document.addEventListener('toggle', schedule, true);
+  update();
+})();
+</script>
+</body>
+</html>

@@ -118,6 +118,17 @@ details.concept:not([open]) .cname::after { content: "  · mutasd"; font-family:
 .empty { color: var(--muted); padding-top: 24px; }
 footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.88rem; }
 @media (max-width: 520px) { body { font-size: 1rem; } details.concept { padding: 10px 12px; } }
+
+/* Egyszerű / Szigorú váltó: széles képernyőn a jobb oldali margó tetején, görgetés közben is.
+   Keskenyebb képernyőn és telefonon a szokásos helyén marad az eszközsorban, nem lebeg. */
+@media (min-width: 1280px) {
+  .seg { position: fixed; z-index: 6; top: 14px; left: calc(50% + 450px + 20px); flex-direction: column; background: var(--card); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35); }
+  .seg button + button { border-left: 0; border-top: 1px solid var(--accent); }
+}
+@media (min-width: 1500px) {
+  .seg { flex-direction: row; }
+  .seg button + button { border-top: 0; border-left: 1px solid var(--accent); }
+}
 </style>
 </head>
 <body data-view="simple">
@@ -143,7 +154,7 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
 
 <div class="tools">
   <input id="q" type="search" placeholder="Keresés a fogalmak nevében (pl. leggyengébb, holtpont)…" aria-label="Keresés">
-  <div class="seg" role="group" aria-label="Magyarázat típusa"><button type="button" data-view="simple" aria-pressed="true">Egyszerű</button><button type="button" data-view="strict" aria-pressed="false">Szigorú (előadás)</button></div>
+  <div class="seg" role="group" aria-label="Magyarázat típusa"><button type="button" data-view="simple" aria-pressed="true">Egyszerű</button><button type="button" data-view="strict" aria-pressed="false">Szigorú<span class="seg-long"> (előadás)</span></button></div>
   <button type="button" id="quiz" aria-pressed="false">Kikérdezés mód</button>
   <button type="button" id="openall">Mind kinyitása</button>
 </div>

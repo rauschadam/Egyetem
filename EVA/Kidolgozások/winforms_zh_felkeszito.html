@@ -1,0 +1,1615 @@
+<!doctype html>
+<html lang="hu" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EVA · WinForms ZH felkészítő</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+/* EVA WinForms ZH prep: rules, checklist, verified sample solution */
+:root {
+  --paper: #f5f7fa; --grid: rgba(79, 122, 18, 0.06); --card: #ffffff; --ink: #1b2430; --muted: #5a6574; --rule: #d7dde6;
+  --accent: #4f7a12; --accent-soft: #eef6dc; --mark: #b8352a; --mark-soft: #fbe9e6; --ok: #2c7a4b; --ok-soft: #e3f3e9;
+  --warm: #9a5b00; --warm-soft: #fbf0dc; --blue: #2346a8; --blue-soft: #e6ecfb; --vio: #6b46c1; --vio-soft: #efe9fb;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-label: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f141b; --grid: rgba(182, 221, 106, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5; --rule: #2a3442;
+    --accent: #b6dd6a; --accent-soft: #262f17; --mark: #ff8b7b; --mark-soft: #3a1f1c; --ok: #74d39c; --ok-soft: #173225;
+    --warm: #f2c46d; --warm-soft: #33291a; --blue: #93abff; --blue-soft: #1d2846; --vio: #c4a7ff; --vio-soft: #261f3d; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f141b; --grid: rgba(182, 221, 106, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5; --rule: #2a3442;
+  --accent: #b6dd6a; --accent-soft: #262f17; --mark: #ff8b7b; --mark-soft: #3a1f1c; --ok: #74d39c; --ok-soft: #173225;
+  --warm: #f2c46d; --warm-soft: #33291a; --blue: #93abff; --blue-soft: #1d2846; --vio: #c4a7ff; --vio-soft: #261f3d; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; background-color: var(--paper); background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 22px 22px; color: var(--ink); font-family: var(--f-body); font-size: 1.06rem; line-height: 1.6; }
+.wrap { max-width: 900px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 80px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2rem, 6vw, 3.1rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.65rem; font-weight: 700; letter-spacing: -0.01em; }
+p { margin: 0; }
+a { color: var(--accent); }
+code { font-family: var(--f-label); font-size: 0.86em; background: var(--accent-soft); padding: 0 4px; border-radius: 3px; overflow-wrap: anywhere; }
+.label { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+
+.back { justify-self: start; display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px 9px 12px; border: 1.5px solid var(--accent); border-radius: 8px; background: var(--accent-soft); color: var(--ink); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 1.02rem; line-height: 1; white-space: nowrap; transition: background .15s, color .15s; }
+.back .arr { color: var(--accent); font-size: 1.25rem; transition: transform .15s, color .15s; }
+.back:hover, .back:focus-visible { background: var(--accent); color: var(--paper); outline: none; }
+.back:hover .arr, .back:focus-visible .arr { color: var(--paper); transform: translateX(-3px); }
+header.hero { display: grid; gap: 14px; padding-block: 0 26px; border-bottom: 2px solid var(--accent); }
+.hero .sub { color: var(--muted); max-width: 66ch; }
+.facts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.fact { display: flex; flex-direction: column; gap: 2px; padding: 8px 14px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; min-width: 120px; }
+.fact b { font-family: var(--f-display); font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+
+nav.bar { position: sticky; top: 0; z-index: 5; background: var(--paper); border-bottom: 1px solid var(--rule); margin-inline: -16px; padding-inline: 16px; }
+nav.bar ul { list-style: none; margin: 0; padding: 10px 0; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin; }
+nav.bar li[hidden] { display: none; }
+nav.bar a { display: block; white-space: nowrap; text-decoration: none; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.04em; color: var(--ink); padding: 6px 10px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); }
+nav.bar a:hover, nav.bar a:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+nav.bar a.nav-back { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+nav.bar a.active, nav.bar a.active:hover, nav.bar a.active:focus-visible { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+
+.tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 18px; }
+.tools input { flex: 1 1 240px; min-width: 0; font: inherit; font-size: 0.98rem; padding: 8px 12px; border: 1px solid var(--rule); border-radius: 6px; background: var(--card); color: var(--ink); }
+.tools input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+button { font-family: var(--f-label); font-size: 0.78rem; padding: 8px 12px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); color: var(--ink); cursor: pointer; }
+button:hover, button:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+button[aria-pressed="true"] { background: var(--accent); color: var(--paper); border-color: var(--accent); }
+.seg { display: inline-flex; border: 1px solid var(--accent); border-radius: 6px; overflow: hidden; }
+.seg button { border: 0; border-radius: 0; padding: 8px 14px; }
+.seg button + button { border-left: 1px solid var(--accent); }
+.seg button[aria-pressed="false"] { background: var(--card); color: var(--ink); }
+
+section.lect { padding-top: 40px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; scroll-margin-top: 56px; }
+section.lect[hidden] { display: none; }
+.section-head { display: grid; gap: 6px; }
+.section-head p { color: var(--muted); max-width: 68ch; }
+
+/* code: highlighted by the script below; .out = terminal / program output */
+pre.code, pre.out { margin: 0; padding: 10px 14px; border: 1px solid var(--rule); border-radius: 6px; font-family: var(--f-label); font-size: 0.84rem; line-height: 1.5; overflow-x: auto; tab-size: 4; }
+pre.code { background: var(--paper); }
+pre.out { background: #0a0d12; color: #cfd6e0; border-color: #222b37; }
+pre.out::before { content: "kimenet / terminál"; display: block; font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase; color: #7d8898; margin-bottom: 4px; }
+.cr { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-start; }
+.cr > pre { flex: 1 1 260px; min-width: 0; }
+.tk-kw { color: var(--vio); font-weight: 500; }
+.tk-str { color: var(--ok); }
+.tk-num { color: var(--warm); }
+.tk-com { color: var(--muted); font-style: italic; }
+.tk-pp { color: var(--blue); }
+
+.warn, .tip, .own, .note { max-width: 74ch; font-size: 0.95rem; }
+.warn { background: var(--mark-soft); border-left: 3px solid var(--mark); padding: 8px 12px; border-radius: 0 4px 4px 0; }
+.tip { background: var(--accent-soft); border-left: 3px solid var(--accent); padding: 8px 12px; border-radius: 0 4px 4px 0; }
+.note { background: var(--warm-soft); border-left: 3px solid var(--warm); padding: 8px 12px; border-radius: 0 4px 4px 0; }
+.own { border: 1px dashed var(--ok); padding: 8px 12px; border-radius: 4px; }
+.own > b:first-child, .tip > b:first-child, .warn > b:first-child, .note > b:first-child { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; display: block; margin-bottom: 2px; }
+.own > b:first-child { color: var(--ok); }
+.warn > b:first-child { color: var(--mark); }
+.tip > b:first-child { color: var(--accent); }
+.note > b:first-child { color: var(--warm); }
+.ans { display: inline-block; background: var(--ok-soft); color: var(--ok); font-weight: 600; padding: 1px 9px; border-radius: 4px; }
+.ans code { background: transparent; color: inherit; }
+
+.tbl { overflow-x: auto; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; max-width: 100%; }
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+th, td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--f-label); font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+tr:last-child td { border-bottom: 0; }
+td code, th code { white-space: nowrap; }
+
+footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.88rem; }
+.empty { color: var(--muted); padding-top: 24px; }
+
+h3 { font-size: 1.08rem; font-weight: 600; }
+.taskgroup { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.task { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 18px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; min-width: 0; scroll-margin-top: 60px; }
+.task-head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.task-head .no { font-family: var(--f-label); font-weight: 500; font-size: 0.82rem; color: var(--accent); border: 1px solid var(--accent); border-radius: 3px; padding: 0 6px; }
+.task-head .kind { margin-left: auto; font-family: var(--f-label); font-size: 0.7rem; padding: 2px 8px; border-radius: 3px; background: var(--accent-soft); color: var(--accent); }
+.stmt, .sol { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; min-width: 0; }
+.stmt > p, .sol > p { max-width: 74ch; }
+.sol ol, .sol ul, .stmt ol, .stmt ul { margin: 0; padding-left: 22px; display: grid; gap: 4px; max-width: 76ch; }
+details { border-top: 1px dashed var(--rule); padding-top: 8px; min-width: 0; }
+summary { cursor: pointer; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); list-style: none; display: inline-flex; gap: 8px; align-items: center; padding: 4px 0; }
+summary::-webkit-details-marker { display: none; }
+summary::before { content: "+"; display: inline-grid; place-items: center; width: 18px; height: 18px; border: 1px solid currentColor; border-radius: 3px; font-size: 0.8rem; }
+details[open] > summary::before { content: "−"; }
+summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sol { padding-top: 6px; }
+@media (max-width: 520px) { body { font-size: 1rem; } .task { padding: 14px; } .task-head .kind { margin-left: 0; } }
+
+
+header.hero { grid-template-columns: minmax(0, 1fr); }
+.back { max-width: 100%; white-space: normal; }
+section { padding-top: 40px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; scroll-margin-top: 56px; }
+h3 { margin-top: 6px; }
+h4 { font-family: var(--f-display); font-size: 1rem; font-weight: 600; margin: 0; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+.card { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 14px 16px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.card ul, .card ol, ul.plain, .rule ul { margin: 0; padding-left: 20px; display: grid; gap: 5px; }
+.card li, .rule li, ul.plain li { font-size: 0.97rem; }
+.card.good { border-top: 3px solid var(--ok); }
+.card.bad { border-top: 3px solid var(--mark); }
+.rules { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.rule { background: var(--card); border: 1px solid var(--rule); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0; padding: 14px 16px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; min-width: 0; }
+.rule p { max-width: 76ch; }
+ol.timeline { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+ol.timeline li { display: grid; grid-template-columns: 74px minmax(0, 1fr); gap: 12px; align-items: start; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 10px 14px; }
+ol.timeline .t { font-family: var(--f-label); font-size: 0.82rem; color: var(--accent); font-weight: 500; padding-top: 2px; }
+.checklist { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 12px 16px 16px; display: grid; gap: 6px; }
+.checklist h3 { font-size: 0.95rem; color: var(--accent); margin-top: 10px; }
+.checklist label { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 8px; align-items: start; cursor: pointer; font-size: 0.97rem; }
+.checklist input { width: 17px; height: 17px; margin-top: 4px; accent-color: var(--accent); }
+.checklist label:has(input:checked) { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--muted); }
+.checklist button { justify-self: start; margin-top: 8px; }
+figure.shot { margin: 0; display: grid; gap: 6px; justify-items: center; }
+figure.shot img { max-width: min(100%, 520px); height: auto; border: 1px solid var(--rule); border-radius: 6px; }
+figure.shot figcaption { font-family: var(--f-label); font-size: 0.72rem; color: var(--muted); }
+.tk-type { color: var(--blue); }
+@media (max-width: 520px) { ol.timeline li { grid-template-columns: 1fr; gap: 4px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="hero">
+  <a class="back" href="../../index.html#/eva"><span class="arr" aria-hidden="true">←</span>Vissza: Eseményvezérelt alkalmazások</a>
+  <span class="label">Eseményvezérelt alkalmazások · 1. gyakorlati ZH · Windows Forms</span>
+  <h1>WinForms ZH: mire figyelj</h1>
+  <p class="sub">Felkészítő a félévközi gyakorlati zárthelyire, a minta ZH (SameGame), a tanszéki Sudoku-mintaprogram és a saját Nonogram-beadandó alapján. A minta ZH teljes megoldása lent van: lefordítva a tanszéki statikus analizátorral, 9 egységteszttel és képernyőképpel.</p>
+  <div class="facts">
+    <div class="fact"><span class="label">Munkaidő</span><b>90 + 5 perc</b></div>
+    <div class="fact"><span class="label">Szintek</span><b>közepes · jeles</b></div>
+    <div class="fact"><span class="label">Leadás</span><b>ZIP · TMS</b></div>
+    <div class="fact"><span class="label">Mintakód</span><b>3 projekt · 9 teszt</b></div>
+  </div>
+</header>
+
+<nav class="bar" aria-label="Fejezetek">
+  <ul>
+    <li><a class="nav-back" href="../../index.html#/eva" aria-label="Vissza: Eseményvezérelt alkalmazások">← EVA</a></li>
+    <li><a href="#keretek">Keretek</a></li>
+    <li><a href="#idoterv">Időterv</a></li>
+    <li><a href="#ellenorzo">Ellenőrzőlista</a></li>
+    <li><a href="#projekt">Projekt</a></li>
+    <li><a href="#modell">Modell</a></li>
+    <li><a href="#nezet">Nézet</a></li>
+    <li><a href="#idozito">Időzítő, fájl</a></li>
+    <li><a href="#analizis">Statikus analízis</a></li>
+    <li><a href="#minta">Mintamegoldás</a></li>
+    <li><a href="#beadando">Beadandó tanulságai</a></li>
+    <li><a href="#gyakorlas">Gyakorlás</a></li>
+  </ul>
+</nav>
+
+<!-- ================= KERETEK ================= -->
+<section id="keretek">
+  <div class="section-head">
+    <span class="label">A ZH-ról</span>
+    <h2>A ZH keretei</h2>
+    <p>A bevezető előadás és a minta ZH alapján.</p>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <h3>Mit kérnek</h3>
+      <ul>
+        <li><b>WinForms</b> grafikus felület, <b>MV</b> (modell–nézet) architektúra, C#.</li>
+        <li><b>Eseményvezérelt</b> megoldás: a modell eseményekkel értesíti a nézetet, a nézet ezek alapján frissít.</li>
+        <li>Két szint: <b>közepes (3)</b> és <b>jeles (5)</b>; a jeles a közepesre épül.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Leadás</h3>
+      <ul>
+        <li>ZIP-ben a <b>TMS</b>-be (<code>tms.inf.elte.hu</code>), <b>bin, obj és .vs nélkül</b>.</li>
+        <li>90 perc munka + 5 perc feltöltés. <b>Szigorú</b>: feltöltés nélkül sikertelen a ZH.</li>
+        <li><b>Többször is feltölthetsz</b>: tölts fel egy működő változatot minél előbb.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Mi használható</h3>
+      <ul>
+        <li>Írott, nyomtatott segédanyag és a hivatalos C#/.NET referencia.</li>
+        <li><b>A kurzus mintaprogramjai elérhetők</b> (pl. a Sudoku): érdemes tudni, hol mi van bennük.</li>
+        <li>Általános internet és generatív AI <b>nincs</b>.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Automatikus ellenőrzés</h3>
+      <ul>
+        <li>A TMS a feltöltött kódot <b>lefordítja</b> és <b>statikus analízist</b> futtat rajta.</li>
+        <li>A tanszéki <code>ELTE.FI.SARuleSet</code> csomag CI-környezetben <b>minden warningot errorrá tesz</b>. Lásd: <a href="#analizis">Statikus analízis</a>.</li>
+      </ul>
+    </div>
+  </div>
+  <p class="warn"><b>Következtetés</b> A bevezető előadás csak annyit ír, hogy a TMS „fordítást, statikus analízist” végez. Hogy pontosan ezzel a szabálykészlettel és ezzel a beállítással, az a csomag tartalmából következik (<code>TreatWarningsAsErrors</code>, ha <code>ContinuousIntegrationBuild</code> igaz), nem hivatalos kijelentés. A biztonság kedvéért úgy dolgozz, mintha minden warning hiba lenne.</p>
+</section>
+
+<!-- ================= IDŐTERV ================= -->
+<section id="idoterv">
+  <div class="section-head">
+    <span class="label">Stratégia</span>
+    <h2>Javasolt időbeosztás (90 perc)</h2>
+    <p>A lényeg: a közepes szint legyen kész és feltöltve, mielőtt a jelesbe kezdesz.</p>
+  </div>
+  <ol class="timeline">
+    <li><span class="t">0–5'</span><div><b>Olvasás.</b> Húzd alá a feladatban a konkrét követelményeket (méret, színek száma, mit írjon a státuszsor, mikor jöjjön felugró ablak). Ezek a pontozás alapjai.</div></li>
+    <li><span class="t">5–15'</span><div><b>Projektváz.</b> Solution két projekttel (modell: Class Library, nézet: Windows Forms App), projektreferencia, névterek. Fordítsd le az üres vázat.</div></li>
+    <li><span class="t">15–40'</span><div><b>Modell.</b> Állapot, <code>NewGame</code>, <code>Step</code>, események + EventArgs. Ez a feladat szíve: a nézet nélkül is működnie kell.</div></li>
+    <li><span class="t">40–60'</span><div><b>Nézet.</b> Menü, státuszsor, dinamikus gombrács, feliratkozás a modell eseményeire, frissítés. <b>Indítsd el, próbáld ki.</b></div></li>
+    <li><span class="t">~60'</span><div><b>Első feltöltés.</b> Clean/bin-obj törlés, ZIP, TMS. Ez a közepes szint biztosítéka.</div></li>
+    <li><span class="t">60–85'</span><div><b>Jeles szint</b> lépésenként, minden lépés után fordítás és kipróbálás. Ami kész, azt töltsd fel újra.</div></li>
+    <li><span class="t">85–95'</span><div><b>Végső feltöltés.</b> Ne a 94. percben próbáld először!</div></li>
+  </ol>
+</section>
+
+<!-- ================= ELLENŐRZŐLISTA ================= -->
+<section id="ellenorzo">
+  <div class="section-head">
+    <span class="label">Leadás előtt</span>
+    <h2>Ellenőrzőlista</h2>
+    <p>A pipák ebben a böngészőben megmaradnak (gyakorláshoz). A „Törlés” gomb újrakezdi.</p>
+  </div>
+  <div class="checklist" id="checklist">
+    <h3>Architektúra</h3>
+    <label><input type="checkbox" data-k="a1"> <span>A modellben nincs <code>using System.Windows.Forms</code>, se <code>MessageBox</code>, se <code>Color</code>, se <code>Button</code>.</span></label>
+    <label><input type="checkbox" data-k="a2"> <span>A játék szabályai (érvényes-e a lépés, vége van-e) a modellben vannak, nem a Formban.</span></label>
+    <label><input type="checkbox" data-k="a3"> <span>A nézet csak olvas a modellből (property, indexer), és csak publikus metódusokon át léptet.</span></label>
+    <label><input type="checkbox" data-k="a4"> <span>A modell minden állapotváltozást eseménnyel jelez; a nézet ezekre frissít.</span></label>
+    <h3>Modell</h3>
+    <label><input type="checkbox" data-k="m1"> <span>Az állapot privát; a táblát csak olvasható indexer vagy getter adja ki (nem a tömböt magát).</span></label>
+    <label><input type="checkbox" data-k="m2"> <span>Az események <code>EventHandler</code> / <code>EventHandler&lt;T&gt;</code> típusúak, <code>?.Invoke</code>-kal váltva ki.</span></label>
+    <label><input type="checkbox" data-k="m3"> <span>Játék vége után a <code>Step</code> nem csinál semmit.</span></label>
+    <label><input type="checkbox" data-k="m4"> <span><code>NewGame</code> mindent visszaállít (pontszám, lépésszám, játék vége jelző, idő).</span></label>
+    <h3>Nézet</h3>
+    <label><input type="checkbox" data-k="v1"> <span>A modell eseményeire <b>egyszer</b>, a konstruktorban iratkozom fel (nem minden új játéknál).</span></label>
+    <label><input type="checkbox" data-k="v2"> <span>A gombrács indításkor megjelenik (ha a feladat kéri, pl. „indításkor jelenjen meg egy 15×15-ös tábla”).</span></label>
+    <label><input type="checkbox" data-k="v3"> <span>A státuszsor pontosan azt írja ki, amit a feladat kér.</span></label>
+    <label><input type="checkbox" data-k="v4"> <span>Játék végén felugró ablak (<code>MessageBox</code>), és a tábla tiltva van.</span></label>
+    <label><input type="checkbox" data-k="v5"> <span>Új játék után a tábla újra engedélyezve van.</span></label>
+    <h3>Leadás</h3>
+    <label><input type="checkbox" data-k="l1"> <span>Fordításkor 0 warning (nem csak 0 error).</span></label>
+    <label><input type="checkbox" data-k="l2"> <span>A ZIP-ben nincs <code>bin</code>, <code>obj</code>, <code>.vs</code>; benne van a <code>.sln</code>/<code>.slnx</code> és minden <code>.csproj</code>.</span></label>
+    <label><input type="checkbox" data-k="l3"> <span>A feltöltés sikerességét a TMS-ben meg is néztem.</span></label>
+    <button type="button" id="checklist-reset">Törlés</button>
+  </div>
+</section>
+
+<!-- ================= PROJEKT ================= -->
+<section id="projekt">
+  <div class="section-head">
+    <span class="label">Felépítés</span>
+    <h2>Projektszerkezet</h2>
+    <p>A tanszéki Sudoku-minta és a beadandód is két projektre bont: a modell egy felületfüggetlen osztálykönyvtár, a nézet egy WinForms-projekt, amely hivatkozik rá. ZH-n is ezt érdemes követni: így a modellből <i>fizikailag</i> nem lehet Windows Forms-típust használni.</p>
+  </div>
+  <div class="tbl"><table>
+    <thead><tr><th>Projekt</th><th>Sablon (VS)</th><th>Cél-keretrendszer</th><th>Tartalom</th></tr></thead>
+    <tbody>
+      <tr><td><code>SameGame</code></td><td>Class Library</td><td><code>net10.0</code></td><td><code>Model/</code> (játéklogika, események, EventArgs), ha kell <code>Persistence/</code></td></tr>
+      <tr><td><code>SameGame.WinForms</code></td><td>Windows Forms App</td><td><code>net10.0-windows</code></td><td><code>Program.cs</code>, <code>View/GameForm.cs</code> (+ Designer)</td></tr>
+      <tr><td><code>SameGame.Test</code> (opcionális)</td><td>MSTest Test Project</td><td><code>net10.0</code></td><td>Modelltesztek. ZH-n nem kötelező, de a modellhibákat gyorsan megfogja.</td></tr>
+    </tbody>
+  </table></div>
+  <p class="warn"><b>Csapda</b> A „Windows Forms App <b>(.NET Framework)</b>” sablont <b>ne</b> válaszd: az a régi keretrendszerre épül (a 3. gyakorlat munkafüzete is külön figyelmeztet erre).</p>
+  <p>A nézetprojekt <code>.csproj</code>-ja (a lényeges sorok):</p>
+  <pre class="code">&lt;Project Sdk="Microsoft.NET.Sdk"&gt;
+
+  &lt;PropertyGroup&gt;
+    &lt;OutputType&gt;WinExe&lt;/OutputType&gt;
+    &lt;TargetFramework&gt;net10.0-windows&lt;/TargetFramework&gt;
+    &lt;Nullable&gt;enable&lt;/Nullable&gt;
+    &lt;UseWindowsForms&gt;true&lt;/UseWindowsForms&gt;
+    &lt;ImplicitUsings&gt;enable&lt;/ImplicitUsings&gt;
+    &lt;RootNamespace&gt;SameGame&lt;/RootNamespace&gt;
+  &lt;/PropertyGroup&gt;
+
+  &lt;ItemGroup&gt;
+    &lt;PackageReference Include="ELTE.FI.SARuleSet" Version="3.2.1"&gt;
+      &lt;PrivateAssets&gt;all&lt;/PrivateAssets&gt;
+      &lt;IncludeAssets&gt;runtime; build; native; contentfiles; analyzers; buildtransitive&lt;/IncludeAssets&gt;
+    &lt;/PackageReference&gt;
+  &lt;/ItemGroup&gt;
+
+  &lt;ItemGroup&gt;
+    &lt;ProjectReference Include="..\SameGame\SameGame.csproj" /&gt;
+  &lt;/ItemGroup&gt;
+
+&lt;/Project&gt;</pre>
+  <ul class="plain">
+    <li><code>&lt;ProjectReference&gt;</code>: VS-ben a nézetprojekten jobb klikk → Add → Project Reference… → pipáld be a modellt.</li>
+    <li><code>ELTE.FI.SARuleSet</code>: ugyanez a csomag van a beadandódban is. Ha a ZH-gépen elérhető, vedd fel mindkét projektbe, így <b>már fordításkor</b> látod, amit a TMS kifogásolna.</li>
+    <li>A modellprojektben <code>&lt;InternalsVisibleTo Include="SameGame.Test" /&gt;</code>: a teszt látja az <code>internal</code> tesztsegédet (lásd <code>SetTable</code> lent), a nézet viszont nem.</li>
+  </ul>
+</section>
+
+<!-- ================= MODELL ================= -->
+<section id="modell">
+  <div class="section-head">
+    <span class="label">Üzleti logika</span>
+    <h2>A modell: mire figyelj</h2>
+  </div>
+  <div class="rules">
+    <article class="rule">
+      <h3>1. A modell nem ismeri a felületet</h3>
+      <p>Nincs benne <code>Form</code>, <code>Button</code>, <code>Color</code>, <code>MessageBox</code>. A színeket is <b>indexként</b> (0, 1, 2, …) tárolja, a nézet fordítja le őket <code>Color</code>-ra. Ezért külön projekt: oda nem is lehet <code>using System.Windows.Forms</code>-ot írni.</p>
+    </article>
+    <article class="rule">
+      <h3>2. Privát állapot, csak olvasható kifelé</h3>
+      <p>A táblát <b>indexerrel</b> add ki, ne a tömböt: <code>public int this[int x, int y] =&gt; _table[x, y];</code>. Ha a nézet a tömböt kapja meg, bele is írhat, és az MV-szétválasztás csak papíron létezik. (A saját beadandódban a <code>public Cell[,] Grid { get; private set; }</code> pont ilyen rés: a setter privát, de a cellák a nézetből módosíthatók.)</p>
+    </article>
+    <article class="rule">
+      <h3>3. Események: <code>event</code> + <code>OnXxx</code> + <code>?.Invoke</code></h3>
+      <pre class="code">public event EventHandler? TableChanged;                    // csak jelzés (pull)
+public event EventHandler&lt;SameGameEventArgs&gt;? StepPerformed; // adatot is visz (push)
+
+private void OnTableChanged() =&gt; TableChanged?.Invoke(this, EventArgs.Empty);</pre>
+      <p>A <code>?</code> a <code>Nullable</code> miatt kell (lehet, hogy senki sem iratkozott fel), a <code>?.Invoke</code> pedig emiatt nem dob <code>NullReferenceException</code>-t. Saját argumentumhoz <code>EventArgs</code>-ból származtass, és csak olvasható tulajdonságokat adj neki.</p>
+      <p class="tip"><b>Push vagy pull?</b> A 3. gyakorlat munkafüzete szerint: ha a nézetnek sok, összefüggő adat kell (az egész tábla), elég egy jelzés, és a nézet kiolvassa (pull). Ha pontosan egy-két érték változott (törölt korongok száma, pontszám), vigye az EventArgs (push).</p>
+    </article>
+    <article class="rule">
+      <h3>4. Esemény a megfelelő pillanatban</h3>
+      <ul>
+        <li>Előbb <b>módosítsd az állapotot</b>, utána váltsd ki az eseményt (a nézet a kezelőben már az új állapotot olvassa ki).</li>
+        <li>Csak <b>tényleges változáskor</b> váltsd ki (a munkafüzet külön kiemeli: a fölösleges események feleslegesen rajzoltatják újra a felületet).</li>
+        <li>A „játék vége” is esemény legyen, ne a nézet kérdezgesse egy ciklusban.</li>
+      </ul>
+    </article>
+    <article class="rule">
+      <h3>5. Őrfeltételek</h3>
+      <pre class="code">public void Step(int x, int y)
+{
+    if (IsGameOver)
+        return;                    // vége után nem lehet lépni
+    if (x &lt; 0 || x &gt;= TableSize || y &lt; 0 || y &gt;= TableSize)
+        throw new ArgumentOutOfRangeException(nameof(x));
+    ...
+}</pre>
+      <p>Szabálytalan lépésnél (pl. 3-nál kisebb csoport) ne dobj kivételt: az a játék normál menete. Válts ki egy eseményt (<code>InvalidStep</code>), és a nézet kiírja.</p>
+    </article>
+    <article class="rule">
+      <h3>6. A véletlen legyen kívülről megadható</h3>
+      <p>Egy <code>SameGameModel(Random random)</code> konstruktorral a teszt fix seedet vagy előre megadott sorozatot (<code>FixedRandom</code>, ami felüldefiniálja a virtuális <code>Next(int)</code>-et) adhat át. Így determinisztikusan tesztelhető, mi kerül a kiürült mezőkre. A paraméter nélküli konstruktor egyszerűen <code>new Random()</code>-mal hívja.</p>
+    </article>
+  </div>
+</section>
+
+<!-- ================= NÉZET ================= -->
+<section id="nezet">
+  <div class="section-head">
+    <span class="label">Windows Forms</span>
+    <h2>A nézet: mire figyelj</h2>
+  </div>
+  <div class="rules">
+    <article class="rule">
+      <h3>1. Feliratkozás egyszer, a konstruktorban</h3>
+      <pre class="code">public GameForm()
+{
+    InitializeComponent();
+    _model = new SameGameModel();
+    _model.TableChanged += Model_TableChanged;
+    _model.GameOver += Model_GameOver;
+    ...
+}</pre>
+      <p class="warn"><b>Tipikus hiba</b> Ha a <code>+=</code> az „Új játék” kezelőben van, minden új játékkal még egyszer feliratkozol: a harmadik játéknál már háromszor ugrik fel a „Vége a játéknak” ablak.</p>
+    </article>
+    <article class="rule">
+      <h3>2. Dinamikus gombrács</h3>
+      <ul>
+        <li><code>Button[,] _buttonGrid</code> adattag; a gombokat kódban hozd létre és add a <code>Controls</code>-hoz (vagy egy <code>Panel</code>/<code>TableLayoutPanel</code> <code>Controls</code>-ához).</li>
+        <li>Minden gomb <b>ugyanazt</b> a kezelőt kapja; a koordinátát a <code>Tag</code>-ben tárold: <code>Tag = (x, y)</code>. A kezelőben: <code>if (sender is Button { Tag: (int x, int y) }) _model.Step(x, y);</code></li>
+        <li>A Sudoku-minta a <code>TabIndex</code>-be kódolja a sorszámot. Az is működik, de a <code>Tag</code> egyértelműbb.</li>
+        <li>Fix méretű táblánál a gombokat <b>egyszer</b> hozd létre, új játéknál csak a színt/feliratot frissítsd. Ha a méret változik: <code>Controls.Clear()</code> előtt a régi gombokat <code>Dispose()</code>-old, különben megmaradnak a memóriában.</li>
+        <li>Méret: <code>LogicalToDeviceUnits(34)</code> igazodik a Windows nagyításához (a beadandódban is így van).</li>
+      </ul>
+    </article>
+    <article class="rule">
+      <h3>3. Frissítés a modell eseményéből</h3>
+      <p>A gomb kattintásakor <b>ne</b> színezd át a gombot. Csak hívd a <code>_model.Step</code>-et; a színezés a <code>TableChanged</code> kezelőjében történik, a modell aktuális állapotából. Így a nézet sosem tér el a modelltől.</p>
+    </article>
+    <article class="rule">
+      <h3>4. Menü, státuszsor, ablak</h3>
+      <ul>
+        <li><code>MenuStrip</code> (új játék nehézségenként), <code>StatusStrip</code> + <code>ToolStripStatusLabel</code> a kért kiíráshoz.</li>
+        <li><code>Dock = Fill</code> panel esetén a sorrend számít: a <code>Fill</code> vezérlőt add hozzá <b>elsőként</b>, a menüt és a státuszsort utána, különben a gombrács alájuk csúszik.</li>
+        <li>Fix ablak: <code>FormBorderStyle = FixedSingle</code>, <code>MaximizeBox = false</code>; a <code>ClientSize</code>-t a rács méretéből számold.</li>
+        <li>Nehézség kijelzése a menüben: <code>ToolStripMenuItem.Checked</code> (a Sudoku-minta <code>SetupMenus</code>-a).</li>
+      </ul>
+    </article>
+    <article class="rule">
+      <h3>5. Játék vége</h3>
+      <pre class="code">private void Model_GameOver(object? sender, SameGameEventArgs e)
+{
+    foreach (Button button in _buttonGrid)
+        button.Enabled = false;            // több lépést ne engedjen
+    MessageBox.Show($"Vége! Törölt korongok: {e.Score}", "SameGame",
+        MessageBoxButtons.OK, MessageBoxIcon.Information);
+}</pre>
+      <p>Új játéknál engedélyezd vissza a táblát (<b>az <code>NewGame</code> hívása előtt</b>, mert ha az új tábla rögtön lépés nélküli, a <code>GameOver</code> már az <code>NewGame</code>-en belül jön, és újra tiltja).</p>
+    </article>
+    <article class="rule">
+      <h3>6. A Designer</h3>
+      <ul>
+        <li>A <code>*.Designer.cs</code>-t a tervező generálja: vezérlőt a tervezőben tegyél fel, nevezd át (<code>(Name)</code>), az eseménykezelőt a Properties villám ikonjánál kösd be.</li>
+        <li>Ha egy kezelőt törölsz a <code>.cs</code>-ből, a Designer még hivatkozik rá → fordítási hiba. Töröld a sort a <code>.Designer.cs</code>-ből is.</li>
+        <li>A <code>Form1</code>-et nevezd át (pl. <code>GameForm</code>), a VS felajánlja a hivatkozások átnevezését.</li>
+      </ul>
+    </article>
+  </div>
+</section>
+
+<!-- ================= IDŐZÍTŐ, FÁJL ================= -->
+<section id="idozito">
+  <div class="section-head">
+    <span class="label">Gyakori kiegészítések</span>
+    <h2>Időzítő, mentés/betöltés</h2>
+    <p>A minta ZH-ban nincs ilyen, de a Sudoku-mintában és a beadandóban igen, és egy jeles szintű ZH-feladat könnyen kérhet időmérést.</p>
+  </div>
+  <div class="tbl"><table>
+    <thead><tr><th></th><th><code>System.Windows.Forms.Timer</code></th><th><code>System.Timers.Timer</code></th></tr></thead>
+    <tbody>
+      <tr><td>Hol fut a kezelő?</td><td>A UI-szálon (<code>Tick</code>).</td><td>Háttérszálon (<code>Elapsed</code>).</td></tr>
+      <tr><td>Nézet frissítése</td><td>Közvetlenül.</td><td><code>if (InvokeRequired) { BeginInvoke(() =&gt; …); return; }</code> kell, különben kivétel.</td></tr>
+      <tr><td>Hová tedd?</td><td>A nézetbe; minden <code>Tick</code>-re <code>_model.AdvanceTime()</code> (a beadandód is így működik).</td><td>A modellbe, <code>ITimer</code> interfész mögé (a Sudoku-minta), így tesztben mockolható.</td></tr>
+      <tr><td>ZH-ra</td><td><b>Egyszerűbb, kevesebb hibalehetőség.</b></td><td>Csak ha a feladat a modellbe kéri az időzítést.</td></tr>
+    </tbody>
+  </table></div>
+  <ul class="plain">
+    <li>Felugró ablak, mentés/betöltés párbeszéd előtt <b>állítsd meg</b> az időzítőt, utána indítsd újra, ha a játék nem ért véget (Sudoku: <code>PauseGame</code> / <code>ResumeGame</code>).</li>
+    <li>Ha a modellben <code>System.Timers.Timer</code> adattag van, a modellosztálynak <code>IDisposable</code>-t kell megvalósítania. A statikus analizátor (S2931) ezt <b>hibának</b> veszi, lásd lent.</li>
+    <li>Fájlkezelés: a modell <code>async Task LoadGameAsync(string path)</code>, a nézetben <code>private async void MenuLoad_Click(object? sender, EventArgs e)</code> (eseménykezelőnél szabad az <code>async void</code>), <code>try/catch</code> a saját kivételtípusra, és hibánál <code>MessageBox</code>.</li>
+  </ul>
+</section>
+
+<!-- ================= STATIKUS ANALÍZIS ================= -->
+<section id="analizis">
+  <div class="section-head">
+    <span class="label">Fordítás = pontok</span>
+    <h2>Statikus analízis: ezekből lesz build-hiba</h2>
+    <p>Az <code>ELTE.FI.SARuleSet</code> 3.2.1 (Sonar, Roslynator és .NET-analizátorok) <code>ContinuousIntegrationBuild=true</code> mellett minden figyelmeztetést hibává tesz. Az alábbi sorokat <b>kipróbáltam</b>: egy próbafájlt fordítottam a beállítással, és ezt kaptam.</p>
+  </div>
+  <div class="tbl"><table>
+    <thead><tr><th>Mit írtam</th><th>Szabály</th><th>Helyesen</th></tr></thead>
+    <tbody>
+      <tr><td><code>public int[] Data = new int[3];</code></td><td>S1104</td><td>Privát mező + tulajdonság: <code>public int[] Data { get; } = new int[3];</code></td></tr>
+      <tr><td><code>int unused = a * 2; unused = 3;</code></td><td>IDE0059</td><td>Ne adj értéket, amit nem olvasol ki.</td></tr>
+      <tr><td><code>private int _unusedField;</code> (sehol nem használt)</td><td>CS0169</td><td>Töröld. (Sima fordítói warning, de errorrá válik.)</td></tr>
+      <tr><td><code>s += i;</code> ciklusban, stringre</td><td>S1643</td><td><code>StringBuilder</code> vagy <code>string.Join</code>.</td></tr>
+      <tr><td><code>catch (Exception ex) { throw ex; }</code></td><td>CA2200</td><td><code>throw;</code> (vagy saját kivétel <code>innerException</code>-nel).</td></tr>
+      <tr><td><code>if (a &gt; 0) return 1; else return 1;</code></td><td>S3923</td><td>Az azonos ágak felesleges elágazást jelentenek.</td></tr>
+      <tr><td><code>public async void Fire()</code> (nem eseménykezelő)</td><td>S3168</td><td><code>public async Task FireAsync()</code>. Eseménykezelőnél (<code>object? sender, EventArgs e</code>) az <code>async void</code> megengedett.</td></tr>
+      <tr><td><code>public int GetCount() { return Data.Length; }</code></td><td>CA1024</td><td>Paraméter nélküli, olcsó lekérdezés legyen tulajdonság: <code>public int Count =&gt; …</code></td></tr>
+      <tr><td><code>private readonly System.Timers.Timer _timer</code> egy sima osztályban</td><td>S2931</td><td>Az osztály valósítsa meg az <code>IDisposable</code>-t és hívja a <code>_timer.Dispose()</code>-t.</td></tr>
+    </tbody>
+  </table></div>
+  <p>Amit <b>nem</b> kifogásolt: <code>if (flag == true)</code>, üres <code>catch { }</code>, <code>Random</code> a modellben, <code>System.Windows.Forms.Timer</code> adattag a Formban, <code>async void</code> menükezelő, <code>MessageBox.Show</code>. Ettől még kerüld az üres <code>catch</code>-et.</p>
+  <p class="tip"><b>Saját gépen ugyanez</b> Parancssorból <code>dotnet build -p:ContinuousIntegrationBuild=true</code> ugyanúgy errorrá teszi a warningokat, mint a TMS. VS-ben elég a Hibalista <b>Warnings</b> oszlopát nullára vinni.</p>
+</section>
+
+<!-- ================= MINTAMEGOLDÁS ================= -->
+<section id="minta">
+  <div class="section-head">
+    <span class="label">Minta ZH · SameGame</span>
+    <h2>A minta ZH teljes megoldása</h2>
+    <p>Jeles szintű megoldás. Lefordítva a <code>ContinuousIntegrationBuild=true</code> beállítással (0 warning, 0 error), 9 sikeres modellteszttel, és elindítva: a kép az alkalmazásról készült néhány kattintás után.</p>
+  </div>
+  <figure class="shot"><img src="img/samegame.png" alt="A SameGame ablaka: 15×15-ös színes rács, menü (Új játék, Kilépés), alul a státuszsor: Az utolsó lépés 11 korongot törölt. Összesen: 38" width="648" height="733" loading="lazy"><figcaption>Könnyű szint (3 szín), néhány lépés után.</figcaption></figure>
+
+  <h3>Követelmények → megvalósítás</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Szint</th><th>Követelmény</th><th>Hol</th></tr></thead>
+    <tbody>
+      <tr><td>3</td><td>Indításkor 15×15-ös tábla</td><td><code>GameForm</code> konstruktor: <code>GenerateTable()</code> + <code>NewGame(Easy)</code></td></tr>
+      <tr><td>3</td><td>3 nehézség: 3 / 5 / 7 szín, véletlen feltöltés</td><td><code>GameDifficulty</code> enum (érték = színszám), <code>NewGame</code>; menü: Új játék → Könnyű / Közepes / Nehéz</td></tr>
+      <tr><td>3</td><td>Kattintásra az összeköthető, azonos színű korongok törlése</td><td><code>FindGroup</code>: szélességi bejárás 4-szomszédsággal</td></tr>
+      <tr><td>3</td><td>Státuszsor: hány korongot törölt az utolsó lépés</td><td><code>StepPerformed</code> esemény → <code>_statusLabel</code></td></tr>
+      <tr><td>5</td><td>Felső korongok „beesnek”, a tetejét véletlenre töltjük</td><td><code>ApplyGravity</code> + <code>FillEmptyFields</code></td></tr>
+      <tr><td>5</td><td>Csak ≥3 méretű törlés; szabálytalan lépés jelzése</td><td><code>MinimumGroupSize</code>, <code>InvalidStep</code> esemény → státuszsor</td></tr>
+      <tr><td>5</td><td>Ha nincs szabályos lépés: vége, több lépés nincs, felugró ablak</td><td><code>HasValidStep</code>, <code>CheckGameOver</code>, <code>GameOver</code> → tábla tiltása + <code>MessageBox</code></td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>A két algoritmus</h3>
+  <div class="cards">
+    <div class="card">
+      <h4>Összefüggő csoport (BFS)</h4>
+      <ol>
+        <li>Sorba tesszük a kattintott mezőt, megjelöljük.</li>
+        <li>Amíg a sor nem üres: kivesszük, hozzáadjuk a csoporthoz, és a négy szomszédja közül a még nem jelölt, <b>azonos színűeket</b> sorba tesszük és megjelöljük.</li>
+        <li>A „van-e még lépés” ugyanez: minden még nem jelölt mezőből indítunk egy bejárást, közös <code>visited</code> tömbbel. Ha bármelyik csoport legalább 3, van lépés.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h4>Gravitáció oszloponként</h4>
+      <ol>
+        <li>Minden oszlopban egy „írófej” indul a legalsó sorból.</li>
+        <li>Alulról felfelé haladva minden nem üres mezőt az írófej helyére másolunk, és az írófejet eggyel feljebb léptetjük.</li>
+        <li>Az írófej fölötti mezők üresek lesznek; ezeket a végén véletlen színnel töltjük fel.</li>
+      </ol>
+    </div>
+  </div>
+  <details>
+    <summary>Közepes szintű változat (csak ennyi kell a 3-ashoz)</summary>
+    <div class="sol">
+      <p>Nincs gravitáció, nincs minimális méret: a törölt mezőket helyben pótoljuk, és nincs játék vége.</p>
+      <pre class="code">public void Step(int x, int y)
+{
+    List&lt;(int X, int Y)&gt; group = FindGroup(x, y);
+    foreach ((int gx, int gy) in group)
+        _table[gx, gy] = RandomColor();     // helyben pótlás
+
+    LastRemovedCount = group.Count;
+    OnTableChanged();
+    OnStepPerformed();
+}</pre>
+    </div>
+  </details>
+
+  <h3>A kód</h3>
+  <details open>
+    <summary>Model/SameGameModel.cs</summary>
+    <div class="sol"><pre class="code">namespace SameGame.Model
+{
+    /// &lt;summary&gt;
+    /// A SameGame játék modellje. Nem ismeri a Windows Formst:
+    /// minden állapotváltozást eseménnyel jelez a nézetnek.
+    /// &lt;/summary&gt;
+    public class SameGameModel
+    {
+        #region Constants
+
+        public const int DefaultTableSize = 15;
+        public const int MinimumGroupSize = 3; // jeles szint: csak 3+ méretű csoport törölhető
+        public const int EmptyField = -1;
+
+        #endregion
+
+        #region Fields
+
+        private readonly Random _random;
+        private int[,] _table; // _table[sor, oszlop] = szín indexe (0..ColorCount-1)
+
+        #endregion
+
+        #region Properties
+
+        public int TableSize =&gt; _table.GetLength(0);
+
+        public GameDifficulty Difficulty { get; private set; }
+
+        public int ColorCount =&gt; (int)Difficulty;
+
+        public int LastRemovedCount { get; private set; }
+
+        public int Score { get; private set; }
+
+        public bool IsGameOver { get; private set; }
+
+        /// &lt;summary&gt;
+        /// Mező színének lekérdezése (csak olvasható: a nézet nem írhat a táblába).
+        /// &lt;/summary&gt;
+        public int this[int x, int y] =&gt; _table[x, y];
+
+        #endregion
+
+        #region Events
+
+        /// &lt;summary&gt;A tábla tartalma megváltozott (új játék vagy lépés után).&lt;/summary&gt;
+        public event EventHandler? TableChanged;
+
+        /// &lt;summary&gt;Sikeres lépés történt.&lt;/summary&gt;
+        public event EventHandler&lt;SameGameEventArgs&gt;? StepPerformed;
+
+        /// &lt;summary&gt;Szabálytalan lépést kísérelt meg a játékos (3-nál kisebb csoport).&lt;/summary&gt;
+        public event EventHandler&lt;SameGameEventArgs&gt;? InvalidStep;
+
+        /// &lt;summary&gt;Nincs több szabályos lépés.&lt;/summary&gt;
+        public event EventHandler&lt;SameGameEventArgs&gt;? GameOver;
+
+        #endregion
+
+        #region Constructors
+
+        public SameGameModel()
+            : this(new Random())
+        {
+        }
+
+        /// &lt;summary&gt;
+        /// A véletlengenerátort kívülről is megadhatjuk (tesztekben fix seeddel).
+        /// &lt;/summary&gt;
+        public SameGameModel(Random random)
+        {
+            _random = random;
+            _table = new int[DefaultTableSize, DefaultTableSize];
+            Difficulty = GameDifficulty.Easy;
+        }
+
+        #endregion
+
+        #region Public methods
+
+        public void NewGame(GameDifficulty difficulty)
+        {
+            Difficulty = difficulty;
+            _table = new int[DefaultTableSize, DefaultTableSize];
+
+            for (int x = 0; x &lt; TableSize; x++)
+            {
+                for (int y = 0; y &lt; TableSize; y++)
+                {
+                    _table[x, y] = RandomColor();
+                }
+            }
+
+            LastRemovedCount = 0;
+            Score = 0;
+            IsGameOver = false;
+
+            OnTableChanged();
+            CheckGameOver(); // elvileg már az induló táblán sem lehet lépés
+        }
+
+        public void Step(int x, int y)
+        {
+            if (IsGameOver)
+            {
+                return;
+            }
+
+            if (x &lt; 0 || x &gt;= TableSize || y &lt; 0 || y &gt;= TableSize)
+            {
+                throw new ArgumentOutOfRangeException(nameof(x), "A mező a táblán kívül esik.");
+            }
+
+            List&lt;(int X, int Y)&gt; group = FindGroup(x, y);
+
+            if (group.Count &lt; MinimumGroupSize)
+            {
+                OnInvalidStep(group.Count);
+                return;
+            }
+
+            foreach ((int gx, int gy) in group)
+            {
+                _table[gx, gy] = EmptyField;
+            }
+
+            ApplyGravity();
+            FillEmptyFields();
+
+            LastRemovedCount = group.Count;
+            Score += group.Count;
+
+            OnTableChanged();
+            OnStepPerformed();
+            CheckGameOver();
+        }
+
+        /// &lt;summary&gt;
+        /// Van-e még legalább MinimumGroupSize méretű egyszínű csoport a táblán.
+        /// &lt;/summary&gt;
+        public bool HasValidStep()
+        {
+            bool[,] visited = new bool[TableSize, TableSize];
+
+            for (int x = 0; x &lt; TableSize; x++)
+            {
+                for (int y = 0; y &lt; TableSize; y++)
+                {
+                    if (!visited[x, y] &amp;&amp; FindGroup(x, y, visited).Count &gt;= MinimumGroupSize)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        #endregion
+
+        #region Internal methods (tesztekhez)
+
+        /// &lt;summary&gt;
+        /// Előre megadott tábla betöltése (csak a tesztprojekt látja, InternalsVisibleTo).
+        /// &lt;/summary&gt;
+        internal void SetTable(int[,] table, GameDifficulty difficulty)
+        {
+            Difficulty = difficulty;
+            _table = (int[,])table.Clone();
+            LastRemovedCount = 0;
+            Score = 0;
+            IsGameOver = false;
+        }
+
+        #endregion
+
+        #region Private methods
+
+        private int RandomColor() =&gt; _random.Next(ColorCount);
+
+        private List&lt;(int X, int Y)&gt; FindGroup(int x, int y)
+        {
+            return FindGroup(x, y, new bool[TableSize, TableSize]);
+        }
+
+        /// &lt;summary&gt;
+        /// Szélességi bejárás (BFS) a vízszintesen/függőlegesen szomszédos, azonos színű mezőkön.
+        /// &lt;/summary&gt;
+        private List&lt;(int X, int Y)&gt; FindGroup(int x, int y, bool[,] visited)
+        {
+            List&lt;(int X, int Y)&gt; group = [];
+            int color = _table[x, y];
+
+            if (color == EmptyField)
+            {
+                return group;
+            }
+
+            Queue&lt;(int X, int Y)&gt; queue = new();
+            queue.Enqueue((x, y));
+            visited[x, y] = true;
+
+            while (queue.Count &gt; 0)
+            {
+                (int cx, int cy) = queue.Dequeue();
+                group.Add((cx, cy));
+
+                foreach ((int nx, int ny) in Neighbours(cx, cy))
+                {
+                    if (!visited[nx, ny] &amp;&amp; _table[nx, ny] == color)
+                    {
+                        visited[nx, ny] = true;
+                        queue.Enqueue((nx, ny));
+                    }
+                }
+            }
+
+            return group;
+        }
+
+        private IEnumerable&lt;(int X, int Y)&gt; Neighbours(int x, int y)
+        {
+            if (x &gt; 0)
+            {
+                yield return (x - 1, y);
+            }
+
+            if (x &lt; TableSize - 1)
+            {
+                yield return (x + 1, y);
+            }
+
+            if (y &gt; 0)
+            {
+                yield return (x, y - 1);
+            }
+
+            if (y &lt; TableSize - 1)
+            {
+                yield return (x, y + 1);
+            }
+        }
+
+        /// &lt;summary&gt;
+        /// Oszloponként alulról felfelé "lejjebb csúsztatjuk" a nem üres mezőket.
+        /// &lt;/summary&gt;
+        private void ApplyGravity()
+        {
+            for (int y = 0; y &lt; TableSize; y++)
+            {
+                int writeRow = TableSize - 1;
+
+                for (int x = TableSize - 1; x &gt;= 0; x--)
+                {
+                    if (_table[x, y] != EmptyField)
+                    {
+                        _table[writeRow, y] = _table[x, y];
+                        writeRow--;
+                    }
+                }
+
+                for (int x = writeRow; x &gt;= 0; x--)
+                {
+                    _table[x, y] = EmptyField;
+                }
+            }
+        }
+
+        private void FillEmptyFields()
+        {
+            for (int x = 0; x &lt; TableSize; x++)
+            {
+                for (int y = 0; y &lt; TableSize; y++)
+                {
+                    if (_table[x, y] == EmptyField)
+                    {
+                        _table[x, y] = RandomColor();
+                    }
+                }
+            }
+        }
+
+        private void CheckGameOver()
+        {
+            if (HasValidStep())
+            {
+                return;
+            }
+
+            IsGameOver = true;
+            OnGameOver();
+        }
+
+        #endregion
+
+        #region Event raisers
+
+        private void OnTableChanged() =&gt; TableChanged?.Invoke(this, EventArgs.Empty);
+
+        private void OnStepPerformed() =&gt;
+            StepPerformed?.Invoke(this, new SameGameEventArgs(LastRemovedCount, Score));
+
+        private void OnInvalidStep(int groupSize) =&gt;
+            InvalidStep?.Invoke(this, new SameGameEventArgs(groupSize, Score));
+
+        private void OnGameOver() =&gt;
+            GameOver?.Invoke(this, new SameGameEventArgs(LastRemovedCount, Score));
+
+        #endregion
+    }
+}</pre></div>
+  </details>
+  <details>
+    <summary>Model/SameGameEventArgs.cs és GameDifficulty.cs</summary>
+    <div class="sol"><pre class="code">namespace SameGame.Model
+{
+    /// &lt;summary&gt;
+    /// Lépéssel kapcsolatos eseményargumentum (push stílus: viszi az adatot).
+    /// &lt;/summary&gt;
+    public class SameGameEventArgs : EventArgs
+    {
+        /// &lt;summary&gt;
+        /// Az érintett csoport mérete (érvényes lépésnél a törölt korongok száma).
+        /// &lt;/summary&gt;
+        public int GroupSize { get; }
+
+        /// &lt;summary&gt;
+        /// Az összes eddig törölt korong száma.
+        /// &lt;/summary&gt;
+        public int Score { get; }
+
+        public SameGameEventArgs(int groupSize, int score)
+        {
+            GroupSize = groupSize;
+            Score = score;
+        }
+    }
+}</pre><pre class="code">namespace SameGame.Model
+{
+    /// &lt;summary&gt;
+    /// Nehézségi szint; az érték a használt színek száma.
+    /// &lt;/summary&gt;
+    public enum GameDifficulty
+    {
+        Easy = 3,
+        Medium = 5,
+        Hard = 7,
+    }
+}</pre></div>
+  </details>
+  <details>
+    <summary>View/GameForm.cs</summary>
+    <div class="sol"><pre class="code">using SameGame.Model;
+
+namespace SameGame.View
+{
+    /// &lt;summary&gt;
+    /// A játék ablaka (nézet). Csak megjelenít és továbbítja a kattintásokat a modellnek.
+    /// &lt;/summary&gt;
+    public partial class GameForm : Form
+    {
+        private const int FieldSize = 34; // egy mező mérete logikai pixelben
+
+        // szín index -&gt; megjelenített szín (legfeljebb 7 szín kell)
+        private static readonly Color[] FieldColors =
+        [
+            Color.Crimson, Color.RoyalBlue, Color.Gold, Color.ForestGreen,
+            Color.DarkOrange, Color.MediumOrchid, Color.Turquoise,
+        ];
+
+        private readonly SameGameModel _model;
+        private readonly Button[,] _buttonGrid;
+
+        public GameForm()
+        {
+            InitializeComponent();
+
+            _model = new SameGameModel();
+            _model.TableChanged += Model_TableChanged;
+            _model.StepPerformed += Model_StepPerformed;
+            _model.InvalidStep += Model_InvalidStep;
+            _model.GameOver += Model_GameOver;
+
+            _buttonGrid = new Button[_model.TableSize, _model.TableSize];
+            GenerateTable();
+
+            _model.NewGame(GameDifficulty.Easy); // indításkor rögtön legyen 15x15-ös tábla
+        }
+
+        #region Table
+
+        /// &lt;summary&gt;
+        /// A gombrácsot egyszer hozzuk létre; új játéknál csak a színeket frissítjük.
+        /// &lt;/summary&gt;
+        private void GenerateTable()
+        {
+            int size = LogicalToDeviceUnits(FieldSize);
+
+            _tablePanel.SuspendLayout();
+
+            for (int x = 0; x &lt; _model.TableSize; x++)
+            {
+                for (int y = 0; y &lt; _model.TableSize; y++)
+                {
+                    Button button = new()
+                    {
+                        Location = new Point(y * size, x * size), // y = oszlop -&gt; vízszintes
+                        Size = new Size(size, size),
+                        FlatStyle = FlatStyle.Flat,
+                        Tag = (x, y), // a gomb koordinátája
+                        TabStop = false,
+                    };
+                    button.FlatAppearance.BorderColor = Color.White;
+                    button.Click += FieldButton_Click; // közös eseménykezelő
+
+                    _buttonGrid[x, y] = button;
+                    _tablePanel.Controls.Add(button);
+                }
+            }
+
+            _tablePanel.ResumeLayout();
+
+            ClientSize = new Size(
+                _model.TableSize * size,
+                _menuStrip.Height + (_model.TableSize * size) + _statusStrip.Height);
+        }
+
+        private void RefreshTable()
+        {
+            for (int x = 0; x &lt; _model.TableSize; x++)
+            {
+                for (int y = 0; y &lt; _model.TableSize; y++)
+                {
+                    _buttonGrid[x, y].BackColor = FieldColors[_model[x, y]];
+                }
+            }
+        }
+
+        private void SetTableEnabled(bool enabled)
+        {
+            foreach (Button button in _buttonGrid)
+            {
+                button.Enabled = enabled;
+            }
+        }
+
+        private void FieldButton_Click(object? sender, EventArgs e)
+        {
+            if (sender is Button { Tag: (int x, int y) })
+            {
+                _model.Step(x, y);
+            }
+        }
+
+        #endregion
+
+        #region Model event handlers
+
+        private void Model_TableChanged(object? sender, EventArgs e)
+        {
+            RefreshTable();
+        }
+
+        private void Model_StepPerformed(object? sender, SameGameEventArgs e)
+        {
+            _statusLabel.Text = $"Az utolsó lépés {e.GroupSize} korongot törölt. Összesen: {e.Score}";
+        }
+
+        private void Model_InvalidStep(object? sender, SameGameEventArgs e)
+        {
+            _statusLabel.Text =
+                $"Szabálytalan lépés: legalább {SameGameModel.MinimumGroupSize} összefüggő korong kell " +
+                $"(ez a csoport {e.GroupSize} korongos).";
+        }
+
+        private void Model_GameOver(object? sender, SameGameEventArgs e)
+        {
+            SetTableEnabled(false);
+            MessageBox.Show(
+                $"Nincs több szabályos lépés, vége a játéknak!{Environment.NewLine}Törölt korongok: {e.Score}",
+                "SameGame",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+        }
+
+        #endregion
+
+        #region Menu event handlers
+
+        private void StartNewGame(GameDifficulty difficulty)
+        {
+            SetTableEnabled(true);
+            _statusLabel.Text = "Új játék";
+            _model.NewGame(difficulty); // ha rögtön nincs lépés, a GameOver újra letiltja a táblát
+        }
+
+        private void MenuEasy_Click(object? sender, EventArgs e) =&gt; StartNewGame(GameDifficulty.Easy);
+
+        private void MenuMedium_Click(object? sender, EventArgs e) =&gt; StartNewGame(GameDifficulty.Medium);
+
+        private void MenuHard_Click(object? sender, EventArgs e) =&gt; StartNewGame(GameDifficulty.Hard);
+
+        private void MenuExit_Click(object? sender, EventArgs e) =&gt; Close();
+
+        #endregion
+    }
+}</pre></div>
+  </details>
+  <details>
+    <summary>View/GameForm.Designer.cs (menü, státuszsor, panel)</summary>
+    <div class="sol">
+      <p class="note"><b>Megjegyzés</b> ZH-n ezt a tervező generálja: elég a vezérlőket feltenni, átnevezni, és a <code>Click</code> eseményeket bekötni. A lenti kód ugyanezt kézzel írja le.</p>
+      <pre class="code">namespace SameGame.View
+{
+    partial class GameForm
+    {
+        private System.ComponentModel.IContainer components = null!;
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing &amp;&amp; (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows Form Designer generated code
+
+        private void InitializeComponent()
+        {
+            _menuStrip = new MenuStrip();
+            _menuNewGame = new ToolStripMenuItem();
+            _menuEasy = new ToolStripMenuItem();
+            _menuMedium = new ToolStripMenuItem();
+            _menuHard = new ToolStripMenuItem();
+            _menuExit = new ToolStripMenuItem();
+            _statusStrip = new StatusStrip();
+            _statusLabel = new ToolStripStatusLabel();
+            _tablePanel = new Panel();
+            _menuStrip.SuspendLayout();
+            _statusStrip.SuspendLayout();
+            SuspendLayout();
+            //
+            // _menuStrip
+            //
+            _menuStrip.Items.AddRange(new ToolStripItem[] { _menuNewGame, _menuExit });
+            _menuStrip.Location = new Point(0, 0);
+            _menuStrip.Name = "_menuStrip";
+            _menuStrip.TabIndex = 0;
+            //
+            // _menuNewGame
+            //
+            _menuNewGame.DropDownItems.AddRange(new ToolStripItem[] { _menuEasy, _menuMedium, _menuHard });
+            _menuNewGame.Name = "_menuNewGame";
+            _menuNewGame.Text = "Új játék";
+            //
+            // _menuEasy
+            //
+            _menuEasy.Name = "_menuEasy";
+            _menuEasy.Text = "Könnyű (3 szín)";
+            _menuEasy.Click += MenuEasy_Click;
+            //
+            // _menuMedium
+            //
+            _menuMedium.Name = "_menuMedium";
+            _menuMedium.Text = "Közepes (5 szín)";
+            _menuMedium.Click += MenuMedium_Click;
+            //
+            // _menuHard
+            //
+            _menuHard.Name = "_menuHard";
+            _menuHard.Text = "Nehéz (7 szín)";
+            _menuHard.Click += MenuHard_Click;
+            //
+            // _menuExit
+            //
+            _menuExit.Name = "_menuExit";
+            _menuExit.Text = "Kilépés";
+            _menuExit.Click += MenuExit_Click;
+            //
+            // _statusStrip
+            //
+            _statusStrip.Items.AddRange(new ToolStripItem[] { _statusLabel });
+            _statusStrip.Name = "_statusStrip";
+            _statusStrip.SizingGrip = false;
+            _statusStrip.TabIndex = 1;
+            //
+            // _statusLabel
+            //
+            _statusLabel.Name = "_statusLabel";
+            _statusLabel.Text = "Új játék";
+            //
+            // _tablePanel
+            //
+            _tablePanel.Dock = DockStyle.Fill;
+            _tablePanel.Name = "_tablePanel";
+            _tablePanel.TabIndex = 2;
+            //
+            // GameForm
+            //
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(_tablePanel); // a Dock = Fill vezérlőt vesszük fel először
+            Controls.Add(_statusStrip);
+            Controls.Add(_menuStrip);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            MainMenuStrip = _menuStrip;
+            MaximizeBox = false;
+            Name = "GameForm";
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "SameGame";
+            _menuStrip.ResumeLayout(false);
+            _menuStrip.PerformLayout();
+            _statusStrip.ResumeLayout(false);
+            _statusStrip.PerformLayout();
+            ResumeLayout(false);
+            PerformLayout();
+        }
+
+        #endregion
+
+        private MenuStrip _menuStrip;
+        private ToolStripMenuItem _menuNewGame;
+        private ToolStripMenuItem _menuEasy;
+        private ToolStripMenuItem _menuMedium;
+        private ToolStripMenuItem _menuHard;
+        private ToolStripMenuItem _menuExit;
+        private StatusStrip _statusStrip;
+        private ToolStripStatusLabel _statusLabel;
+        private Panel _tablePanel;
+    }
+}</pre>
+    </div>
+  </details>
+  <details>
+    <summary>Program.cs</summary>
+    <div class="sol"><pre class="code">using SameGame.View;
+
+namespace SameGame
+{
+    internal static class Program
+    {
+        [STAThread]
+        private static void Main()
+        {
+            ApplicationConfiguration.Initialize();
+            Application.Run(new GameForm());
+        }
+    }
+}</pre></div>
+  </details>
+  <details>
+    <summary>Tesztek: SameGameModelTest.cs és FixedRandom.cs</summary>
+    <div class="sol"><pre class="code">using SameGame.Model;
+
+[assembly: Parallelize(Scope = ExecutionScope.MethodLevel)]
+
+namespace SameGame.Test
+{
+    [TestClass]
+    public sealed class SameGameModelTest
+    {
+        private const int N = SameGameModel.DefaultTableSize;
+
+        private SameGameModel _model = null!;
+
+        [TestInitialize]
+        public void Initialize()
+        {
+            _model = new SameGameModel(new Random(42)); // fix seed: ismételhető teszt
+        }
+
+        /// &lt;summary&gt;
+        /// Sakktábla-mintás 15x15-ös tábla: sehol nincs két szomszédos azonos szín.
+        /// &lt;/summary&gt;
+        private static int[,] Checkerboard()
+        {
+            int[,] table = new int[N, N];
+            for (int x = 0; x &lt; N; x++)
+            {
+                for (int y = 0; y &lt; N; y++)
+                {
+                    table[x, y] = (x + y) % 2;
+                }
+            }
+
+            return table;
+        }
+
+        [TestMethod]
+        [DataRow(GameDifficulty.Easy)]
+        [DataRow(GameDifficulty.Medium)]
+        [DataRow(GameDifficulty.Hard)]
+        public void NewGame_FillsTableWithValidColors(GameDifficulty difficulty)
+        {
+            bool tableChanged = false;
+            _model.TableChanged += (_, _) =&gt; tableChanged = true;
+
+            _model.NewGame(difficulty);
+
+            Assert.IsTrue(tableChanged);
+            Assert.AreEqual(N, _model.TableSize);
+            Assert.AreEqual((int)difficulty, _model.ColorCount);
+            Assert.AreEqual(0, _model.Score);
+            for (int x = 0; x &lt; N; x++)
+            {
+                for (int y = 0; y &lt; N; y++)
+                {
+                    Assert.IsTrue(_model[x, y] &gt;= 0 &amp;&amp; _model[x, y] &lt; _model.ColorCount);
+                }
+            }
+        }
+
+        [TestMethod]
+        public void Step_SmallGroup_IsInvalidAndTableUnchanged()
+        {
+            int[,] table = Checkerboard();
+            table[0, 0] = 2;
+            table[0, 1] = 2; // csak 2 korongos csoport
+            _model.SetTable(table, GameDifficulty.Easy);
+
+            int reportedSize = -1;
+            bool tableChanged = false;
+            _model.InvalidStep += (_, e) =&gt; reportedSize = e.GroupSize;
+            _model.TableChanged += (_, _) =&gt; tableChanged = true;
+
+            _model.Step(0, 0);
+
+            Assert.AreEqual(2, reportedSize);
+            Assert.IsFalse(tableChanged);
+            Assert.AreEqual(0, _model.Score);
+            Assert.AreEqual(2, _model[0, 0]);
+        }
+
+        [TestMethod]
+        public void Step_ValidGroup_RemovesGroupAndDropsFieldsAbove()
+        {
+            int[,] table = Checkerboard();
+            // az utolsó oszlop alsó 3 mezője egy 3 korongos (2-es színű) csoport
+            table[N - 1, N - 1] = 2;
+            table[N - 2, N - 1] = 2;
+            table[N - 3, N - 1] = 2;
+            table[N - 4, N - 1] = 0; // ez fölötte van, ennek kell leesnie a legaljára
+            table[N - 4, N - 2] = 1;
+            _model.SetTable(table, GameDifficulty.Easy);
+
+            int removed = -1;
+            _model.StepPerformed += (_, e) =&gt; removed = e.GroupSize;
+
+            _model.Step(N - 2, N - 1);
+
+            Assert.AreEqual(3, removed);
+            Assert.AreEqual(3, _model.LastRemovedCount);
+            Assert.AreEqual(3, _model.Score);
+            Assert.AreEqual(0, _model[N - 1, N - 1]); // a felette lévő 0-s korong leesett
+            Assert.AreEqual(table[0, N - 1], _model[3, N - 1]); // a legfelső eredeti korong 3 sorral lejjebb
+            for (int x = 0; x &lt; 3; x++)
+            {
+                Assert.IsTrue(_model[x, N - 1] &gt;= 0 &amp;&amp; _model[x, N - 1] &lt; 3); // a teteje újra ki van töltve
+            }
+
+            Assert.AreEqual(table[N - 1, 0], _model[N - 1, 0]); // a többi oszlop nem változott
+        }
+
+        /// &lt;summary&gt;
+        /// Olyan sakktábla, amelyen a 0. sor első három mezője egy 3 korongos (2-es színű) csoport.
+        /// A lépés után a modell ezt a 3 mezőt pótolja; a FixedRandom a sakktábla eredeti
+        /// színeit adja vissza, így a lépés után nem marad szabályos lépés.
+        /// &lt;/summary&gt;
+        private SameGameModel ModelWithLastGroup()
+        {
+            SameGameModel model = new(new FixedRandom(0, 1, 0));
+            int[,] table = Checkerboard();
+            table[0, 0] = 2;
+            table[0, 1] = 2;
+            table[0, 2] = 2;
+            model.SetTable(table, GameDifficulty.Easy);
+            return model;
+        }
+
+        [TestMethod]
+        public void Step_LastValidStep_RaisesGameOver()
+        {
+            SameGameModel model = ModelWithLastGroup();
+            int finalScore = -1;
+            model.GameOver += (_, e) =&gt; finalScore = e.Score;
+
+            Assert.IsTrue(model.HasValidStep());
+            model.Step(0, 1);
+
+            Assert.IsTrue(model.IsGameOver);
+            Assert.AreEqual(3, finalScore);
+            Assert.IsFalse(model.HasValidStep());
+        }
+
+        [TestMethod]
+        public void Step_AfterGameOver_DoesNothing()
+        {
+            SameGameModel model = ModelWithLastGroup();
+            model.Step(0, 0);
+            Assert.IsTrue(model.IsGameOver);
+
+            bool anyEvent = false;
+            model.TableChanged += (_, _) =&gt; anyEvent = true;
+            model.StepPerformed += (_, _) =&gt; anyEvent = true;
+            model.InvalidStep += (_, _) =&gt; anyEvent = true;
+
+            model.Step(5, 5);
+
+            Assert.IsFalse(anyEvent);
+            Assert.AreEqual(3, model.Score);
+        }
+
+        [TestMethod]
+        public void HasValidStep_Checkerboard_IsFalse()
+        {
+            _model.SetTable(Checkerboard(), GameDifficulty.Easy);
+            Assert.IsFalse(_model.HasValidStep());
+        }
+
+        [TestMethod]
+        public void Step_OutsideTable_Throws()
+        {
+            _model.NewGame(GameDifficulty.Easy);
+            Assert.ThrowsExactly&lt;ArgumentOutOfRangeException&gt;(() =&gt; _model.Step(N, 0));
+        }
+    }
+}</pre><pre class="code">namespace SameGame.Test
+{
+    /// &lt;summary&gt;
+    /// Előre megadott értékeket visszaadó "véletlen" generátor a determinisztikus tesztekhez.
+    /// A Random.Next(int) virtuális, ezért felüldefiniálható.
+    /// &lt;/summary&gt;
+    internal sealed class FixedRandom : Random
+    {
+        private readonly int[] _values;
+        private int _index;
+
+        public FixedRandom(params int[] values)
+        {
+            _values = values;
+        }
+
+        public override int Next(int maxValue)
+        {
+            int value = _values[_index % _values.Length];
+            _index++;
+            return value % maxValue;
+        }
+    }
+}</pre></div>
+  </details>
+</section>
+
+<!-- ================= BEADANDÓ TANULSÁGAI ================= -->
+<section id="beadando">
+  <div class="section-head">
+    <span class="label">Saját kódod alapján</span>
+    <h2>A Nonogram-beadandó tanulságai</h2>
+    <p>Amit a beadandóban jól csináltál, azt ZH-n is így csináld; ami rés volt rajta, arra figyelj.</p>
+  </div>
+  <div class="cards">
+    <div class="card good">
+      <h3>Vidd magaddal</h3>
+      <ul>
+        <li><code>Tag = (row, col)</code> és <code>if (btn.Tag is not (int row, int col)) return;</code>: tiszta koordináta-kezelés.</li>
+        <li>Egy kezelő minden gombra, a modell eseményeire egy <code>SubscribeToGameEvents()</code> a konstruktorban.</li>
+        <li>WinForms <code>Timer</code> a nézetben, ami a modell <code>AdvanceTime()</code>-ját hívja: nincs szálkezelési gond.</li>
+        <li>A modell minden lépésnél ellenőrzi a játék végét, és eseményt küld (<code>GameWon</code>, <code>GameOver</code>).</li>
+        <li><code>async</code> mentés/betöltés, <code>using var dialog</code>.</li>
+        <li><code>LogicalToDeviceUnits</code>, <code>SuspendLayout</code>/<code>ResumeLayout</code> a sok vezérlő felrakásakor.</li>
+      </ul>
+    </div>
+    <div class="card bad">
+      <h3>Figyelj rá</h3>
+      <ul>
+        <li><code>public Cell[,] Grid { get; private set; }</code>: a nézet a cellákat közvetlenül olvassa (sőt írhatná). Inkább indexer vagy <code>GetCell(row, col)</code>, ami csak olvasható adatot ad.</li>
+        <li><code>tableLayoutPanel1.Controls.Clear()</code> új játéknál: a régi gombokat nem <code>Dispose()</code>-olja. Fix méretnél hozd létre egyszer, változó méretnél dispose-old.</li>
+        <li>A szünet <code>TogglePause()</code>-zal: két egymás utáni hívás könnyen rossz állapotba visz (pl. ha a párbeszédablak után is kapcsolsz). Az egyértelmű <code>Pause()</code> / <code>Resume()</code> biztonságosabb (Sudoku-minta).</li>
+        <li>A <code>MakeMove</code> <code>bool</code>-t ad vissza <b>és</b> eseményt is küld: ZH-n válassz egyet (az esemény az elvárt), különben a nézet kétféleképpen reagálhat.</li>
+        <li>Magyar és angol nevek keverése (<code>Életek:</code> felirat, <code>LivesChanged</code>) rendben van; de a feladat szövegében kért kiírást <b>szó szerint</b> kövesd.</li>
+      </ul>
+    </div>
+  </div>
+  <h3>A tanszéki Sudoku-minta: amit ZH-n nézd meg benne</h3>
+  <ul class="plain">
+    <li><code>SudokuGameModel</code>: <code>#region</code>-okra bontott szerkezet (mezők, tulajdonságok, események, publikus és privát metódusok, eseménykiváltók): jó sablon a saját modellhez.</li>
+    <li><code>GameForm.GenerateTable</code> / <code>SetupTable</code> / <code>SetupMenus</code>: a gombrács létrehozása, a modell állapotának kirajzolása és a menüpipák beállítása külön metódusban.</li>
+    <li><code>Game_GameAdvanced</code>: az <code>InvokeRequired</code> / <code>BeginInvoke</code> minta háttérszálas időzítőhöz.</li>
+    <li><code>MenuFileLoadGame_Click</code>: időzítő megállítása, párbeszéd, <code>try/catch</code>, majd folytatás.</li>
+  </ul>
+</section>
+
+<!-- ================= GYAKORLÁS ================= -->
+<section id="gyakorlas">
+  <div class="section-head">
+    <span class="label">Saját feladatok</span>
+    <h2>Gyakorló feladatok ZH-formában</h2>
+    <p>A minta ZH mintájára írt feladatok (nem hivatalosak). Mérj időt: 90 perc mindegyik. A megoldási vázlatot csak a végén nyisd le.</p>
+  </div>
+  <div class="taskgroup">
+    <article class="task">
+      <div class="task-head"><span class="no">1.</span><span class="kind">Lights Out</span></div>
+      <div class="stmt">
+        <p>Készítsünk WinForms, MV architektúrájú alkalmazást a <b>Lights Out</b> játékra. Az n×n-es táblán minden mező lámpa (ég / nem ég). Egy mezőre kattintva a mező és a négy szomszédja állapota megfordul. Cél: minden lámpát lekapcsolni.</p>
+        <p><b>Közepes (3):</b> indításkor 5×5-ös tábla véletlen állapottal; új játék 3×3, 5×5, 7×7 méretben; a státuszsor mutassa a lépésszámot.</p>
+        <p><b>Jeles (5):</b> a kezdőállás mindig megoldható legyen (generálás: a lekapcsolt tábláról indulva véletlen kattintásokat szimulálunk); győzelemkor felugró ablak és a tábla tiltása; a státuszsor mutassa az eltelt időt is (másodpercenként frissül).</p>
+      </div>
+      <details>
+        <summary>Megoldási vázlat</summary>
+        <div class="sol">
+          <ul>
+            <li>Modell: <code>bool[,] _lights</code>, <code>this[x, y]</code> indexer, <code>Toggle(x, y)</code> (privát), <code>Step(x, y)</code>: önmaga + 4 szomszéd, <code>StepCount++</code>, események: <code>TableChanged</code>, <code>GameWon</code>.</li>
+            <li>Változó méret: a nézet új játéknál <b>dispose-olja</b> a régi gombokat, és újat hoz létre.</li>
+            <li>Megoldható kezdőállás: <code>NewGame</code> a csupa lekapcsolt táblán k darab véletlen <code>Toggle</code>-kereszt (nem számít lépésnek).</li>
+            <li>Idő: WinForms <code>Timer</code> a nézetben → <code>_model.AdvanceTime()</code> → <code>TimeAdvanced</code> esemény → státuszsor. Győzelemkor a <code>GameWon</code> kezelője állítsa le a timert.</li>
+          </ul>
+        </div>
+      </details>
+    </article>
+    <article class="task">
+      <div class="task-head"><span class="no">2.</span><span class="kind">Tili-toli</span></div>
+      <div class="stmt">
+        <p>Készítsünk WinForms, MV architektúrájú alkalmazást a <b>tili-toli</b> (15-ös kirakó) játékra: n×n-es tábla, rajta 1…n²−1 számozott lapka és egy üres hely. Az üres hellyel szomszédos lapkára kattintva a lapka az üres helyre csúszik.</p>
+        <p><b>Közepes (3):</b> 4×4-es tábla; új játék keveréssel; csak szabályos csúsztatás; státuszsor: lépésszám.</p>
+        <p><b>Jeles (5):</b> választható méret (3×3, 4×4, 5×5); a keverés mindig megoldható állást adjon (véletlen szabályos lépésekkel keverünk); kirakáskor felugró ablak a lépésszámmal, utána ne lehessen lépni.</p>
+      </div>
+      <details>
+        <summary>Megoldási vázlat</summary>
+        <div class="sol">
+          <ul>
+            <li>Modell: <code>int[,] _tiles</code> (0 = üres), az üres hely koordinátája külön mezőben; <code>Step(x, y)</code> csak akkor cserél, ha |dx| + |dy| = 1 az üres helyhez képest; különben <code>InvalidStep</code> esemény (vagy egyszerűen semmi).</li>
+            <li>Keverés: sok véletlen <b>szabályos</b> lépés az üres hely szomszédai közül; így biztosan megoldható.</li>
+            <li>Kész-e: minden <code>_tiles[x, y] == x * n + y + 1</code>, kivéve az utolsó mezőt.</li>
+            <li>Nézet: a gomb <code>Text</code>-je a szám, az üres hely gombja üres és <code>Enabled = false</code>.</li>
+          </ul>
+        </div>
+      </details>
+    </article>
+    <article class="task">
+      <div class="task-head"><span class="no">3.</span><span class="kind">Színpárosító</span></div>
+      <div class="stmt">
+        <p>Készítsünk WinForms, MV architektúrájú <b>memóriajátékot</b>: 4×4-es táblán 8 színpár rejtve. Egy kattintás felfedi a mezőt; két felfedett, azonos színű mező felfedve marad, két különböző 1 másodperc után visszafordul.</p>
+        <p><b>Közepes (3):</b> 4×4-es tábla, véletlen elrendezés, a státuszsorban a próbálkozások száma; a visszafordítás késleltetéssel (Timer).</p>
+        <p><b>Jeles (5):</b> 4×4 és 6×6 méret; a visszafordítás ideje alatt ne lehessen kattintani; ha minden pár megvan, felugró ablak a próbálkozások számával és az eltelt idővel.</p>
+      </div>
+      <details>
+        <summary>Megoldási vázlat</summary>
+        <div class="sol">
+          <ul>
+            <li>Modell: <code>int[,] _colors</code>, <code>bool[,] _revealed</code>, az első felfedett mező (<code>(int, int)?</code>), egy „várakozik” állapot.</li>
+            <li>A késleltetés a modellben: <code>ITimer</code> (Sudoku-minta) vagy egyszerűbben a nézet indít egy egyszeri WinForms <code>Timer</code>-t, és lejártakor hívja a <code>_model.HideMismatch()</code>-et. A szabály („amíg vár, nem lehet kattintani”) akkor is a modellben legyen: <code>Step</code> az <code>IsWaiting</code> alatt nem csinál semmit.</li>
+            <li>Keverés: a színlistát (minden szín kétszer) Fisher–Yates-keveréssel, majd sorfolytonosan a táblára.</li>
+          </ul>
+        </div>
+      </details>
+    </article>
+  </div>
+</section>
+
+<footer>Források: <a href="../elte_eva_mintazh_winforms.pdf" target="_blank" rel="noopener">minta ZH (SameGame)</a>, a bevezető előadás számonkérési diái, a 3. gyakorlat munkafüzete, a tanszéki Sudoku-mintaprogram és a saját Nonogram-beadandó. A mintamegoldás .NET 10-zel, az <code>ELTE.FI.SARuleSet</code> 3.2.1 csomaggal és <code>ContinuousIntegrationBuild=true</code> beállítással fordult hibátlanul; a 9 MSTest-teszt sikeres. A forráskód: <code>EVA/Kidolgozások/SameGame/</code>.</footer>
+</div>
+
+<script>
+(function () {
+  // C# syntax highlighter for pre.code blocks (XML for .csproj)
+  var KW = 'abstract as async await base bool break byte case catch char checked class const continue decimal default delegate do double else enum event explicit extern false finally fixed float for foreach get goto if implicit in init int interface internal is lock long namespace new not null object operator out override params partial private protected public readonly record ref return sealed set short sizeof static string struct switch this throw true try typeof uint ulong unchecked unsafe ushort using value var virtual void volatile when where while yield nameof and or';
+  var TY = 'Random List Queue EventHandler EventArgs Button Color Form Point Size SizeF MessageBox MessageBoxButtons MessageBoxIcon Task Action Exception ArgumentOutOfRangeException IEnumerable Application Panel MenuStrip StatusStrip ToolStripMenuItem ToolStripStatusLabel ToolStripItem DockStyle FlatStyle FormBorderStyle FormStartPosition AutoScaleMode Environment TestClass TestMethod TestInitialize DataRow Assert STAThread Parallelize ExecutionScope SameGameModel SameGameEventArgs GameDifficulty GameForm FixedRandom';
+  var kw = {}, ty = {};
+  KW.split(' ').forEach(function (k) { kw[k] = 1; });
+  TY.split(' ').forEach(function (k) { ty[k] = 1; });
+  var re = /(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|(\$?@?"(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*')|(#(?:region|endregion)\b[^\n]*|\[[A-Z]\w*(?:\([^\]\n]*\))?\])|(\b\d+(?:\.\d+)?[fFmMdDlLuU]?\b)|([A-Za-z_]\w*)/g;
+  function esc(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  document.querySelectorAll('pre.code').forEach(function (pre) {
+    var src = pre.textContent, outp = '', last = 0, m;
+    if (/^\s*</.test(src)) {
+      pre.innerHTML = esc(src)
+        .replace(/(&lt;\/?)([A-Za-z][\w.]*)/g, '$1<span class="tk-kw">$2</span>')
+        .replace(/("[^"\n]*")/g, '<span class="tk-str">$1</span>')
+        .replace(/(&lt;!--[\s\S]*?--&gt;)/g, '<span class="tk-com">$1</span>');
+      return;
+    }
+    re.lastIndex = 0;
+    while ((m = re.exec(src))) {
+      outp += esc(src.slice(last, m.index));
+      var t = m[0], cls = null;
+      if (m[1]) cls = 'com'; else if (m[2]) cls = 'str'; else if (m[3]) cls = 'pp'; else if (m[4]) cls = 'num'; else if (kw[t]) cls = 'kw'; else if (ty[t]) cls = 'type';
+      outp += cls ? '<span class="tk-' + cls + '">' + esc(t) + '</span>' : esc(t);
+      last = re.lastIndex;
+    }
+    pre.innerHTML = outp + esc(src.slice(last));
+  });
+})();
+</script>
+<script>
+(function () {
+  // checklist: per-viewer convenience only; storage may be unavailable
+  var KEY = 'eva-zh1-checklist';
+  var box = document.getElementById('checklist');
+  if (!box) return;
+  var state = {};
+  try { state = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { state = {}; }
+  var inputs = box.querySelectorAll('input[type=checkbox]');
+  inputs.forEach(function (i) {
+    i.checked = !!state[i.dataset.k];
+    i.addEventListener('change', function () {
+      state[i.dataset.k] = i.checked;
+      try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* ignore */ }
+    });
+  });
+  document.getElementById('checklist-reset').addEventListener('click', function () {
+    state = {};
+    inputs.forEach(function (i) { i.checked = false; });
+    try { localStorage.removeItem(KEY); } catch (e) { /* ignore */ }
+  });
+})();
+</script>
+<script>
+(function () {
+  var nav = document.querySelector('nav.bar');
+  if (!nav) return;
+  var links = Array.prototype.filter.call(nav.querySelectorAll('a[href^="#"]'), function (a) {
+    return a.getAttribute('href').length > 1 && document.getElementById(a.getAttribute('href').slice(1));
+  });
+  var current = null, ticking = false;
+  function sectionOf(a) { return document.getElementById(a.getAttribute('href').slice(1)); }
+  function update() {
+    ticking = false;
+    var line = nav.getBoundingClientRect().bottom + 12, active = null;
+    var visible = links.filter(function (a) { return sectionOf(a).offsetParent !== null; });
+    visible.forEach(function (a) { if (sectionOf(a).getBoundingClientRect().top <= line) active = a; });
+    // a lap alján az utolsó szakasz az aktuális akkor is, ha rövid
+    if (visible.length && window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) active = visible[visible.length - 1];
+    if (active === current) return;
+    if (current) { current.classList.remove('active'); current.removeAttribute('aria-current'); }
+    current = active;
+    if (!active) return;
+    active.classList.add('active');
+    active.setAttribute('aria-current', 'location');
+    var ul = active.closest('ul'), ur = ul.getBoundingClientRect(), ar = active.getBoundingClientRect();
+    var left = ar.left - ur.left + ul.scrollLeft, right = left + ar.width;
+    if (left < ul.scrollLeft || right > ul.scrollLeft + ul.clientWidth) ul.scrollTo({ left: Math.max(0, left - 16), behavior: 'smooth' });
+  }
+  function schedule() { if (!ticking) { ticking = true; setTimeout(update, 40); } }
+  window.addEventListener('scroll', schedule, { passive: true });
+  window.addEventListener('resize', schedule);
+  document.addEventListener('input', schedule);
+  document.addEventListener('toggle', schedule, true);
+  update();
+})();
+</script>
+</body>
+</html>

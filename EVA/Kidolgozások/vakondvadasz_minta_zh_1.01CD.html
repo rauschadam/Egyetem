@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="hu" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gyakorló ZH: Vakondvadász</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+/* EVA WinForms ZH prep: rules, checklist, verified sample solution */
+:root {
+  --paper: #f5f7fa; --grid: rgba(79, 122, 18, 0.06); --card: #ffffff; --ink: #1b2430; --muted: #5a6574; --rule: #d7dde6;
+  --accent: #4f7a12; --accent-soft: #eef6dc; --mark: #b8352a; --mark-soft: #fbe9e6; --ok: #2c7a4b; --ok-soft: #e3f3e9;
+  --warm: #9a5b00; --warm-soft: #fbf0dc; --blue: #2346a8; --blue-soft: #e6ecfb; --vio: #6b46c1; --vio-soft: #efe9fb;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-label: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f141b; --grid: rgba(182, 221, 106, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5; --rule: #2a3442;
+    --accent: #b6dd6a; --accent-soft: #262f17; --mark: #ff8b7b; --mark-soft: #3a1f1c; --ok: #74d39c; --ok-soft: #173225;
+    --warm: #f2c46d; --warm-soft: #33291a; --blue: #93abff; --blue-soft: #1d2846; --vio: #c4a7ff; --vio-soft: #261f3d; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f141b; --grid: rgba(182, 221, 106, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5; --rule: #2a3442;
+  --accent: #b6dd6a; --accent-soft: #262f17; --mark: #ff8b7b; --mark-soft: #3a1f1c; --ok: #74d39c; --ok-soft: #173225;
+  --warm: #f2c46d; --warm-soft: #33291a; --blue: #93abff; --blue-soft: #1d2846; --vio: #c4a7ff; --vio-soft: #261f3d; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; background-color: var(--paper); background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 22px 22px; color: var(--ink); font-family: var(--f-body); font-size: 1.06rem; line-height: 1.6; }
+.wrap { max-width: 900px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 80px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2rem, 6vw, 3.1rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.65rem; font-weight: 700; letter-spacing: -0.01em; }
+p { margin: 0; }
+a { color: var(--accent); }
+code { font-family: var(--f-label); font-size: 0.86em; background: var(--accent-soft); padding: 0 4px; border-radius: 3px; overflow-wrap: anywhere; }
+.label { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+
+.back { justify-self: start; display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px 9px 12px; border: 1.5px solid var(--accent); border-radius: 8px; background: var(--accent-soft); color: var(--ink); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 1.02rem; line-height: 1; white-space: nowrap; transition: background .15s, color .15s; }
+.back .arr { color: var(--accent); font-size: 1.25rem; transition: transform .15s, color .15s; }
+.back:hover, .back:focus-visible { background: var(--accent); color: var(--paper); outline: none; }
+.back:hover .arr, .back:focus-visible .arr { color: var(--paper); transform: translateX(-3px); }
+header.hero { display: grid; gap: 14px; padding-block: 0 26px; border-bottom: 2px solid var(--accent); }
+.hero .sub { color: var(--muted); max-width: 66ch; }
+.facts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.fact { display: flex; flex-direction: column; gap: 2px; padding: 8px 14px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; min-width: 120px; }
+.fact b { font-family: var(--f-display); font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+
+nav.bar { position: sticky; top: 0; z-index: 5; background: var(--paper); border-bottom: 1px solid var(--rule); margin-inline: -16px; padding-inline: 16px; }
+nav.bar ul { list-style: none; margin: 0; padding: 10px 0; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin; }
+nav.bar li[hidden] { display: none; }
+nav.bar a { display: block; white-space: nowrap; text-decoration: none; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.04em; color: var(--ink); padding: 6px 10px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); }
+nav.bar a:hover, nav.bar a:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+nav.bar a.nav-back { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+nav.bar a.active, nav.bar a.active:hover, nav.bar a.active:focus-visible { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+
+.tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 18px; }
+.tools input { flex: 1 1 240px; min-width: 0; font: inherit; font-size: 0.98rem; padding: 8px 12px; border: 1px solid var(--rule); border-radius: 6px; background: var(--card); color: var(--ink); }
+.tools input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+button { font-family: var(--f-label); font-size: 0.78rem; padding: 8px 12px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); color: var(--ink); cursor: pointer; }
+button:hover, button:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+button[aria-pressed="true"] { background: var(--accent); color: var(--paper); border-color: var(--accent); }
+.seg { display: inline-flex; border: 1px solid var(--accent); border-radius: 6px; overflow: hidden; }
+.seg button { border: 0; border-radius: 0; padding: 8px 14px; }
+.seg button + button { border-left: 1px solid var(--accent); }
+.seg button[aria-pressed="false"] { background: var(--card); color: var(--ink); }
+
+section.lect { padding-top: 40px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; scroll-margin-top: 56px; }
+section.lect[hidden] { display: none; }
+.section-head { display: grid; gap: 6px; }
+.section-head p { color: var(--muted); max-width: 68ch; }
+
+/* code: highlighted by the script below; .out = terminal / program output */
+pre.code, pre.out { margin: 0; padding: 10px 14px; border: 1px solid var(--rule); border-radius: 6px; font-family: var(--f-label); font-size: 0.84rem; line-height: 1.5; overflow-x: auto; tab-size: 4; }
+pre.code { background: var(--paper); }
+pre.out { background: #0a0d12; color: #cfd6e0; border-color: #222b37; }
+pre.out::before { content: "kimenet / terminál"; display: block; font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase; color: #7d8898; margin-bottom: 4px; }
+.cr { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-start; }
+.cr > pre { flex: 1 1 260px; min-width: 0; }
+.tk-kw { color: var(--vio); font-weight: 500; }
+.tk-str { color: var(--ok); }
+.tk-num { color: var(--warm); }
+.tk-com { color: var(--muted); font-style: italic; }
+.tk-pp { color: var(--blue); }
+
+.warn, .tip, .own, .note { max-width: 74ch; font-size: 0.95rem; }
+.warn { background: var(--mark-soft); border-left: 3px solid var(--mark); padding: 8px 12px; border-radius: 0 4px 4px 0; }
+.tip { background: var(--accent-soft); border-left: 3px solid var(--accent); padding: 8px 12px; border-radius: 0 4px 4px 0; }
+.note { background: var(--warm-soft); border-left: 3px solid var(--warm); padding: 8px 12px; border-radius: 0 4px 4px 0; }
+.own { border: 1px dashed var(--ok); padding: 8px 12px; border-radius: 4px; }
+.own > b:first-child, .tip > b:first-child, .warn > b:first-child, .note > b:first-child { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; display: block; margin-bottom: 2px; }
+.own > b:first-child { color: var(--ok); }
+.warn > b:first-child { color: var(--mark); }
+.tip > b:first-child { color: var(--accent); }
+.note > b:first-child { color: var(--warm); }
+.ans { display: inline-block; background: var(--ok-soft); color: var(--ok); font-weight: 600; padding: 1px 9px; border-radius: 4px; }
+.ans code { background: transparent; color: inherit; }
+
+.tbl { overflow-x: auto; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; max-width: 100%; }
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+th, td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--f-label); font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+tr:last-child td { border-bottom: 0; }
+td code, th code { white-space: nowrap; }
+
+footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.88rem; }
+.empty { color: var(--muted); padding-top: 24px; }
+
+h3 { font-size: 1.08rem; font-weight: 600; }
+.taskgroup { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.task { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 18px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; min-width: 0; scroll-margin-top: 60px; }
+.task-head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.task-head .no { font-family: var(--f-label); font-weight: 500; font-size: 0.82rem; color: var(--accent); border: 1px solid var(--accent); border-radius: 3px; padding: 0 6px; }
+.task-head .kind { margin-left: auto; font-family: var(--f-label); font-size: 0.7rem; padding: 2px 8px; border-radius: 3px; background: var(--accent-soft); color: var(--accent); }
+.stmt, .sol { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; min-width: 0; }
+.stmt > p, .sol > p { max-width: 74ch; }
+.sol ol, .sol ul, .stmt ol, .stmt ul { margin: 0; padding-left: 22px; display: grid; gap: 4px; max-width: 76ch; }
+details { border-top: 1px dashed var(--rule); padding-top: 8px; min-width: 0; }
+summary { cursor: pointer; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); list-style: none; display: inline-flex; gap: 8px; align-items: center; padding: 4px 0; }
+summary::-webkit-details-marker { display: none; }
+summary::before { content: "+"; display: inline-grid; place-items: center; width: 18px; height: 18px; border: 1px solid currentColor; border-radius: 3px; font-size: 0.8rem; }
+details[open] > summary::before { content: "−"; }
+summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sol { padding-top: 6px; }
+@media (max-width: 520px) { body { font-size: 1rem; } .task { padding: 14px; } .task-head .kind { margin-left: 0; } }
+
+
+header.hero { grid-template-columns: minmax(0, 1fr); }
+.back { max-width: 100%; white-space: normal; }
+section { padding-top: 40px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; scroll-margin-top: 56px; }
+h3 { margin-top: 6px; }
+h4 { font-family: var(--f-display); font-size: 1rem; font-weight: 600; margin: 0; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+.card { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 14px 16px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.card ul, .card ol, ul.plain, .rule ul { margin: 0; padding-left: 20px; display: grid; gap: 5px; }
+.card li, .rule li, ul.plain li { font-size: 0.97rem; }
+.card.good { border-top: 3px solid var(--ok); }
+.card.bad { border-top: 3px solid var(--mark); }
+.rules { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.rule { background: var(--card); border: 1px solid var(--rule); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0; padding: 14px 16px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; min-width: 0; }
+.rule p { max-width: 76ch; }
+ol.timeline { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+ol.timeline li { display: grid; grid-template-columns: 74px minmax(0, 1fr); gap: 12px; align-items: start; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 10px 14px; }
+ol.timeline .t { font-family: var(--f-label); font-size: 0.82rem; color: var(--accent); font-weight: 500; padding-top: 2px; }
+.checklist { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 12px 16px 16px; display: grid; gap: 6px; }
+.checklist h3 { font-size: 0.95rem; color: var(--accent); margin-top: 10px; }
+.checklist label { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 8px; align-items: start; cursor: pointer; font-size: 0.97rem; }
+.checklist input { width: 17px; height: 17px; margin-top: 4px; accent-color: var(--accent); }
+.checklist label:has(input:checked) { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--muted); }
+.checklist button { justify-self: start; margin-top: 8px; }
+figure.shot { margin: 0; display: grid; gap: 6px; justify-items: center; }
+figure.shot img { max-width: min(100%, 520px); height: auto; border: 1px solid var(--rule); border-radius: 6px; }
+figure.shot figcaption { font-family: var(--f-label); font-size: 0.72rem; color: var(--muted); }
+.tk-type { color: var(--blue); }
+@media (max-width: 520px) { ol.timeline li { grid-template-columns: 1fr; gap: 4px; } }
+/* page-specific: practice ZH sheet + stopwatch */
+.filename { font-family: var(--f-label); font-size: 0.8rem; color: var(--muted); letter-spacing: 0.03em; }
+.sheet { background: var(--card); border: 1px solid var(--rule); border-top: 3px solid var(--accent); border-radius: 6px; padding: 22px 24px 26px; display: grid; gap: 12px; max-width: 78ch; }
+.sheet p { text-align: justify; hyphens: auto; }
+.sheet-top { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px 16px; font-family: var(--f-label); font-size: 0.74rem; letter-spacing: 0.05em; color: var(--muted); text-align: left !important; }
+.sheet-title { font-size: 1.45rem; margin: 6px 0 2px; }
+.sheet h4 { color: var(--accent); margin-top: 6px; }
+.sheet-end { font-family: var(--f-display); font-weight: 700; text-align: center !important; margin-top: 6px; }
+.clock { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 24px; background: var(--card); border: 1px solid var(--rule); border-left: 4px solid var(--accent); border-radius: 6px; padding: 16px 20px; }
+.clock-main { display: grid; gap: 4px; flex: 1 1 260px; min-width: 0; }
+.clock-main b { font-family: var(--f-label); font-weight: 500; font-size: clamp(2.6rem, 10vw, 3.6rem); line-height: 1; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
+.clock-bar { height: 6px; border-radius: 3px; background: var(--rule); overflow: hidden; margin-top: 6px; }
+.clock-bar span { display: block; height: 100%; width: 0; background: var(--accent); transition: width .4s linear; }
+.clock-hint { color: var(--muted); font-size: 0.92rem; }
+.clock-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.clock-btns button { font-size: 0.86rem; padding: 10px 16px; }
+#clock-start { background: var(--accent); color: var(--paper); border-color: var(--accent); font-weight: 500; }
+#clock-start:hover, #clock-start:focus-visible { background: var(--accent-soft); color: var(--accent); }
+#clock-start:disabled { opacity: 0.45; cursor: default; }
+button.ghost { background: transparent; }
+button.small { font-size: 0.74rem; padding: 6px 10px; }
+.clock[data-state="upload"] { border-left-color: var(--warm); }
+.clock[data-state="upload"] b, .clock[data-state="upload"] #clock-phase { color: var(--warm); }
+.clock[data-state="upload"] .clock-bar span { background: var(--warm); }
+.clock[data-state="over"] { border-left-color: var(--mark); }
+.clock[data-state="over"] b, .clock[data-state="over"] #clock-phase { color: var(--mark); }
+.clock[data-state="paused"] b { color: var(--muted); }
+.plan { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; max-width: 74ch; font-size: 0.95rem; }
+.plan li { padding: 5px 10px; border-left: 3px solid var(--rule); color: var(--muted); }
+.plan li b { font-family: var(--f-label); font-weight: 500; font-size: 0.82rem; display: inline-block; min-width: 4.6em; color: var(--ink); }
+.plan li.now { border-left-color: var(--accent); background: var(--accent-soft); color: var(--ink); }
+.plan li.now b { color: var(--accent); }
+.plan li.past { opacity: 0.55; }
+footer a { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="hero">
+  <a class="back" href="../../index.html#/eva"><span class="arr" aria-hidden="true">←</span>Vissza: Eseményvezérelt alkalmazások</a>
+  <span class="label">Eseményvezérelt alkalmazások · gyakorló ZH (nem hivatalos) · Windows Forms</span>
+  <h1>Gyakorló ZH: Vakondvadász</h1>
+  <p class="filename">vakondvadasz_minta_zh_1.01CD</p>
+  <p class="sub">Új feladat a minta ZH (SameGame) mintájára, ugyanazokkal a keretekkel. Indítsd el a stoppert, olvasd el a feladatot, és dolgozz úgy, mintha éles ZH lenne. A tippeket csak akkor nyisd le, ha elakadtál.</p>
+  <div class="facts">
+    <div class="fact"><span class="label">Munkaidő</span><b>90 + 5 perc</b></div>
+    <div class="fact"><span class="label">Szintek</span><b>közepes · jeles</b></div>
+    <div class="fact"><span class="label">Fókusz</span><b>Timer · események</b></div>
+    <div class="fact"><span class="label">Leadás</span><b>ZIP · TMS</b></div>
+  </div>
+</header>
+
+<nav class="bar" aria-label="Fejezetek">
+  <ul>
+    <li><a class="nav-back" href="../../index.html#/eva" aria-label="Vissza: Eseményvezérelt alkalmazások">← EVA</a></li>
+    <li><a href="#stopper">Stopper</a></li>
+    <li><a href="#feladat">Feladat</a></li>
+    <li><a href="#pontositas">Pontosítások</a></li>
+    <li><a href="#leadas">Leadás előtt</a></li>
+    <li><a href="#tippek">Tippek</a></li>
+  </ul>
+</nav>
+
+<!-- ================= STOPPER ================= -->
+<section id="stopper">
+  <div class="section-head">
+    <span class="label">Időmérés</span>
+    <h2>Stopper</h2>
+    <p>90 perc munkaidő, utána 5 perc a feltöltésre. Az állapot újratöltés után is megmarad ebben a böngészőben.</p>
+  </div>
+  <div class="clock" id="clock" data-state="idle">
+    <div class="clock-main">
+      <span class="label" id="clock-phase">Munkaidő</span>
+      <b id="clock-time">90:00</b>
+      <div class="clock-bar" aria-hidden="true"><span id="clock-fill"></span></div>
+      <span class="clock-hint" id="clock-hint">Indításra vár.</span>
+    </div>
+    <div class="clock-btns">
+      <button type="button" id="clock-start">Indítás</button>
+      <button type="button" id="clock-reset" class="ghost">Nullázás</button>
+    </div>
+  </div>
+  <ol class="plan" aria-label="Javasolt időbeosztás">
+    <li data-from="0" data-to="5"><b>0–5'</b> Olvasás, a konkrét követelmények aláhúzása</li>
+    <li data-from="5" data-to="15"><b>5–15'</b> Projektváz: Class Library + Windows Forms App, referencia, fordítás</li>
+    <li data-from="15" data-to="40"><b>15–40'</b> Modell: állapot, új játék, időlépés, kattintás, események</li>
+    <li data-from="40" data-to="60"><b>40–60'</b> Nézet: menü, státuszsor, gombrács, Timer, feliratkozás</li>
+    <li data-from="60" data-to="62"><b>~60'</b> Első feltöltés (közepes szint)</li>
+    <li data-from="62" data-to="85"><b>60–85'</b> Jeles szint lépésenként, közben újrafeltöltés</li>
+    <li data-from="85" data-to="95"><b>85–95'</b> Végső feltöltés</li>
+  </ol>
+</section>
+
+<!-- ================= FELADAT ================= -->
+<section id="feladat">
+  <div class="section-head">
+    <span class="label">A feladatlap</span>
+    <h2>Feladat</h2>
+  </div>
+  <article class="sheet">
+    <p class="sheet-top"><span>Eseményvezérelt alkalmazások</span><span>Gyakorló félévközi zárthelyi dolgozat</span></p>
+    <h3 class="sheet-title">Feladat: Vakondvadász</h3>
+
+    <p>Készítsünk WinForms grafikus felületű, MV architektúrájú alkalmazást C# nyelven a Vakondvadász játékra. A játékot egy négyzetrács alakú kertben játsszák, amelynek mezőin időnként vakondok bukkannak fel. A játékos feladata, hogy a vakondokat rájuk kattintva elkapja.</p>
+
+    <p>A megoldást eseményvezérelt módon kell elkészíteni. A modell a játék állapotának megváltozásakor események segítségével értesítse a nézetet, amely ezek alapján frissítse a megjelenített állapotot.</p>
+
+    <h4>Közepes szint (3):</h4>
+    <p>A program indításkor kezdjen új játékot egy 6×6-os, üres kerttel. A játék másodpercenként lépjen: minden lépésben egy véletlenszerűen választott üres mezőn bukkanjon fel egy vakond. (A vakondot elegendő a mező színezésével jelölni.) Ha a felhasználó egy vakondra kattint, a vakond tűnjön el, és a játékos pontszáma eggyel nőjön; üres mezőre kattintva ne történjen semmi. Ha a kert megtelik vakondokkal, a játéknak legyen vége: ezt felugró ablakkal jelezzük a felhasználónak a pontszámmal együtt, és az alkalmazás ezután ne engedjen több lépést. Legyen lehetőség menüből új játékot indítani. A státuszsorban folyamatosan jelenjen meg a pontszám és a játék kezdete óta eltelt idő.</p>
+
+    <h4>Jeles szint (5):</h4>
+    <p>A vakondok csak korlátozott ideig maradjanak a felszínen. Legyen lehetőség három különböző nehézségű játék indítására, amelyekben a vakondok 4, 3, illetve 2 másodperc után visszabújnak. Ha egy vakond úgy bújik vissza, hogy a játékos nem kapta el, az hibának számít, és hibának számít az üres mezőre történő kattintás is. A nézet jelezze eltérő színnel azokat a vakondokat, amelyek a következő lépésben visszabújnak. Ha a játékos 3 hibát vétett, a játéknak legyen vége: ezt felugró ablakkal jelezzük a pontszámmal és a játékidővel együtt, és az alkalmazás ezután ne engedjen több lépést. Legyen lehetőség a játék szüneteltetésére és folytatására; szünet alatt az idő ne teljen, és a kertben ne lehessen kattintani. A státuszsorban a pontszám és az idő mellett jelenjen meg a hibák száma is.</p>
+
+    <p>A megoldást ZIP formátumban kell feltölteni a beadandókezelő rendszerbe (bin, obj és .vs könyvtárak kivételével).</p>
+
+    <p>A zárthelyi megoldás feltöltésére a 90 perc munkaidőn túl további 5 perc áll rendelkezésre. Ez szigorú határidő, a feltöltés elmulasztása a zárthelyi sikertelenségével jár! A zárthelyi alatt többször is végezhető feltöltés.</p>
+
+    <p class="sheet-end">Jó munkát!</p>
+  </article>
+  <p class="note"><b>Megjegyzés</b> Saját feladat, nem a tanszék adta ki. Gyakorlásnál a TMS helyett elég egy ZIP-et készíteni, és lefordítani a tanszéki analizátorral (<code>dotnet build -p:ContinuousIntegrationBuild=true</code>).</p>
+</section>
+
+<!-- ================= PONTOSÍTÁSOK ================= -->
+<section id="pontositas">
+  <div class="section-head">
+    <span class="label">Ha kérdéses egy szabály</span>
+    <h2>Pontosítások</h2>
+    <p>Ezeket egy ZH-n a gyakorlatvezetőtől kérdeznéd meg. Ha a feladatlapból nem egyértelmű valami, ez a döntés.</p>
+  </div>
+  <details>
+    <summary>Pontosítások lenyitása</summary>
+    <div class="sol">
+      <ol>
+        <li><b>Egy időlépés sorrendje:</b> (1) az eltelt idő eggyel nő; (2) jeles szinten minden fent lévő vakond hátralévő ideje eggyel csökken, és amelyiké nullára ért, visszabújik (ez hiba); (3) ha van üres mező, egy véletlen üres mezőn felbukkan egy új vakond. Az új vakond az imént kiürült mezőn is felbukkanhat.</li>
+        <li><b>Élettartam:</b> a 3 másodperces vakond pontosan 3 lépésen át látszik: a felbukkanás lépésében és a következő kettőben, a harmadik következő lépés elején bújik vissza. A „következő lépésben visszabújik” jelzés azt a vakondot jelenti, amelynek már csak 1 másodperce van hátra.</li>
+        <li><b>Megtelt kert (közepes):</b> a vége akkor jön, ha a (3) lépés után nincs üres mező. Jeles szinten a lejárat miatt ez 6×6-on nem fordulhat elő, de a szabálynak maradnia kell.</li>
+        <li><b>Játék vége a hibáknál:</b> amint a hibák száma eléri a 3-at, akár mellékattintás, akár visszabújás miatt. Ha egy lépésben több vakond bújik vissza, mindegyik hibának számít; a vége akkor is csak egyszer jön.</li>
+        <li><b>Vége után:</b> a kert utolsó állapota látható marad, de nem lehet rá kattintani, és az idő nem telik. Új játékot ilyenkor is lehet kezdeni.</li>
+        <li><b>Szünet:</b> a menüpont felirata váltson (<i>Szünet</i> / <i>Folytatás</i>). Új játék indítása megszünteti a szünetet. Vége után a szünet menüpont legyen tiltva.</li>
+        <li><b>Nehézség (jeles):</b> indításkor a közepes (3 másodperces) játék induljon. Közepes szinten, ahol nincs lejárat, a nehézség választása nem kell.</li>
+        <li><b>Nem része a feladatnak:</b> mentés és betöltés, egységtesztek. (A minta ZH-ban sem szerepelnek.) Ha van időd a végén, egy-két modellteszt jó gyakorlás.</li>
+      </ol>
+    </div>
+  </details>
+</section>
+
+<!-- ================= LEADÁS ELŐTT ================= -->
+<section id="leadas">
+  <div class="section-head">
+    <span class="label">Az utolsó 10 perc</span>
+    <h2>Leadás előtt</h2>
+  </div>
+  <div class="checklist" id="checklist">
+    <label><input type="checkbox" data-k="mv"> <span>A modell külön Class Library, és nincs benne <code>System.Windows.Forms</code>, <code>Color</code>, <code>MessageBox</code>.</span></label>
+    <label><input type="checkbox" data-k="ev"> <span>A nézet csak a modell eseményeiből frissül, és a konstruktorban iratkozik fel egyszer.</span></label>
+    <label><input type="checkbox" data-k="rules"> <span>A szabályok (szünet, vége, hiba) a modellben vannak: szünetben vagy vége után a modell maga utasítja el a lépést.</span></label>
+    <label><input type="checkbox" data-k="timer"> <span>A játék végén és szünetben a Timer áll.</span></label>
+    <label><input type="checkbox" data-k="new"> <span>Az új játék a Timert, a státuszsort és a szünet menüpontot is alaphelyzetbe állítja.</span></label>
+    <label><input type="checkbox" data-k="build"> <span><code>dotnet build -p:ContinuousIntegrationBuild=true</code> hibátlan (minden warning hiba).</span></label>
+    <label><input type="checkbox" data-k="zip"> <span>ZIP bin, obj és .vs nélkül; kicsomagolva is fordul.</span></label>
+    <button type="button" id="checklist-reset" class="ghost small">Pipák törlése</button>
+  </div>
+</section>
+
+<!-- ================= TIPPEK ================= -->
+<section id="tippek">
+  <div class="section-head">
+    <span class="label">Csak ha elakadtál</span>
+    <h2>Tippek</h2>
+    <p>Fokozatosan egyre többet árulnak el. A teljes mintamegoldás külön készül, miután leadtad a sajátodat.</p>
+  </div>
+  <div class="taskgroup">
+    <article class="task">
+      <div class="task-head"><span class="no">1.</span><span class="kind">modell</span></div>
+      <p>Milyen állapot kell a modellbe?</p>
+      <details>
+        <summary>Tipp</summary>
+        <div class="sol">
+          <ul>
+            <li>Egyetlen <code>int[,]</code> elég a kerthez: <code>0</code> = üres, pozitív szám = vakond, ennyi másodperce van hátra. Közepes szinten a vakond értéke lehet egy fix pozitív szám, ami nem csökken.</li>
+            <li>Mellette: pontszám, hibák száma, eltelt idő, élettartam (a nehézségből), szünet- és vége-jelző. Kifelé csak olvasható tulajdonságok és egy indexer.</li>
+            <li>Műveletek: <code>NewGame(...)</code>, <code>AdvanceTime()</code>, <code>Hit(x, y)</code>, <code>Pause()</code> / <code>Resume()</code>.</li>
+          </ul>
+        </div>
+      </details>
+    </article>
+    <article class="task">
+      <div class="task-head"><span class="no">2.</span><span class="kind">események</span></div>
+      <p>Milyen eseményeket küldjön a modell?</p>
+      <details>
+        <summary>Tipp</summary>
+        <div class="sol">
+          <ul>
+            <li>Egy a kert változására (vagy mezőnként koordinátával, vagy az egészre), egy az idő/pontszám/hibák változására a státuszsorhoz, és egy a játék végére.</li>
+            <li>Az EventArgs vigye, amit a nézet kiír: pontszám, hibák, idő. Így a nézetnek nem kell visszakérdeznie.</li>
+            <li>A vége-eseményt a modell állapotának lezárása <i>után</i> küldd, és csak egyszer.</li>
+          </ul>
+        </div>
+      </details>
+    </article>
+    <article class="task">
+      <div class="task-head"><span class="no">3.</span><span class="kind">Timer</span></div>
+      <p>Hol legyen az időzítő, és mire figyelj a felugró ablaknál?</p>
+      <details>
+        <summary>Tipp</summary>
+        <div class="sol">
+          <ul>
+            <li>A <code>System.Windows.Forms.Timer</code> a nézetben van (<code>Interval = 1000</code>), a <code>Tick</code> kezelője csak annyit csinál: <code>_model.AdvanceTime()</code>.</li>
+            <li>A vége-esemény kezelőjében <b>először</b> állítsd le a Timert, és csak utána jöjjön a <code>MessageBox</code>. A felugró ablak alatt a Timer tovább ketyeg, mert a modális ablak is feldolgozza az üzeneteket.</li>
+            <li>A szünet szabálya a modellben is legyen meg: szünetben az <code>AdvanceTime</code> és a <code>Hit</code> ne csináljon semmit. A Timer leállítása a nézetben csak a felesleges hívásokat spórolja meg.</li>
+          </ul>
+        </div>
+      </details>
+    </article>
+    <article class="task">
+      <div class="task-head"><span class="no">4.</span><span class="kind">véletlen</span></div>
+      <p>Hogyan válassz véletlen üres mezőt?</p>
+      <details>
+        <summary>Tipp</summary>
+        <div class="sol">
+          <ul>
+            <li>Gyűjtsd listába az üres mezők koordinátáit, és válassz közülük: <code>empty[_random.Next(empty.Count)]</code>. Ha a lista üres, nincs felbukkanás.</li>
+            <li>Ne próbálgass ciklusban véletlen koordinátákat, amíg üreset nem találsz: tele kertnél sosem áll le.</li>
+            <li>A <code>Random</code> példányt a modell kapja a konstruktorban (alapértelmezésként <code>new Random()</code>), így tesztben rögzíthető.</li>
+          </ul>
+        </div>
+      </details>
+    </article>
+    <article class="task">
+      <div class="task-head"><span class="no">5.</span><span class="kind">nézet</span></div>
+      <p>Hogyan jelezd a színeket és a tiltást?</p>
+      <details>
+        <summary>Tipp</summary>
+        <div class="sol">
+          <ul>
+            <li>A színt a nézet dönti el a modell számából: <code>0</code> → üres szín, <code>1</code> → „hamarosan elbújik” szín, nagyobb → vakond szín. A modell nem tud színekről.</li>
+            <li>A gombokat egyszer hozd létre (a méret fix 6×6), a koordinátát a <code>Tag</code>-ben tárold, és egy közös <code>Click</code>-kezelő hívja a <code>_model.Hit(x, y)</code>-t.</li>
+            <li>Vége után a gombok tiltása kényelmes, de a modellnek akkor is el kell utasítania a lépést.</li>
+          </ul>
+        </div>
+      </details>
+    </article>
+  </div>
+</section>
+
+<footer>
+  vakondvadasz_minta_zh_1.01CD · Saját gyakorló feladat a <a href="../elte_eva_mintazh_winforms.pdf" target="_blank" rel="noopener">minta ZH (SameGame)</a> szövegezése és keretei alapján. Felkészítő és ellenőrzőlista: <a href="winforms_zh_felkeszito.html">WinForms ZH: mire figyelj</a>.
+</footer>
+</div>
+<script>
+(function () {
+  // stopwatch: per-viewer convenience; storage may be unavailable
+  var KEY = 'eva-vakond-clock', WORK = 90 * 60, UPLOAD = 5 * 60;
+  var el = {
+    box: document.getElementById('clock'), time: document.getElementById('clock-time'),
+    phase: document.getElementById('clock-phase'), hint: document.getElementById('clock-hint'),
+    fill: document.getElementById('clock-fill'), start: document.getElementById('clock-start'),
+    reset: document.getElementById('clock-reset')
+  };
+  if (!el.box) return;
+  var plan = document.querySelectorAll('.plan li');
+  // s = { startedAt: ms | null, pausedAt: ms | null, pausedMs: number }
+  var s = { startedAt: null, pausedAt: null, pausedMs: 0 };
+  try { var raw = JSON.parse(localStorage.getItem(KEY) || 'null'); if (raw && typeof raw === 'object') s = raw; } catch (e) { /* ignore */ }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) { /* ignore */ } }
+  function elapsed() {
+    if (!s.startedAt) return 0;
+    var end = s.pausedAt || Date.now();
+    return Math.max(0, (end - s.startedAt - (s.pausedMs || 0)) / 1000);
+  }
+  function fmt(sec) {
+    sec = Math.max(0, Math.ceil(sec));
+    var m = Math.floor(sec / 60), r = sec % 60;
+    return m + ':' + (r < 10 ? '0' : '') + r;
+  }
+  function render() {
+    var e = elapsed(), state, shown, pct;
+    if (!s.startedAt) state = 'idle';
+    else if (e >= WORK + UPLOAD) state = 'over';
+    else if (s.pausedAt) state = 'paused';
+    else if (e >= WORK) state = 'upload';
+    else state = 'running';
+    el.box.dataset.state = state;
+    if (e < WORK) {
+      shown = WORK - e; pct = e / WORK * 100;
+      el.phase.textContent = 'Munkaidő';
+    } else {
+      shown = WORK + UPLOAD - e; pct = Math.min(100, (e - WORK) / UPLOAD * 100);
+      el.phase.textContent = 'Feltöltési idő';
+    }
+    el.time.textContent = fmt(shown);
+    el.fill.style.width = pct.toFixed(2) + '%';
+    var min = e / 60;
+    el.hint.textContent =
+      state === 'idle' ? 'Indításra vár.' :
+      state === 'over' ? 'Lejárt. Éles ZH-n eddigre fent kell lennie a ZIP-nek.' :
+      state === 'paused' ? 'Megállítva, ' + (Math.floor(min) + 1) + '. perc.' :
+      state === 'upload' ? 'A munkaidő letelt: csomagolj és tölts fel!' :
+      (Math.floor(min) + 1) + '. perc' + (min >= 60 && min < 62 ? ' · itt az első feltöltés ideje' : '');
+    el.start.textContent = state === 'idle' ? 'Indítás' : state === 'paused' ? 'Folytatás' : 'Megállítás';
+    el.start.disabled = state === 'over';
+    plan.forEach(function (li) {
+      var from = +li.dataset.from, to = +li.dataset.to, on = s.startedAt && min >= from && min < to;
+      li.classList.toggle('now', !!on);
+      li.classList.toggle('past', !!s.startedAt && min >= to);
+    });
+    document.title = (state === 'running' || state === 'upload' ? fmt(shown) + ' · ' : '') + 'Gyakorló ZH: Vakondvadász';
+  }
+  el.start.addEventListener('click', function () {
+    var now = Date.now();
+    if (!s.startedAt) { s = { startedAt: now, pausedAt: null, pausedMs: 0 }; }
+    else if (s.pausedAt) { s.pausedMs = (s.pausedMs || 0) + (now - s.pausedAt); s.pausedAt = null; }
+    else { s.pausedAt = now; }
+    save(); render();
+  });
+  el.reset.addEventListener('click', function () {
+    if (s.startedAt && !window.confirm('Biztosan nullázod a stoppert?')) return;
+    s = { startedAt: null, pausedAt: null, pausedMs: 0 };
+    save(); render();
+  });
+  render();
+  setInterval(render, 500);
+})();
+(function () {
+  // checklist: per-viewer convenience only; storage may be unavailable
+  var KEY = 'eva-vakond-checklist';
+  var box = document.getElementById('checklist');
+  if (!box) return;
+  var state = {};
+  try { state = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { state = {}; }
+  var inputs = box.querySelectorAll('input[type=checkbox]');
+  inputs.forEach(function (i) {
+    i.checked = !!state[i.dataset.k];
+    i.addEventListener('change', function () {
+      state[i.dataset.k] = i.checked;
+      try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* ignore */ }
+    });
+  });
+  document.getElementById('checklist-reset').addEventListener('click', function () {
+    state = {};
+    inputs.forEach(function (i) { i.checked = false; });
+    try { localStorage.removeItem(KEY); } catch (e) { /* ignore */ }
+  });
+})();
+</script>
+<script>
+(function () {
+  var nav = document.querySelector('nav.bar');
+  if (!nav) return;
+  var links = Array.prototype.filter.call(nav.querySelectorAll('a[href^="#"]'), function (a) {
+    return a.getAttribute('href').length > 1 && document.getElementById(a.getAttribute('href').slice(1));
+  });
+  var current = null, ticking = false;
+  function sectionOf(a) { return document.getElementById(a.getAttribute('href').slice(1)); }
+  function update() {
+    ticking = false;
+    var line = nav.getBoundingClientRect().bottom + 12, active = null;
+    var visible = links.filter(function (a) { return sectionOf(a).offsetParent !== null; });
+    visible.forEach(function (a) { if (sectionOf(a).getBoundingClientRect().top <= line) active = a; });
+    // a lap alján az utolsó szakasz az aktuális akkor is, ha rövid
+    if (visible.length && window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) active = visible[visible.length - 1];
+    if (active === current) return;
+    if (current) { current.classList.remove('active'); current.removeAttribute('aria-current'); }
+    current = active;
+    if (!active) return;
+    active.classList.add('active');
+    active.setAttribute('aria-current', 'location');
+    var ul = active.closest('ul'), ur = ul.getBoundingClientRect(), ar = active.getBoundingClientRect();
+    var left = ar.left - ur.left + ul.scrollLeft, right = left + ar.width;
+    if (left < ul.scrollLeft || right > ul.scrollLeft + ul.clientWidth) ul.scrollTo({ left: Math.max(0, left - 16), behavior: 'smooth' });
+  }
+  function schedule() { if (!ticking) { ticking = true; setTimeout(update, 40); } }
+  window.addEventListener('scroll', schedule, { passive: true });
+  window.addEventListener('resize', schedule);
+  document.addEventListener('input', schedule);
+  document.addEventListener('toggle', schedule, true);
+  update();
+})();
+</script>
+</body>
+</html>

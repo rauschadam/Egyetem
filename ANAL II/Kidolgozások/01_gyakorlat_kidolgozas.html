@@ -1,0 +1,894 @@
+<!doctype html>
+<html lang="hu" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Analízis II · 1. gyakorlat kidolgozva</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['\\(', '\\)']],
+      displayMath: [['\\[', '\\]']],
+      macros: {
+        arcsin: '\\operatorname{arc\\,sin}', arccos: '\\operatorname{arc\\,cos}',
+        arctg: '\\operatorname{arc\\,tg}', arcctg: '\\operatorname{arc\\,ctg}',
+        tg: '\\operatorname{tg}', ctg: '\\operatorname{ctg}', R: '\\mathbb{R}'
+      }
+    },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js" async></script>
+<style>
+/* Layout: same exam-paper look as the DIMAT prep, in the Analysis orange; every task = statement + folded solution + folded walkthrough */
+:root {
+  --paper: #f5f7fa;
+  --grid: rgba(180, 80, 11, 0.06);
+  --card: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6574;
+  --rule: #d7dde6;
+  --accent: #b4500b;
+  --accent-soft: #fcefe4;
+  --mark: #b8352a;
+  --mark-soft: #fbe9e6;
+  --ok: #2c7a4b;
+  --ok-soft: #e3f3e9;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-label: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f141b; --grid: rgba(242, 162, 94, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+    --rule: #2a3442; --accent: #f2a25e; --accent-soft: #33241a; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+    --ok: #74d39c; --ok-soft: #173225; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f141b; --grid: rgba(242, 162, 94, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+  --rule: #2a3442; --accent: #f2a25e; --accent-soft: #33241a; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+  --ok: #74d39c; --ok-soft: #173225; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background-color: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 1.06rem;
+  line-height: 1.6;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 80px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2rem, 6vw, 3.1rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.65rem; font-weight: 700; letter-spacing: -0.01em; }
+h3 { font-size: 1.1rem; font-weight: 600; }
+p { margin: 0; }
+a { color: var(--accent); }
+.label { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding: 2px 0; margin: 6px 0 !important; min-width: 0; max-width: 100%; }
+/* grid children must be allowed to shrink, otherwise wide formulas push the page sideways */
+.task, .sol, .step, .rule-card, .sheet > * { grid-template-columns: minmax(0, 1fr); min-width: 0; }
+.rule-card li, .rule-card p, .sol p, .sol li, .step p, .stmt, .tip, .warn, .mistake p, td { overflow-x: auto; overflow-y: hidden; }
+
+/* back to subject page */
+.back { justify-self: start; display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px 9px 12px; border: 1.5px solid var(--accent); border-radius: 8px; background: var(--accent-soft); color: var(--ink); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 1.02rem; line-height: 1; white-space: nowrap; transition: background .15s, color .15s; }
+.back .arr { color: var(--accent); font-size: 1.25rem; transition: transform .15s, color .15s; }
+.back:hover, .back:focus-visible { background: var(--accent); color: var(--paper); outline: none; }
+.back:hover .arr, .back:focus-visible .arr { color: var(--paper); transform: translateX(-3px); }
+
+/* header */
+header.hero { display: grid; gap: 14px; padding-block: 0 26px; border-bottom: 2px solid var(--accent); }
+.hero .sub { color: var(--muted); max-width: 62ch; }
+.facts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.fact { display: flex; flex-direction: column; gap: 2px; padding: 8px 14px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; min-width: 120px; }
+.fact b { font-family: var(--f-display); font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+
+nav.bar { position: sticky; top: 0; z-index: 5; background: var(--paper); border-bottom: 1px solid var(--rule); margin-inline: -16px; padding-inline: 16px; }
+nav.bar ul { list-style: none; margin: 0; padding: 10px 0; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin; }
+nav.bar a { display: block; white-space: nowrap; text-decoration: none; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.04em; color: var(--ink); padding: 6px 10px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); }
+nav.bar a:hover, nav.bar a:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+nav.bar a.nav-back { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+
+section { padding-top: 44px; display: grid; gap: 18px; scroll-margin-top: 56px; }
+.section-head { display: grid; gap: 6px; }
+.section-head p { color: var(--muted); max-width: 64ch; }
+
+/* reminder cards */
+.sheet { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; }
+.rule-card { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 14px 16px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.rule-card h3 { font-size: 1rem; }
+.rule-card p, .rule-card li { font-size: 0.95rem; }
+.rule-card ul, .rule-card ol { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.rule-card.wide { grid-column: 1 / -1; }
+
+/* tables (sign charts, value tables) */
+.tbl { overflow-x: auto; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--rule); vertical-align: middle; }
+th { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+tr:last-child td, tr:last-child th { border-bottom: 0; }
+table.sgn { width: auto; min-width: 100%; }
+table.sgn th, table.sgn td { text-align: center; white-space: nowrap; border-left: 1px solid var(--rule); }
+table.sgn th:first-child { border-left: 0; text-transform: none; letter-spacing: 0; font-family: var(--f-body); font-size: 1rem; color: var(--ink); background: var(--accent-soft); }
+table.sgn td.pt { background: color-mix(in srgb, var(--accent-soft) 55%, transparent); }
+.p { color: var(--ok); font-weight: 600; }
+.n { color: var(--mark); font-weight: 600; }
+.note { font-size: 0.82rem; color: var(--muted); }
+.tag { font-family: var(--f-label); font-size: 0.72rem; color: var(--accent); }
+
+/* exercises */
+.task { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 18px; display: grid; gap: 10px; min-width: 0; scroll-margin-top: 60px; }
+.task-head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.task-head .no { font-family: var(--f-display); font-weight: 700; font-size: 1.05rem; }
+.task-head .src { font-family: var(--f-label); font-size: 0.72rem; color: var(--muted); }
+.task-head .kind { margin-left: auto; font-family: var(--f-label); font-size: 0.75rem; color: var(--accent); }
+.stmt { max-width: 70ch; }
+details { border-top: 1px dashed var(--rule); padding-top: 8px; min-width: 0; }
+summary { cursor: pointer; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); list-style: none; display: inline-flex; gap: 8px; align-items: center; padding: 4px 0; }
+summary::-webkit-details-marker { display: none; }
+summary::before { content: "+"; display: inline-grid; place-items: center; width: 18px; height: 18px; border: 1px solid currentColor; border-radius: 3px; font-size: 0.8rem; }
+details[open] > summary::before { content: "−"; }
+summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sol { display: grid; gap: 10px; padding-top: 6px; max-width: 74ch; min-width: 0; }
+.sol ol, .sol ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.step { display: grid; gap: 8px; min-width: 0; }
+.step > b:first-child { font-family: var(--f-display); font-weight: 600; }
+.ans { display: inline-block; background: var(--ok-soft); color: var(--ok); font-weight: 600; padding: 2px 9px; border-radius: 4px; }
+.warn { background: var(--mark-soft); border-left: 3px solid var(--mark); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 0.95rem; }
+.tip { background: var(--accent-soft); border-left: 3px solid var(--accent); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 0.95rem; }
+.taskgroup { display: grid; gap: 12px; }
+
+/* graphs */
+figure.graph { margin: 0; background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 8px 8px 6px; display: grid; gap: 6px; }
+figure.graph > div > svg { width: 100%; height: auto; display: block; }
+figure.graph figcaption { display: flex; flex-wrap: wrap; gap: 4px 16px; font-family: var(--f-label); font-size: 0.72rem; color: var(--muted); padding: 0 4px; }
+.lg::before { content: ""; display: inline-block; width: 16px; height: 0; vertical-align: middle; margin-right: 6px; border-top: 2.5px solid var(--accent); }
+.lg.asy::before { border-top: 1.5px dashed var(--muted); }
+.lg.ext::before { width: 9px; height: 9px; border: 0; border-radius: 50%; background: var(--ok); }
+.lg.inf::before { width: 9px; height: 9px; border: 2px solid var(--mark); border-radius: 50%; box-sizing: border-box; }
+svg .gl { stroke: var(--rule); stroke-width: 1; opacity: .55; }
+svg .ax { stroke: var(--muted); stroke-width: 1.3; }
+svg .tk { fill: var(--muted); font-family: var(--f-label); font-size: 11px; }
+svg .cv { fill: none; stroke: var(--accent); stroke-width: 2.6; stroke-linejoin: round; stroke-linecap: round; }
+svg .as { stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 6 5; fill: none; }
+svg .pe { fill: var(--ok); stroke: var(--paper); stroke-width: 1.5; }
+svg .pi { fill: var(--paper); stroke: var(--mark); stroke-width: 2.2; }
+svg .pz { fill: var(--ink); }
+svg .po { fill: var(--paper); stroke: var(--accent); stroke-width: 2; }
+svg .pl { fill: var(--ink); font-family: var(--f-label); font-size: 12px; paint-order: stroke; stroke: var(--paper); stroke-width: 4px; stroke-linejoin: round; }
+
+/* mistakes */
+.mistakes { display: grid; gap: 10px; }
+.mistake { display: grid; grid-template-columns: auto 1fr; gap: 12px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 12px 14px; }
+.mistake .x { font-family: var(--f-display); font-weight: 700; color: var(--mark); font-size: 1.2rem; line-height: 1.3; }
+
+footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.88rem; }
+
+@media (max-width: 520px) {
+  body { font-size: 1rem; }
+  .task { padding: 14px; }
+  th, td { padding: 6px 8px; }
+}
+
+/* Taylor graphs: second curve dashed, highlighted x-band */
+svg .cv2 { fill: none; stroke: var(--ok); stroke-width: 2.2; stroke-dasharray: 7 5; }
+svg .bd { fill: var(--accent-soft); opacity: .8; }
+.lg.tay::before { border-top: 2.2px dashed var(--ok); }
+.lg.band::before { height: 10px; border: 0; background: var(--accent-soft); }
+/* primitive-function families and vertical asymptotes */
+svg .cv3 { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: .4; }
+.lg.fam::before { opacity: .45; border-top-width: 1.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <a class="back" href="../../index.html#/anal2"><span class="arr" aria-hidden="true">←</span>Vissza: Analízis II.</a>
+  <span class="label">Analízis II. · 1. gyakorlat · Függvény határértéke</span>
+  <h1>Az 1. gyakorlat kidolgozva</h1>
+  <p class="sub">A határérték egységes definíciója, kritikus határértékek, nevezetes határértékek és a hatványsor összegfüggvényének határértéke. A 2. feladat különbségi hányadosai már a deriválást készítik elő. Az órai feladatok a gyakorlati anyag megoldását követik, a házi feladatok (az összevont anyagból) saját megoldások. Előbb próbáld meg magad, és csak utána nyisd le a megoldást.</p>
+  <div class="facts">
+    <div class="fact"><span class="label">Órai feladat</span><b>2 (12 rész)</b></div>
+    <div class="fact"><span class="label">Házi feladat</span><b>2 (6 rész)</b></div>
+    <div class="fact"><span class="label">Grafikon</span><b>3 db</b></div>
+  </div>
+</header>
+
+<nav class="bar" aria-label="Fejezetek">
+  <ul>
+    <li><a class="nav-back" href="../../index.html#/anal2" aria-label="Vissza: Analízis II.">← ANAL II</a></li>
+    <li><a href="#emlekezteto">Emlékeztető</a></li>
+    <li><a href="#orai">Órai feladatok</a></li>
+    <li><a href="#hazi">Házi feladatok</a></li>
+    <li><a href="#hibak">Gyakori hibák</a></li>
+  </ul>
+</nav>
+
+<!-- ================= EMLÉKEZTETŐ ================= -->
+<section id="emlekezteto">
+  <div class="section-head">
+    <span class="label">Ami kell hozzá</span>
+    <h2>Emlékeztető</h2>
+    <p>Az 1. gyakorlat elméleti összefoglalója röviden. A feladatokban végig ezekre hivatkozunk.</p>
+  </div>
+  <div class="sheet">
+    <div class="rule-card wide">
+      <h3>A határérték egységes definíciója</h3>
+      <p>Az \(f \in \R \to \R\) függvénynek az \(a \in \mathcal D_f'\) (torlódási) pontban van határértéke, ha</p>
+      \[\exists\, A \in \overline{\R},\ \forall \varepsilon \gt 0\text{-hoz } \exists\, \delta \gt 0,\ \forall x \in \big(K_\delta(a) \setminus \{a\}\big) \cap \mathcal D_f :\ f(x) \in K_\varepsilon(A).\]
+      <p>Ekkor \(A\) egyértelmű, ez az \(f\) függvény \(a\)-beli határértéke: \(\lim_a f = A\), \(\lim_{x \to a} f(x) = A\) vagy \(f(x) \to A\), ha \(x \to a\).</p>
+      <p class="note">Az \(a\) pontban \(f\)-nek nem kell értelmezve lennie, és ha értelmezve van, \(f(a)\) értéke nem számít: csak az \(a\) körüli, \(a\)-tól különböző pontokat nézzük.</p>
+    </div>
+    <div class="rule-card">
+      <h3>Speciális esetek</h3>
+      <ul>
+        <li><b>Végesben vett véges:</b> \(a \in \R\), \(A \in \R\).</li>
+        <li><b>Végesben vett végtelen:</b> \(a \in \R\), \(A = \pm\infty\).</li>
+        <li><b>Végtelenben vett véges:</b> \(a = \pm\infty\), \(A \in \R\).</li>
+        <li><b>Végtelenben vett végtelen:</b> \(a = \pm\infty\), \(A = \pm\infty\).</li>
+      </ul>
+    </div>
+    <div class="rule-card">
+      <h3>Határérték és műveletek</h3>
+      <p>Ha \(a \in (\mathcal D_f \cap \mathcal D_g)'\), \(\lim_a f = A \in \overline{\R}\), \(\lim_a g = B \in \overline{\R}\), akkor</p>
+      <ul>
+        <li>\(\lim_a (f + g) = A + B\),</li>
+        <li>\(\lim_a (f \cdot g) = A \cdot B\),</li>
+        <li>\(\lim_a \frac fg = \frac AB\),</li>
+      </ul>
+      <p class="note">feltéve, hogy a jobb oldali művelet \(\overline{\R}\)-ben értelmezve van.</p>
+    </div>
+    <div class="rule-card">
+      <h3>Kritikus határértékek</h3>
+      <p>Ha a fenti műveletek valamelyike nincs értelmezve, a határértékről általában semmit sem tudunk:</p>
+      \[(+\infty) - (+\infty),\quad 0 \cdot (\pm\infty),\quad \frac{\pm\infty}{\pm\infty},\quad \frac00,\quad \frac10.\]
+      <p class="note">Módszer (mint sorozatoknál): azonosságokkal nem kritikus alakra hozzuk (gyöktelenítés, szorzattá alakítás, egyszerűsítés, nevezetes határérték).</p>
+    </div>
+    <div class="rule-card">
+      <h3>Nevezetes határértékek</h3>
+      <ul>
+        <li>\(\lim_{x \to a} x^n = a^n\) \((a \in \R,\ n \in \mathbb N^+)\);</li>
+        <li>\(\lim_{x \to +\infty} x^n = +\infty\); \(\lim_{x \to -\infty} x^n = +\infty\), ha \(n\) páros, és \(-\infty\), ha \(n\) páratlan;</li>
+        <li>\(\lim_{x \to a} \frac{1}{x^n} = \frac{1}{a^n}\) \((a \ne 0)\); \(\lim_{x \to \pm\infty} \frac{1}{x^n} = 0\);</li>
+        <li>\(\lim_{x \to 0} \frac{1}{x^n}\): \(\nexists\), ha \(n\) páratlan; \(+\infty\), ha \(n\) páros;</li>
+        <li>\(\lim_{x \to a} \sqrt x = \sqrt a\) \((a \gt 0)\);</li>
+        <li>\(\displaystyle\lim_{x \to 0} \frac{\sin x}{x} = 1\).</li>
+      </ul>
+    </div>
+    <div class="rule-card wide">
+      <h3>Az exp, a sin és a cos mint hatványsor</h3>
+      \[e^x = \sum_{n=0}^{+\infty} \frac{x^n}{n!} = 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \cdots \quad (x \in \R)\]
+      \[\sin x = \sum_{n=0}^{+\infty} (-1)^n \frac{x^{2n+1}}{(2n+1)!} = x - \frac{x^3}{3!} + \frac{x^5}{5!} - \cdots \quad (x \in \R)\]
+      \[\cos x = \sum_{n=0}^{+\infty} (-1)^n \frac{x^{2n}}{(2n)!} = 1 - \frac{x^2}{2!} + \frac{x^4}{4!} - \cdots \quad (x \in \R)\]
+    </div>
+    <div class="rule-card">
+      <h3>Hatványsor összegfüggvényének határértéke</h3>
+      <p>Ha a \(\sum \alpha_n (x - a)^n\) hatványsor \(R\) konvergenciasugara pozitív és \(f(x) := \sum_{n=0}^{+\infty} \alpha_n (x-a)^n\) \((x \in K_R(a))\), akkor minden \(b \in K_R(a)\)-ra</p>
+      \[\lim_{x \to b} f(x) = f(b) = \sum_{n=0}^{+\infty} \alpha_n (b - a)^n.\]
+      <p class="note">Röviden: a konvergenciahalmaz belsejében „szabad behelyettesíteni”.</p>
+    </div>
+    <div class="rule-card">
+      <h3>Hasznos eszközök a feladatokhoz</h3>
+      <ul>
+        <li><b>Egyoldali határérték:</b> \(\lim_{x \to a+0}\), \(\lim_{x \to a-0}\). Ha \(a\) mindkét oldalról torlódási pont, akkor \(\lim_a f\) pontosan akkor létezik, ha a két egyoldali létezik és egyenlő.</li>
+        <li><b>Korlátos · nullához tartó:</b> ha \(g\) korlátos \(a\) környezetében és \(\lim_a h = 0\), akkor \(\lim_a (g h) = 0\).</li>
+        <li><b>Eltolás:</b> \(h := x - a\) helyettesítéssel \(\displaystyle\lim_{x \to a} F(x) = \lim_{h \to 0} F(a + h)\).</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ÓRAI FELADATOK ================= -->
+<section id="orai">
+  <div class="section-head">
+    <span class="label">1. gyakorlat · Feladatok</span>
+    <h2>Órai feladatok</h2>
+    <p>A megoldások menete az 1. gyakorlati anyag kidolgozását követi. Az összevont anyag órai feladatai szó szerint megegyeznek ezekkel. Minden eredményt numerikusan (a pont közelében kiértékelve) ellenőriztünk.</p>
+  </div>
+
+  <div class="taskgroup">
+
+  <!-- 1. feladat -->
+  <article class="task" id="o1a">
+    <div class="task-head"><span class="no">1. (a)</span><span class="src">1. gyakorlat · órai</span><span class="kind">\(\frac00\) · három módszer</span></div>
+    <p class="stmt">Számítsuk ki a határértéket:</p>
+    \[\lim_{x \to 0} \frac{1 - \cos x}{x}.\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Mivel \(\lim_{x \to 0} \cos x = 1\) és \(\lim_{x \to 0} x = 0\), \(\frac00\)-típusú kritikus határértékről van szó.</p>
+        <div class="step">
+          <b>1. megoldás: bővítés \((1 + \cos x)\)-szel.</b>
+          \[\frac{1 - \cos x}{x}\cdot\frac{1 + \cos x}{1 + \cos x} = \frac{1 - \cos^2 x}{x(1 + \cos x)} = \frac{\sin^2 x}{x(1 + \cos x)} = \sin x \cdot \frac{\sin x}{x} \cdot \frac{1}{1 + \cos x}.\]
+          \[\lim_{x \to 0} \frac{1 - \cos x}{x} = \lim_{x \to 0} \sin x \cdot \lim_{x \to 0} \frac{\sin x}{x} \cdot \lim_{x \to 0} \frac{1}{1 + \cos x} = 0 \cdot 1 \cdot \frac{1}{1 + 1} = 0.\]
+        </div>
+        <div class="step">
+          <b>2. megoldás: a számláló felezett szöggel.</b>
+          \[1 - \cos x = \Big(\sin^2 \frac x2 + \cos^2 \frac x2\Big) - \Big(\cos^2 \frac x2 - \sin^2 \frac x2\Big) = 2\sin^2 \frac x2,\]
+          \[\lim_{x \to 0} \frac{1 - \cos x}{x} = \lim_{x \to 0} \frac{2\sin^2 \frac x2}{x} = \lim_{x \to 0} \sin \frac x2 \cdot \lim_{x \to 0} \frac{\sin \frac x2}{\frac x2} = 0 \cdot 1 = 0.\]
+        </div>
+        <div class="step">
+          <b>3. megoldás: a cos hatványsora.</b> Ha \(x \ne 0\), akkor
+          \[\frac{1 - \cos x}{x} = \frac{1 - \sum_{n=0}^{+\infty} (-1)^n \frac{x^{2n}}{(2n)!}}{x} = \frac{\sum_{n=1}^{+\infty} (-1)^{n-1} \frac{x^{2n}}{(2n)!}}{x}\]
+          \[= \frac{\sum_{n=0}^{+\infty} (-1)^n \frac{x^{2n+2}}{(2n+2)!}}{x} = \sum_{n=0}^{+\infty} (-1)^n \frac{x^{2n+1}}{(2n+2)!} = \frac{x}{2!} - \frac{x^3}{4!} + \frac{x^5}{6!} - \cdots\]
+          <p>Az utolsó hatványsor konvergenciahalmaza \(\R\), így a hatványsor összegfüggvényének határértékére vonatkozó tétel szerint \(x = 0\)-t behelyettesíthetünk:</p>
+          \[\lim_{x \to 0} \frac{1 - \cos x}{x} = \lim_{x \to 0} \Big(\frac{x}{2!} - \frac{x^3}{4!} + \frac{x^5}{6!} - \cdots\Big) = 0.\]
+        </div>
+        <p>Eredmény: <span class="ans">\(\displaystyle\lim_{x \to 0} \frac{1 - \cos x}{x} = 0\)</span></p>
+        <figure class="graph"><div id="g-o1"></div><figcaption><span class="lg">\(\frac{1-\cos x}{x}\)</span><span class="lg tay">\(\frac{e^x-1}{x}\)</span><span class="lg fam">\(\frac{\sin x}{x}\)</span><span>pöttyök: a határértékek x = 0-ban (ott a függvények nincsenek értelmezve)</span></figcaption></figure>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért nem elég behelyettesíteni?</b> \(\frac{1 - \cos 0}{0} = \frac00\) nincs értelmezve. A kifejezést úgy kell átalakítani, hogy olyan tényezők szorzata legyen, amelyek határértéke külön-külön ismert (és a szorzat már nem kritikus).</p>
+        <p><b>Melyik módszert válaszd?</b> Az 1. és 2. a nevezetes \(\frac{\sin x}{x} \to 1\) határértékre vezet vissza, ezt zárthelyin is bátran használhatod. A 3. a legáltalánosabb: a hatványsorból azt is látjuk, hogy \(\frac{1 - \cos x}{x} \approx \frac x2\) kis \(x\)-re, vagyis a függvény „úgy viselkedik, mint” \(\frac x2\).</p>
+        <p><b>Buktató a 2. megoldásban:</b> \(\frac{\sin(x/2)}{x/2} \to 1\) azért igaz, mert \(x \to 0\) esetén \(\frac x2 \to 0\) és \(\frac x2 \ne 0\). A \(\frac{\sin u}{u}\) alakban a nevezőnek pontosan a szinusz argumentumának kell lennie.</p>
+        <p><b>Ellenőrzés:</b> \(x = 0{,}01\)-re \(\frac{1 - \cos 0{,}01}{0{,}01} \approx 0{,}005 = \frac{0{,}01}{2}\), ahogy a hatványsor jósolja. ✓</p>
+        <p class="tip">Megjegyzés: ugyanígy \(\displaystyle\lim_{x \to 0} \frac{1 - \cos x}{x^2} = \frac12\) (a hatványsorban eggyel kevesebb \(x\)-szel osztunk).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o1b">
+    <div class="task-head"><span class="no">1. (b)</span><span class="src">1. gyakorlat · órai</span><span class="kind">\(\frac00\) · hatványsor</span></div>
+    <p class="stmt">Számítsuk ki a határértéket:</p>
+    \[\lim_{x \to 0} \frac{e^x - 1}{x}.\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Az \(e^x\) definíciója (hatványsor) alapján \(\lim_{x \to 0} e^x = 1\), tehát \(\frac00\)-típusú kritikus határérték. A hatványsort beírva, \(x \ne 0\) esetén:</p>
+        \[\frac{e^x - 1}{x} = \frac{\Big(1 + \frac{x}{1!} + \frac{x^2}{2!} + \frac{x^3}{3!} + \frac{x^4}{4!} + \cdots\Big) - 1}{x} = 1 + \frac{x}{2!} + \frac{x^2}{3!} + \frac{x^3}{4!} + \cdots\]
+        <p>Az \(1 + \frac{x}{2!} + \frac{x^2}{3!} + \frac{x^3}{4!} + \cdots\) hatványsor konvergenciahalmaza \(\R\), ezért a határérték a \(0\) behelyettesítésével kapott érték:</p>
+        \[\lim_{x \to 0} \frac{e^x - 1}{x} = \lim_{x \to 0} \Big(1 + \frac{x}{2!} + \frac{x^2}{3!} + \cdots\Big) = 1.\]
+        <p>Eredmény: <span class="ans">\(\displaystyle\lim_{x \to 0} \frac{e^x - 1}{x} = 1\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Az ötlet:</b> az \(e^x - 1\) hatványsorának minden tagjában van legalább egy \(x\)-es szorzó, így \(x\)-szel tagonként oszthatunk. Az osztás után kapott sor konstans tagja (itt \(1\)) a határérték.</p>
+        <p><b>Miért kell a tétel?</b> Egy végtelen összeg határértékét nem vehetjük „tagonként” csak úgy. A hatványsor összegfüggvényének határértékére vonatkozó tétel mondja ki, hogy a konvergenciahalmaz belsejében ez megengedett. Ehhez meg kell mondani, hogy a sor mindenütt konvergens (pl. a hányadoskritériummal: \(\frac{|x|}{n+2} \to 0\)).</p>
+        <p><b>Ellenőrzés:</b> \(x = 0{,}001\)-re \(\frac{e^{0,001} - 1}{0{,}001} \approx 1{,}0005\). ✓</p>
+        <p class="tip">Ezt a nevezetes határértéket a 2. (g) feladatban és a házi 2. (d)-ben újra felhasználjuk. Jegyezd meg: \(\displaystyle\lim_{x \to 0} \frac{e^x - 1}{x} = 1\).</p>
+      </div>
+    </details>
+  </article>
+
+  <!-- 2. feladat -->
+  <div class="tip">A 2. feladatban végig a \(\displaystyle\lim_{x \to a} \frac{f(x) - f(a)}{x - a}\) <b>különbségi hányados</b> határértékét keressük. Mindegyik esetben \(\frac00\)-típusú kritikus határértékről van szó, ezért nem kritikus határértékre vezető átalakításokat végzünk. (Ez lesz később az \(f'(a)\) derivált.)</div>
+
+  <article class="task" id="o2a">
+    <div class="task-head"><span class="no">2. (a)</span><span class="src">1. gyakorlat · órai</span><span class="kind">konstans függvény</span></div>
+    <p class="stmt">\(f(x) := c \in \R\) \((x \in \R,\ a \in \R)\). Számítsuk ki \(\lim_{x \to a} \frac{f(x) - f(a)}{x - a}\)-t, ha létezik.</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        \[\lim_{x \to a} \frac{f(x) - f(a)}{x - a} = \lim_{x \to a} \frac{c - c}{x - a} = \lim_{x \to a} 0 = 0.\]
+        <p>Eredmény: <span class="ans">\(0\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért 0 és nem „\(\frac00\)”?</b> A határértéknél csak \(x \ne a\) pontokat nézünk. Ezekben a tört értéke pontosan \(\frac{0}{x - a} = 0\), vagyis a függvény az \(a\) körül (kipontozva) azonosan 0, és a konstans 0 függvény határértéke 0.</p>
+        <p><b>Szemléletesen:</b> a konstans függvény grafikonja vízszintes egyenes, bármely két pontját összekötő szelő meredeksége 0.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o2b">
+    <div class="task-head"><span class="no">2. (b)</span><span class="src">1. gyakorlat · órai</span><span class="kind">egyoldali határértékek</span></div>
+    <p class="stmt">\(f(x) := |x|\) \((x \in \R,\ a := 0)\). Számítsuk ki \(\lim_{x \to a} \frac{f(x) - f(a)}{x - a}\)-t, ha létezik.</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        \[\lim_{x \to 0} \frac{f(x) - f(0)}{x - 0} = \lim_{x \to 0} \frac{|x|}{x} = \lim_{x \to 0} \operatorname{sgn}(x)\ \to\ \nexists?\]
+        <p>Egyoldali határértékek:</p>
+        \[\lim_{x \to 0+0} \frac{|x|}{x} = \lim_{x \to 0+0} \frac{x}{x} = 1, \qquad \lim_{x \to 0-0} \frac{|x|}{x} = \lim_{x \to 0-0} \frac{-x}{x} = -1.\]
+        <p>Mivel \(1 \ne -1\), a határérték nem létezik.</p>
+        <p>Eredmény: <span class="ans">\(\nexists\, \lim_{x \to 0} \frac{|x| - 0}{x - 0}\) (jobbról \(1\), balról \(-1\))</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért egyoldali határértékek?</b> Az \(|x|\) képlete \(x \gt 0\) és \(x \lt 0\) esetén más. Ha a képlet „eltörik” a vizsgált pontban, mindig a két oldalt külön számoljuk.</p>
+        <p><b>Hogyan bizonyítjuk a nemlétezést?</b> Ha \(\lim_0 f = A\) létezne, akkor mindkét egyoldali határérték is \(A\) lenne. Két különböző egyoldali érték tehát kizárja a határérték létezését. (Sorozatokkal: \(x_n = \frac1n \to 0\) mentén a hányados \(1\), \(x_n = -\frac1n\) mentén \(-1\).)</p>
+        <p><b>Szemléletesen:</b> az \(|x|\) grafikonjának 0-ban „töréspontja” van: a jobb oldali szelők meredeksége 1, a bal oldaliaké \(-1\). Ezért nem lesz \(|x|\) deriválható a 0-ban.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o2c">
+    <div class="task-head"><span class="no">2. (c)</span><span class="src">1. gyakorlat · órai</span><span class="kind">szorzattá alakítás</span></div>
+    <p class="stmt">\(f(x) := x^4\) \((x \in \R,\ a \in \R)\). Számítsuk ki \(\lim_{x \to a} \frac{f(x) - f(a)}{x - a}\)-t, ha létezik.</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Az \(x^4 - a^4 = (x - a)(x^3 + x^2 a + x a^2 + a^3)\) azonossággal:</p>
+        \[\lim_{x \to a} \frac{x^4 - a^4}{x - a} = \lim_{x \to a} \frac{(x - a)(x^3 + x^2 a + x a^2 + a^3)}{x - a} = \lim_{x \to a} (x^3 + x^2 a + x a^2 + a^3)\]
+        \[= a^3 + a^3 + a^3 + a^3 = 4a^3.\]
+        <p>Eredmény: <span class="ans">\(4a^3\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Az azonosság:</b> \(x^n - a^n = (x - a)(x^{n-1} + x^{n-2}a + \dots + x a^{n-2} + a^{n-1})\). Ez emeli ki a „rossz” \(x - a\) tényezőt, ami \(x \ne a\) miatt egyszerűsíthető.</p>
+        <p><b>Az utolsó lépés:</b> polinom határértéke a műveleti szabályok és \(\lim_{x \to a} x^k = a^k\) miatt a behelyettesítési érték. Mind a 4 tag \(a^3\)-ra megy.</p>
+        <p><b>Ellenőrzés:</b> \(a = 3\)-ra \(\frac{3{,}0001^4 - 81}{0{,}0001} \approx 108{,}005\), és \(4 \cdot 27 = 108\). ✓</p>
+        <p class="tip">Általában \(\lim_{x \to a} \frac{x^n - a^n}{x - a} = n a^{n-1}\), ez lesz az \((x^n)' = n x^{n-1}\) szabály.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o2d">
+    <div class="task-head"><span class="no">2. (d)</span><span class="src">1. gyakorlat · órai</span><span class="kind">közös nevező</span></div>
+    <p class="stmt">\(f(x) := \dfrac1x\) \((x \gt 0,\ a \gt 0)\). Számítsuk ki \(\lim_{x \to a} \frac{f(x) - f(a)}{x - a}\)-t, ha létezik.</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        \[\lim_{x \to a} \frac{\frac1x - \frac1a}{x - a} = \lim_{x \to a} \frac{\frac{a - x}{xa}}{x - a} = \lim_{x \to a} \frac{a - x}{xa(x - a)} = \lim_{x \to a} \Big(-\frac{1}{xa}\Big) = -\frac{1}{a^2}.\]
+        <p>Eredmény: <span class="ans">\(-\dfrac{1}{a^2}\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Lépések:</b> (1) a számlálóban közös nevezőre hozunk; (2) az emeletes törtet egyszerű törtté írjuk; (3) \(a - x = -(x - a)\), így az \(x - a\) egyszerűsíthető; (4) a maradék \(-\frac{1}{xa}\) már nem kritikus, \(x \to a\) esetén \(-\frac{1}{a \cdot a}\).</p>
+        <p><b>Buktató:</b> az előjel. \(\frac{a - x}{x - a} = -1\), nem \(+1\).</p>
+        <p><b>Ellenőrzés:</b> \(a = 3\)-ra \(\frac{1/3{,}0001 - 1/3}{0{,}0001} \approx -0{,}1111 = -\frac19\). ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o2e">
+    <div class="task-head"><span class="no">2. (e)</span><span class="src">1. gyakorlat · órai</span><span class="kind">gyöktelenítés</span></div>
+    <p class="stmt">\(f(x) := \sqrt x\) \((x \gt 0,\ a \gt 0)\). Számítsuk ki \(\lim_{x \to a} \frac{f(x) - f(a)}{x - a}\)-t, ha létezik.</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Bővítünk \(\sqrt x + \sqrt a\)-val:</p>
+        \[\lim_{x \to a} \frac{\sqrt x - \sqrt a}{x - a} = \lim_{x \to a} \frac{\sqrt x - \sqrt a}{x - a} \cdot \frac{\sqrt x + \sqrt a}{\sqrt x + \sqrt a} = \lim_{x \to a} \frac{x - a}{(x - a)(\sqrt x + \sqrt a)}\]
+        \[= \lim_{x \to a} \frac{1}{\sqrt x + \sqrt a} = \frac{1}{2\sqrt a}.\]
+        <p>Eredmény: <span class="ans">\(\dfrac{1}{2\sqrt a}\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért éppen ezzel bővítünk?</b> \((\sqrt x - \sqrt a)(\sqrt x + \sqrt a) = x - a\) (nevezetes szorzat), így a számlálóban megjelenik a nevező „rossz” tényezője, és egyszerűsíthetünk.</p>
+        <p><b>Az utolsó lépés:</b> a nevezetes \(\lim_{x \to a} \sqrt x = \sqrt a\) miatt \(\sqrt x + \sqrt a \to 2\sqrt a \gt 0\), és ez nem 0, tehát a hányados szabálya alkalmazható.</p>
+        <p><b>Ellenőrzés:</b> \(a = 4\)-re \(\frac{\sqrt{4{,}0001} - 2}{0{,}0001} \approx 0{,}25 = \frac{1}{2 \cdot 2}\). ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o2f">
+    <div class="task-head"><span class="no">2. (f)</span><span class="src">1. gyakorlat · órai</span><span class="kind">egyoldali · végtelen</span></div>
+    <p class="stmt">\(f(x) := \sqrt[3]{x^2}\) \((x \in \R,\ a := 0)\). Számítsuk ki \(\lim_{x \to a} \frac{f(x) - f(a)}{x - a}\)-t, ha létezik.</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        \[\lim_{x \to 0} \frac{f(x) - f(0)}{x - 0} = \lim_{x \to 0} \frac{\sqrt[3]{x^2}}{x} = \lim_{x \to 0} \frac{1}{\sqrt[3]{x}}\ \to\ \nexists?\]
+        <p>Egyoldali határértékek:</p>
+        \[\lim_{x \to 0+0} \frac{1}{\sqrt[3]{x}} = +\infty, \qquad \lim_{x \to 0-0} \frac{1}{\sqrt[3]{x}} = -\infty.\]
+        <p>Mivel \(+\infty \ne -\infty\), a határérték nem létezik.</p>
+        <p>Eredmény: <span class="ans">\(\nexists\) (jobbról \(+\infty\), balról \(-\infty\))</span></p>
+        <figure class="graph"><div id="g-o2f"></div><figcaption><span class="lg">\(f(x) = \sqrt[3]{x^2}\)</span><span class="lg tay">különbségi hányados: 1/∛x</span></figcaption></figure>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Az egyszerűsítés:</b> \(x \ne 0\) esetén \(x = \sqrt[3]{x^3}\), így \(\frac{\sqrt[3]{x^2}}{\sqrt[3]{x^3}} = \frac{1}{\sqrt[3]{x}}\). Ez negatív \(x\)-re is igaz, mert a köbgyök páratlan gyök, negatív számra is értelmezett (és negatív).</p>
+        <p><b>Egyoldali határértékek:</b> ha \(x \to 0+0\), akkor \(\sqrt[3]{x} \to 0\) pozitív értékeken, ezért \(\frac{1}{\sqrt[3]{x}} \to +\infty\) („\(\frac{1}{+0}\)”); balról negatív értékeken, ezért \(-\infty\).</p>
+        <p><b>Szemléletesen:</b> az \(\sqrt[3]{x^2}\) grafikonjának a 0-ban „csúcsa” van, függőleges érintővel: jobbról a szelők egyre meredekebben emelkednek, balról egyre meredekebben esnek.</p>
+        <p><b>Ellenőrzés:</b> \(x = 10^{-6}\)-ra a hányados \(10^{2} = 100\), \(x = -10^{-6}\)-ra \(-100\). ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o2g">
+    <div class="task-head"><span class="no">2. (g)</span><span class="src">1. gyakorlat · órai</span><span class="kind">nevezetes határértékre</span></div>
+    <p class="stmt">\(f(x) := e^x\) \((x \in \R,\ a \in \R)\). Számítsuk ki \(\lim_{x \to a} \frac{f(x) - f(a)}{x - a}\)-t, ha létezik.</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <div class="step">
+          <b>1. lépés: \(a = 0\).</b> Az 1. (b) feladat szerint
+          \[\lim_{x \to 0} \frac{e^x - e^0}{x - 0} = \lim_{x \to 0} \frac{e^x - 1}{x} = 1.\]
+        </div>
+        <div class="step">
+          <b>2. lépés: tetszőleges \(a \in \R\).</b> Bármely \(x \in \R\)-re \(e^x = e^{a + (x - a)} = e^a \cdot e^{x - a}\), így \(x \ne a\) és \(h := x - a\) esetén
+          \[\frac{e^x - e^a}{x - a} = \frac{e^a \cdot e^{x-a} - e^a}{x - a} = e^a \cdot \frac{e^{x-a} - 1}{x - a} = e^a \cdot \frac{e^h - 1}{h}.\]
+          \[\lim_{x \to a} \frac{e^x - e^a}{x - a} = e^a \cdot \lim_{h \to 0} \frac{e^h - 1}{h} = e^a \cdot 1 = e^a.\]
+        </div>
+        <p>Eredmény: <span class="ans">\(e^a\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Az ötlet:</b> az \(e^x\) függvényegyenlete (\(e^{u+v} = e^u e^v\)) segítségével „visszatoljuk” a problémát a 0 pontba, ahol a határértéket már ismerjük. Az \(e^a\) konstans, kiemelhető.</p>
+        <p><b>Miért szabad \(h\)-ra áttérni?</b> \(x \to a\) pontosan akkor, ha \(h = x - a \to 0\), és \(x \ne a \iff h \ne 0\). Ez az eltolás nem változtat a határértéken.</p>
+        <p><b>Ellenőrzés:</b> \(a = 1\)-re \(\frac{e^{1{,}0001} - e}{0{,}0001} \approx 2{,}7184 \approx e\). ✓ Az \(e^x\) tehát „önmaga deriváltja”.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o2h">
+    <div class="task-head"><span class="no">2. (h)</span><span class="src">1. gyakorlat · órai</span><span class="kind">addíciós tétel</span></div>
+    <p class="stmt">\(f(x) := \sin x\) \((x \in \R,\ a \in \R)\). Számítsuk ki \(\lim_{x \to a} \frac{f(x) - f(a)}{x - a}\)-t, ha létezik.</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p><b>Trükk:</b> legyen \(h := x - a\). Ekkor \(x = a + h\), és \(\displaystyle\lim_{x \to a} \frac{f(x) - f(a)}{x - a} = \lim_{h \to 0} \frac{f(a + h) - f(a)}{h}\). Az addíciós tétellel:</p>
+        \[\lim_{h \to 0} \frac{\sin(a + h) - \sin a}{h} = \lim_{h \to 0} \frac{\sin a \cos h + \cos a \sin h - \sin a}{h}\]
+        \[= \lim_{h \to 0} \Big(\cos a \cdot \frac{\sin h}{h} - \sin a \cdot \frac{1 - \cos h}{h}\Big).\]
+        <p>Mivel \(\lim_{h \to 0} \frac{\sin h}{h} = 1\) és (1. (a) szerint) \(\lim_{h \to 0} \frac{1 - \cos h}{h} = 0\), ezért</p>
+        \[\lim_{x \to a} \frac{\sin x - \sin a}{x - a} = \cos a \cdot 1 - \sin a \cdot 0 = \cos a.\]
+        <p>Eredmény: <span class="ans">\(\cos a\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért jó a \(h\)?</b> Az \(\sin(a + h)\)-ra van addíciós tételünk, és utána a két nevezetes határérték (\(\frac{\sin h}{h}\), \(\frac{1 - \cos h}{h}\)) pont \(h \to 0\) esetén ismert.</p>
+        <p><b>Az átrendezés:</b> \(\sin a \cos h - \sin a = -\sin a\,(1 - \cos h)\). Ezt a tagot és a \(\cos a \sin h\) tagot külön osztjuk \(h\)-val. Mindkét tag határértéke létezik és véges, ezért a különbség határértéke a határértékek különbsége.</p>
+        <p><b>Ellenőrzés:</b> \(a = 0\)-ra visszakapjuk \(\frac{\sin x}{x} \to 1 = \cos 0\). \(a = \frac\pi2\)-re \(\cos\frac\pi2 = 0\): a szinusz maximumában a szelők vízszintes felé közelednek. ✓</p>
+        <p class="tip">Ugyanígy a házi 2. (b)-ben: \(\lim_{x \to a} \frac{\cos x - \cos a}{x - a} = -\sin a\).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o2i">
+    <div class="task-head"><span class="no">2. (i)</span><span class="src">1. gyakorlat · órai</span><span class="kind">racionális tört</span></div>
+    <p class="stmt">\(f(x) := \dfrac{x + 2}{x^2 - 9}\) \(\big(x \in \R \setminus \{\pm 3\},\ a := -1\big)\). Számítsuk ki \(\lim_{x \to a} \frac{f(x) - f(a)}{x - a}\)-t, ha létezik.</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>\(f(-1) = \frac{1}{1 - 9} = -\frac18\), ezért</p>
+        \[\lim_{x \to -1} \frac{f(x) - f(-1)}{x + 1} = \lim_{x \to -1} \frac{\frac{x+2}{x^2-9} + \frac18}{x + 1} = \lim_{x \to -1} \frac{x^2 + 8x + 7}{8(x + 1)(x^2 - 9)}\]
+        \[= \lim_{x \to -1} \frac{(x + 1)(x + 7)}{8(x + 1)(x^2 - 9)} = \lim_{x \to -1} \frac{x + 7}{8(x^2 - 9)} = \frac{6}{-64} = -\frac{3}{32}.\]
+        <p>Eredmény: <span class="ans">\(-\dfrac{3}{32}\)</span></p>
+        <p class="warn"><b>Megjegyzés a forráshoz.</b> A gyakorlati anyagban az utolsó előtti lépésben egy elírás van („\(\frac{x+7}{8(x^2-9)} == \frac{6}{-64}\)”, dupla egyenlőségjel, a behelyettesítés lépése kimaradt). A számolás helyes: \(\frac{-1+7}{8\,(1-9)} = \frac{6}{-64}\).</p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>A számláló:</b> közös nevezőre hozva \(\frac{x+2}{x^2-9} + \frac18 = \frac{8(x+2) + (x^2-9)}{8(x^2-9)} = \frac{x^2 + 8x + 7}{8(x^2-9)}\).</p>
+        <p><b>Miért kell, hogy \(x = -1\) gyöke legyen?</b> Mivel a számláló \(x = -1\)-ben biztosan 0 (hiszen \(f(x) - f(-1)\) ott 0), az \(x^2 + 8x + 7\)-nek gyöke a \(-1\), tehát kiemelhető belőle \((x + 1)\). A másik gyököt Viète-formulával kapjuk: \((-1)\cdot x_2 = 7\), így \(x_2 = -7\).</p>
+        <p><b>A végén</b> a maradék tört nevezője \(x = -1\)-ben \(8 \cdot (-8) = -64 \ne 0\), tehát behelyettesíthetünk.</p>
+        <p><b>Ellenőrzés:</b> \(x = -0{,}9999\)-re a különbségi hányados \(\approx -0{,}09375 = -\frac{3}{32}\). ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o2j">
+    <div class="task-head"><span class="no">2. (j)</span><span class="src">1. gyakorlat · órai</span><span class="kind">korlátos · nullához tartó</span></div>
+    <p class="stmt">Számítsuk ki \(\lim_{x \to a} \frac{f(x) - f(a)}{x - a}\)-t, ha létezik, ahol \(a := 0\) és</p>
+    \[f(x) := \begin{cases} x^4\Big(\sqrt2 + \sin\dfrac1x\Big), & \text{ha } x \in \R \setminus \{0\},\\ 0, & \text{ha } x = 0.\end{cases}\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        \[\lim_{x \to 0} \frac{f(x) - f(0)}{x - 0} = \lim_{x \to 0} \frac{x^4\big(\sqrt2 + \sin\frac1x\big) - 0}{x - 0} = \lim_{x \to 0} x^3\Big(\sqrt2 + \sin\frac1x\Big).\]
+        <p>Mivel a \(\mathcal D_f \ni x \mapsto \sqrt2 + \sin\frac1x\) függvény korlátos (értékei \([\sqrt2 - 1, \sqrt2 + 1]\)-ben vannak) és \(\lim_{x \to 0} x^3 = 0\), a kérdezett határérték 0.</p>
+        <p>Eredmény: <span class="ans">\(0\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért nem lehet a műveleti szabályt használni?</b> A \(\sin\frac1x\)-nek nincs határértéke \(x \to 0\) esetén (a \(-1\) és \(1\) között végtelen sokszor oszcillál), így a „\(\lim x^3 \cdot \lim(\dots)\)” szorzatszabály nem alkalmazható.</p>
+        <p><b>A helyes eszköz:</b> korlátos függvény szorozva 0-hoz tartóval 0-hoz tart. Becsléssel: \(\big|x^3(\sqrt2 + \sin\frac1x)\big| \le (\sqrt2 + 1)\,|x|^3 \to 0\). Az \(\varepsilon\)-\(\delta\) definícióval: adott \(\varepsilon\)-hoz \(\delta := \sqrt[3]{\varepsilon / (\sqrt2 + 1)}\) jó.</p>
+        <p><b>Ellenőrzés:</b> \(x = 10^{-3}\)-ra a hányados \(\approx 2{,}2 \cdot 10^{-9}\), \(x = -10^{-4}\)-re \(\approx -1{,}7 \cdot 10^{-12}\): gyorsan tart 0-hoz. ✓</p>
+      </div>
+    </details>
+  </article>
+
+  </div>
+</section>
+
+<!-- ================= HÁZI FELADATOK ================= -->
+<section id="hazi">
+  <div class="section-head">
+    <span class="label">1. gyakorlat · Házi feladatok · saját megoldás</span>
+    <h2>Házi feladatok</h2>
+    <p>Az összevont gyakorlati anyag 1. gyakorlathoz tartozó házi feladatai. Ezekhez nincs hivatalos megoldás, ezek saját megoldások (numerikusan ellenőrizve).</p>
+  </div>
+
+  <div class="taskgroup">
+
+  <article class="task" id="h1a">
+    <div class="task-head"><span class="no">1. (a)</span><span class="src">1. gyakorlat · házi</span><span class="kind">\(\frac{\sin u}{u}\) · \(\frac00\)</span></div>
+    <p class="stmt">Számítsa ki a határértéket:</p>
+    \[\lim_{x \to 0} \frac{\sin(3x) - \sin(2x)}{x}.\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>\(\frac00\)-típusú kritikus határérték. Két törtre bontunk, és mindkettőt a \(\frac{\sin u}{u} \to 1\) nevezetes határértékre vezetjük vissza:</p>
+        \[\frac{\sin 3x - \sin 2x}{x} = 3 \cdot \frac{\sin 3x}{3x} - 2 \cdot \frac{\sin 2x}{2x} \qquad (x \ne 0).\]
+        <p>Ha \(x \to 0\), akkor \(3x \to 0\), \(2x \to 0\) (és \(x \ne 0\) esetén ezek sem 0), így \(\frac{\sin 3x}{3x} \to 1\), \(\frac{\sin 2x}{2x} \to 1\):</p>
+        \[\lim_{x \to 0} \frac{\sin 3x - \sin 2x}{x} = 3 \cdot 1 - 2 \cdot 1 = 1.\]
+        <p><b>Másképp (hatványsorral):</b></p>
+        \[\frac{\sin 3x - \sin 2x}{x} = \sum_{n=0}^{+\infty} (-1)^n \frac{3^{2n+1} - 2^{2n+1}}{(2n+1)!}\,x^{2n} = 1 - \frac{19}{6}x^2 + \cdots \xrightarrow[x \to 0]{} 1.\]
+        <p>Eredmény: <span class="ans">\(1\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Az ötlet:</b> a nevezetes határérték \(\frac{\sin u}{u}\) alakú, ahol a nevezőben <i>pontosan</i> a szinusz argumentuma áll. Ezért \(\frac{\sin 3x}{x}\)-et \(3 \cdot \frac{\sin 3x}{3x}\)-re írjuk (bővítünk 3-mal).</p>
+        <p><b>Buktató:</b> \(\frac{\sin 3x}{x} \to 1\) <i>rossz</i>, a helyes érték \(3\). Általában \(\lim_{x \to 0} \frac{\sin(kx)}{x} = k\).</p>
+        <p><b>A hatványsoros út:</b> \(\sin 3x - \sin 2x = (3x - 2x) - \frac{27x^3 - 8x^3}{3!} + \cdots\), \(x\)-szel osztva a konstans tag \(3 - 2 = 1\). A kapott sor mindenütt konvergens, így behelyettesíthetünk.</p>
+        <p><b>Ellenőrzés:</b> \(x = 10^{-3}\)-ra \(\frac{\sin 0{,}003 - \sin 0{,}002}{0{,}001} \approx 0{,}999997\). ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="h1b">
+    <div class="task-head"><span class="no">1. (b)</span><span class="src">1. gyakorlat · házi</span><span class="kind">\(\frac{\infty}{\infty}\) · becslés</span></div>
+    <p class="stmt">Számítsa ki a határértéket:</p>
+    \[\lim_{x \to +\infty} \frac{x}{e^x - 1}.\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Mivel \(x \to +\infty\) és \(e^x - 1 \to +\infty\), ez \(\frac{+\infty}{+\infty}\)-típusú kritikus határérték. A hatványsorból \(x \gt 0\) esetén minden tag pozitív, így elhagyva a harmadfokútól kezdve a tagokat:</p>
+        \[e^x - 1 = x + \frac{x^2}{2!} + \frac{x^3}{3!} + \cdots \ \ge\ x + \frac{x^2}{2} \gt 0 \qquad (x \gt 0).\]
+        <p>Ezért \(x \gt 0\) esetén</p>
+        \[0 \lt \frac{x}{e^x - 1} \le \frac{x}{x + \frac{x^2}{2}} = \frac{1}{1 + \frac x2} \xrightarrow[x \to +\infty]{} 0.\]
+        <p>A közrefogási elv szerint</p>
+        \[\lim_{x \to +\infty} \frac{x}{e^x - 1} = 0.\]
+        <p>Eredmény: <span class="ans">\(0\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért nem jó itt az 1. (b) eredménye?</b> Az \(\frac{e^x - 1}{x} \to 1\) csak \(x \to 0\) esetén igaz. Itt \(x \to +\infty\), ez egészen más kérdés: azt kell megmutatni, hogy az \(e^x\) „gyorsabban nő”, mint \(x\).</p>
+        <p><b>Az ötlet:</b> az \(e^x\) hatványsora alulról becsülhető bármelyik részletösszegével (pozitív \(x\)-re), és már \(\frac{x^2}{2}\) is gyorsabban nő, mint \(x\). Ezért a tört felülről becsülhető egy 0-hoz tartó kifejezéssel, alulról 0-val: közrefogás.</p>
+        <p><b>Szemléletesen:</b> \(e^x\) bármely polinomnál gyorsabban nő, így \(\frac{x}{e^x}\), sőt \(\frac{x^k}{e^x}\) is 0-hoz tart, ha \(x \to +\infty\) (az utóbbinál \(\frac{x^{k+1}}{(k+1)!}\)-gyel becsülünk).</p>
+        <p><b>Ellenőrzés:</b> \(x = 10\)-re \(\frac{10}{e^{10} - 1} \approx 4{,}5 \cdot 10^{-4}\), \(x = 50\)-re \(\approx 10^{-20}\). ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="h2a">
+    <div class="task-head"><span class="no">2. (a)</span><span class="src">1. gyakorlat · házi</span><span class="kind">egyoldali határértékek</span></div>
+    <p class="stmt">\(f(x) := \dfrac{1}{|x| + 1}\) \((x \in \R,\ a := 0)\). Számítsa ki \(\lim_{x \to a} \frac{f(x) - f(a)}{x - a}\)-t, ha létezik.</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>\(f(0) = 1\), ezért \(x \ne 0\) esetén</p>
+        \[\frac{f(x) - f(0)}{x - 0} = \frac{\frac{1}{|x| + 1} - 1}{x} = \frac{1 - (|x| + 1)}{x(|x| + 1)} = -\frac{|x|}{x} \cdot \frac{1}{|x| + 1}.\]
+        <p>Egyoldali határértékek:</p>
+        \[\lim_{x \to 0+0} \Big(-\frac{x}{x} \cdot \frac{1}{x + 1}\Big) = \lim_{x \to 0+0} \frac{-1}{x + 1} = -1,\]
+        \[\lim_{x \to 0-0} \Big(-\frac{-x}{x} \cdot \frac{1}{1 - x}\Big) = \lim_{x \to 0-0} \frac{1}{1 - x} = 1.\]
+        <p>Mivel \(-1 \ne 1\), a határérték nem létezik.</p>
+        <p>Eredmény: <span class="ans">\(\nexists\) (jobbról \(-1\), balról \(1\))</span></p>
+        <figure class="graph"><div id="g-h2a"></div><figcaption><span class="lg">\(f(x) = \frac{1}{|x|+1}\)</span><span class="lg tay">egyoldali „érintők”: y = 1 − x (x ≥ 0), y = 1 + x (x ≤ 0)</span></figcaption></figure>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Felismerés:</b> az \(|x|\) miatt a képlet a 0-ban „eltörik”, pont úgy, mint az órai 2. (b)-ben. Ezért rögtön egyoldali határértékeket számolunk: \(x \gt 0\)-ra \(|x| = x\), \(x \lt 0\)-ra \(|x| = -x\).</p>
+        <p><b>Az átalakítás:</b> közös nevező után a számláló \(-|x|\) lesz, és \(\frac{|x|}{x} = \operatorname{sgn} x\). A maradék \(\frac{1}{|x| + 1} \to 1\) nem kritikus. Tehát a hányados \(\approx -\operatorname{sgn} x\), ami a 0-ban ugrik.</p>
+        <p><b>Szemléletesen:</b> a grafikon a \((0;\,1)\) pontban csúcsos: jobbról \(-1\), balról \(+1\) meredekséggel érkezik (lásd a grafikont). Így \(f\) a 0-ban nem deriválható.</p>
+        <p><b>Ellenőrzés:</b> \(x = \pm 10^{-6}\)-ra a hányados \(\mp 0{,}999999\). ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="h2b">
+    <div class="task-head"><span class="no">2. (b)</span><span class="src">1. gyakorlat · házi</span><span class="kind">addíciós tétel</span></div>
+    <p class="stmt">\(f(x) := \cos x\) \((x \in \R,\ a \in \R)\). Számítsa ki \(\lim_{x \to a} \frac{f(x) - f(a)}{x - a}\)-t, ha létezik.</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Az órai 2. (h) mintájára legyen \(h := x - a\). Az addíciós tétellel (\(\cos(a + h) = \cos a \cos h - \sin a \sin h\)):</p>
+        \[\lim_{x \to a} \frac{\cos x - \cos a}{x - a} = \lim_{h \to 0} \frac{\cos a \cos h - \sin a \sin h - \cos a}{h}\]
+        \[= \lim_{h \to 0} \Big(-\cos a \cdot \frac{1 - \cos h}{h} - \sin a \cdot \frac{\sin h}{h}\Big) = -\cos a \cdot 0 - \sin a \cdot 1 = -\sin a.\]
+        <p>Eredmény: <span class="ans">\(-\sin a\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Az átrendezés:</b> \(\cos a \cos h - \cos a = -\cos a\,(1 - \cos h)\), a megmaradó tag \(-\sin a \sin h\). Mindkettőt \(h\)-val osztjuk, és a két nevezetes határértéket használjuk: \(\frac{1 - \cos h}{h} \to 0\) (órai 1. (a)) és \(\frac{\sin h}{h} \to 1\).</p>
+        <p><b>Buktató:</b> az előjel. A koszinusz addíciós tételében mínusz van: \(\cos(a + h) = \cos a \cos h \,\mathbf{-}\, \sin a \sin h\). Ebből jön a \(-\sin a\).</p>
+        <p><b>Ellenőrzés:</b> \(a = \frac\pi2\)-re \(-\sin\frac\pi2 = -1\): a koszinusz ott \(-1\) meredekséggel halad át a 0-n. Numerikusan \(a = 2\)-re \(\approx -0{,}9093 = -\sin 2\). ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="h2c">
+    <div class="task-head"><span class="no">2. (c)</span><span class="src">1. gyakorlat · házi</span><span class="kind">gyöktelenítés</span></div>
+    <p class="stmt">\(f(x) := \sqrt{x^2 - 1}\) \((x \ge 1,\ a \gt 0)\). Számítsa ki \(\lim_{x \to a} \frac{f(x) - f(a)}{x - a}\)-t, ha létezik.</p>
+    <p class="warn"><b>Megjegyzés a forráshoz.</b> A feltételek nem illenek össze: \(\mathcal D_f = [1, +\infty)\), de az anyag \(a \gt 0\)-t ír. Ha \(0 \lt a \lt 1\), akkor \(a \notin \mathcal D_f\) (így \(f(a)\) nincs értelmezve), és \(a\) nem is torlódási pontja \(\mathcal D_f\)-nek, tehát a kérdés értelmetlen. Valószínűleg \(a \gt 1\) (vagy \(a \ge 1\)) a helyes. Lent az \(a \gt 1\) esetet oldjuk meg, és külön megnézzük az \(a = 1\) esetet. (A PDF szövegéből a gyökjel hossza nem olvasható ki teljes biztonsággal; az \(x \ge 1\) kikötés alapján \(\sqrt{x^2 - 1}\)-nek olvassuk.)</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <div class="step">
+          <b>Ha \(a \gt 1\):</b> bővítünk \(\sqrt{x^2 - 1} + \sqrt{a^2 - 1}\)-gyel:
+          \[\frac{\sqrt{x^2 - 1} - \sqrt{a^2 - 1}}{x - a} = \frac{(x^2 - 1) - (a^2 - 1)}{(x - a)\big(\sqrt{x^2 - 1} + \sqrt{a^2 - 1}\big)} = \frac{(x - a)(x + a)}{(x - a)\big(\sqrt{x^2 - 1} + \sqrt{a^2 - 1}\big)},\]
+          \[\lim_{x \to a} \frac{f(x) - f(a)}{x - a} = \lim_{x \to a} \frac{x + a}{\sqrt{x^2 - 1} + \sqrt{a^2 - 1}} = \frac{2a}{2\sqrt{a^2 - 1}} = \frac{a}{\sqrt{a^2 - 1}}.\]
+        </div>
+        <div class="step">
+          <b>Ha \(a = 1\):</b> \(f(1) = 0\), és csak \(x \gt 1\) jöhet szóba (jobb oldali határérték):
+          \[\lim_{x \to 1+0} \frac{\sqrt{x^2 - 1}}{x - 1} = \lim_{x \to 1+0} \frac{\sqrt{(x - 1)(x + 1)}}{\sqrt{(x - 1)^2}} = \lim_{x \to 1+0} \sqrt{\frac{x + 1}{x - 1}} = +\infty.\]
+        </div>
+        <p>Eredmény: <span class="ans">\(a \gt 1\): \(\dfrac{a}{\sqrt{a^2 - 1}}\); \(a = 1\): \(+\infty\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Módszer:</b> ugyanaz a gyöktelenítés, mint az órai 2. (e)-ben: \((\sqrt A - \sqrt B)(\sqrt A + \sqrt B) = A - B\). Itt \(A - B = x^2 - a^2 = (x - a)(x + a)\), így az \(x - a\) egyszerűsíthető.</p>
+        <p><b>Miért kell \(a \gt 1\) a végén?</b> A nevező határértéke \(2\sqrt{a^2 - 1}\), ez csak \(a \gt 1\) esetén pozitív. Ha \(a = 1\), a nevező 0-hoz tart, a számláló \(2\)-höz: \(\frac{2}{+0} = +\infty\). Ugyanezt kaptuk a közvetlen számolással is.</p>
+        <p><b>Az \(a = 1\) eset trükkje:</b> \(x \gt 1\) esetén \(x - 1 = \sqrt{(x - 1)^2}\), így egy gyökjel alá vihető. Szemléletesen: a grafikon az \((1;\,0)\) pontból függőleges érintővel indul.</p>
+        <p><b>Ellenőrzés:</b> numerikusan \(a = 1{,}5\)-re \(\approx 1{,}3416 = \frac{1{,}5}{\sqrt{1{,}25}}\), \(a = 4\)-re \(\approx 1{,}0328 = \frac{4}{\sqrt{15}}\) jön ki; \(a = 1\)-re \(h = 10^{-4}\)-nél \(\approx 141\), \(h = 10^{-7}\)-nél \(\approx 4472\) (nő). ✓</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="h2d">
+    <div class="task-head"><span class="no">2. (d)</span><span class="src">1. gyakorlat · házi</span><span class="kind">helyettesítés · nevezetes</span></div>
+    <p class="stmt">\(f(x) := \ln x\) \((x \ge 1,\ a \gt 1)\). Számítsa ki \(\lim_{x \to a} \frac{f(x) - f(a)}{x - a}\)-t, ha létezik.</p>
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Legyen \(h := x - a\) és \(t := \frac ha\). A logaritmus azonosságaival:</p>
+        \[\frac{\ln x - \ln a}{x - a} = \frac{\ln\frac{a + h}{a}}{h} = \frac{\ln\big(1 + \frac ha\big)}{h} = \frac1a \cdot \frac{\ln(1 + t)}{t}.\]
+        <p>Ha \(x \to a\), akkor \(t \to 0\) (és \(t \ne 0\)). A \(\frac{\ln(1 + t)}{t}\)-t az 1. (b)-re vezetjük vissza: legyen \(u := \ln(1 + t)\), ekkor \(t = e^u - 1\), \(u \ne 0\), és a \(\ln\) folytonossága miatt \(u \to 0\), ha \(t \to 0\). Így</p>
+        \[\lim_{t \to 0} \frac{\ln(1 + t)}{t} = \lim_{u \to 0} \frac{u}{e^u - 1} = \frac{1}{\lim_{u \to 0} \frac{e^u - 1}{u}} = \frac11 = 1.\]
+        \[\lim_{x \to a} \frac{\ln x - \ln a}{x - a} = \frac1a \cdot 1 = \frac1a.\]
+        <p>Eredmény: <span class="ans">\(\dfrac1a\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Az ötlet:</b> a \(\ln\) az \(\exp\) inverze, ezért a \(\frac{\ln(1+t)}{t}\) határértéke az \(\frac{e^u - 1}{u}\) „megfordítása”. Az 1. (b) eredményéből (\(\frac{e^u-1}{u} \to 1\)) azonnal \(\frac{u}{e^u-1} \to 1\) következik (reciprok, \(1 \ne 0\)).</p>
+        <p><b>Mire kell figyelni a helyettesítésnél?</b> Két dolog kell: (1) \(u = \ln(1 + t) \to 0\), ha \(t \to 0\) – ez a \(\ln\) folytonossága az 1 pontban; (2) \(u \ne 0\), ha \(t \ne 0\) – ez a \(\ln\) szigorú monotonitása (injektivitása) miatt igaz. Így az összetett függvény határértékére vonatkozó tétel alkalmazható.</p>
+        <p><b>Az \(a = 1\) eset:</b> a feltétel \(a \gt 1\), de ugyanez a számolás \(a = 1\)-re is működik (ott csak jobb oldali határértéket vehetünk), és \(1\)-et ad.</p>
+        <p><b>Ellenőrzés:</b> \(a = 4\)-re \(\frac{\ln 4{,}0001 - \ln 4}{0{,}0001} \approx 0{,}25 = \frac14\). ✓</p>
+        <p class="tip">Megjegyzés: a feladat \(x \ge 1\) értelmezési tartománya szűkebb a \(\ln\) természetes \((0, +\infty)\) tartományánál; ez a határértéket \(a \gt 1\) esetén nem befolyásolja, mert \(a\) körül van olyan környezet, amely \([1, +\infty)\)-ben van.</p>
+      </div>
+    </details>
+  </article>
+
+  </div>
+</section>
+
+<!-- ================= GYAKORI HIBÁK ================= -->
+<section id="hibak">
+  <div class="section-head">
+    <span class="label">Mire figyelj</span>
+    <h2>Gyakori hibák</h2>
+  </div>
+  <div class="mistakes">
+    <div class="mistake"><span class="x">✕</span><p><b>„\(\frac00 = 1\)” vagy „\(\frac00 = 0\)”.</b> A \(\frac00\) nem szám, hanem kritikus határérték: bármi kijöhet (0, 1, \(-\frac{3}{32}\), \(\pm\infty\), vagy nem is létezik). Mindig át kell alakítani, mielőtt behelyettesítesz.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>\(\frac{\sin 3x}{x} \to 1\).</b> A \(\frac{\sin u}{u} \to 1\)-ben a nevezőnek pontosan a szinusz argumentumának kell lennie: \(\frac{\sin 3x}{x} = 3 \cdot \frac{\sin 3x}{3x} \to 3\) (házi 1. (a)).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Nevezetes határérték rossz helyen.</b> \(\frac{e^x - 1}{x} \to 1\) és \(\frac{\sin x}{x} \to 1\) csak \(x \to 0\) esetén igaz. \(x \to +\infty\)-nél (házi 1. (b)) vagy \(x \to a \ne 0\)-nál előbb vissza kell vezetni a 0 pontra (pl. \(h := x - a\)).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Egyoldali határértékek kihagyása.</b> \(|x|\), \(\sqrt[3]{x}\), \(\operatorname{sgn} x\) jellegű kifejezéseknél a két oldal különbözhet (órai 2. (b), (f), házi 2. (a)). Ha az egyik oldalt nem nézed meg, könnyen hamis „határértéket” kapsz.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Szorzatszabály nem létező határértékkel.</b> \(\lim x^3 \sin\frac1x\)-nél nem írhatod, hogy \(\lim x^3 \cdot \lim \sin\frac1x\), mert a második nem létezik. A jó eszköz: korlátos · nullához tartó \(\to 0\) (órai 2. (j)).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Előjelhiba egyszerűsítésnél és addíciós tételnél.</b> \(\frac{a - x}{x - a} = -1\) (órai 2. (d)), és \(\cos(a + h) = \cos a \cos h - \sin a \sin h\) (házi 2. (b)). Egy gyors numerikus próba (pl. \(x = a + 0{,}001\)) azonnal megmutatja az előjelet.</p></div>
+  </div>
+</section>
+
+<footer>Forrás: <a href="../Gyakorlat%20anyagok/01_Gy_An_II_A_B.pdf" target="_blank" rel="noopener">1. gyakorlat (PDF)</a> és <a href="../Gyakorlat%20anyagok/An_II_A_B_Gyak.pdf" target="_blank" rel="noopener">Analízis II. gyakorlatok, összevont anyag (PDF)</a>. Minden határértéket numerikusan (a vizsgált pont közelében kiértékelve) ellenőriztünk, a grafikonok a függvényekből számolva készültek.</footer>
+</div>
+
+<script>
+(function () {
+  // Small SVG plotter: several curves on one grid, optional vertical guide lines.
+  function fmt(v) { return (Math.round(v * 100) / 100).toString().replace('.', ',').replace('-', '−'); }
+  function plot(el, o) {
+    var W = 640, H = o.h || 320, L = 40, R = 14, T = 12, B = 26;
+    var x0 = o.x[0], x1 = o.x[1], y0 = o.y[0], y1 = o.y[1];
+    var X = function (x) { return L + (x - x0) / (x1 - x0) * (W - L - R); };
+    var Y = function (y) { return T + (y1 - y) / (y1 - y0) * (H - T - B); };
+    var s = [], cid = 'clip-' + el.id, v;
+    s.push('<defs><clipPath id="' + cid + '"><rect x="' + L + '" y="' + T + '" width="' + (W - L - R) + '" height="' + (H - T - B) + '"/></clipPath></defs>');
+    for (v = Math.ceil(x0 / o.gx - 1e-9) * o.gx; v <= x1 + 1e-9; v += o.gx) {
+      s.push('<line class="gl" x1="' + X(v) + '" y1="' + T + '" x2="' + X(v) + '" y2="' + (H - B) + '"/>');
+      if (Math.abs(v) > 1e-9) s.push('<text class="tk" x="' + X(v) + '" y="' + (H - 8) + '" text-anchor="middle">' + fmt(v) + '</text>');
+    }
+    for (v = Math.ceil(y0 / o.gy - 1e-9) * o.gy; v <= y1 + 1e-9; v += o.gy) {
+      s.push('<line class="gl" x1="' + L + '" y1="' + Y(v) + '" x2="' + (W - R) + '" y2="' + Y(v) + '"/>');
+      if (Math.abs(v) > 1e-9) s.push('<text class="tk" x="' + (L - 6) + '" y="' + (Y(v) + 4) + '" text-anchor="end">' + fmt(v) + '</text>');
+    }
+    if (y0 <= 0 && y1 >= 0) s.push('<line class="ax" x1="' + L + '" y1="' + Y(0) + '" x2="' + (W - R) + '" y2="' + Y(0) + '"/>');
+    if (x0 <= 0 && x1 >= 0) s.push('<line class="ax" x1="' + X(0) + '" y1="' + T + '" x2="' + X(0) + '" y2="' + (H - B) + '"/>');
+    (o.vl || []).forEach(function (a) { s.push('<line class="as" x1="' + X(a) + '" y1="' + T + '" x2="' + X(a) + '" y2="' + (H - B) + '"/>'); });
+    var g = '<g clip-path="url(#' + cid + ')">';
+    o.curves.forEach(function (c) {
+      var d = '', pen = false, N = 900, span = y1 - y0;
+      for (var i = 0; i <= N; i++) {
+        var x = x0 + (x1 - x0) * i / N;
+        if (c.dom && !c.dom(x)) { pen = false; continue; }
+        var y = c.f(x);
+        if (!isFinite(y)) { pen = false; continue; }
+        y = Math.max(Math.min(y, y1 + span), y0 - span);
+        d += (pen ? 'L' : 'M') + X(x).toFixed(1) + ' ' + Y(y).toFixed(1);
+        pen = true;
+      }
+      g += '<path class="' + c.cls + '" d="' + d + '"/>';
+    });
+    (o.pts || []).forEach(function (p) { g += '<circle class="pz" cx="' + X(p[0]) + '" cy="' + Y(p[1]) + '" r="3.5"/>'; });
+    g += '</g>';
+    s.push(g);
+    el.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + o.label + '">' + s.join('') + '</svg>';
+  }
+  var GRAPHS = {
+    'g-o1': { label: '(1 − cos x)/x, (e^x − 1)/x és sin x / x a 0 körül', x: [-4, 3], y: [-1, 3], gx: 1, gy: 1, pts: [[0, 0], [0, 1]],
+      curves: [ { cls: 'cv3', f: function (x) { return Math.sin(x) / x; } },
+                { cls: 'cv2', f: function (x) { return (Math.exp(x) - 1) / x; } },
+                { cls: 'cv', f: function (x) { return (1 - Math.cos(x)) / x; } } ] },
+    'g-o2f': { label: 'f(x) = köbgyök(x²) és különbségi hányadosa 1/köbgyök(x)', x: [-3, 3], y: [-3, 3], gx: 1, gy: 1, pts: [[0, 0]],
+      curves: [ { cls: 'cv2', dom: function (x) { return x < 0; }, f: function (x) { return 1 / Math.cbrt(x); } },
+                { cls: 'cv2', dom: function (x) { return x > 0; }, f: function (x) { return 1 / Math.cbrt(x); } },
+                { cls: 'cv', f: function (x) { return Math.cbrt(x * x); } } ] },
+    'g-h2a': { label: 'f(x) = 1/(|x|+1) és az egyoldali érintő félegyenesek a 0-ban', h: 260, x: [-3, 3], y: [-0.5, 2], gx: 1, gy: 0.5, pts: [[0, 1]],
+      curves: [ { cls: 'cv2', dom: function (x) { return x >= 0; }, f: function (x) { return 1 - x; } },
+                { cls: 'cv2', dom: function (x) { return x <= 0; }, f: function (x) { return 1 + x; } },
+                { cls: 'cv', f: function (x) { return 1 / (Math.abs(x) + 1); } } ] }
+  };
+  Object.keys(GRAPHS).forEach(function (id) { var el = document.getElementById(id); if (el) plot(el, GRAPHS[id]); });
+})();
+</script>
+<!-- Fejezetsáv: az éppen olvasott szakasz gombja kiemelve -->
+<style>
+nav.bar a.active, nav.bar a.active:hover, nav.bar a.active:focus-visible { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+</style>
+<script>
+(function () {
+  var nav = document.querySelector('nav.bar');
+  if (!nav) return;
+  var links = Array.prototype.filter.call(nav.querySelectorAll('a[href^="#"]'), function (a) {
+    return a.getAttribute('href').length > 1 && document.getElementById(a.getAttribute('href').slice(1));
+  });
+  var current = null, ticking = false;
+  function sectionOf(a) { return document.getElementById(a.getAttribute('href').slice(1)); }
+  function update() {
+    ticking = false;
+    var line = nav.getBoundingClientRect().bottom + 12, active = null;
+    var visible = links.filter(function (a) { return sectionOf(a).offsetParent !== null; });
+    visible.forEach(function (a) { if (sectionOf(a).getBoundingClientRect().top <= line) active = a; });
+    // a lap alján az utolsó szakasz az aktuális akkor is, ha rövid
+    if (visible.length && window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) active = visible[visible.length - 1];
+    if (active === current) return;
+    if (current) { current.classList.remove('active'); current.removeAttribute('aria-current'); }
+    current = active;
+    if (!active) return;
+    active.classList.add('active');
+    active.setAttribute('aria-current', 'location');
+    var ul = active.closest('ul'), ur = ul.getBoundingClientRect(), ar = active.getBoundingClientRect();
+    var left = ar.left - ur.left + ul.scrollLeft, right = left + ar.width;
+    if (left < ul.scrollLeft || right > ul.scrollLeft + ul.clientWidth) ul.scrollTo({ left: Math.max(0, left - 16), behavior: 'smooth' });
+  }
+  function schedule() { if (!ticking) { ticking = true; setTimeout(update, 40); } }
+  window.addEventListener('scroll', schedule, { passive: true });
+  window.addEventListener('resize', schedule);
+  document.addEventListener('input', schedule);   // a keresés elrejthet szakaszokat
+  document.addEventListener('toggle', schedule, true);
+  update();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,689 @@
+<!doctype html>
+<html lang="hu" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Analízis II · 9. gyakorlat kidolgozva</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['\\(', '\\)']],
+      displayMath: [['\\[', '\\]']],
+      macros: {
+        arcsin: '\\operatorname{arc\\,sin}', arccos: '\\operatorname{arc\\,cos}',
+        arctg: '\\operatorname{arc\\,tg}', arcctg: '\\operatorname{arc\\,ctg}',
+        tg: '\\operatorname{tg}', ctg: '\\operatorname{ctg}', R: '\\mathbb{R}'
+      }
+    },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js" async></script>
+<style>
+/* Layout: same exam-paper look as the DIMAT prep, in the Analysis orange; every task = statement + folded solution + folded walkthrough */
+:root {
+  --paper: #f5f7fa;
+  --grid: rgba(180, 80, 11, 0.06);
+  --card: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6574;
+  --rule: #d7dde6;
+  --accent: #b4500b;
+  --accent-soft: #fcefe4;
+  --mark: #b8352a;
+  --mark-soft: #fbe9e6;
+  --ok: #2c7a4b;
+  --ok-soft: #e3f3e9;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-label: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f141b; --grid: rgba(242, 162, 94, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+    --rule: #2a3442; --accent: #f2a25e; --accent-soft: #33241a; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+    --ok: #74d39c; --ok-soft: #173225; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f141b; --grid: rgba(242, 162, 94, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+  --rule: #2a3442; --accent: #f2a25e; --accent-soft: #33241a; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+  --ok: #74d39c; --ok-soft: #173225; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background-color: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 1.06rem;
+  line-height: 1.6;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 80px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2rem, 6vw, 3.1rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.65rem; font-weight: 700; letter-spacing: -0.01em; }
+h3 { font-size: 1.1rem; font-weight: 600; }
+p { margin: 0; }
+a { color: var(--accent); }
+.label { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding: 2px 0; margin: 6px 0 !important; min-width: 0; max-width: 100%; }
+/* grid children must be allowed to shrink, otherwise wide formulas push the page sideways */
+.task, .sol, .step, .rule-card, .sheet > * { grid-template-columns: minmax(0, 1fr); min-width: 0; }
+.rule-card li, .rule-card p, .sol p, .sol li, .step p, .stmt, .tip, .warn, .mistake p, td { overflow-x: auto; overflow-y: hidden; }
+
+/* back to subject page */
+.back { justify-self: start; display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px 9px 12px; border: 1.5px solid var(--accent); border-radius: 8px; background: var(--accent-soft); color: var(--ink); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 1.02rem; line-height: 1; white-space: nowrap; transition: background .15s, color .15s; }
+.back .arr { color: var(--accent); font-size: 1.25rem; transition: transform .15s, color .15s; }
+.back:hover, .back:focus-visible { background: var(--accent); color: var(--paper); outline: none; }
+.back:hover .arr, .back:focus-visible .arr { color: var(--paper); transform: translateX(-3px); }
+
+/* header */
+header.hero { display: grid; gap: 14px; padding-block: 0 26px; border-bottom: 2px solid var(--accent); }
+.hero .sub { color: var(--muted); max-width: 62ch; }
+.facts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.fact { display: flex; flex-direction: column; gap: 2px; padding: 8px 14px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; min-width: 120px; }
+.fact b { font-family: var(--f-display); font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+
+nav.bar { position: sticky; top: 0; z-index: 5; background: var(--paper); border-bottom: 1px solid var(--rule); margin-inline: -16px; padding-inline: 16px; }
+nav.bar ul { list-style: none; margin: 0; padding: 10px 0; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin; }
+nav.bar a { display: block; white-space: nowrap; text-decoration: none; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.04em; color: var(--ink); padding: 6px 10px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); }
+nav.bar a:hover, nav.bar a:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+nav.bar a.nav-back { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+
+section { padding-top: 44px; display: grid; gap: 18px; scroll-margin-top: 56px; }
+.section-head { display: grid; gap: 6px; }
+.section-head p { color: var(--muted); max-width: 64ch; }
+
+/* reminder cards */
+.sheet { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; }
+.rule-card { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 14px 16px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.rule-card h3 { font-size: 1rem; }
+.rule-card p, .rule-card li { font-size: 0.95rem; }
+.rule-card ul, .rule-card ol { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.rule-card.wide { grid-column: 1 / -1; }
+
+/* tables (sign charts, value tables) */
+.tbl { overflow-x: auto; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--rule); vertical-align: middle; }
+th { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+tr:last-child td, tr:last-child th { border-bottom: 0; }
+table.sgn { width: auto; min-width: 100%; }
+table.sgn th, table.sgn td { text-align: center; white-space: nowrap; border-left: 1px solid var(--rule); }
+table.sgn th:first-child { border-left: 0; text-transform: none; letter-spacing: 0; font-family: var(--f-body); font-size: 1rem; color: var(--ink); background: var(--accent-soft); }
+table.sgn td.pt { background: color-mix(in srgb, var(--accent-soft) 55%, transparent); }
+.p { color: var(--ok); font-weight: 600; }
+.n { color: var(--mark); font-weight: 600; }
+.note { font-size: 0.82rem; color: var(--muted); }
+.tag { font-family: var(--f-label); font-size: 0.72rem; color: var(--accent); }
+
+/* exercises */
+.task { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 18px; display: grid; gap: 10px; min-width: 0; scroll-margin-top: 60px; }
+.task-head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.task-head .no { font-family: var(--f-display); font-weight: 700; font-size: 1.05rem; }
+.task-head .src { font-family: var(--f-label); font-size: 0.72rem; color: var(--muted); }
+.task-head .kind { margin-left: auto; font-family: var(--f-label); font-size: 0.75rem; color: var(--accent); }
+.stmt { max-width: 70ch; }
+details { border-top: 1px dashed var(--rule); padding-top: 8px; min-width: 0; }
+summary { cursor: pointer; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); list-style: none; display: inline-flex; gap: 8px; align-items: center; padding: 4px 0; }
+summary::-webkit-details-marker { display: none; }
+summary::before { content: "+"; display: inline-grid; place-items: center; width: 18px; height: 18px; border: 1px solid currentColor; border-radius: 3px; font-size: 0.8rem; }
+details[open] > summary::before { content: "−"; }
+summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sol { display: grid; gap: 10px; padding-top: 6px; max-width: 74ch; min-width: 0; }
+.sol ol, .sol ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.step { display: grid; gap: 8px; min-width: 0; }
+.step > b:first-child { font-family: var(--f-display); font-weight: 600; }
+.ans { display: inline-block; background: var(--ok-soft); color: var(--ok); font-weight: 600; padding: 2px 9px; border-radius: 4px; }
+.warn { background: var(--mark-soft); border-left: 3px solid var(--mark); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 0.95rem; }
+.tip { background: var(--accent-soft); border-left: 3px solid var(--accent); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 0.95rem; }
+.taskgroup { display: grid; gap: 12px; }
+
+/* graphs */
+figure.graph { margin: 0; background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 8px 8px 6px; display: grid; gap: 6px; }
+figure.graph > div > svg { width: 100%; height: auto; display: block; }
+figure.graph figcaption { display: flex; flex-wrap: wrap; gap: 4px 16px; font-family: var(--f-label); font-size: 0.72rem; color: var(--muted); padding: 0 4px; }
+.lg::before { content: ""; display: inline-block; width: 16px; height: 0; vertical-align: middle; margin-right: 6px; border-top: 2.5px solid var(--accent); }
+.lg.asy::before { border-top: 1.5px dashed var(--muted); }
+.lg.ext::before { width: 9px; height: 9px; border: 0; border-radius: 50%; background: var(--ok); }
+.lg.inf::before { width: 9px; height: 9px; border: 2px solid var(--mark); border-radius: 50%; box-sizing: border-box; }
+svg .gl { stroke: var(--rule); stroke-width: 1; opacity: .55; }
+svg .ax { stroke: var(--muted); stroke-width: 1.3; }
+svg .tk { fill: var(--muted); font-family: var(--f-label); font-size: 11px; }
+svg .cv { fill: none; stroke: var(--accent); stroke-width: 2.6; stroke-linejoin: round; stroke-linecap: round; }
+svg .as { stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 6 5; fill: none; }
+svg .pe { fill: var(--ok); stroke: var(--paper); stroke-width: 1.5; }
+svg .pi { fill: var(--paper); stroke: var(--mark); stroke-width: 2.2; }
+svg .pz { fill: var(--ink); }
+svg .po { fill: var(--paper); stroke: var(--accent); stroke-width: 2; }
+svg .pl { fill: var(--ink); font-family: var(--f-label); font-size: 12px; paint-order: stroke; stroke: var(--paper); stroke-width: 4px; stroke-linejoin: round; }
+
+/* mistakes */
+.mistakes { display: grid; gap: 10px; }
+.mistake { display: grid; grid-template-columns: auto 1fr; gap: 12px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 12px 14px; }
+.mistake .x { font-family: var(--f-display); font-weight: 700; color: var(--mark); font-size: 1.2rem; line-height: 1.3; }
+
+footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.88rem; }
+
+@media (max-width: 520px) {
+  body { font-size: 1rem; }
+  .task { padding: 14px; }
+  th, td { padding: 6px 8px; }
+}
+
+/* Taylor graphs: second curve dashed, highlighted x-band */
+svg .cv2 { fill: none; stroke: var(--ok); stroke-width: 2.2; stroke-dasharray: 7 5; }
+svg .bd { fill: var(--accent-soft); opacity: .8; }
+.lg.tay::before { border-top: 2.2px dashed var(--ok); }
+.lg.band::before { height: 10px; border: 0; background: var(--accent-soft); }
+/* primitive-function families and vertical asymptotes */
+svg .cv3 { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: .4; }
+.lg.fam::before { opacity: .45; border-top-width: 1.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <a class="back" href="../../index.html#/anal2"><span class="arr" aria-hidden="true">←</span>Vissza: Analízis II.</a>
+  <span class="label">Analízis II. · 9. gyakorlat · Primitív függvény, határozatlan integrál 3.</span>
+  <h1>A 9. gyakorlat kidolgozva</h1>
+  <p class="sub">A második helyettesítési szabály és a tipikus helyettesítések: \(t = e^x\) az \(S(e^x)\) alakú integrálokhoz, \(t = \sqrt[n]{\frac{ax+b}{cx+d}}\) a gyökös kifejezésekhez, \(x = t^6\) több különböző gyökhöz, \(x = \cos t\) a \(\sqrt{1-x^2}\)-hez. A helyettesítés után mindig racionális törtfüggvényt kapunk, ezt a 8. gyakorlat módszereivel integráljuk. Az órai feladatok a gyakorlati anyag megoldását követik, a házi feladatok (az összevont anyagból) saját megoldások. Az órán kérdezett röpZH-tételek: <a href="ropzh_kidolgozas.html#rz9">9. röpZH</a>. Előbb próbáld meg magad, és csak utána nyisd le a megoldást.</p>
+  <div class="facts">
+    <div class="fact"><span class="label">Órai feladat</span><b>3 (6 rész + példa)</b></div>
+    <div class="fact"><span class="label">Házi feladat</span><b>1 (3 rész)</b></div>
+    <div class="fact"><span class="label">Grafikon</span><b>2 db</b></div>
+  </div>
+</header>
+
+<nav class="bar" aria-label="Fejezetek">
+  <ul>
+    <li><a class="nav-back" href="../../index.html#/anal2" aria-label="Vissza: Analízis II.">← ANAL II</a></li>
+    <li><a href="#emlekezteto">Emlékeztető</a></li>
+    <li><a href="#orai">Órai feladatok</a></li>
+    <li><a href="#hazi">Házi feladatok</a></li>
+    <li><a href="#hibak">Gyakori hibák</a></li>
+    <li><a href="ropzh_kidolgozas.html#rz9">9. röpZH ↗</a></li>
+  </ul>
+</nav>
+
+<!-- ================= EMLÉKEZTETŐ ================= -->
+<section id="emlekezteto">
+  <div class="section-head">
+    <span class="label">Ami kell hozzá</span>
+    <h2>Emlékeztető</h2>
+    <p>Az \(x\) változót egy alkalmas \(g\) függvény értékeivel helyettesítjük: \(x = g(t)\). A cél mindig az, hogy a helyettesítés után racionális törtfüggvényt kelljen integrálni.</p>
+  </div>
+  <div class="sheet">
+    <div class="rule-card wide">
+      <h3>A második helyettesítési szabály</h3>
+      <p><b>Tétel.</b> Legyenek \(I, J \subset \R\) nyílt intervallumok, \(f : I \to \R\), \(g : J \to I\) bijekció, \(g \in D(J)\) és \(g'(t) \ne 0\) \((\forall t \in J)\), továbbá az \(f \circ g \cdot g' : J \to \R\) függvénynek létezik primitív függvénye. Ekkor \(f\)-nek is van primitív függvénye, és</p>
+      \[\int f(x)\,dx = \int f(g(t))\cdot g'(t)\,dt\;\Big|_{t = g^{-1}(x)} \qquad (x \in I).\]
+      <p class="warn"><b>Megjegyzés a forráshoz.</b> A gyakorlati anyag a feltételt „\(g'(x) \ne 0\) \((\forall x \in J)\)” alakban írja (a Darboux-tételes megjegyzésben is). Mivel \(J\) az új, \(t\) változó tartománya, itt \(g'(t) \ne 0\) \((\forall t \in J)\) értendő.</p>
+    </div>
+    <div class="rule-card">
+      <h3>Miért létezik \(g^{-1}\)?</h3>
+      <p>\(g'(t) \ne 0\) a \(J\) intervallumon, így a Darboux-tétel miatt \(g'\) állandó előjelű, tehát \(g\) szigorúan monoton. Ezért \(\exists\, g^{-1} : I \to J\), és a végén a \(t = g^{-1}(x)\) visszahelyettesítés értelmes.</p>
+      <p class="note">\(g\) lehet csökkenő is (pl. \(x = \cos t\), \(x = \frac{1}{t^3-1}\)), csak a derivált ne váltson előjelet.</p>
+    </div>
+    <div class="rule-card">
+      <h3>A recept</h3>
+      <ol>
+        <li>Új változó: \(t = g^{-1}(x)\) (pl. \(t = e^x\), \(t = \sqrt{x}\)).</li>
+        <li>Kifejezzük \(x\)-et: \(x = g(t)\), és \(J\)-t úgy választjuk, hogy \(g(J) = I\).</li>
+        <li>\(g'(t) \ne 0\) ellenőrzése, \(dx\) helyére \(g'(t)\,dt\).</li>
+        <li>Integrálás \(t\) szerint (racionális tört).</li>
+        <li>Visszahelyettesítés: \(t = g^{-1}(x)\).</li>
+      </ol>
+    </div>
+    <div class="rule-card">
+      <h3>\(\int S(e^x)\,dx\) típus</h3>
+      <p>\(S\) racionális törtfüggvény. Helyettesítés: \(t = e^x\), azaz \(x = g(t) = \ln t\), \(t \in J = \exp(I)\), \(g'(t) = \frac1t \gt 0\).</p>
+      \[\int S(e^x)\,dx = \int S(t)\cdot\frac1t\,dt\;\Big|_{t = e^x}.\]
+      <p class="note">\(e^{2x} = t^2\), \(e^{3x} = t^3\), \(e^{-x} = \frac1t\) stb.</p>
+    </div>
+    <div class="rule-card">
+      <h3>\(\int R\big(x, \sqrt[n]{\tfrac{ax+b}{cx+d}}\big)\,dx\) típus</h3>
+      <p>\(R(u, v)\) kétváltozós racionális függvény. A gyököt helyettesítjük:</p>
+      \[t = \sqrt[n]{\frac{ax+b}{cx+d}} \iff x = \frac{b - dt^n}{ct^n - a} =: g(t).\]
+      <p>\(g\) és \(g'\) racionális törtfüggvény, így \(\int R(g(t), t)\,g'(t)\,dt\) racionális tört integrálja.</p>
+      <p class="note">Speciális eset (\(c = 0\), \(d = 1\)): \(t = \sqrt[n]{ax+b}\), \(x = \frac{t^n - b}{a}\).</p>
+    </div>
+    <div class="rule-card">
+      <h3>Több különböző gyök</h3>
+      <p>Ha \(\sqrt[m]{x}\) és \(\sqrt[k]{x}\) is szerepel, legyen \(x = t^N\), ahol \(N = [m, k]\) (legkisebb közös többszörös). Így minden gyök \(t\) egész kitevős hatványa lesz.</p>
+      <p class="note">Pl. \(\sqrt x\) és \(\sqrt[3]{x}\): \(x = t^6\), \(\sqrt x = t^3\), \(\sqrt[3]{x} = t^2\).</p>
+    </div>
+    <div class="rule-card">
+      <h3>\(\sqrt{1-x^2}\): trigonometrikus helyettesítés</h3>
+      <p>\(x = \cos t\), \(t \in (0, \pi)\) (vagy \(x = \sin t\), \(t \in (-\frac\pi2, \frac\pi2)\)). Ekkor \(\sqrt{1 - \cos^2 t} = |\sin t| = \sin t\), mert \((0,\pi)\)-n \(\sin t \gt 0\).</p>
+      <p class="note">\(\sqrt{1+x^2}\)-hez az \(x = \operatorname{sh} t\) helyettesítés hasonló (gyakorló feladat).</p>
+    </div>
+    <div class="rule-card">
+      <h3>Ellenőrzés</h3>
+      <p>A kapott \(F\)-et \(x\) szerint deriváljuk: \(F'(x) = f(x)\) kell az egész \(I\)-n. Különböző alakú eredmények különbsége konstans (pl. \(\arcsin x = \frac\pi2 - \arccos x\)).</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ÓRAI FELADATOK ================= -->
+<section id="orai">
+  <div class="section-head">
+    <span class="label">9. gyakorlat · Feladatok</span>
+    <h2>Órai feladatok</h2>
+    <p>A megoldások menete a 9. gyakorlati anyag kidolgozását követi (az első tétel az anyag Emlékeztetőjében szereplő példa). Minden eredményt deriválással ellenőriztünk.</p>
+  </div>
+
+  <div class="taskgroup">
+
+  <!-- Példa -->
+  <article class="task" id="o0">
+    <div class="task-head"><span class="no">Példa</span><span class="src">9. gyakorlat · órai (Emlékeztető)</span><span class="kind">\(x = \cos t\)</span></div>
+    \[\int\sqrt{1 - x^2}\,dx \quad \big(x \in (-1, 1)\big)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Az \(f(x) = \sqrt{1-x^2}\) grafikonja az egység sugarú felső félkör, a pontjai \((\cos t, \sin t)\). Ez motiválja az</p>
+        \[x = g(t) = \cos t, \quad t \in J = (0, \pi)\]
+        <p>helyettesítést: \(g : (0,\pi) \to (-1,1)\) bijekció, \(g'(t) = -\sin t \lt 0\), és \(f(\cos t) = \sqrt{1 - \cos^2 t} = \sin t\) (mert \(t \in (0,\pi)\)-re \(\sin t \gt 0\)).</p>
+        \[\int\sqrt{1-x^2}\,dx = \int \sin t\cdot(-\sin t)\,dt = -\int\sin^2 t\,dt,\quad t = \arccos x.\]
+        <p>A linearizáló formulával (\(\sin^2 t = \frac{1 - \cos 2t}{2}\)):</p>
+        \[-\int\sin^2 t\,dt = -\frac t2 + \frac{\sin 2t}{4} + c = \frac{\sin t\cos t - t}{2} + c.\]
+        <p>Visszahelyettesítés \(t = \arccos x\)-szel: \(\cos t = x\), \(\sin t = \sqrt{1 - x^2}\).</p>
+        <p>Eredmény: <span class="ans">\(\dfrac x2\sqrt{1-x^2} - \dfrac12\arccos x + c\quad \big(x \in (-1,1),\ c \in \R\big)\)</span></p>
+        <figure class="graph"><div id="g-o0"></div><figcaption><span class="lg tay">integrandus: \(f(x) = \sqrt{1-x^2}\)</span><span class="lg">\(F(x) = \frac x2\sqrt{1-x^2} - \frac12\arccos x\)</span></figcaption></figure>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért \(x = \cos t\)?</b> A gyök alatt \(1 - x^2\) áll, és \(1 - \cos^2 t = \sin^2 t\) teljes négyzet: a gyök „eltűnik”.</p>
+        <p><b>Invertálhatóság:</b> a \(\cos\) a \((0,\pi)\) intervallumon szigorúan csökken, értékkészlete \((-1,1) = I\), az inverze \(\arccos\). A \(g'(t) = -\sin t\) itt sehol sem nulla. Ha pl. \((-\pi, \pi)\)-t választanánk, \(g\) nem lenne injektív.</p>
+        <p><b>Visszahelyettesítés:</b> \(\sin(\arccos x) = \sqrt{1 - \cos^2(\arccos x)} = \sqrt{1-x^2}\), és itt nincs előjelgond, mert \(\arccos x \in (0,\pi)\), ahol \(\sin \gt 0\).</p>
+        <p><b>Ellenőrzés:</b></p>
+        \[\Big(\frac x2\sqrt{1-x^2}\Big)' = \frac12\sqrt{1-x^2} - \frac{x^2}{2\sqrt{1-x^2}}, \qquad \Big(-\frac12\arccos x\Big)' = \frac{1}{2\sqrt{1-x^2}},\]
+        <p>összegük \(\frac{(1 - x^2) - x^2 + 1}{2\sqrt{1-x^2}} = \frac{2(1-x^2)}{2\sqrt{1-x^2}} = \sqrt{1-x^2}\). ✓</p>
+        <p class="tip"><b>Összevetés.</b> Parciális integrálással korábban \(\frac x2\sqrt{1-x^2} + \frac12\arcsin x + c\) jött ki. Mivel \(\arcsin x = \frac\pi2 - \arccos x\), a két eredmény csak a \(\frac\pi4\) konstansban tér el, tehát mindkettő helyes.</p>
+      </div>
+    </details>
+  </article>
+
+  <!-- 1. feladat -->
+  <article class="task" id="o1a">
+    <div class="task-head"><span class="no">1. (a)</span><span class="src">9. gyakorlat · órai</span><span class="kind">\(S(e^x)\), \(t = e^x\)</span></div>
+    \[\int\frac{4}{e^{2x} - 4}\,dx \quad (x \gt \ln 2)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>\(e^{2x} = (e^x)^2\), így az integrandus \(S(e^x)\) alakú, ahol \(S(u) = \frac{4}{u^2 - 4}\) \((u \ne \pm 2)\).</p>
+        <p>Helyettesítés: \(t = e^x\), \((x \gt \ln 2) \iff\) \(x = \ln t\), \((t \gt 2)\). Tehát \(g(t) = \ln t\), \(J = (2, +\infty)\), \(g'(t) = \frac1t \gt 0\), \(g(J) = (\ln 2, +\infty) = I\), így \(g\) bijekció.</p>
+        \[\int\frac{4}{e^{2x} - 4}\,dx = \int\frac{4}{t^2 - 4}\cdot\frac1t\,dt\;\Big|_{t = e^x} = \int\frac{4}{t(t-2)(t+2)}\,dt\;\Big|_{t = e^x}.\]
+        <p>Parciális törtek: \(4 = A(t-2)(t+2) + Bt(t+2) + Ct(t-2)\). \(t = 0\): \(A = -1\); \(t = 2\): \(8B = 4\), \(B = \frac12\); \(t = -2\): \(8C = 4\), \(C = \frac12\).</p>
+        \[\int\Big(-\frac1t + \frac{1/2}{t-2} + \frac{1/2}{t+2}\Big)dt = -\ln t + \frac12\ln(t-2) + \frac12\ln(t+2) + c,\]
+        <p>ahol \(t \gt 2\) miatt nem kell abszolút érték. Visszahelyettesítve (\(\ln e^x = x\)):</p>
+        <p>Eredmény: <span class="ans">\(-x + \frac12\ln(e^x - 2) + \frac12\ln(e^x + 2) + c = -x + \frac12\ln(e^{2x} - 4) + c\quad (x \gt \ln 2,\ c \in \R)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért \(t = e^x\)?</b> Az integrandusban \(x\) csak \(e^x\)-en keresztül szerepel. A helyettesítés után \(S(t)\)-t kapunk, és a \(g'(t) = \frac1t\) szorzó sem rontja el, hogy racionális törtről van szó.</p>
+        <p><b>Invertálhatóság:</b> \(\ln\) szigorúan nő a \((2,+\infty)\)-en, és ezt \((\ln 2, +\infty)\)-re képezi. \(J\)-t az \(I\) képeként kapjuk: \(J = \{e^x : x \gt \ln 2\} = (2, +\infty)\).</p>
+        <p><b>Visszahelyettesítés:</b> \(-\ln t = -\ln e^x = -x\), és \(\frac12\ln(t-2) + \frac12\ln(t+2) = \frac12\ln(t^2 - 4)\).</p>
+        <p><b>Ellenőrzés:</b></p>
+        \[\Big(-x + \tfrac12\ln(e^{2x} - 4)\Big)' = -1 + \frac{e^{2x}}{e^{2x} - 4} = \frac{4}{e^{2x} - 4}. \;\checkmark\]
+        <p class="tip"><b>Általánosítás.</b> A vizsgálat jórészt független \(S\)-től: tetszőleges \(I\) nyílt intervallumon \(g(t) = \ln t\), \(J = \exp(I)\) bijekció, \(g' \gt 0\), és \(\int S(e^x)\,dx = \int S(t)\cdot\frac1t\,dt\,\big|_{t = e^x}\).</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o1b">
+    <div class="task-head"><span class="no">1. (b)</span><span class="src">9. gyakorlat · órai</span><span class="kind">\(S(e^x)\), \(t = e^x\)</span></div>
+    \[\int\frac{e^{3x}}{e^x + 2}\,dx \quad (x \in \R)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Helyettesítés: \(t = e^x\), azaz \(x = g(t) = \ln t\). Mivel \(I = \R\), legyen \(J = \mathcal R_{\exp} = (0, +\infty)\); \(g : J \to \R\) bijekció, \(g'(t) = \frac1t \gt 0\).</p>
+        \[\int\frac{e^{3x}}{e^x + 2}\,dx = \int\frac{t^3}{t+2}\cdot\frac1t\,dt\;\Big|_{t=e^x} = \int\frac{t^2}{t+2}\,dt\;\Big|_{t=e^x}.\]
+        <p>A számláló foka nagyobb, ezért maradékos osztás: \(t^2 = (t+2)(t-2) + 4\).</p>
+        \[\int\Big(t - 2 + \frac{4}{t+2}\Big)dt = \frac{t^2}{2} - 2t + 4\ln(t+2) + c.\]
+        <p>Eredmény: <span class="ans">\(\dfrac{e^{2x}}{2} - 2e^x + 4\ln(e^x + 2) + c\quad (x, c \in \R)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért \(t = e^x\)?</b> \(e^{3x} = (e^x)^3\), tehát ez is \(S(e^x)\) alakú, \(S(u) = \frac{u^3}{u+2}\).</p>
+        <p><b>Invertálhatóság:</b> \(\ln : (0,+\infty) \to \R\) szigorúan növő bijekció, \(g'(t) = \frac1t \ne 0\).</p>
+        <p><b>Visszahelyettesítés:</b> \(t^2 = e^{2x}\); \(t + 2 \gt 0\), így \(\ln(t+2)\)-nél sem kell abszolút érték.</p>
+        <p><b>Ellenőrzés:</b></p>
+        \[\Big(\frac{e^{2x}}{2} - 2e^x + 4\ln(e^x+2)\Big)' = e^{2x} - 2e^x + \frac{4e^x}{e^x+2}\]
+        \[= \frac{e^{3x} + 2e^{2x} - 2e^{2x} - 4e^x + 4e^x}{e^x+2} = \frac{e^{3x}}{e^x+2}. \;\checkmark\]
+        <p class="tip"><b>Más út:</b> \(\frac{e^{3x}}{e^x+2} = \frac{(e^x)^2}{e^x+2}\cdot(e^x)'\), tehát itt az első helyettesítési szabály is elég. A második szabály előnye, hogy ugyanez a recept akkor is működik, ha nincs ilyen „kéznél lévő” \(e^x\) szorzó (mint az (a)-ban).</p>
+      </div>
+    </details>
+  </article>
+
+  <!-- 2. feladat -->
+  <article class="task" id="o2a">
+    <div class="task-head"><span class="no">2. (a)</span><span class="src">9. gyakorlat · órai</span><span class="kind">\(t = \sqrt x\)</span></div>
+    \[\int\frac{1}{1 + \sqrt x}\,dx \quad (x \gt 0)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Helyettesítés: \(t = \sqrt x\), \((x \in I = (0,+\infty))\). Átrendezve \(x = g(t) = t^2\), \(t \in J = (0, +\infty)\), \(\mathcal R_g = I\), \(g'(t) = 2t \gt 0\), tehát \(g\) bijekció.</p>
+        \[\int\frac{dx}{1 + \sqrt x} = \int\frac{1}{1+t}\cdot 2t\,dt\;\Big|_{t = \sqrt x} = \int\frac{2(t+1) - 2}{t+1}\,dt = \int\Big(2 - \frac{2}{t+1}\Big)dt\]
+        \[= \big(2t - 2\ln(t+1) + c\big)\Big|_{t = \sqrt x}.\]
+        <p>Eredmény: <span class="ans">\(2\sqrt x - 2\ln(\sqrt x + 1) + c\quad (x \gt 0,\ c \in \R)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért \(t = \sqrt x\)?</b> Ez az \(R\big(x, \sqrt[n]{\frac{ax+b}{cx+d}}\big)\) típus \(n = 2\), \(a = 1\), \(b = 0\), \(c = 0\), \(d = 1\) esettel. A gyököt nevezzük el, így eltűnik.</p>
+        <p><b>Invertálhatóság:</b> \(t \mapsto t^2\) a \((0, +\infty)\)-en szigorúan nő és \((0,+\infty)\)-re képez. (Az egész \(\R\)-en nem lenne injektív, ezért kell \(J = (0,+\infty)\).)</p>
+        <p><b>Ellenőrzés:</b></p>
+        \[\big(2\sqrt x - 2\ln(\sqrt x + 1)\big)' = \frac{1}{\sqrt x} - \frac{1}{\sqrt x(\sqrt x + 1)} = \frac{1}{\sqrt x}\cdot\frac{\sqrt x}{\sqrt x + 1} = \frac{1}{1 + \sqrt x}. \;\checkmark\]
+        <p class="tip"><b>Helyettesítés nélkül</b> is meg lehetne csinálni, de nagyon nehezen észrevehető átalakításokkal (\(\frac{1}{1+\sqrt x} = \frac{1}{\sqrt x} - \frac{1}{\sqrt x(1+\sqrt x)}\), majd \(\frac{(\sqrt x)'}{1+\sqrt x}\) típus). A helyettesítés után viszont „standard” racionális törtet kapunk.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o2b">
+    <div class="task-head"><span class="no">2. (b)</span><span class="src">9. gyakorlat · órai</span><span class="kind">\(t = \sqrt{5x+3}\)</span></div>
+    \[\int x\sqrt{5x + 3}\,dx \quad \Big(x \gt -\frac35\Big)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Helyettesítés: \(t = \sqrt{5x+3}\), \(\big(x \in I = (-\frac35, +\infty)\big)\). Átrendezve \(x = g(t) = \frac{t^2 - 3}{5}\), \(t \in J = (0, +\infty)\), \(\mathcal R_g = I\), \(g'(t) = \frac{2t}{5} \gt 0\), tehát \(g\) bijekció.</p>
+        \[\int x\sqrt{5x+3}\,dx = \int\frac{t^2 - 3}{5}\cdot t\cdot\frac{2t}{5}\,dt\;\Big|_{t = \sqrt{5x+3}} = \frac{1}{25}\int(2t^4 - 6t^2)\,dt\]
+        \[= \Big(\frac{2}{125}t^5 - \frac{2}{25}t^3 + c\Big)\Big|_{t = \sqrt{5x+3}}.\]
+        <p>Eredmény: <span class="ans">\(\dfrac{2}{125}\sqrt{(5x+3)^5} - \dfrac{2}{25}\sqrt{(5x+3)^3} + c\quad \big(x \gt -\frac35,\ c \in \R\big)\)</span></p>
+        <p class="note">Kiemeléssel: \(\frac{2}{125}(5x - 2)\sqrt{(5x+3)^3} + c\).</p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért \(t = \sqrt{5x+3}\)?</b> Ez a \(\sqrt[n]{ax+b}\) speciális eset (\(n = 2\)). A \(t\)-vel kifejezve \(x\) polinom, \(g'\) is polinom, így polinomot kell integrálni.</p>
+        <p><b>Invertálhatóság:</b> \(t \mapsto \frac{t^2-3}{5}\) a \((0,+\infty)\)-en szigorúan nő, \(t \to 0^+\)-ra \(-\frac35\)-höz, \(t \to +\infty\)-re \(+\infty\)-hez tart, tehát \(J\)-t \(I\)-re képezi.</p>
+        <p><b>Ellenőrzés</b> (a kiemelt alakon):</p>
+        \[\Big(\frac{2}{125}(5x-2)(5x+3)^{3/2}\Big)' = \frac{2}{125}\Big(5(5x+3)^{3/2} + (5x-2)\cdot\frac{15}{2}(5x+3)^{1/2}\Big)\]
+        \[= \frac{2}{25}\sqrt{5x+3}\,\Big(5x + 3 + \frac32(5x-2)\Big) = \frac{2}{25}\sqrt{5x+3}\cdot\frac{25x}{2} = x\sqrt{5x+3}. \;\checkmark\]
+        <p class="tip"><b>Más út:</b> \(x = \frac{(5x+3) - 3}{5}\), így \(x\sqrt{5x+3} = \frac15(5x+3)^{3/2} - \frac35(5x+3)^{1/2}\), és ez tagonként az első helyettesítési szabállyal (lineáris belső függvény) is integrálható.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="o2c">
+    <div class="task-head"><span class="no">2. (c)</span><span class="src">9. gyakorlat · órai</span><span class="kind">\(t = \sqrt[3]{\frac{x+1}{x}}\)</span></div>
+    \[\int\frac{1}{x^2}\cdot\sqrt[3]{\frac{x+1}{x}}\,dx \quad (x \gt 0)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Helyettesítés: \(t = \sqrt[3]{\frac{x+1}{x}}\), \((x \in I = (0, +\infty))\). Átrendezve \(t^3 x = x + 1\), azaz</p>
+        \[x = g(t) = \frac{1}{t^3 - 1}, \qquad x \gt 0 \iff t^3 - 1 \gt 0 \iff t \gt 1,\]
+        <p>így \(J = (1, +\infty)\) választással \(\mathcal R_g = I\). Ekkor \(g \in D(J)\) és \(g'(t) = \frac{-3t^2}{(t^3 - 1)^2} \lt 0\) \((\forall t \in J)\): \(g\) szigorúan monoton csökkenő bijekció.</p>
+        <p class="warn"><b>Megjegyzés a forráshoz.</b> A gyakorlati anyag a \(g'(t) \lt 0\) feltételt „\((\forall t \gt 0)\)”-val írja, pedig \(J = (1,+\infty)\), és \(t = 1\)-ben \(g\) nem is értelmezett. Helyesen \((\forall t \in J)\), azaz \(\forall t \gt 1\).</p>
+        <p>\(\frac{1}{x^2} = (t^3-1)^2\), így</p>
+        \[\int\frac{1}{x^2}\sqrt[3]{\frac{x+1}{x}}\,dx = \int (t^3-1)^2\cdot t\cdot\frac{-3t^2}{(t^3-1)^2}\,dt\;\Big|_{t = \sqrt[3]{\frac{x+1}{x}}} = \int -3t^3\,dt\]
+        \[= \Big(-\frac34t^4 + c\Big)\Big|_{t = \sqrt[3]{\frac{x+1}{x}}}.\]
+        <p>Eredmény: <span class="ans">\(-\dfrac34\sqrt[3]{\Big(\dfrac{x+1}{x}\Big)^4} + c\quad (x \gt 0,\ c \in \R)\)</span></p>
+        <figure class="graph"><div id="g-o2c"></div><figcaption><span class="lg">\(x = g(t) = \frac{1}{t^3-1}\), \(t \in (1, +\infty)\) (vízszintes tengely: \(t\))</span><span class="lg asy">\(t = 1\)</span></figcaption></figure>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért ez a helyettesítés?</b> Ez az \(R\big(x, \sqrt[n]{\frac{ax+b}{cx+d}}\big)\) típus \(n = 3\), \(a = b = c = 1\), \(d = 0\) esettel: \(x = \frac{b - dt^n}{ct^n - a} = \frac{1}{t^3 - 1}\).</p>
+        <p><b>Invertálhatóság:</b> \(\frac{x+1}{x} = 1 + \frac1x\), ami \(x \gt 0\)-ra az \((1, +\infty)\)-et futja be, ezért \(t \gt 1\). A grafikonon látszik, hogy \(g\) a \((1,+\infty)\)-et szigorúan csökkenően, kölcsönösen egyértelműen képezi \((0,+\infty)\)-re. A tételhez csökkenő \(g\) is jó, csak \(g' \ne 0\) kell.</p>
+        <p><b>A szerencsés egyszerűsítés:</b> \(\frac{1}{x^2}\) éppen \((t^3-1)^2\), ami kiejti \(g'\) nevezőjét, így egyetlen hatványfüggvény marad.</p>
+        <p><b>Ellenőrzés:</b> legyen \(u = 1 + \frac1x\), \(u' = -\frac{1}{x^2}\). Ekkor</p>
+        \[\Big(-\frac34u^{4/3}\Big)' = -\frac34\cdot\frac43u^{1/3}\cdot\Big(-\frac{1}{x^2}\Big) = \frac{1}{x^2}\sqrt[3]{\frac{x+1}{x}}. \;\checkmark\]
+      </div>
+    </details>
+  </article>
+
+  <!-- 3. feladat -->
+  <article class="task" id="o3">
+    <div class="task-head"><span class="no">3.</span><span class="src">9. gyakorlat · órai</span><span class="kind">\(x = t^6\)</span></div>
+    \[\int\frac{1}{\sqrt x + \sqrt[3]{x}}\,dx \quad (x \gt 0)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Olyan \(x = g(t)\) kell, amellyel a négyzetgyök és a köbgyök is eltűnik: \(x = g(t) = t^6\), \(t \in J = (0, +\infty)\). Ekkor \(g(J) = (0,+\infty) = I\), \(\sqrt x = \sqrt{t^6} = t^3\), \(\sqrt[3]{x} = t^2\), \(g'(t) = 6t^5 \gt 0\).</p>
+        \[\int\frac{dx}{\sqrt x + \sqrt[3]x} = \int\frac{1}{t^3 + t^2}\cdot 6t^5\,dt\;\Big|_{t = \sqrt[6]{x}} = 6\int\frac{t^3}{t+1}\,dt\;\Big|_{t = \sqrt[6]{x}}.\]
+        <p>A számlálóban \(t^3 = (t^3 + 1) - 1 = (t+1)(t^2 - t + 1) - 1\), így</p>
+        \[6\int\Big(t^2 - t + 1 - \frac{1}{t+1}\Big)dt = 2t^3 - 3t^2 + 6t - 6\ln(t+1) + c,\quad t = \sqrt[6]{x}.\]
+        <p>Eredmény: <span class="ans">\(2\sqrt x - 3\sqrt[3]{x} + 6\sqrt[6]{x} - 6\ln\big(\sqrt[6]{x} + 1\big) + c\quad (x \gt 0,\ c \in \R)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért \(t^6\)?</b> A feladat nem esik a tárgyalt típusokba, de \(6 = [2, 3]\): \(t^6\)-ból négyzetgyököt és köbgyököt is egész kitevővel tudunk vonni. \(x = t^2\) után \(\sqrt[3]{t^2}\), \(x = t^3\) után \(\sqrt{t^3}\) maradna.</p>
+        <p><b>Invertálhatóság:</b> \(t \mapsto t^6\) a \((0,+\infty)\)-en szigorúan nő, inverze \(\sqrt[6]{x}\).</p>
+        <p><b>Ellenőrzés:</b> legyen \(s = \sqrt[6]{x}\). A deriválás után \(\frac{1}{s^3} - \frac{1}{s^4} + \frac{1}{s^5} - \frac{1}{s^5(s+1)}\) adódik, ami közös nevezőre hozva</p>
+        \[\frac{s^2(s+1) - s(s+1) + (s+1) - 1}{s^5(s+1)} = \frac{s^3}{s^5(s+1)} = \frac{1}{s^3 + s^2} = \frac{1}{\sqrt x + \sqrt[3]x}. \;\checkmark\]
+        <p class="tip"><b>Az anyag megjegyzése:</b> \(J = (-\infty, 0)\) is jó lett volna, hiszen ott \(g' = 6t^5 \lt 0\), és \(g(J) = (0,+\infty)\). Ekkor viszont \(t = -\sqrt[6]{x}\), \(\sqrt x = \sqrt{t^6} = |t|^3 = -t^3\) (a \(\sqrt[3]x = t^2\) változatlan), és a \(-6\int\frac{t^3}{t-1}\,dt = -2t^3 - 3t^2 - 6t - 6\ln(1 - t) + c\) integrál visszahelyettesítve ugyanezt adja. (\(t \lt 0\) miatt \(t - 1 \lt 0\), ezért \(\ln(1 - t)\).)</p>
+      </div>
+    </details>
+  </article>
+
+  </div>
+</section>
+
+<!-- ================= HÁZI FELADATOK ================= -->
+<section id="hazi">
+  <div class="section-head">
+    <span class="label">9. gyakorlat · Házi feladatok · saját megoldás</span>
+    <h2>Házi feladatok</h2>
+    <p>Az összevont gyakorlati anyag 9. gyakorlathoz tartozó házi feladatai. Ezekhez nincs hivatalos megoldás, ezek saját megoldások (deriválással ellenőrizve).</p>
+  </div>
+
+  <div class="taskgroup">
+
+  <article class="task" id="h1a">
+    <div class="task-head"><span class="no">1. (a)</span><span class="src">9. gyakorlat · házi</span><span class="kind">\(S(e^x)\), \(t = e^x\)</span></div>
+    \[\int\frac{e^x}{1 + e^{2x}}\,dx \quad (x \in \R)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Helyettesítés: \(t = e^x\), \(x = g(t) = \ln t\), \(J = (0, +\infty)\), \(g(J) = \R\), \(g'(t) = \frac1t \gt 0\).</p>
+        \[\int\frac{e^x}{1 + e^{2x}}\,dx = \int\frac{t}{1+t^2}\cdot\frac1t\,dt\;\Big|_{t=e^x} = \int\frac{dt}{1+t^2}\;\Big|_{t=e^x} = \big(\arctg t + c\big)\Big|_{t = e^x}.\]
+        <p>Eredmény: <span class="ans">\(\arctg(e^x) + c\quad (x, c \in \R)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért \(t = e^x\)?</b> \(S(u) = \frac{u}{1+u^2}\), tehát \(S(e^x)\) típus. A \(\frac1t\) szorzó éppen kiejti a számlálót, és alapintegrál marad.</p>
+        <p><b>Invertálhatóság:</b> \(\ln : (0,+\infty) \to \R\) szigorúan növő bijekció.</p>
+        <p><b>Ellenőrzés:</b> \(\big(\arctg(e^x)\big)' = \frac{1}{1 + (e^x)^2}\cdot e^x = \frac{e^x}{1 + e^{2x}}\). ✓</p>
+        <p class="tip"><b>Más út:</b> \(\frac{e^x}{1 + (e^x)^2} = \frac{(e^x)'}{1 + (e^x)^2}\), ez \(\arctg\)-os \(f'/(1+f^2)\) alak, az első helyettesítési szabály azonnal adja.</p>
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="h1b">
+    <div class="task-head"><span class="no">1. (b)</span><span class="src">9. gyakorlat · házi</span><span class="kind">\(t = \sqrt[3]{x+1}\)</span></div>
+    \[\int\frac{1}{x - \sqrt[3]{x + 1} + 1}\,dx \quad (x \gt 0)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Helyettesítés: \(t = \sqrt[3]{x+1}\), \((x \in I = (0, +\infty))\). Átrendezve \(x = g(t) = t^3 - 1\), és \(x \gt 0 \iff t^3 \gt 1 \iff t \gt 1\), tehát \(J = (1, +\infty)\), \(g(J) = I\), \(g'(t) = 3t^2 \gt 0\): \(g\) bijekció.</p>
+        <p>A nevező: \(x - \sqrt[3]{x+1} + 1 = (t^3 - 1) - t + 1 = t^3 - t = t(t-1)(t+1)\). Így</p>
+        \[\int\frac{dx}{x - \sqrt[3]{x+1} + 1} = \int\frac{3t^2}{t(t-1)(t+1)}\,dt\;\Big|_{t = \sqrt[3]{x+1}} = \int\frac{3t}{t^2 - 1}\,dt\;\Big|_{t = \sqrt[3]{x+1}}.\]
+        <p>A számláló a nevező deriváltjának \(\frac32\)-szerese (\((t^2-1)' = 2t\)), és \(t \gt 1\) miatt \(t^2 - 1 \gt 0\):</p>
+        \[\int\frac{3t}{t^2-1}\,dt = \frac32\int\frac{2t}{t^2-1}\,dt = \frac32\ln(t^2 - 1) + c.\]
+        <p>Eredmény: <span class="ans">\(\dfrac32\ln\Big(\sqrt[3]{(x+1)^2} - 1\Big) + c\quad (x \gt 0,\ c \in \R)\)</span></p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért \(t = \sqrt[3]{x+1}\)?</b> Ez a \(\sqrt[n]{ax+b}\) speciális eset (\(n = 3\)): a gyököt elnevezve \(x = t^3 - 1\) polinom, és a nevező is polinom lesz \(t\)-ben.</p>
+        <p><b>Invertálhatóság:</b> \(t \mapsto t^3 - 1\) szigorúan nő, \((1,+\infty)\)-et \((0,+\infty)\)-re képezi. A nevező \(t(t-1)(t+1)\) itt pozitív, tehát az integrandus az egész \(I\)-n értelmes.</p>
+        <p><b>Parciális törtekkel</b> is megy: \(\frac{3t}{(t-1)(t+1)} = \frac{3/2}{t-1} + \frac{3/2}{t+1}\), ebből \(\frac32\ln(t-1) + \frac32\ln(t+1)\), ami ugyanaz.</p>
+        <p><b>Ellenőrzés:</b> \(\big((x+1)^{2/3}\big)' = \frac23(x+1)^{-1/3}\), így</p>
+        \[\Big(\frac32\ln\big((x+1)^{2/3} - 1\big)\Big)' = \frac{(x+1)^{-1/3}}{(x+1)^{2/3} - 1} = \frac{1}{(x+1) - (x+1)^{1/3}} = \frac{1}{x - \sqrt[3]{x+1} + 1}. \;\checkmark\]
+      </div>
+    </details>
+  </article>
+
+  <article class="task" id="h1c">
+    <div class="task-head"><span class="no">1. (c)</span><span class="src">9. gyakorlat · házi</span><span class="kind">\(t = \sqrt{\frac{2x-3}{x}}\)</span></div>
+    \[\int\frac1x\sqrt{\frac{2x - 3}{x}}\,dx \quad \Big(x \gt \frac32\Big)\]
+    <details>
+      <summary>Megoldás</summary>
+      <div class="sol">
+        <p>Helyettesítés: \(t = \sqrt{\frac{2x-3}{x}}\), \(\big(x \in I = (\frac32, +\infty)\big)\). Mivel \(\frac{2x-3}{x} = 2 - \frac3x\), ez \(x \gt \frac32\)-re a \((0, 2)\)-t futja be, tehát \(t \in (0, \sqrt2)\). Átrendezve \(t^2 = 2 - \frac3x\):</p>
+        \[x = g(t) = \frac{3}{2 - t^2}, \quad t \in J = (0, \sqrt 2), \qquad g'(t) = \frac{6t}{(2-t^2)^2} \gt 0,\]
+        <p>és \(g(J) = (\frac32, +\infty) = I\), így \(g\) bijekció. \(\frac1x = \frac{2-t^2}{3}\), ezért</p>
+        \[\int\frac1x\sqrt{\frac{2x-3}{x}}\,dx = \int\frac{2-t^2}{3}\cdot t\cdot\frac{6t}{(2-t^2)^2}\,dt = \int\frac{2t^2}{2 - t^2}\,dt.\]
+        <p>Maradékos osztás és parciális törtek: \(\frac{2t^2}{2-t^2} = -2 + \frac{4}{2 - t^2}\), és</p>
+        \[\frac{4}{(\sqrt2 - t)(\sqrt2 + t)} = \frac{\sqrt2}{\sqrt2 - t} + \frac{\sqrt2}{\sqrt2 + t}.\]
+        <p>\(0 \lt t \lt \sqrt 2\) miatt \(\sqrt2 - t \gt 0\), így</p>
+        \[\int\frac{2t^2}{2-t^2}\,dt = -2t - \sqrt2\ln(\sqrt2 - t) + \sqrt2\ln(\sqrt2 + t) + c = -2t + \sqrt2\ln\frac{\sqrt2 + t}{\sqrt2 - t} + c.\]
+        <p>Visszahelyettesítve \(t = \sqrt{\frac{2x-3}{x}}\):</p>
+        <p>Eredmény: <span class="ans">\(-2\sqrt{\dfrac{2x-3}{x}} + \sqrt2\ln\dfrac{\sqrt2 + \sqrt{\frac{2x-3}{x}}}{\sqrt2 - \sqrt{\frac{2x-3}{x}}} + c\quad \big(x \gt \frac32,\ c \in \R\big)\)</span></p>
+        <p>Egyszerűbb alakban (a tört számlálóját és nevezőjét \(\sqrt x\)-szel szorozva, majd gyöktelenítve \(\frac{\sqrt{2x} + \sqrt{2x-3}}{\sqrt{2x} - \sqrt{2x-3}} = \frac{(\sqrt{2x} + \sqrt{2x-3})^2}{3}\)):</p>
+        <p><span class="ans">\(-2\sqrt{\dfrac{2x-3}{x}} + 2\sqrt2\ln\big(\sqrt{2x} + \sqrt{2x-3}\big) + c\)</span></p>
+        <p class="note">A két alak különbsége a \(-\sqrt2\ln 3\) konstans, ami beolvad \(c\)-be.</p>
+      </div>
+    </details>
+    <details>
+      <summary>Részletes magyarázat</summary>
+      <div class="sol">
+        <p><b>Miért ez a helyettesítés?</b> \(R\big(x, \sqrt{\frac{ax+b}{cx+d}}\big)\) típus \(n = 2\), \(a = 2\), \(b = -3\), \(c = 1\), \(d = 0\) esettel: \(x = \frac{b - dt^n}{ct^n - a} = \frac{-3}{t^2 - 2} = \frac{3}{2 - t^2}\).</p>
+        <p><b>\(J\) meghatározása:</b> ez a feladat kulcsa. \(J\) nem \((0, +\infty)\), hanem \((0, \sqrt2)\), mert \(\frac{2x-3}{x} \lt 2\) minden \(x \gt 0\)-ra. Ezen \(g\) szigorúan nő (\(g' \gt 0\)), \(t \to 0^+\)-ra \(g \to \frac32\), \(t \to \sqrt2^-\)-re \(g \to +\infty\). Ebből tudjuk azt is, hogy \(\ln(\sqrt2 - t)\)-nél nem kell abszolút érték.</p>
+        <p><b>Az \(\frac{4}{2 - t^2}\) felbontása:</b> \(4 = A(\sqrt2 + t) + B(\sqrt2 - t)\); \(t = \sqrt2\): \(A = \frac{4}{2\sqrt2} = \sqrt2\); \(t = -\sqrt2\): \(B = \sqrt2\). Figyelj: \(\int\frac{\sqrt2}{\sqrt2 - t}\,dt = -\sqrt2\ln(\sqrt2 - t)\) (belső derivált \(-1\)).</p>
+        <p><b>Ellenőrzés</b> (az egyszerűbb alakon):</p>
+        \[\Big(-2\sqrt{2 - \tfrac3x}\Big)' = -\frac{3}{x^2\sqrt{2 - \frac3x}} = -\frac{3}{x^{3/2}\sqrt{2x-3}}, \qquad \Big(2\sqrt2\ln\big(\sqrt{2x} + \sqrt{2x-3}\big)\Big)' = \frac{2}{\sqrt x\,\sqrt{2x-3}},\]
+        \[\text{összegük: } \frac{2x - 3}{x^{3/2}\sqrt{2x-3}} = \frac{\sqrt{2x-3}}{x\sqrt x} = \frac1x\sqrt{\frac{2x-3}{x}}. \;\checkmark\]
+      </div>
+    </details>
+  </article>
+
+  </div>
+</section>
+
+<!-- ================= GYAKORI HIBÁK ================= -->
+<section id="hibak">
+  <div class="section-head">
+    <span class="label">Mire figyelj</span>
+    <h2>Gyakori hibák</h2>
+  </div>
+  <div class="mistakes">
+    <div class="mistake"><span class="x">✕</span><p><b>Elmarad a \(g'(t)\) szorzó.</b> Nem elég \(x\) helyére \(g(t)\)-t írni: \(dx = g'(t)\,dt\). Pl. \(t = e^x\)-nél az \(\frac1t\), \(x = t^6\)-nál a \(6t^5\) szorzó nélkül rossz eredmény jön (órai 1, 3).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Nincs visszahelyettesítés, vagy rossz.</b> A végeredmény \(x\) függvénye: \(t = g^{-1}(x)\)-et vissza kell írni. Pl. \(t = e^x\)-nél \(\ln t = x\), \(t^2 = e^{2x}\) (órai 1(a)).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Rosszul választott \(J\).</b> \(J\)-n \(g\)-nek bijekciónak kell lennie \(I\)-re, \(g' \ne 0\)-val. \(x = t^2\) az egész \(\R\)-en nem injektív; a házi 1(c)-ben \(J = (0, \sqrt2)\), nem \((0, +\infty)\).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>\(\sqrt{a^2} = a\) gondolkodás nélkül.</b> \(\sqrt{a^2} = |a|\): \(\sqrt{1 - \cos^2 t} = |\sin t|\), \(\sqrt{t^6} = |t|^3\). Az előjelet \(J\) dönti el (példa, órai 3. megjegyzése). Ugyanígy a \(\ln\)-ek abszolút értékét is \(J\) alapján oldjuk fel.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Nem elég „erős” helyettesítés több gyöknél.</b> \(\sqrt x\) és \(\sqrt[3]x\) mellett \(x = t^6\) kell (\([2,3] = 6\)); \(x = t^2\) vagy \(x = t^3\) után gyök marad (órai 3).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Kimaradt maradékos osztás a helyettesítés után.</b> A kapott racionális törtnél gyakran \(\deg P \ge \deg Q\) (pl. \(\frac{t^2}{t+2}\), \(\frac{2t}{t+1}\), \(\frac{t^3}{t+1}\), \(\frac{2t^2}{2-t^2}\)): előbb osztani kell, csak utána bontani.</p></div>
+  </div>
+</section>
+
+<footer>Forrás: <a href="../Gyakorlat%20anyagok/09_Gy_An_II_A_B.pdf" target="_blank" rel="noopener">9. gyakorlat (PDF)</a> és <a href="../Gyakorlat%20anyagok/An_II_A_B_Gyak.pdf" target="_blank" rel="noopener">Analízis II. gyakorlatok, összevont anyag (PDF)</a>. Minden primitív függvényt numerikus deriválással ellenőriztünk, a grafikonok a függvényekből számolva készültek.</footer>
+</div>
+
+<script>
+(function () {
+  // Small SVG plotter: several curves on one grid, optional vertical guide lines.
+  function fmt(v) { return (Math.round(v * 100) / 100).toString().replace('.', ',').replace('-', '−'); }
+  function plot(el, o) {
+    var W = 640, H = o.h || 320, L = 40, R = 14, T = 12, B = 26;
+    var x0 = o.x[0], x1 = o.x[1], y0 = o.y[0], y1 = o.y[1];
+    var X = function (x) { return L + (x - x0) / (x1 - x0) * (W - L - R); };
+    var Y = function (y) { return T + (y1 - y) / (y1 - y0) * (H - T - B); };
+    var s = [], cid = 'clip-' + el.id, v;
+    s.push('<defs><clipPath id="' + cid + '"><rect x="' + L + '" y="' + T + '" width="' + (W - L - R) + '" height="' + (H - T - B) + '"/></clipPath></defs>');
+    for (v = Math.ceil(x0 / o.gx - 1e-9) * o.gx; v <= x1 + 1e-9; v += o.gx) {
+      s.push('<line class="gl" x1="' + X(v) + '" y1="' + T + '" x2="' + X(v) + '" y2="' + (H - B) + '"/>');
+      if (Math.abs(v) > 1e-9) s.push('<text class="tk" x="' + X(v) + '" y="' + (H - 8) + '" text-anchor="middle">' + fmt(v) + '</text>');
+    }
+    for (v = Math.ceil(y0 / o.gy - 1e-9) * o.gy; v <= y1 + 1e-9; v += o.gy) {
+      s.push('<line class="gl" x1="' + L + '" y1="' + Y(v) + '" x2="' + (W - R) + '" y2="' + Y(v) + '"/>');
+      if (Math.abs(v) > 1e-9) s.push('<text class="tk" x="' + (L - 6) + '" y="' + (Y(v) + 4) + '" text-anchor="end">' + fmt(v) + '</text>');
+    }
+    if (y0 <= 0 && y1 >= 0) s.push('<line class="ax" x1="' + L + '" y1="' + Y(0) + '" x2="' + (W - R) + '" y2="' + Y(0) + '"/>');
+    if (x0 <= 0 && x1 >= 0) s.push('<line class="ax" x1="' + X(0) + '" y1="' + T + '" x2="' + X(0) + '" y2="' + (H - B) + '"/>');
+    (o.vl || []).forEach(function (a) { s.push('<line class="as" x1="' + X(a) + '" y1="' + T + '" x2="' + X(a) + '" y2="' + (H - B) + '"/>'); });
+    var g = '<g clip-path="url(#' + cid + ')">';
+    o.curves.forEach(function (c) {
+      var d = '', pen = false, N = 900, span = y1 - y0;
+      for (var i = 0; i <= N; i++) {
+        var x = x0 + (x1 - x0) * i / N;
+        if (c.dom && !c.dom(x)) { pen = false; continue; }
+        var y = c.f(x);
+        if (!isFinite(y)) { pen = false; continue; }
+        y = Math.max(Math.min(y, y1 + span), y0 - span);
+        d += (pen ? 'L' : 'M') + X(x).toFixed(1) + ' ' + Y(y).toFixed(1);
+        pen = true;
+      }
+      g += '<path class="' + c.cls + '" d="' + d + '"/>';
+    });
+    (o.pts || []).forEach(function (p) { g += '<circle class="pz" cx="' + X(p[0]) + '" cy="' + Y(p[1]) + '" r="3.5"/>'; });
+    g += '</g>';
+    s.push(g);
+    el.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + o.label + '">' + s.join('') + '</svg>';
+  }
+  var GRAPHS = {
+    'g-o0': { label: 'f(x) = gyök(1 − x²) és primitív függvénye a (−1, 1) intervallumon', x: [-1.25, 1.25], y: [-1.75, 1.25], gx: 0.5, gy: 0.5,
+      curves: [ { cls: 'cv2', f: function (x) { return Math.sqrt(1 - x * x); }, dom: function (x) { return x > -1 && x < 1; } },
+                { cls: 'cv', f: function (x) { return 0.5 * x * Math.sqrt(1 - x * x) - 0.5 * Math.acos(x); }, dom: function (x) { return x > -1 && x < 1; } } ] },
+    'g-o2c': { label: 'A g(t) = 1/(t³ − 1) helyettesítő függvény a (1, +∞) intervallumon', x: [0, 3], y: [0, 4], gx: 0.5, gy: 1, vl: [1],
+      curves: [ { cls: 'cv', f: function (t) { return 1 / (t * t * t - 1); }, dom: function (t) { return t > 1.0005; } } ] }
+  };
+  Object.keys(GRAPHS).forEach(function (id) { var el = document.getElementById(id); if (el) plot(el, GRAPHS[id]); });
+})();
+</script>
+<!-- Fejezetsáv: az éppen olvasott szakasz gombja kiemelve -->
+<style>
+nav.bar a.active, nav.bar a.active:hover, nav.bar a.active:focus-visible { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+</style>
+<script>
+(function () {
+  var nav = document.querySelector('nav.bar');
+  if (!nav) return;
+  var links = Array.prototype.filter.call(nav.querySelectorAll('a[href^="#"]'), function (a) {
+    return a.getAttribute('href').length > 1 && document.getElementById(a.getAttribute('href').slice(1));
+  });
+  var current = null, ticking = false;
+  function sectionOf(a) { return document.getElementById(a.getAttribute('href').slice(1)); }
+  function update() {
+    ticking = false;
+    var line = nav.getBoundingClientRect().bottom + 12, active = null;
+    var visible = links.filter(function (a) { return sectionOf(a).offsetParent !== null; });
+    visible.forEach(function (a) { if (sectionOf(a).getBoundingClientRect().top <= line) active = a; });
+    // a lap alján az utolsó szakasz az aktuális akkor is, ha rövid
+    if (visible.length && window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) active = visible[visible.length - 1];
+    if (active === current) return;
+    if (current) { current.classList.remove('active'); current.removeAttribute('aria-current'); }
+    current = active;
+    if (!active) return;
+    active.classList.add('active');
+    active.setAttribute('aria-current', 'location');
+    var ul = active.closest('ul'), ur = ul.getBoundingClientRect(), ar = active.getBoundingClientRect();
+    var left = ar.left - ur.left + ul.scrollLeft, right = left + ar.width;
+    if (left < ul.scrollLeft || right > ul.scrollLeft + ul.clientWidth) ul.scrollTo({ left: Math.max(0, left - 16), behavior: 'smooth' });
+  }
+  function schedule() { if (!ticking) { ticking = true; setTimeout(update, 40); } }
+  window.addEventListener('scroll', schedule, { passive: true });
+  window.addEventListener('resize', schedule);
+  document.addEventListener('input', schedule);   // a keresés elrejthet szakaszokat
+  document.addEventListener('toggle', schedule, true);
+  update();
+})();
+</script>
+</body>
+</html>
