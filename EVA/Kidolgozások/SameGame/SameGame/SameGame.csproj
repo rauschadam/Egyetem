@@ -7,16 +7,4 @@
     <RootNamespace>SameGame</RootNamespace>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="ELTE.FI.SARuleSet" Version="3.2.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <!-- a tesztprojekt látja az internal SetTable metódust -->
-    <InternalsVisibleTo Include="SameGame.Test" />
-  </ItemGroup>
-
 </Project>

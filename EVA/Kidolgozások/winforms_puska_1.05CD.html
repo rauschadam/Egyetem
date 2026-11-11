@@ -37,7 +37,7 @@ body {
   size: A4;
   margin: 10mm 10mm 13mm;
   @bottom-left { content: "EVA · WinForms ZH puska"; font: 7.5pt "IBM Plex Sans", sans-serif; color: #444444; }
-  @bottom-right { content: "winforms_puska_1.04CD · " counter(page) " / " counter(pages); font: 7.5pt "IBM Plex Mono", monospace; color: #444444; }
+  @bottom-right { content: "winforms_puska_1.05CD · " counter(page) " / " counter(pages); font: 7.5pt "IBM Plex Mono", monospace; color: #444444; }
 }
 @media print { .page { padding: 0; max-width: none; } }
 
@@ -111,9 +111,9 @@ section + section { break-before: page; }
 <header class="top">
   <div>
     <h1>WinForms ZH puska</h1>
-    <div class="sub">Eseményvezérelt alkalmazások · 1. gyakorlati ZH · .NET 10, MV architektúra · a kódrészletek az ELTE statikus elemzővel hibamentesen fordulnak</div>
+    <div class="sub">Eseményvezérelt alkalmazások · 1. gyakorlati ZH · .NET 10, MV architektúra</div>
   </div>
-  <div class="ver">winforms_puska_1.04CD</div>
+  <div class="ver">winforms_puska_1.05CD</div>
 </header>
 
 <!-- ============================================================ 1. ESEMÉNY -->
@@ -239,7 +239,7 @@ private void FieldButton_Click(object? sender, EventArgs e)
 <!-- ============================================================ 3. TIMER -->
 <section>
 <h2><span class="n">3</span>Időzítő (Timer)</h2>
-<p>A <b>nézetben</b> egy WinForms <code>Timer</code> ketyeg, minden <code>Tick</code> a modell <code>AdvanceTime()</code>-ját hívja. A modell számolja az időt, és eseménnyel szól a nézetnek. Így nincs szálkezelési gond, és a modell tesztelhető marad.</p>
+<p>A <b>nézetben</b> egy WinForms <code>Timer</code> ketyeg, minden <code>Tick</code> a modell <code>AdvanceTime()</code>-ját hívja. A modell számolja az időt, és eseménnyel szól a nézetnek. Így nincs szálkezelési gond.</p>
 
 <h3>Nézet</h3>
 <pre class="code">// mezőként; a TELJES név kell (különben CS0104: Timer is ambiguous)

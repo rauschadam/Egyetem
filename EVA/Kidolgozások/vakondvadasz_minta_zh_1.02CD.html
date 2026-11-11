@@ -201,7 +201,7 @@ footer a { color: var(--accent); }
   <a class="back" href="../../index.html#/eva"><span class="arr" aria-hidden="true">←</span>Vissza: Eseményvezérelt alkalmazások</a>
   <span class="label">Eseményvezérelt alkalmazások · gyakorló ZH (nem hivatalos) · Windows Forms</span>
   <h1>Gyakorló ZH: Vakondvadász</h1>
-  <p class="filename">vakondvadasz_minta_zh_1.01CD</p>
+  <p class="filename">vakondvadasz_minta_zh_1.02CD</p>
   <p class="sub">Új feladat a minta ZH (SameGame) mintájára, ugyanazokkal a keretekkel. Indítsd el a stoppert, olvasd el a feladatot, és dolgozz úgy, mintha éles ZH lenne. A tippeket csak akkor nyisd le, ha elakadtál.</p>
   <div class="facts">
     <div class="fact"><span class="label">Munkaidő</span><b>90 + 5 perc</b></div>
@@ -278,7 +278,7 @@ footer a { color: var(--accent); }
 
     <p class="sheet-end">Jó munkát!</p>
   </article>
-  <p class="note"><b>Megjegyzés</b> Saját feladat, nem a tanszék adta ki. Gyakorlásnál a TMS helyett elég egy ZIP-et készíteni, és lefordítani a tanszéki analizátorral (<code>dotnet build -p:ContinuousIntegrationBuild=true</code>).</p>
+  <p class="note"><b>Megjegyzés</b> Saját feladat, nem a tanszék adta ki. Gyakorlásnál a TMS helyett elég egy ZIP-et készíteni, és ellenőrizni, hogy kicsomagolva is lefordul.</p>
 </section>
 
 <!-- ================= PONTOSÍTÁSOK ================= -->
@@ -299,7 +299,7 @@ footer a { color: var(--accent); }
         <li><b>Vége után:</b> a kert utolsó állapota látható marad, de nem lehet rá kattintani, és az idő nem telik. Új játékot ilyenkor is lehet kezdeni.</li>
         <li><b>Szünet:</b> a menüpont felirata váltson (<i>Szünet</i> / <i>Folytatás</i>). Új játék indítása megszünteti a szünetet. Vége után a szünet menüpont legyen tiltva.</li>
         <li><b>Nehézség (jeles):</b> indításkor a közepes (3 másodperces) játék induljon. Közepes szinten, ahol nincs lejárat, a nehézség választása nem kell.</li>
-        <li><b>Nem része a feladatnak:</b> mentés és betöltés, egységtesztek. (A minta ZH-ban sem szerepelnek.) Ha van időd a végén, egy-két modellteszt jó gyakorlás.</li>
+        <li><b>Nem része a feladatnak:</b> mentés és betöltés, egységtesztek. (A minta ZH-ban sem szerepelnek.)</li>
       </ol>
     </div>
   </details>
@@ -317,7 +317,7 @@ footer a { color: var(--accent); }
     <label><input type="checkbox" data-k="rules"> <span>A szabályok (szünet, vége, hiba) a modellben vannak: szünetben vagy vége után a modell maga utasítja el a lépést.</span></label>
     <label><input type="checkbox" data-k="timer"> <span>A játék végén és szünetben a Timer áll.</span></label>
     <label><input type="checkbox" data-k="new"> <span>Az új játék a Timert, a státuszsort és a szünet menüpontot is alaphelyzetbe állítja.</span></label>
-    <label><input type="checkbox" data-k="build"> <span><code>dotnet build -p:ContinuousIntegrationBuild=true</code> hibátlan (minden warning hiba).</span></label>
+    <label><input type="checkbox" data-k="build"> <span>A megoldás hiba nélkül fordul (Build → Rebuild Solution).</span></label>
     <label><input type="checkbox" data-k="zip"> <span>ZIP bin, obj és .vs nélkül; kicsomagolva is fordul.</span></label>
     <button type="button" id="checklist-reset" class="ghost small">Pipák törlése</button>
   </div>
@@ -382,7 +382,6 @@ footer a { color: var(--accent); }
           <ul>
             <li>Gyűjtsd listába az üres mezők koordinátáit, és válassz közülük: <code>empty[_random.Next(empty.Count)]</code>. Ha a lista üres, nincs felbukkanás.</li>
             <li>Ne próbálgass ciklusban véletlen koordinátákat, amíg üreset nem találsz: tele kertnél sosem áll le.</li>
-            <li>A <code>Random</code> példányt a modell kapja a konstruktorban (alapértelmezésként <code>new Random()</code>), így tesztben rögzíthető.</li>
           </ul>
         </div>
       </details>
@@ -405,7 +404,7 @@ footer a { color: var(--accent); }
 </section>
 
 <footer>
-  vakondvadasz_minta_zh_1.01CD · Saját gyakorló feladat a <a href="../elte_eva_mintazh_winforms.pdf" target="_blank" rel="noopener">minta ZH (SameGame)</a> szövegezése és keretei alapján. Felkészítő és ellenőrzőlista: <a href="winforms_zh_felkeszito.html">WinForms ZH: mire figyelj</a>.
+  vakondvadasz_minta_zh_1.02CD · Saját gyakorló feladat a <a href="../elte_eva_mintazh_winforms.pdf" target="_blank" rel="noopener">minta ZH (SameGame)</a> szövegezése és keretei alapján. Felkészítő és ellenőrzőlista: <a href="winforms_zh_felkeszito.html">WinForms ZH: mire figyelj</a>.
 </footer>
 </div>
 <script>

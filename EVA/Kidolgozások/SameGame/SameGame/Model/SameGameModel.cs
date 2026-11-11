@@ -1,4 +1,4 @@
-namespace SameGame.Model
+﻿namespace SameGame.Model
 {
     /// <summary>
     /// A SameGame játék modellje. Nem ismeri a Windows Formst:
@@ -61,16 +61,8 @@ namespace SameGame.Model
         #region Constructors
 
         public SameGameModel()
-            : this(new Random())
         {
-        }
-
-        /// <summary>
-        /// A véletlengenerátort kívülről is megadhatjuk (tesztekben fix seeddel).
-        /// </summary>
-        public SameGameModel(Random random)
-        {
-            _random = random;
+            _random = new Random();
             _table = new int[DefaultTableSize, DefaultTableSize];
             Difficulty = GameDifficulty.Easy;
         }
@@ -155,22 +147,6 @@ namespace SameGame.Model
             }
 
             return false;
-        }
-
-        #endregion
-
-        #region Internal methods (tesztekhez)
-
-        /// <summary>
-        /// Előre megadott tábla betöltése (csak a tesztprojekt látja, InternalsVisibleTo).
-        /// </summary>
-        internal void SetTable(int[,] table, GameDifficulty difficulty)
-        {
-            Difficulty = difficulty;
-            _table = (int[,])table.Clone();
-            LastRemovedCount = 0;
-            Score = 0;
-            IsGameOver = false;
         }
 
         #endregion

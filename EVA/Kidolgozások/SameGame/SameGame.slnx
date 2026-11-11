@@ -1,5 +1,4 @@
 <Solution>
-  <Project Path="SameGame.Test/SameGame.Test.csproj" />
   <Project Path="SameGame.WinForms/SameGame.WinForms.csproj" />
   <Project Path="SameGame/SameGame.csproj" />
 </Solution>
