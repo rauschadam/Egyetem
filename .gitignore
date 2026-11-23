@@ -16,12 +16,16 @@
 /DIMAT II/Beadandok/
 # A gyakorlati táblaképek nyers .enb fájljai (tollvonások) nem kellenek a weboldalhoz
 /DIMAT II/Gyakorlat táblaképek/
-# C++-ból csak az előadásdiák és a kidolgozások; a saját gyakorlati kódok nem
+# Az ALGO-s füzetképek csak a kidolgozáshoz kellettek, a weboldal nem használja őket
+/ALGO II/Füzet képek/
+# C++-ból csak az előadásdiák és a kidolgozások; a saját gyakorlati kódok és a beadandó nem
 /C++/*Gyak*/
+/C++/Beadandó/
 # EVA-ból csak az anyagok és a kidolgozások; a beadandó (külön repó), a tanszéki mintakód és a saját gyakorlati kódok nem
 /EVA/Beadandó/
 /EVA/Beadandó példa/
 /EVA/Gyak[0-9]*/
+/EVA/Gyakorlat munkák/
 # A saját minta ZH-megoldásaim sem
 /EVA/Minta ZH/
 
