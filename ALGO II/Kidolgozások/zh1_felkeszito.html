@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Algoritmusok II · gyakorlatok kidolgozva</title>
+<title>Algoritmusok II · 1. ZH felkészítő</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
@@ -218,13 +218,14 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
 
 <header class="hero">
   <a class="back" href="../../index.html#/algo2"><span class="arr" aria-hidden="true">←</span>Vissza: Algoritmusok II.</a>
-  <span class="label">Algoritmusok és adatszerkezetek II. · gyakorlati anyagok</span>
-  <h1>Gyakorlati feladatok kidolgozva</h1>
-  <p class="sub">A Gyakorlat mappa összes anyaga témakörönként: az elmélet röviden, az órai feladatok lenyitható megoldással, a fák minden lépése megrajzolva, a struktogramok újrarajzolva. Ahol a lapon nincs megoldás (házik, szorgalmik), ott a megoldás <b>saját kidolgozás</b>, és ezt jelöltem. A fák lépéseit programmal is ellenőriztem.</p>
+  <span class="label">Algoritmusok és adatszerkezetek II. · 1. zárthelyi · 8. hét</span>
+  <h1>1. ZH felkészítő</h1>
+  <p class="sub">Az 1. ZH teljes anyaga a tematika sorrendjében (2–7. hét): tömörítés, AVL fák, B+ fák, általános fák, gráfábrázolás, szélességi bejárás. Témakörönként az elmélet röviden, az órai feladatok lenyitható megoldással, a fák minden lépése megrajzolva, a struktogramok újrarajzolva; a végén a 2024-es minta ZH kidolgozva. Ahol a lapon nincs megoldás (házik, szorgalmik, minta ZH), ott a megoldás <b>saját kidolgozás</b>, és ezt jelöltem.</p>
   <div class="facts">
     <div class="fact"><span class="label">Témakör</span><b>6</b></div>
     <div class="fact"><span class="label">Feladat</span><b id="cnt">–</b></div>
     <div class="fact"><span class="label">Struktogram</span><b id="cntsg">–</b></div>
+    <div class="fact"><span class="label">ZH</span><b>max. 50 p</b></div>
   </div>
   <div class="legend"><span><i class="bad"></i>elromlott egyensúlyú csúcs (itt forgatunk)</span><span><i class="new"></i>az éppen beszúrt / áthelyezett elem</span></div>
 </header>
@@ -232,19 +233,298 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
 <nav class="bar" aria-label="Fejezetek">
   <ul>
     <li><a class="nav-back" href="../../index.html#/algo2" aria-label="Vissza: Algoritmusok II.">← ALGO II</a></li>
+    <li><a href="#tomor">Tömörítés</a></li>
     <li><a href="#avl">AVL fák</a></li>
-    <li><a href="#altfa">Általános fák</a></li>
     <li><a href="#bplus">B+ fák</a></li>
+    <li><a href="#altfa">Általános fák</a></li>
     <li><a href="#grafok">Gráfok ábrázolása</a></li>
     <li><a href="#bfs">Szélességi bejárás</a></li>
-    <li><a href="#tomor">Tömörítés</a></li>
+    <li><a href="#minta">Minta ZH</a></li>
   </ul>
 </nav>
+
+<!-- ======================= TÖMÖRÍTÉS ======================= -->
+<section id="tomor">
+  <div class="section-head">
+    <span class="label">1. témakör · 2–3. hét · ad2Tomorites.pdf, LZW_algoritmus.pdf</span>
+    <h2>Veszteségmentes adattömörítés: Huffman és LZW</h2>
+    <p>A forráskódolás azt vizsgálja, adott mennyiségű információ mekkora adattal tárolható. Csak veszteségmentes eljárásokkal foglalkozunk (az adat teljes egészében visszaállítható); bináris esetben a kódszavak a Γ = {0, 1} ábécé feletti szavak (r = 2).</p>
+  </div>
+  <div class="taskgroup">
+
+  <article class="concept">
+    <div class="task-head"><span class="no">Kód, kódfa, naiv módszer</span><span class="kind fog">elmélet</span></div>
+    <div class="body">
+      <ul>
+        <li><b>Kód:</b> Γ feletti véges szavak (kódszavak) nem üres halmaza.</li>
+        <li><b>Kódfa:</b> a gyökérben az üres szó; egy szó gyerekei a szó után egy karaktert írva kapott szavak, az élek ezzel a karakterrel címkézettek. A kód kódfája a legkevesebb csúcsú ilyen fa, amely minden kódszót tartalmaz. Dekódolás: a gyökértől a bitek szerint lépkedünk, kódszónál kiírjuk a betűt és újrakezdjük.</li>
+        <li><b>Betűnkénti kódolás:</b> a Σ ábécé betűit egy kölcsönösen egyértelmű Σ → C ⊆ Γ* leképezés kódolja (pl. ASCII).</li>
+        <li><b>Egyenletes kód:</b> minden kódszó egyforma hosszú. A <b>naiv módszer</b> egyenletes kódot használó betűnkénti kódolás; ha \(|\Gamma| = r\), \(|\Sigma| = d\), a legrövidebb kódszóhossz \(\lceil \log_r d \rceil\).</li>
+      </ul>
+    </div>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">1. feladatsor</span><span class="kind">naiv módszer</span></div>
+    <div class="stmt"><p>Tekintsük az <code>S = AABCAADEAAB</code> szöveget.</p>
+      <ol>
+        <li>Naiv módszerrel hány bittel tudjuk ábrázolni S-t?</li>
+        <li>Adjuk meg S egy kódolt alakját naiv módszer esetén!</li>
+        <li>Adjunk meg betűnkénti kódolást, amely tömörebb eredményt ad, mint a naiv módszer!</li>
+        <li>Adjunk meg egy egyenletes kódolást, amely tömörebb eredményt ad, mint a naiv módszer!</li>
+        <li>Rajzoljuk fel a használt kód kódfáját! Milyen tulajdonságú egy egyenletes kód kódfája?</li>
+      </ol>
+    </div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <div class="own"><b>Saját megoldás (a lapon nincs)</b>Gyakoriságok: A 6, B 2, C 1, D 1, E 1; |S| = 11, d = 5.</div>
+      <ol>
+        <li>\(\lceil \log_2 5 \rceil = 3\) bit betűnként: <span class="ans">11 · 3 = 33 bit</span>.</li>
+        <li>Pl. A = 000, B = 001, C = 010, D = 011, E = 100: <code>000 000 001 010 000 000 011 100 000 000 001</code>.</li>
+        <li>A gyakori betűnek rövid kód: A = 0, B = 10, C = 110, D = 1110, E = 1111 (prefixmentes). Hossz: 6·1 + 2·2 + 3 + 4 + 4 = <span class="ans">21 bit</span> (ennyit ad a Huffman-kód is).</li>
+        <li>Ne betűnként kódoljunk! Kettes blokkokra bontva: AA | BC | AA | DE | AA | B – csak 4 különböző „szó” van, ezek 2 bites egyenletes kóddal: AA = 00, BC = 01, DE = 10, B = 11 ⇒ <span class="ans">6 · 2 = 12 bit</span>. (Ez már a szótárkódok ötlete.)</li>
+        <li>A 2. pont kódjának kódfája lent látható. Egyenletes kódnál <b>minden kódszó levél, és mind ugyanazon a szinten</b> (a kódszóhossz mélységében) van.</li>
+      </ol>
+      <div class="figs"><figure class="fig"><div data-gt="(ε 0:(0 0:(00 0:(000|A) 1:(001|B)) 1:(01 0:(010|C) 1:(011|D))) 1:(1 0:(10 0:(100|E))))"></div><figcaption>a naiv kód kódfája</figcaption></figure></div>
+    </div></details>
+  </article>
+
+  <article class="concept">
+    <div class="task-head"><span class="no">Huffman-kódolás</span><span class="kind fog">elmélet</span></div>
+    <div class="body">
+      <p>Betűnkénti kódolásnál akkor kapunk rövid kódot, ha a gyakori betűk rövid, a ritkák hosszú kódszót kapnak. A kódfát <b>alulról felfelé</b> építjük a gyakoriságok alapján (r = 2):</p>
+      <ol>
+        <li>Végigolvassuk a szöveget, meghatározzuk a gyakoriságokat.</li>
+        <li>Minden karakterhez egy csúcs; ezeket egy min-prioritásos sorba tesszük (kulcs: gyakoriság).</li>
+        <li>Kiveszünk két csúcsot, közös szülőt kapnak; az éleket 0-val és 1-gyel címkézzük a gyakoriságnak megfelelő sorrendben; a szülő a gyakoriságok összegével kerül vissza a sorba. Ismételjük, amíg egynél több csúcs van.</li>
+        <li>A kódszavakat kiolvassuk a fából, majd a bemenetet újraolvasva betűnként kódolunk.</li>
+      </ol>
+      <ul>
+        <li><b>Entrópia:</b> \(H_r(S) = -\sum_{i=1}^{d} p_i \log_r p_i\). Shannon tétele: betűnkénti kódolásnál az átlagos szóhossz \(\ell \ge H_r(S)\). Egy kódolás <b>optimális</b>, ha \(H_r(S) \le \ell &lt; H_r(S) + 1\); a Huffman-kód ilyen.</li>
+        <li><b>Prefix-kód:</b> egyik kódszó sem valódi prefixe a másiknak, a kódfában minden kódszó levél ⇒ egyértelműen dekódolható.</li>
+        <li><b>Nem egyértelmű:</b> egyenlő gyakoriságoknál bármelyiket választhatjuk, és a 0/1 szerepe felcserélhető.</li>
+        <li><b>r &gt; 2:</b> az élek 0..r−1 címkét kapnak, minden lépésben r csúcsot vonunk össze, kivéve az elsőt: ott \(k = d \bmod (r-1)\) csúcsot, ha k &gt; 1, különben k + r − 1-et.</li>
+        <li>A dekódolónak is ismernie kell a kódot: a kódfát / kódtáblát mellékelni kell (rontja a tömörítést), vagy általános gyakoriságokból (pl. a magyar nyelvéből) készítjük a kódot.</li>
+      </ul>
+    </div>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">Szemléltetés</span><span class="kind">Huffman</span></div>
+    <div class="stmt"><p>Végezzük el a Huffman-kódolást az <code>S = AZABBRAKADABRAA</code> szövegre!</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p>Gyakoriságok: A 7, Z 1, B 3, R 2, K 1, D 1. Papíron érdemes az összevonásokat előbb táblázatban vezetni:</p>
+      <div class="tbl"><table class="num">
+        <tr><th>lépés</th><th class="l">összevonás</th><th class="l">a sor utána</th></tr>
+        <tr><td>0</td><td class="l"></td><td class="l">Z1 K1 D1 R2 B3 A7</td></tr>
+        <tr><td>1</td><td class="l">K1 + D1 = DK2</td><td class="l">Z1 R2 DK2 B3 A7</td></tr>
+        <tr><td>2</td><td class="l">Z1 + R2 = ZR3</td><td class="l">DK2 ZR3 B3 A7</td></tr>
+        <tr><td>3</td><td class="l">DK2 + B3 = DKB5</td><td class="l">ZR3 DKB5 A7</td></tr>
+        <tr><td>4</td><td class="l">ZR3 + DKB5 = ZRDKB8</td><td class="l">A7 ZRDKB8</td></tr>
+        <tr><td>5</td><td class="l">A7 + ZRDKB8 = 15</td><td class="l">(kész)</td></tr>
+      </table></div>
+      <div class="figs"><figure class="fig"><div data-gt="(15|AZRDKB 0:(7|A) 1:(8|ZRDKB 0:(3|ZR 0:(1|Z) 1:(2|R)) 1:(5|DKB 0:(2|DK 0:(1|D) 1:(1|K)) 1:(3|B))))"></div><figcaption>a kódfa (a kisebb gyakoriságú gyerek kapja a 0-t)</figcaption></figure></div>
+      <div class="tbl" style="max-width:420px"><table class="num"><tr><th>betű</th><td>A</td><td>Z</td><td>R</td><td>D</td><td>K</td><td>B</td></tr><tr><th>kód</th><td>0</td><td>100</td><td>101</td><td>1100</td><td>1101</td><td>111</td></tr></table></div>
+      <p>Kódolt alak: <code>010001111111010110101100011110100</code>, <span class="ans">33 bit</span>, átlagos szóhossz 2,2. Naiv módszerrel legalább 3 bit kellene betűnként: 45 bit.</p>
+      <p>Entrópia: \(H_2(S) \approx 2{,}146\), és \(2{,}146 \le 2{,}2 &lt; 3{,}146\): a kód optimális.</p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">2. feladatsor</span><span class="kind">Huffman</span></div>
+    <div class="stmt">
+      <ol>
+        <li>A mintához hasonlóan végezzük el a Huffman-kódolást egy választott szövegre!</li>
+        <li>Keressünk olyan szöveget, ahol a Huffman-kódolás pontosan annyi bittel történik, mint a naiv módszer!</li>
+        <li>Írjunk struktogramot, amely a kódolt szöveg és a Huffman-kódfa alapján helyreállítja az eredeti szöveget!</li>
+        <li>Írjuk meg a Huffman-kódolást! Bemenet egy szöveg, kimenet a kódolt szöveg és a kódfa.</li>
+        <li>Számoljuk ki a ternáris (r = 3) Huffman-kódot a korábbi példára!</li>
+        <li>Verseny: keressük azt a 10 hosszú szöveget, amely a legnagyobb mértékben tömöríthető a naiv módszerhez képest!</li>
+      </ol>
+    </div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <div class="own"><b>Saját megoldás (a lapon nincs)</b>Az eredményeket programmal ellenőriztem.</div>
+      <p><b>1.</b> <code>ABRAKADABRA</code>: A 5, B 2, R 2, K 1, D 1. Összevonások: K + D = 2, B + R = 4, KD + BR = 6, A + 6 = 11.</p>
+      <div class="figs"><figure class="fig"><div data-gt="(11 0:(5|A) 1:(6 0:(2|KD 0:(1|K) 1:(1|D)) 1:(4|BR 0:(2|B) 1:(2|R))))"></div><figcaption>A = 0, K = 100, D = 101, B = 110, R = 111</figcaption></figure></div>
+      <p>Kódolt alak: <code>01101110100010101101110</code> = <span class="ans">23 bit</span> (naiv: 11 · 3 = 33 bit). \(H_2 \approx 2{,}04\), átlag \(23/11 \approx 2{,}09\).</p>
+      <p><b>2.</b> Ha minden betű egyformán gyakori és a betűk száma 2-hatvány, a Huffman-fa teljes kiegyensúlyozott fa, minden kódszó \(\log_2 d\) hosszú: pl. <code>ABCD</code> vagy <code>AABBCCDD</code> – <span class="ans">mindkét módszerrel 2 bit/betű</span>.</p>
+      <p><b>3.</b> Dekódolás (legalább két különböző betű esetén; a levelekben van a betű):</p>
+<pre class="sg-src">
+@HuffmanDekódol(In : bit⟨⟩ ; gy : Node* ; Out : Σ⟨⟩)
+Out := ⟨⟩ ; p := gy
+loop i := 1 to |In|
+  if In_i = 0
+    p := p→left
+  else
+    p := p→right
+  if p→left = ⊘   // levél: vége a kódszónak
+    Out := Out + p→char
+    p := gy
+</pre>
+      <p><b>4.</b> Kódolás: gyakoriságok, prioritásos sor, fa, kódtábla (bejárással), majd kódolás.</p>
+      <div class="sgrow">
+<pre class="sg-src">
+@HuffmanKódol(In : Σ⟨⟩ ; Out : bit⟨⟩ ; &gy : Node*)
+gyak/1 : ℕ[|Σ|] := [0, …, 0]
+loop i := 1 to |In|
+  gyak[In_i]++
+Q : MinPrQueue   // kulcs: freq
+loop ∀c ∈ Σ : gyak[c] > 0
+  Q.add(new Node(c, gyak[c]))
+loop Q.size() > 1
+  x := Q.remMin() ; y := Q.remMin()
+  z := new Node ; z→left := x ; z→right := y
+  z→freq := x→freq + y→freq
+  Q.add(z)
+gy := Q.remMin()
+KódTábla(gy, ⟨⟩, kód)
+Out := ⟨⟩
+loop i := 1 to |In|
+  Out := Out + kód[In_i]
+</pre>
+<pre class="sg-src">
+@KódTábla(p : Node* ; w : bit⟨⟩ ; &kód)
+if p→left = ⊘
+  kód[p→char] := w
+else
+  KódTábla(p→left, w + ⟨0⟩, kód)
+  KódTábla(p→right, w + ⟨1⟩, kód)
+</pre>
+      </div>
+      <p><b>5.</b> r = 3, d = 6: \(k = 6 \bmod 2 = 0\), ezért az első lépésben \(k + r - 1 = 2\) csúcsot vonunk össze (így a végén pontosan 3 marad a gyökérhez: 6 → 5 → 3 → 1). Z1 + K1 = 2; aztán D1 + ZK2 + R2 = 5; végül B3 + 5 + A7 = 15.</p>
+      <div class="figs"><figure class="fig"><div data-gt="(15 0:(3|B) 1:(5 0:(1|D) 1:(2|ZK 0:(1|Z) 1:(1|K)) 2:(2|R)) 2:(7|A))"></div><figcaption>A = 2, B = 0, R = 12, D = 10, Z = 110, K = 111</figcaption></figure></div>
+      <p>Kódolt alak: <code>2110200122111210201222</code>, <span class="ans">22 trit</span> (naiv: \(\lceil \log_3 6 \rceil = 2\), 30 trit). \(H_3(S) \approx 1{,}354 \le 22/15 \approx 1{,}467\).</p>
+      <p><b>6.</b> Az összes 10 hosszú szövegtípust végignézve a legjobb arány <span class="ans">60%</span>, pl. <code>AAAAAAAABC</code>: Huffman A = 0, B = 10, C = 11 ⇒ 8 + 2 + 2 = 12 bit, a naiv 2 bit/betű ⇒ 20 bit. Ugyanennyi az <code>AAAAAABCDE</code>: 18 bit vs. 30 bit.</p>
+    </div></details>
+  </article>
+
+  <article class="concept">
+    <div class="task-head"><span class="no">LZW (Lempel–Ziv–Welch) szótárkód</span><span class="kind fog">elmélet</span></div>
+    <div class="body">
+      <p>A betűnkénti kódolás hatékonysága korlátos; a szótárkódok egy kódszót egész <b>szavakhoz</b> is rendelnek, kihasználva, hogy a valós adatban rövid részek sűrűn ismétlődnek. Az LZW egy kezdeti (a betűket tartalmazó) kódtáblát bővít lépésről lépésre.</p>
+      <ul>
+        <li><b>Kódolás:</b> a bemenetet egyszer olvassuk; mindig a leghosszabb <i>ismert</i> következő szót (α) keressük. Kiírjuk a kódját, és felvesszük a szótárba az αc szót (c a következő karakter) a következő szabad kóddal.</li>
+        <li><b>Dekódolás:</b> ugyanabból a kezdeti táblából indul, és ugyanazt a táblát építi fel. Különleges eset: ha a beolvasott kód éppen a most születő (még ismeretlen) kód, akkor a szava \(s + s_1\) (az előző szó + annak első betűje).</li>
+        <li>Hosszú szövegnél a szótárat korlátozzuk (kódszavak száma, szavak hossza, vagy csak a bemenet elején építjük). A kódokat még binárisan is kódolni kell, mégis gyakran rövidebb, mint a Huffman; egyszerű és egy menetben dolgozik.</li>
+      </ul>
+      <div class="sgrow">
+<pre class="sg-src">
+@LZWcompress(In : Σ⟨⟩ ; Out : ℕ⟨⟩)
+D : Item{}   // szótár, kezdetben üres
+loop i := 1 to |Σ|
+  x : Item(⟨Σ_i⟩, i) ; D := D ∪ {x}
+code := |Σ| + 1 ; Out := ⟨⟩ ; s : Σ⟨In_1⟩
+loop i := 2 to |In|
+  c : Σ := In_i
+  if dictionaryContainsString(D, s + c)
+    s := s + c
+  else
+    Out := Out + code(D, s)
+    if code ≤ MAXCODE
+      x : Item(s + c, code++) ; D := D ∪ {x}
+    s := ⟨c⟩
+Out := Out + code(D, s)
+</pre>
+<pre class="sg-src">
+@LZWdecompress(In : ℕ⟨⟩ ; Out : Σ⟨⟩)
+D : Item{}
+loop i := 1 to |Σ|
+  x : Item(⟨Σ_i⟩, i) ; D := D ∪ {x}
+code := |Σ| + 1   // az első szabad kód
+Out := s := string(D, In_1)
+loop i := 2 to |In|
+  k := In_i
+  if k < code   // D tartalmazza k-t
+    t := string(D, k)
+    Out := Out + t
+    x : Item(s + t_1, code) ; D := D ∪ {x}
+  else
+    t := s + s_1
+    Out := Out + t
+    x : Item(t, k) ; D := D ∪ {x}   // k = code
+  s := t ; code++
+</pre>
+      </div>
+    </div>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">Szemléltetés</span><span class="kind">LZW</span></div>
+    <div class="stmt"><p>Kódoljuk LZW-vel az <code>S = ABABABAACAACCBBAAAAAAAAA</code> szöveget (kezdeti tábla: A → 1, B → 2, C → 3), majd dekódoljuk!</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p>Soronként: a kiírt kód, a megtalált (leghosszabb ismert) szó, a következő karakter, és a második+harmadik oszlop összefűzésének új kódja.</p>
+      <div class="tbl" style="max-width:480px"><table class="num">
+        <tr><th>kód</th><th>szó</th><th>köv. kar.</th><th>új kód</th></tr>
+        <tr><td>1</td><td>A</td><td>B</td><td>4 = AB</td></tr>
+        <tr><td>2</td><td>B</td><td>A</td><td>5 = BA</td></tr>
+        <tr><td>4</td><td>AB</td><td>A</td><td>6 = ABA</td></tr>
+        <tr><td>6</td><td>ABA</td><td>A</td><td>7 = ABAA</td></tr>
+        <tr><td>1</td><td>A</td><td>C</td><td>8 = AC</td></tr>
+        <tr><td>3</td><td>C</td><td>A</td><td>9 = CA</td></tr>
+        <tr><td>1</td><td>A</td><td>A</td><td>10 = AA</td></tr>
+        <tr><td>8</td><td>AC</td><td>C</td><td>11 = ACC</td></tr>
+        <tr><td>3</td><td>C</td><td>B</td><td>12 = CB</td></tr>
+        <tr><td>2</td><td>B</td><td>B</td><td>13 = BB</td></tr>
+        <tr><td>5</td><td>BA</td><td>A</td><td>14 = BAA</td></tr>
+        <tr><td>10</td><td>AA</td><td>A</td><td>15 = AAA</td></tr>
+        <tr><td>15</td><td>AAA</td><td>A</td><td>16 = AAAA</td></tr>
+        <tr><td>15</td><td>AAA</td><td>–</td><td>–</td></tr>
+      </table></div>
+      <p>A kódolt üzenet: <span class="ans">[1, 2, 4, 6, 1, 3, 1, 8, 3, 2, 5, 10, 15, 15]</span> (24 karakter helyett 14 kód).</p>
+      <p><b>Dekódolás:</b> ugyanez a táblázat töltődik ki soronként. Az első és az utolsó oszlop azonnal ismert; egy sor „következő karaktere” mindig a <i>következő</i> sor szavának első betűje. A 3. sorban a 4-es kódot olvassuk, ami már ismert (AB). A 4. sorban a 6-os kód jön, ami <b>épp most születik</b> (ABA): a szavát még nem ismerjük, de csak az első betűjére van szükség, az pedig az előző szó (AB) első betűje, A – így 6 = AB + A = ABA.</p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">3. feladatsor</span><span class="kind">LZW</span></div>
+    <div class="stmt">
+      <ol>
+        <li>Szemléltessük az <code>ABCABCABCAAABBCCAABABA</code> kódolását!</li>
+        <li>Dekódoljuk az <code>1, 3, 4, 5, 6</code> üzenetet, ha a kezdeti tábla A → 1 és B → 2!</li>
+        <li>Adjunk meg olyan 20 hosszú, három karaktert (mindegyiket legalább egyszer) tartalmazó szöveget, amelynek LZW-kódja pontosan 13 hosszú!</li>
+        <li>Keressünk olyan szöveget, amelynek LZW-kódolása rövidebb a Huffman-kódolásnál!</li>
+      </ol>
+    </div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <div class="own"><b>Saját megoldás (a lapon nincs)</b>Kezdeti tábla mindenhol A → 1, B → 2, C → 3; az eredményeket programmal ellenőriztem.</div>
+      <p><b>1.</b></p>
+      <div class="tbl" style="max-width:480px"><table class="num">
+        <tr><th>kód</th><th>szó</th><th>köv. kar.</th><th>új kód</th></tr>
+        <tr><td>1</td><td>A</td><td>B</td><td>4 = AB</td></tr>
+        <tr><td>2</td><td>B</td><td>C</td><td>5 = BC</td></tr>
+        <tr><td>3</td><td>C</td><td>A</td><td>6 = CA</td></tr>
+        <tr><td>4</td><td>AB</td><td>C</td><td>7 = ABC</td></tr>
+        <tr><td>6</td><td>CA</td><td>B</td><td>8 = CAB</td></tr>
+        <tr><td>5</td><td>BC</td><td>A</td><td>9 = BCA</td></tr>
+        <tr><td>1</td><td>A</td><td>A</td><td>10 = AA</td></tr>
+        <tr><td>10</td><td>AA</td><td>B</td><td>11 = AAB</td></tr>
+        <tr><td>2</td><td>B</td><td>B</td><td>12 = BB</td></tr>
+        <tr><td>5</td><td>BC</td><td>C</td><td>13 = BCC</td></tr>
+        <tr><td>6</td><td>CA</td><td>A</td><td>14 = CAA</td></tr>
+        <tr><td>4</td><td>AB</td><td>A</td><td>15 = ABA</td></tr>
+        <tr><td>15</td><td>ABA</td><td>–</td><td>–</td></tr>
+      </table></div>
+      <p>Kód: <span class="ans">[1, 2, 3, 4, 6, 5, 1, 10, 2, 5, 6, 4, 15]</span> (22 karakter → 13 kód).</p>
+      <p><b>2.</b> Az 1 = A, ez az első szó. A 3-as kód még nincs a táblában (épp ez a következő szabad kód), ezért a szava s + s₁ = A + A = AA, és 3 = AA. Ugyanígy minden további kód az épp születő kód: 4 = AAA, 5 = AAAA, 6 = AAAAA. A kimenet A · AA · AAA · AAAA · AAAAA = <span class="ans">15 darab A</span>.</p>
+      <div class="tbl" style="max-width:420px"><table class="num">
+        <tr><th>beolvasott</th><th>ismert?</th><th>kiírt szó</th><th>új kód</th></tr>
+        <tr><td>1</td><td>igen</td><td>A</td><td>–</td></tr>
+        <tr><td>3</td><td>nem (= code)</td><td>AA</td><td>3 = AA</td></tr>
+        <tr><td>4</td><td>nem</td><td>AAA</td><td>4 = AAA</td></tr>
+        <tr><td>5</td><td>nem</td><td>AAAA</td><td>5 = AAAA</td></tr>
+        <tr><td>6</td><td>nem</td><td>AAAAA</td><td>6 = AAAAA</td></tr>
+      </table></div>
+      <p><b>3.</b> Például <code>AABBCCAABBCCAABBCCAA</code>: kódja <span class="ans">[1, 1, 2, 2, 3, 3, 4, 6, 8, 10, 7, 9, 1]</span>, pontosan 13 hosszú (szavak: A A B B C C AA BB CC AAB BC CA A). Egy másik: az 1. feladat szövegének első 20 betűje, <code>ABCABCABCAAABBCCAABA</code>.</p>
+      <p><b>4.</b> Például <code>ABC</code> húszszor ismételve (60 karakter): az LZW 18 kódot ad, a legnagyobb kód 20 alatti, így kódonként 5 bit: <span class="ans">90 bit</span>. A Huffman (A, B, C egyformán 20-szor: kódjaik 0, 10, 11) 20·1 + 40·2 = <span class="ans">100 bit</span>. Minél hosszabb és ismétlődőbb a szöveg, annál nagyobb az LZW előnye (pl. 1000 karakternyi <code>ABAB…</code>: LZW 63 kód · 7 bit = 441 bit, Huffman 1000 bit).</p>
+    </div></details>
+  </article>
+
+  </div>
+</section>
 
 <!-- ======================= AVL FÁK ======================= -->
 <section id="avl">
   <div class="section-head">
-    <span class="label">1. témakör · AVL_fa.pdf, AVL_beszur_2025.pdf, AVL_fa_folytatas.pdf, AVL_minkivesz.pdf, AVL_mintöröl_2025.pdf, AVL_torol.pdf, AVL_töröl_2025.pdf</span>
+    <span class="label">2. témakör · 3–4. hét · AVL_fa.pdf, AVL_beszur_2025.pdf, AVL_fa_folytatas.pdf, AVL_minkivesz.pdf, AVL_mintöröl_2025.pdf, AVL_torol.pdf, AVL_töröl_2025.pdf</span>
     <h2>AVL fák</h2>
     <p>A bináris keresőfák műveletei a fa magasságával arányosak; az AVL fa ezt úgy tartja \(\Theta(\log n)\)-en, hogy minden csúcsban legfeljebb 1 lehet a két részfa magasságkülönbsége.</p>
   </div>
@@ -778,213 +1058,10 @@ t := l
   </div>
 </section>
 
-<!-- ======================= ÁLTALÁNOS FÁK ======================= -->
-<section id="altfa">
-  <div class="section-head">
-    <span class="label">2. témakör · AltalanosFak_gyak.pdf</span>
-    <h2>Általános fák</h2>
-    <p>Egy kitüntetett csúcs, a gyökér, és a csúcsoknak tetszőleges sok gyereke lehet. Példák: könyvtárszerkezet, függvénykifejezések.</p>
-  </div>
-  <div class="taskgroup">
-
-  <article class="concept">
-    <div class="task-head"><span class="no">Ábrázolás két pointerrel, zárójeles alak</span><span class="kind fog">elmélet</span></div>
-    <div class="body">
-      <p>Minden csúcsban <b>két pointer</b>: <code>child1</code> az első gyerekre, <code>sibling</code> a következő testvérre mutat (esetleg egy harmadik a szülőre). Más ábrázolás is lehet, pl. a gráfoknál használt éllistás.</p>
-      <p><code>Node</code> = { child1, sibling : Node* ; key : T } ; <code>Node()</code> { child1 := sibling := ⊘ } ; <code>Node(x)</code> { child1 := sibling := ⊘ ; key := x }.</p>
-      <div class="figs">
-        <figure class="fig"><div data-gt="(1 (2 (5)) (3) (4 (6) (7)))"></div><figcaption>a jegyzet fája</figcaption></figure>
-        <figure class="fig"><div data-lcrs="(1 (2 (5)) (3) (4 (6) (7)))"></div><figcaption>ugyanez két pointerrel: ↓ child1, → sibling</figcaption></figure>
-      </div>
-      <p><b>Zárójeles alak:</b> nem üres fa általános alakja <code>(G t1 … tn)</code>, ahol G a gyökér tartalma, t1 … tn a részfák. A fenti fa: <code>{ 1 [ 2 (5) ] (3) [ 4 (6) (7) ] }</code>.</p>
-      <details><summary>Részletes magyarázat: hogyan épül fel a zárójeles alak?</summary><div class="sol">
-        <p><b>Az alapszabály:</b> minden csúcs egy zárójelpár, és a zárójelen belül <b>először a csúcs kulcsa</b> áll, utána sorban a <b>gyerekeinek részfái</b>: <code>( gyökér részfa1 részfa2 … részfan )</code>. Minden részfa ugyanilyen alakú (rekurzív jelölés). Egy levélnek nincs gyereke, ezért csak <code>(x)</code>.</p>
-        <p><b>Felépítés lentről felfelé</b> a fenti fán:</p>
-        <ol>
-          <li>A levelek: <code>(5)</code>, <code>(3)</code>, <code>(6)</code>, <code>(7)</code>.</li>
-          <li>A 2-es csúcs egyetlen gyereke az 5: <code>(2 (5))</code>.</li>
-          <li>A 4-es csúcs gyerekei a 6 és a 7: <code>(4 (6) (7))</code>.</li>
-          <li>Az 1-es gyökér gyerekei sorban a 2, a 3 és a 4: <code>(1 (2 (5)) (3) (4 (6) (7)))</code>. Ez már a teljes, helyes zárójeles alak.</li>
-        </ol>
-        <p><b>Mire valók a <code>{ } [ ] ( )</code>?</b> Csak az olvashatóságot segítik, a jelentésük ugyanaz. Szintenként váltogatjuk őket, hogy szemmel könnyű legyen összepárosítani a nyitó és záró zárójeleket: a gyökér <code>{ }</code>, a gyerekei <code>[ ]</code>, az unokák <code>( )</code>, utána megint <code>{ }</code>… Így: <code>{ 1 [ 2 (5) ] [ 3 ] [ 4 (6) (7) ] }</code>.</p>
-        <p class="warn"><b>Megjegyzés a forráshoz</b>A jegyzet példájában a 3-as körül <code>(3)</code> áll <code>[3]</code> helyett. Ez csak következetlenség, nem hiba, mert a zárójel fajtája nem számít; a nagyobb gyakorlati feladatban már következetesen <code>[ c ]</code> szerepel.</p>
-        <p><b>Visszafelé olvasás:</b></p>
-        <ul>
-          <li>A nyitó zárójel utáni <b>első</b> elem a csúcs kulcsa.</li>
-          <li>Utána minden <b>zárójeles csoport</b> egy gyerek részfája, balról jobbra az első, második, … gyerek.</li>
-          <li>A záró zárójel jelzi, hogy a csúcsnak nincs több gyereke.</li>
-        </ul>
-        <p>Például <code>[ 4 (6) (7) ]</code> = „4, két gyerekkel: 6 és 7”; <code>[ 2 (5) ]</code> = „2, egy gyerekkel: 5”.</p>
-        <p><b>Miért pont így?</b></p>
-        <ul>
-          <li><b>A gyökér elöl áll, nem középen.</b> A bináris (AVL) fáknál a <code>(bal gyökér jobb)</code> alakban a hely mondja meg, melyik a bal és a jobb gyerek. Az általános fának tetszőleges számú gyereke lehet, nincs „bal” és „jobb”, csak sorrend; ezért a gyökér elöl van, a gyerekek sorban utána.</li>
-          <li><b>Illik a két pointeres ábrázoláshoz:</b> a zárójelen belül egymás után következő gyerekek a <code>child1 → sibling → sibling</code> lánc, egy belső zárójelbe lépés pedig a <code>child1</code> irány.</li>
-          <li><b>A Zárójelez algoritmus pont ezt írja ki</b> (lásd a 6. feladatot): <code>(</code> és a kulcs, rekurzívan a gyerekek, végül <code>)</code>. Ezért a kulcsok sorrendje a <b>preorder</b> bejárás: 1 2 5 3 4 6 7.</li>
-        </ul>
-        <p class="tip"><b>Két gyors ellenőrzés</b>A nyitó zárójelek száma = a csúcsok száma (itt 7). Egy csúcs mélysége = hány nyitott, még be nem zárt zárójel veszi körül a <i>saját</i> zárójelén kívül (az 5-ös körül a <code>{</code> és a <code>[</code> van nyitva, tehát a mélysége 2; a gyökéré 0).</p>
-      </div></details>
-      <p><b>Bejárások:</b> a testvéreken érdemesebb ciklussal végigmenni (hatékonyabb), a gyerekek felé rekurzióval. A <i>postorder</i> alakra a bináris fák inorderjére hasonlít, de a függvénykifejezések lengyel formáját adja, ezért hívjuk postordernek.</p>
-      <div class="sgrow">
-<pre class="sg-src">
-@preorder(t : Node*)
-loop t ≠ ⊘
-  process(t)
-  preorder(t→child1)
-  t := t→sibling
-</pre>
-<pre class="sg-src">
-@postorder(t : Node*)
-loop t ≠ ⊘
-  postorder(t→child1)
-  process(t)
-  t := t→sibling
-</pre>
-      </div>
-    </div>
-  </article>
-
-  <article class="task">
-    <div class="task-head"><span class="no">1. feladat</span><span class="kind">ábrázolás</span></div>
-    <div class="stmt"><p>Adott az alábbi általános fa. Rajzoljuk le két pointeres ábrázolásban, és adjuk meg zárójeles alakban!</p>
-      <div class="figs"><figure class="fig"><div data-gt="(a (b (f) (g)) (c) (d (h (l) (m) (n))) (e (i) (j (p)) (k)))"></div></figure></div>
-    </div>
-    <details><summary>Megoldás</summary><div class="sol">
-      <p>Minden csúcsból lefelé csak az <b>első</b> gyerekére mutat nyíl, a többi gyerek a testvérlánc mentén, jobbra érhető el:</p>
-      <div class="figs"><figure class="fig"><div data-lcrs="(a (b (f) (g)) (c) (d (h (l) (m) (n))) (e (i) (j (p)) (k)))"></div><figcaption>↓ child1, → sibling</figcaption></figure></div>
-      <p>Zárójeles alak: <code>{ a [ b ( f ) ( g ) ] [ c ] [ d ( h { l } { m } { n } ) ] [ e ( i ) ( j { p } ) ( k ) ] }</code></p>      <p class="warn"><b>Megjegyzés a forráshoz</b>A lap első rajzán az e első gyereke „l”-nek látszik, de a két pointeres rajz és a zárójeles alak szerint ez az <b>i</b> (az l a h gyereke).</p>
-    </div></details>
-  </article>
-
-  <article class="task">
-    <div class="task-head"><span class="no">2. feladat</span><span class="kind">preorder</span></div>
-    <div class="stmt"><p>Adjuk meg a preorder bejárás algoritmusát <b>teljesen rekurzívan</b>, és járjuk be vele a fenti fát!</p></div>
-    <details><summary>Megoldás</summary><div class="sol">
-<pre class="sg-src">
-@preorder(t : Node*)
-if t ≠ ⊘
-  process(t)
-  preorder(t→child1)
-  preorder(t→sibling)
-</pre>
-      <p>Bejárás: <span class="ans">a b f g c d h l m n e i j p k</span></p>
-      <p>A gyakorlatban nem ezt használjuk (a testvérlánc mentén minden testvér egy újabb rekurziós szint, hosszú láncnál mély verem), de itt jobban látszik a rokonság a bináris fák preorderjével: <code>child1</code> ~ bal, <code>sibling</code> ~ jobb.</p>
-    </div></details>
-  </article>
-
-  <article class="task">
-    <div class="task-head"><span class="no">3. feladat</span><span class="kind">postorder</span></div>
-    <div class="stmt"><p>Adjuk meg a postorder bejárás algoritmusát teljesen rekurzívan, és járjuk be vele a fenti fát!</p></div>
-    <details><summary>Megoldás</summary><div class="sol">
-<pre class="sg-src">
-@postorder(t : Node*)
-if t ≠ ⊘
-  postorder(t→child1)
-  process(t)
-  postorder(t→sibling)
-</pre>
-      <p>Bejárás: <span class="ans">f g b c l m n h d i p j k e a</span></p>
-      <p>Mivel a feldolgozás a <code>t→child1</code> után, de a testvérek előtt történik, alakra a bináris fák <i>inorder</i> bejárásának rokona; az általános fán viszont minden csúcs a teljes részfája után kerül sorra, ezért postorder.</p>
-    </div></details>
-  </article>
-
-  <article class="task">
-    <div class="task-head"><span class="no">4. feladat</span><span class="kind">lengyel forma</span></div>
-    <div class="stmt"><p>Legyen <code>min3</code> egy háromparaméteres függvény, és <code>y = min3(a+1, 2*b, x) * z</code> egy függvénykifejezés. Rajzoljuk fel általános fa alakban, és adjuk meg a postorder bejárását!</p></div>
-    <details><summary>Megoldás</summary><div class="sol">
-      <div class="figs">
-        <figure class="fig"><div data-gt="(= (y) (* (min3 (+ (a) (1)) (* (2) (b)) (x)) (z)))"></div><figcaption>a kifejezés fája</figcaption></figure>
-        <figure class="fig"><div data-lcrs="(= (y) (* (min3 (+ (a) (1)) (* (2) (b)) (x)) (z)))"></div><figcaption>két pointerrel</figcaption></figure>
-      </div>
-      <p>Postorder: <span class="ans">y a 1 + 2 b * x min3 z * =</span></p>
-      <p>Ez pontosan a kifejezés <b>lengyel formája</b> (postfix alak): minden művelet / függvény az összes operandusa után következik. Ezért hívjuk ezt a bejárást postordernek.</p>
-    </div></details>
-  </article>
-
-  <article class="task">
-    <div class="task-head"><span class="no">5. feladat</span><span class="kind">algoritmus</span></div>
-    <div class="stmt"><p>Készítsük el a fa magasságát megadó algoritmust (teljesen rekurzívan és testvér irányban ciklussal)!</p></div>
-    <details><summary>Megoldás</summary><div class="sol">
-      <div class="sgrow">
-<pre class="sg-src">
-@Magasság(t : Node*) : ℤ
-if t ≠ ⊘
-  mgy := Magasság(t→child1) + 1
-  mt := Magasság(t→sibling)
-  return max(mgy, mt)
-else
-  return −1
-</pre>
-<pre class="sg-src">
-@Magasság(t : Node*) : ℤ
-h := −1
-loop t ≠ ⊘
-  m := Magasság(t→child1) + 1
-  if m > h
-    h := m
-  t := t→sibling
-return h
-</pre>
-      </div>
-      <p>Mindkettő a <code>t</code>-vel kezdődő <b>testvérlánc</b> (erdő) legmagasabb fájának magasságát adja; a gyökérnek nincs testvére, így rá a fa magasságát. Üres fa magassága −1, egyetlen csúcsé 0. A fenti a…p fára: <span class="ans">3</span> (pl. a → d → h → l).</p>
-    </div></details>
-  </article>
-
-  <article class="task">
-    <div class="task-head"><span class="no">6. feladat</span><span class="kind">algoritmus</span></div>
-    <div class="stmt"><p>Készítsünk algoritmust, mely kiírja a fa zárójelezett alakját (teljesen rekurzívan és testvér irányban ciklussal)!</p></div>
-    <details><summary>Megoldás</summary><div class="sol">
-      <div class="sgrow">
-<pre class="sg-src">
-@Zárójelez(t : Node*)
-if t ≠ ⊘
-  Write('(') ; Write(t→key)
-  Zárójelez(t→child1)
-  Write(')')
-  Zárójelez(t→sibling)
-</pre>
-<pre class="sg-src">
-@Zárójelez(t : Node*)
-loop t ≠ ⊘
-  Write('(') ; Write(t→key)
-  Zárójelez(t→child1)
-  Write(')')
-  t := t→sibling
-</pre>
-      </div>
-      <p class="warn"><b>Megjegyzés a forráshoz</b>A lap teljesen rekurzív változatának utolsó sora <code>t := t→sibling</code>; ciklus nélkül ez hatástalan (a testvérek kimaradnának). A rekurzív változatban helyesen <code>Zárójelez(t→sibling)</code> a hívás, ahogy fent.</p>
-      <p>A jegyzet fájára a kimenet: <code>(1(2(5))(3)(4(6)(7)))</code>.</p>
-    </div></details>
-  </article>
-
-  <article class="task">
-    <div class="task-head"><span class="no">7. feladat</span><span class="kind">szintfolytonos</span></div>
-    <div class="stmt"><p>Készítsük el a szintfolytonos bejárást a két pointerrel ábrázolt általános fára!</p></div>
-    <details><summary>Megoldás</summary><div class="sol">
-<pre class="sg-src">
-@Szintfolytonos(t : Node*)
-if t ≠ ⊘
-  Q : Queue
-  Q.add(t)
-  loop ¬Q.isEmpty()
-    t := Q.rem()
-    loop t ≠ ⊘
-      feldolgoz(t)
-      if t→child1 ≠ ⊘
-        Q.add(t→child1)
-      t := t→sibling
-</pre>
-      <p>A sorba csak a testvércsoportok <b>első</b> elemei kerülnek; a belső ciklus a csoport többi tagját a testvérláncon járja végig. A fenti a…p fára: <span class="ans">a b c d e f g h i j k l m n p</span>.</p>
-      <p class="src">A lapon a külső elágazás feltétele „t = 0” a SKIP ággal balra; ez ugyanaz, mint fent a „t ≠ ⊘” feltétel fordított ágakkal.</p>
-    </div></details>
-  </article>
-
-  </div>
-</section>
-
 <!-- ======================= B+ FÁK ======================= -->
 <section id="bplus">
   <div class="section-head">
-    <span class="label">3. témakör · B+ fa műveletei.pdf, B+ fa.pdf</span>
+    <span class="label">3. témakör · 5. hét · B+ fa műveletei.pdf, B+ fa.pdf</span>
     <h2>B+ fák</h2>
     <p>Háttértáron (lemezen) tárolt keresőfa: egy csúcs egy teljes blokkot tölt ki, így sok kulcs és mutató fér bele, és a fa nagyon alacsony marad. A rajzokon d = 4 (negyedfokú B+ fa).</p>
   </div>
@@ -1203,10 +1280,213 @@ if t ≠ ⊘
   </div>
 </section>
 
+<!-- ======================= ÁLTALÁNOS FÁK ======================= -->
+<section id="altfa">
+  <div class="section-head">
+    <span class="label">4. témakör · 5. hét · AltalanosFak_gyak.pdf</span>
+    <h2>Általános fák</h2>
+    <p>Egy kitüntetett csúcs, a gyökér, és a csúcsoknak tetszőleges sok gyereke lehet. Példák: könyvtárszerkezet, függvénykifejezések.</p>
+  </div>
+  <div class="taskgroup">
+
+  <article class="concept">
+    <div class="task-head"><span class="no">Ábrázolás két pointerrel, zárójeles alak</span><span class="kind fog">elmélet</span></div>
+    <div class="body">
+      <p>Minden csúcsban <b>két pointer</b>: <code>child1</code> az első gyerekre, <code>sibling</code> a következő testvérre mutat (esetleg egy harmadik a szülőre). Más ábrázolás is lehet, pl. a gráfoknál használt éllistás.</p>
+      <p><code>Node</code> = { child1, sibling : Node* ; key : T } ; <code>Node()</code> { child1 := sibling := ⊘ } ; <code>Node(x)</code> { child1 := sibling := ⊘ ; key := x }.</p>
+      <div class="figs">
+        <figure class="fig"><div data-gt="(1 (2 (5)) (3) (4 (6) (7)))"></div><figcaption>a jegyzet fája</figcaption></figure>
+        <figure class="fig"><div data-lcrs="(1 (2 (5)) (3) (4 (6) (7)))"></div><figcaption>ugyanez két pointerrel: ↓ child1, → sibling</figcaption></figure>
+      </div>
+      <p><b>Zárójeles alak:</b> nem üres fa általános alakja <code>(G t1 … tn)</code>, ahol G a gyökér tartalma, t1 … tn a részfák. A fenti fa: <code>{ 1 [ 2 (5) ] (3) [ 4 (6) (7) ] }</code>.</p>
+      <details><summary>Részletes magyarázat: hogyan épül fel a zárójeles alak?</summary><div class="sol">
+        <p><b>Az alapszabály:</b> minden csúcs egy zárójelpár, és a zárójelen belül <b>először a csúcs kulcsa</b> áll, utána sorban a <b>gyerekeinek részfái</b>: <code>( gyökér részfa1 részfa2 … részfan )</code>. Minden részfa ugyanilyen alakú (rekurzív jelölés). Egy levélnek nincs gyereke, ezért csak <code>(x)</code>.</p>
+        <p><b>Felépítés lentről felfelé</b> a fenti fán:</p>
+        <ol>
+          <li>A levelek: <code>(5)</code>, <code>(3)</code>, <code>(6)</code>, <code>(7)</code>.</li>
+          <li>A 2-es csúcs egyetlen gyereke az 5: <code>(2 (5))</code>.</li>
+          <li>A 4-es csúcs gyerekei a 6 és a 7: <code>(4 (6) (7))</code>.</li>
+          <li>Az 1-es gyökér gyerekei sorban a 2, a 3 és a 4: <code>(1 (2 (5)) (3) (4 (6) (7)))</code>. Ez már a teljes, helyes zárójeles alak.</li>
+        </ol>
+        <p><b>Mire valók a <code>{ } [ ] ( )</code>?</b> Csak az olvashatóságot segítik, a jelentésük ugyanaz. Szintenként váltogatjuk őket, hogy szemmel könnyű legyen összepárosítani a nyitó és záró zárójeleket: a gyökér <code>{ }</code>, a gyerekei <code>[ ]</code>, az unokák <code>( )</code>, utána megint <code>{ }</code>… Így: <code>{ 1 [ 2 (5) ] [ 3 ] [ 4 (6) (7) ] }</code>.</p>
+        <p class="warn"><b>Megjegyzés a forráshoz</b>A jegyzet példájában a 3-as körül <code>(3)</code> áll <code>[3]</code> helyett. Ez csak következetlenség, nem hiba, mert a zárójel fajtája nem számít; a nagyobb gyakorlati feladatban már következetesen <code>[ c ]</code> szerepel.</p>
+        <p><b>Visszafelé olvasás:</b></p>
+        <ul>
+          <li>A nyitó zárójel utáni <b>első</b> elem a csúcs kulcsa.</li>
+          <li>Utána minden <b>zárójeles csoport</b> egy gyerek részfája, balról jobbra az első, második, … gyerek.</li>
+          <li>A záró zárójel jelzi, hogy a csúcsnak nincs több gyereke.</li>
+        </ul>
+        <p>Például <code>[ 4 (6) (7) ]</code> = „4, két gyerekkel: 6 és 7”; <code>[ 2 (5) ]</code> = „2, egy gyerekkel: 5”.</p>
+        <p><b>Miért pont így?</b></p>
+        <ul>
+          <li><b>A gyökér elöl áll, nem középen.</b> A bináris (AVL) fáknál a <code>(bal gyökér jobb)</code> alakban a hely mondja meg, melyik a bal és a jobb gyerek. Az általános fának tetszőleges számú gyereke lehet, nincs „bal” és „jobb”, csak sorrend; ezért a gyökér elöl van, a gyerekek sorban utána.</li>
+          <li><b>Illik a két pointeres ábrázoláshoz:</b> a zárójelen belül egymás után következő gyerekek a <code>child1 → sibling → sibling</code> lánc, egy belső zárójelbe lépés pedig a <code>child1</code> irány.</li>
+          <li><b>A Zárójelez algoritmus pont ezt írja ki</b> (lásd a 6. feladatot): <code>(</code> és a kulcs, rekurzívan a gyerekek, végül <code>)</code>. Ezért a kulcsok sorrendje a <b>preorder</b> bejárás: 1 2 5 3 4 6 7.</li>
+        </ul>
+        <p class="tip"><b>Két gyors ellenőrzés</b>A nyitó zárójelek száma = a csúcsok száma (itt 7). Egy csúcs mélysége = hány nyitott, még be nem zárt zárójel veszi körül a <i>saját</i> zárójelén kívül (az 5-ös körül a <code>{</code> és a <code>[</code> van nyitva, tehát a mélysége 2; a gyökéré 0).</p>
+      </div></details>
+      <p><b>Bejárások:</b> a testvéreken érdemesebb ciklussal végigmenni (hatékonyabb), a gyerekek felé rekurzióval. A <i>postorder</i> alakra a bináris fák inorderjére hasonlít, de a függvénykifejezések lengyel formáját adja, ezért hívjuk postordernek.</p>
+      <div class="sgrow">
+<pre class="sg-src">
+@preorder(t : Node*)
+loop t ≠ ⊘
+  process(t)
+  preorder(t→child1)
+  t := t→sibling
+</pre>
+<pre class="sg-src">
+@postorder(t : Node*)
+loop t ≠ ⊘
+  postorder(t→child1)
+  process(t)
+  t := t→sibling
+</pre>
+      </div>
+    </div>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">1. feladat</span><span class="kind">ábrázolás</span></div>
+    <div class="stmt"><p>Adott az alábbi általános fa. Rajzoljuk le két pointeres ábrázolásban, és adjuk meg zárójeles alakban!</p>
+      <div class="figs"><figure class="fig"><div data-gt="(a (b (f) (g)) (c) (d (h (l) (m) (n))) (e (i) (j (p)) (k)))"></div></figure></div>
+    </div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p>Minden csúcsból lefelé csak az <b>első</b> gyerekére mutat nyíl, a többi gyerek a testvérlánc mentén, jobbra érhető el:</p>
+      <div class="figs"><figure class="fig"><div data-lcrs="(a (b (f) (g)) (c) (d (h (l) (m) (n))) (e (i) (j (p)) (k)))"></div><figcaption>↓ child1, → sibling</figcaption></figure></div>
+      <p>Zárójeles alak: <code>{ a [ b ( f ) ( g ) ] [ c ] [ d ( h { l } { m } { n } ) ] [ e ( i ) ( j { p } ) ( k ) ] }</code></p>      <p class="warn"><b>Megjegyzés a forráshoz</b>A lap első rajzán az e első gyereke „l”-nek látszik, de a két pointeres rajz és a zárójeles alak szerint ez az <b>i</b> (az l a h gyereke).</p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">2. feladat</span><span class="kind">preorder</span></div>
+    <div class="stmt"><p>Adjuk meg a preorder bejárás algoritmusát <b>teljesen rekurzívan</b>, és járjuk be vele a fenti fát!</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+<pre class="sg-src">
+@preorder(t : Node*)
+if t ≠ ⊘
+  process(t)
+  preorder(t→child1)
+  preorder(t→sibling)
+</pre>
+      <p>Bejárás: <span class="ans">a b f g c d h l m n e i j p k</span></p>
+      <p>A gyakorlatban nem ezt használjuk (a testvérlánc mentén minden testvér egy újabb rekurziós szint, hosszú láncnál mély verem), de itt jobban látszik a rokonság a bináris fák preorderjével: <code>child1</code> ~ bal, <code>sibling</code> ~ jobb.</p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">3. feladat</span><span class="kind">postorder</span></div>
+    <div class="stmt"><p>Adjuk meg a postorder bejárás algoritmusát teljesen rekurzívan, és járjuk be vele a fenti fát!</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+<pre class="sg-src">
+@postorder(t : Node*)
+if t ≠ ⊘
+  postorder(t→child1)
+  process(t)
+  postorder(t→sibling)
+</pre>
+      <p>Bejárás: <span class="ans">f g b c l m n h d i p j k e a</span></p>
+      <p>Mivel a feldolgozás a <code>t→child1</code> után, de a testvérek előtt történik, alakra a bináris fák <i>inorder</i> bejárásának rokona; az általános fán viszont minden csúcs a teljes részfája után kerül sorra, ezért postorder.</p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">4. feladat</span><span class="kind">lengyel forma</span></div>
+    <div class="stmt"><p>Legyen <code>min3</code> egy háromparaméteres függvény, és <code>y = min3(a+1, 2*b, x) * z</code> egy függvénykifejezés. Rajzoljuk fel általános fa alakban, és adjuk meg a postorder bejárását!</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <div class="figs">
+        <figure class="fig"><div data-gt="(= (y) (* (min3 (+ (a) (1)) (* (2) (b)) (x)) (z)))"></div><figcaption>a kifejezés fája</figcaption></figure>
+        <figure class="fig"><div data-lcrs="(= (y) (* (min3 (+ (a) (1)) (* (2) (b)) (x)) (z)))"></div><figcaption>két pointerrel</figcaption></figure>
+      </div>
+      <p>Postorder: <span class="ans">y a 1 + 2 b * x min3 z * =</span></p>
+      <p>Ez pontosan a kifejezés <b>lengyel formája</b> (postfix alak): minden művelet / függvény az összes operandusa után következik. Ezért hívjuk ezt a bejárást postordernek.</p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">5. feladat</span><span class="kind">algoritmus</span></div>
+    <div class="stmt"><p>Készítsük el a fa magasságát megadó algoritmust (teljesen rekurzívan és testvér irányban ciklussal)!</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <div class="sgrow">
+<pre class="sg-src">
+@Magasság(t : Node*) : ℤ
+if t ≠ ⊘
+  mgy := Magasság(t→child1) + 1
+  mt := Magasság(t→sibling)
+  return max(mgy, mt)
+else
+  return −1
+</pre>
+<pre class="sg-src">
+@Magasság(t : Node*) : ℤ
+h := −1
+loop t ≠ ⊘
+  m := Magasság(t→child1) + 1
+  if m > h
+    h := m
+  t := t→sibling
+return h
+</pre>
+      </div>
+      <p>Mindkettő a <code>t</code>-vel kezdődő <b>testvérlánc</b> (erdő) legmagasabb fájának magasságát adja; a gyökérnek nincs testvére, így rá a fa magasságát. Üres fa magassága −1, egyetlen csúcsé 0. A fenti a…p fára: <span class="ans">3</span> (pl. a → d → h → l).</p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">6. feladat</span><span class="kind">algoritmus</span></div>
+    <div class="stmt"><p>Készítsünk algoritmust, mely kiírja a fa zárójelezett alakját (teljesen rekurzívan és testvér irányban ciklussal)!</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <div class="sgrow">
+<pre class="sg-src">
+@Zárójelez(t : Node*)
+if t ≠ ⊘
+  Write('(') ; Write(t→key)
+  Zárójelez(t→child1)
+  Write(')')
+  Zárójelez(t→sibling)
+</pre>
+<pre class="sg-src">
+@Zárójelez(t : Node*)
+loop t ≠ ⊘
+  Write('(') ; Write(t→key)
+  Zárójelez(t→child1)
+  Write(')')
+  t := t→sibling
+</pre>
+      </div>
+      <p class="warn"><b>Megjegyzés a forráshoz</b>A lap teljesen rekurzív változatának utolsó sora <code>t := t→sibling</code>; ciklus nélkül ez hatástalan (a testvérek kimaradnának). A rekurzív változatban helyesen <code>Zárójelez(t→sibling)</code> a hívás, ahogy fent.</p>
+      <p>A jegyzet fájára a kimenet: <code>(1(2(5))(3)(4(6)(7)))</code>.</p>
+    </div></details>
+  </article>
+
+  <article class="task">
+    <div class="task-head"><span class="no">7. feladat</span><span class="kind">szintfolytonos</span></div>
+    <div class="stmt"><p>Készítsük el a szintfolytonos bejárást a két pointerrel ábrázolt általános fára!</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+<pre class="sg-src">
+@Szintfolytonos(t : Node*)
+if t ≠ ⊘
+  Q : Queue
+  Q.add(t)
+  loop ¬Q.isEmpty()
+    t := Q.rem()
+    loop t ≠ ⊘
+      feldolgoz(t)
+      if t→child1 ≠ ⊘
+        Q.add(t→child1)
+      t := t→sibling
+</pre>
+      <p>A sorba csak a testvércsoportok <b>első</b> elemei kerülnek; a belső ciklus a csoport többi tagját a testvérláncon járja végig. A fenti a…p fára: <span class="ans">a b c d e f g h i j k l m n p</span>.</p>
+      <p class="src">A lapon a külső elágazás feltétele „t = 0” a SKIP ággal balra; ez ugyanaz, mint fent a „t ≠ ⊘” feltétel fordított ágakkal.</p>
+    </div></details>
+  </article>
+
+  </div>
+</section>
+
 <!-- ======================= GRÁFOK ÁBRÁZOLÁSA ======================= -->
 <section id="grafok">
   <div class="section-head">
-    <span class="label">4. témakör · Grafok_abrazolasa_gyak.pdf</span>
+    <span class="label">5. témakör · 6. hét · Grafok_abrazolasa_gyak.pdf</span>
     <h2>Gráfok ábrázolása</h2>
     <p>A gráfalgoritmusok egy csúcs feldolgozásakor a <b>szomszédait</b> látogatják meg, ezért az ábrázolásnak ezt kell hatékonyan támogatnia. Itt mindig \(V = \{1, \dots, n\}\), \(n = |V|\), \(m = |E|\).</p>
   </div>
@@ -1412,7 +1692,7 @@ loop i := 1 to n
 <!-- ======================= SZÉLESSÉGI BEJÁRÁS ======================= -->
 <section id="bfs">
   <div class="section-head">
-    <span class="label">5. témakör · Szelessegi_gyakorlati_anyag_2024.pdf</span>
+    <span class="label">6. témakör · 7. hét · Szelessegi_gyakorlati_anyag_2024.pdf</span>
     <h2>Szélességi bejárás (BFS)</h2>
     <p>Egy kezdőcsúcsból felderíti az úttal elérhető csúcsokat, és mindegyikhez egy <b>minimális élszámú</b> utat ad (ha több van, az egyiket). Tetszőleges nem üres gráfon használható: irányított, irányítatlan, összefüggő vagy sem.</p>
   </div>
@@ -1702,285 +1982,255 @@ return −1   // nem érhető el
   </div>
 </section>
 
-<!-- ======================= TÖMÖRÍTÉS ======================= -->
-<section id="tomor">
+<!-- ======================= MINTA ZH ======================= -->
+<section id="minta">
   <div class="section-head">
-    <span class="label">6. témakör · ad2Tomorites.pdf, LZW_algoritmus.pdf</span>
-    <h2>Veszteségmentes adattömörítés: Huffman és LZW</h2>
-    <p>A forráskódolás azt vizsgálja, adott mennyiségű információ mekkora adattal tárolható. Csak veszteségmentes eljárásokkal foglalkozunk (az adat teljes egészében visszaállítható); bináris esetben a kódszavak a Γ = {0, 1} ábécé feletti szavak (r = 2).</p>
+    <span class="label">7. rész · MintaZH_1_2024.pdf · 6 feladat, 60 pont</span>
+    <h2>Minta 1. ZH (2024) kidolgozva</h2>
+    <p>Előbb próbáld meg magad, utána nyisd le a megoldást; a <i>Részletes magyarázat</i> a gondolatmenetet és a tipikus hibákat írja le. A minta ZH-hoz nincs hivatalos megoldás, ez <b>saját kidolgozás</b>; a fák és a Huffman-kód lépéseit programmal ellenőriztem. (Az idei 1. ZH max. 50 pontos.)</p>
   </div>
   <div class="taskgroup">
 
-  <article class="concept">
-    <div class="task-head"><span class="no">Kód, kódfa, naiv módszer</span><span class="kind fog">elmélet</span></div>
-    <div class="body">
-      <ul>
-        <li><b>Kód:</b> Γ feletti véges szavak (kódszavak) nem üres halmaza.</li>
-        <li><b>Kódfa:</b> a gyökérben az üres szó; egy szó gyerekei a szó után egy karaktert írva kapott szavak, az élek ezzel a karakterrel címkézettek. A kód kódfája a legkevesebb csúcsú ilyen fa, amely minden kódszót tartalmaz. Dekódolás: a gyökértől a bitek szerint lépkedünk, kódszónál kiírjuk a betűt és újrakezdjük.</li>
-        <li><b>Betűnkénti kódolás:</b> a Σ ábécé betűit egy kölcsönösen egyértelmű Σ → C ⊆ Γ* leképezés kódolja (pl. ASCII).</li>
-        <li><b>Egyenletes kód:</b> minden kódszó egyforma hosszú. A <b>naiv módszer</b> egyenletes kódot használó betűnkénti kódolás; ha \(|\Gamma| = r\), \(|\Sigma| = d\), a legrövidebb kódszóhossz \(\lceil \log_r d \rceil\).</li>
-      </ul>
-    </div>
-  </article>
-
+  <div class="sub-head" id="minta-f1">1. feladat · Huffman-kódolás · 10 pont</div>
   <article class="task">
-    <div class="task-head"><span class="no">1. feladatsor</span><span class="kind">naiv módszer</span></div>
-    <div class="stmt"><p>Tekintsük az <code>S = AABCAADEAAB</code> szöveget.</p>
-      <ol>
-        <li>Naiv módszerrel hány bittel tudjuk ábrázolni S-t?</li>
-        <li>Adjuk meg S egy kódolt alakját naiv módszer esetén!</li>
-        <li>Adjunk meg betűnkénti kódolást, amely tömörebb eredményt ad, mint a naiv módszer!</li>
-        <li>Adjunk meg egy egyenletes kódolást, amely tömörebb eredményt ad, mint a naiv módszer!</li>
-        <li>Rajzoljuk fel a használt kód kódfáját! Milyen tulajdonságú egy egyenletes kód kódfája?</li>
+    <div class="task-head"><span class="no">1. feladat</span><span class="kind">10 pont</span></div>
+    <div class="stmt">
+      <p>Rendelkezésünkre áll egy 300 ezer karakterből álló szöveg gyakorisági táblázata (ezer előfordulásban):</p>
+      <div class="tbl"><table class="num"><tr><th>betű</th><td>A</td><td>D</td><td>E</td><td>F</td><td>K</td><td>J</td><td>L</td><td>M</td><td>R</td><td>S</td></tr><tr><th>gyak.</th><td>78</td><td>7</td><td>60</td><td>6</td><td>35</td><td>8</td><td>32</td><td>25</td><td>9</td><td>40</td></tr></table></div>
+      <ol type="a">
+        <li>A táblázat alapján építse fel a Huffman-fát és adja meg az egyes betűk kódját! (6 pont)</li>
+        <li>Hány bit lenne a Huffman-kóddal a szöveg? (2 pont)</li>
+        <li>A kapott Huffman-kód segítségével dekódolja az alábbi szöveget! (2 pont)<br><code>1001001110010111010110</code></li>
       </ol>
     </div>
     <details><summary>Megoldás</summary><div class="sol">
-      <div class="own"><b>Saját megoldás (a lapon nincs)</b>Gyakoriságok: A 6, B 2, C 1, D 1, E 1; |S| = 11, d = 5.</div>
-      <ol>
-        <li>\(\lceil \log_2 5 \rceil = 3\) bit betűnként: <span class="ans">11 · 3 = 33 bit</span>.</li>
-        <li>Pl. A = 000, B = 001, C = 010, D = 011, E = 100: <code>000 000 001 010 000 000 011 100 000 000 001</code>.</li>
-        <li>A gyakori betűnek rövid kód: A = 0, B = 10, C = 110, D = 1110, E = 1111 (prefixmentes). Hossz: 6·1 + 2·2 + 3 + 4 + 4 = <span class="ans">21 bit</span> (ennyit ad a Huffman-kód is).</li>
-        <li>Ne betűnként kódoljunk! Kettes blokkokra bontva: AA | BC | AA | DE | AA | B – csak 4 különböző „szó” van, ezek 2 bites egyenletes kóddal: AA = 00, BC = 01, DE = 10, B = 11 ⇒ <span class="ans">6 · 2 = 12 bit</span>. (Ez már a szótárkódok ötlete.)</li>
-        <li>A 2. pont kódjának kódfája lent látható. Egyenletes kódnál <b>minden kódszó levél, és mind ugyanazon a szinten</b> (a kódszóhossz mélységében) van.</li>
-      </ol>
-      <div class="figs"><figure class="fig"><div data-gt="(ε 0:(0 0:(00 0:(000|A) 1:(001|B)) 1:(01 0:(010|C) 1:(011|D))) 1:(1 0:(10 0:(100|E))))"></div><figcaption>a naiv kód kódfája</figcaption></figure></div>
-    </div></details>
-  </article>
-
-  <article class="concept">
-    <div class="task-head"><span class="no">Huffman-kódolás</span><span class="kind fog">elmélet</span></div>
-    <div class="body">
-      <p>Betűnkénti kódolásnál akkor kapunk rövid kódot, ha a gyakori betűk rövid, a ritkák hosszú kódszót kapnak. A kódfát <b>alulról felfelé</b> építjük a gyakoriságok alapján (r = 2):</p>
-      <ol>
-        <li>Végigolvassuk a szöveget, meghatározzuk a gyakoriságokat.</li>
-        <li>Minden karakterhez egy csúcs; ezeket egy min-prioritásos sorba tesszük (kulcs: gyakoriság).</li>
-        <li>Kiveszünk két csúcsot, közös szülőt kapnak; az éleket 0-val és 1-gyel címkézzük a gyakoriságnak megfelelő sorrendben; a szülő a gyakoriságok összegével kerül vissza a sorba. Ismételjük, amíg egynél több csúcs van.</li>
-        <li>A kódszavakat kiolvassuk a fából, majd a bemenetet újraolvasva betűnként kódolunk.</li>
-      </ol>
-      <ul>
-        <li><b>Entrópia:</b> \(H_r(S) = -\sum_{i=1}^{d} p_i \log_r p_i\). Shannon tétele: betűnkénti kódolásnál az átlagos szóhossz \(\ell \ge H_r(S)\). Egy kódolás <b>optimális</b>, ha \(H_r(S) \le \ell &lt; H_r(S) + 1\); a Huffman-kód ilyen.</li>
-        <li><b>Prefix-kód:</b> egyik kódszó sem valódi prefixe a másiknak, a kódfában minden kódszó levél ⇒ egyértelműen dekódolható.</li>
-        <li><b>Nem egyértelmű:</b> egyenlő gyakoriságoknál bármelyiket választhatjuk, és a 0/1 szerepe felcserélhető.</li>
-        <li><b>r &gt; 2:</b> az élek 0..r−1 címkét kapnak, minden lépésben r csúcsot vonunk össze, kivéve az elsőt: ott \(k = d \bmod (r-1)\) csúcsot, ha k &gt; 1, különben k + r − 1-et.</li>
-        <li>A dekódolónak is ismernie kell a kódot: a kódfát / kódtáblát mellékelni kell (rontja a tömörítést), vagy általános gyakoriságokból (pl. a magyar nyelvéből) készítjük a kódot.</li>
-      </ul>
-    </div>
-  </article>
-
-  <article class="task">
-    <div class="task-head"><span class="no">Szemléltetés</span><span class="kind">Huffman</span></div>
-    <div class="stmt"><p>Végezzük el a Huffman-kódolást az <code>S = AZABBRAKADABRAA</code> szövegre!</p></div>
-    <details><summary>Megoldás</summary><div class="sol">
-      <p>Gyakoriságok: A 7, Z 1, B 3, R 2, K 1, D 1. Papíron érdemes az összevonásokat előbb táblázatban vezetni:</p>
-      <div class="tbl"><table class="num">
+      <p><b>a)</b> Mindig a két legkisebb gyakoriságú csúcsot vonjuk össze (itt egyik lépésben sincs holtverseny, így a fa alakja egyértelmű):</p>
+      <div class="tbl" style="max-width:560px"><table class="num">
         <tr><th>lépés</th><th class="l">összevonás</th><th class="l">a sor utána</th></tr>
-        <tr><td>0</td><td class="l"></td><td class="l">Z1 K1 D1 R2 B3 A7</td></tr>
-        <tr><td>1</td><td class="l">K1 + D1 = DK2</td><td class="l">Z1 R2 DK2 B3 A7</td></tr>
-        <tr><td>2</td><td class="l">Z1 + R2 = ZR3</td><td class="l">DK2 ZR3 B3 A7</td></tr>
-        <tr><td>3</td><td class="l">DK2 + B3 = DKB5</td><td class="l">ZR3 DKB5 A7</td></tr>
-        <tr><td>4</td><td class="l">ZR3 + DKB5 = ZRDKB8</td><td class="l">A7 ZRDKB8</td></tr>
-        <tr><td>5</td><td class="l">A7 + ZRDKB8 = 15</td><td class="l">(kész)</td></tr>
+        <tr><td>0</td><td class="l"></td><td class="l">F6 D7 J8 R9 M25 L32 K35 S40 E60 A78</td></tr>
+        <tr><td>1</td><td class="l">F6 + D7 = 13</td><td class="l">J8 R9 13 M25 L32 K35 S40 E60 A78</td></tr>
+        <tr><td>2</td><td class="l">J8 + R9 = 17</td><td class="l">13 17 M25 L32 K35 S40 E60 A78</td></tr>
+        <tr><td>3</td><td class="l">13 + 17 = 30</td><td class="l">M25 30 L32 K35 S40 E60 A78</td></tr>
+        <tr><td>4</td><td class="l">M25 + 30 = 55</td><td class="l">L32 K35 S40 55 E60 A78</td></tr>
+        <tr><td>5</td><td class="l">L32 + K35 = 67</td><td class="l">S40 55 E60 67 A78</td></tr>
+        <tr><td>6</td><td class="l">S40 + 55 = 95</td><td class="l">E60 67 A78 95</td></tr>
+        <tr><td>7</td><td class="l">E60 + 67 = 127</td><td class="l">A78 95 127</td></tr>
+        <tr><td>8</td><td class="l">A78 + 95 = 173</td><td class="l">127 173</td></tr>
+        <tr><td>9</td><td class="l">127 + 173 = 300</td><td class="l">(kész)</td></tr>
       </table></div>
-      <div class="figs"><figure class="fig"><div data-gt="(15|AZRDKB 0:(7|A) 1:(8|ZRDKB 0:(3|ZR 0:(1|Z) 1:(2|R)) 1:(5|DKB 0:(2|DK 0:(1|D) 1:(1|K)) 1:(3|B))))"></div><figcaption>a kódfa (a kisebb gyakoriságú gyerek kapja a 0-t)</figcaption></figure></div>
-      <div class="tbl" style="max-width:420px"><table class="num"><tr><th>betű</th><td>A</td><td>Z</td><td>R</td><td>D</td><td>K</td><td>B</td></tr><tr><th>kód</th><td>0</td><td>100</td><td>101</td><td>1100</td><td>1101</td><td>111</td></tr></table></div>
-      <p>Kódolt alak: <code>010001111111010110101100011110100</code>, <span class="ans">33 bit</span>, átlagos szóhossz 2,2. Naiv módszerrel legalább 3 bit kellene betűnként: 45 bit.</p>
-      <p>Entrópia: \(H_2(S) \approx 2{,}146\), és \(2{,}146 \le 2{,}2 &lt; 3{,}146\): a kód optimális.</p>
+      <div class="figs"><figure class="fig"><div data-gt="(300 0:(127|ELK 0:(60|E) 1:(67|LK 0:(32|L) 1:(35|K))) 1:(173|ASMFDJR 0:(78|A) 1:(95|SMFDJR 0:(40|S) 1:(55|MFDJR 0:(25|M) 1:(30|FDJR 0:(13|FD 0:(6|F) 1:(7|D)) 1:(17|JR 0:(8|J) 1:(9|R)))))))"></div><figcaption>a Huffman-fa (a kisebb gyakoriságú gyerek kapja a 0-t)</figcaption></figure></div>
+      <div class="tbl"><table class="num">
+        <tr><th>betű</th><td>A</td><td>E</td><td>S</td><td>K</td><td>L</td><td>M</td><td>R</td><td>J</td><td>D</td><td>F</td></tr>
+        <tr><th>kód</th><td>10</td><td>00</td><td>110</td><td>011</td><td>010</td><td>1110</td><td>111111</td><td>111110</td><td>111101</td><td>111100</td></tr>
+        <tr><th>hossz</th><td>2</td><td>2</td><td>3</td><td>3</td><td>3</td><td>4</td><td>6</td><td>6</td><td>6</td><td>6</td></tr>
+      </table></div>
+      <p><b>b)</b> Gyakoriság × kódhossz összege (ezerben):</p>
+      \[78\cdot2 + 60\cdot2 + 40\cdot3 + 35\cdot3 + 32\cdot3 + 25\cdot4 + (9+8+7+6)\cdot6 = 156+120+120+105+96+100+180 = 877\]
+      <p>A szöveg <span class="ans">877 000 bit</span> lenne (átlagosan 2,92 bit/karakter). Összehasonlításul: 10 betűhöz a naiv módszer 4 bitet használna, az 1 200 000 bit.</p>
+      <p><b>c)</b> A bitsorozatot balról olvasva, a fában a gyökértől lépkedve, levélnél betűt írunk és újrakezdjük:</p>
+      <p><code>10 | 010 | 011 | 10 | 010 | 1110 | 10 | 110</code> = A L K A L M A S → <span class="ans">ALKALMAS</span></p>
     </div></details>
-  </article>
-
-  <article class="task">
-    <div class="task-head"><span class="no">2. feladatsor</span><span class="kind">Huffman</span></div>
-    <div class="stmt">
-      <ol>
-        <li>A mintához hasonlóan végezzük el a Huffman-kódolást egy választott szövegre!</li>
-        <li>Keressünk olyan szöveget, ahol a Huffman-kódolás pontosan annyi bittel történik, mint a naiv módszer!</li>
-        <li>Írjunk struktogramot, amely a kódolt szöveg és a Huffman-kódfa alapján helyreállítja az eredeti szöveget!</li>
-        <li>Írjuk meg a Huffman-kódolást! Bemenet egy szöveg, kimenet a kódolt szöveg és a kódfa.</li>
-        <li>Számoljuk ki a ternáris (r = 3) Huffman-kódot a korábbi példára!</li>
-        <li>Verseny: keressük azt a 10 hosszú szöveget, amely a legnagyobb mértékben tömöríthető a naiv módszerhez képest!</li>
-      </ol>
-    </div>
-    <details><summary>Megoldás</summary><div class="sol">
-      <div class="own"><b>Saját megoldás (a lapon nincs)</b>Az eredményeket programmal ellenőriztem.</div>
-      <p><b>1.</b> <code>ABRAKADABRA</code>: A 5, B 2, R 2, K 1, D 1. Összevonások: K + D = 2, B + R = 4, KD + BR = 6, A + 6 = 11.</p>
-      <div class="figs"><figure class="fig"><div data-gt="(11 0:(5|A) 1:(6 0:(2|KD 0:(1|K) 1:(1|D)) 1:(4|BR 0:(2|B) 1:(2|R))))"></div><figcaption>A = 0, K = 100, D = 101, B = 110, R = 111</figcaption></figure></div>
-      <p>Kódolt alak: <code>01101110100010101101110</code> = <span class="ans">23 bit</span> (naiv: 11 · 3 = 33 bit). \(H_2 \approx 2{,}04\), átlag \(23/11 \approx 2{,}09\).</p>
-      <p><b>2.</b> Ha minden betű egyformán gyakori és a betűk száma 2-hatvány, a Huffman-fa teljes kiegyensúlyozott fa, minden kódszó \(\log_2 d\) hosszú: pl. <code>ABCD</code> vagy <code>AABBCCDD</code> – <span class="ans">mindkét módszerrel 2 bit/betű</span>.</p>
-      <p><b>3.</b> Dekódolás (legalább két különböző betű esetén; a levelekben van a betű):</p>
-<pre class="sg-src">
-@HuffmanDekódol(In : bit⟨⟩ ; gy : Node* ; Out : Σ⟨⟩)
-Out := ⟨⟩ ; p := gy
-loop i := 1 to |In|
-  if In_i = 0
-    p := p→left
-  else
-    p := p→right
-  if p→left = ⊘   // levél: vége a kódszónak
-    Out := Out + p→char
-    p := gy
-</pre>
-      <p><b>4.</b> Kódolás: gyakoriságok, prioritásos sor, fa, kódtábla (bejárással), majd kódolás.</p>
-      <div class="sgrow">
-<pre class="sg-src">
-@HuffmanKódol(In : Σ⟨⟩ ; Out : bit⟨⟩ ; &gy : Node*)
-gyak/1 : ℕ[|Σ|] := [0, …, 0]
-loop i := 1 to |In|
-  gyak[In_i]++
-Q : MinPrQueue   // kulcs: freq
-loop ∀c ∈ Σ : gyak[c] > 0
-  Q.add(new Node(c, gyak[c]))
-loop Q.size() > 1
-  x := Q.remMin() ; y := Q.remMin()
-  z := new Node ; z→left := x ; z→right := y
-  z→freq := x→freq + y→freq
-  Q.add(z)
-gy := Q.remMin()
-KódTábla(gy, ⟨⟩, kód)
-Out := ⟨⟩
-loop i := 1 to |In|
-  Out := Out + kód[In_i]
-</pre>
-<pre class="sg-src">
-@KódTábla(p : Node* ; w : bit⟨⟩ ; &kód)
-if p→left = ⊘
-  kód[p→char] := w
-else
-  KódTábla(p→left, w + ⟨0⟩, kód)
-  KódTábla(p→right, w + ⟨1⟩, kód)
-</pre>
-      </div>
-      <p><b>5.</b> r = 3, d = 6: \(k = 6 \bmod 2 = 0\), ezért az első lépésben \(k + r - 1 = 2\) csúcsot vonunk össze (így a végén pontosan 3 marad a gyökérhez: 6 → 5 → 3 → 1). Z1 + K1 = 2; aztán D1 + ZK2 + R2 = 5; végül B3 + 5 + A7 = 15.</p>
-      <div class="figs"><figure class="fig"><div data-gt="(15 0:(3|B) 1:(5 0:(1|D) 1:(2|ZK 0:(1|Z) 1:(1|K)) 2:(2|R)) 2:(7|A))"></div><figcaption>A = 2, B = 0, R = 12, D = 10, Z = 110, K = 111</figcaption></figure></div>
-      <p>Kódolt alak: <code>2110200122111210201222</code>, <span class="ans">22 trit</span> (naiv: \(\lceil \log_3 6 \rceil = 2\), 30 trit). \(H_3(S) \approx 1{,}354 \le 22/15 \approx 1{,}467\).</p>
-      <p><b>6.</b> Az összes 10 hosszú szövegtípust végignézve a legjobb arány <span class="ans">60%</span>, pl. <code>AAAAAAAABC</code>: Huffman A = 0, B = 10, C = 11 ⇒ 8 + 2 + 2 = 12 bit, a naiv 2 bit/betű ⇒ 20 bit. Ugyanennyi az <code>AAAAAABCDE</code>: 18 bit vs. 30 bit.</p>
-    </div></details>
-  </article>
-
-  <article class="concept">
-    <div class="task-head"><span class="no">LZW (Lempel–Ziv–Welch) szótárkód</span><span class="kind fog">elmélet</span></div>
-    <div class="body">
-      <p>A betűnkénti kódolás hatékonysága korlátos; a szótárkódok egy kódszót egész <b>szavakhoz</b> is rendelnek, kihasználva, hogy a valós adatban rövid részek sűrűn ismétlődnek. Az LZW egy kezdeti (a betűket tartalmazó) kódtáblát bővít lépésről lépésre.</p>
+    <details><summary>Részletes magyarázat</summary><div class="sol">
       <ul>
-        <li><b>Kódolás:</b> a bemenetet egyszer olvassuk; mindig a leghosszabb <i>ismert</i> következő szót (α) keressük. Kiírjuk a kódját, és felvesszük a szótárba az αc szót (c a következő karakter) a következő szabad kóddal.</li>
-        <li><b>Dekódolás:</b> ugyanabból a kezdeti táblából indul, és ugyanazt a táblát építi fel. Különleges eset: ha a beolvasott kód éppen a most születő (még ismeretlen) kód, akkor a szava \(s + s_1\) (az előző szó + annak első betűje).</li>
-        <li>Hosszú szövegnél a szótárat korlátozzuk (kódszavak száma, szavak hossza, vagy csak a bemenet elején építjük). A kódokat még binárisan is kódolni kell, mégis gyakran rövidebb, mint a Huffman; egyszerű és egy menetben dolgozik.</li>
+        <li><b>A 0/1 címkézés.</b> A Huffman-kód nem egyértelmű: a 0 és az 1 szerepe minden csúcsnál felcserélhető. Itt a gyakorlati anyag szokását követtem (a kisebb gyakoriságú ág a 0); a dekódolandó szöveg pont ezzel a választással ad értelmes szót (ALKALMAS), tehát a feladatíró is így címkézett. Ellentétes címkézéssel a kódhosszak és a b) eredménye ugyanaz, csak a kódszavak mások.</li>
+        <li><b>Gyakori hiba:</b> az összevont csúcsot elfelejteni visszatenni a sorba, és a „következő két betűt” összevonni. A 3. lépésben a 13 és a 17 (két összevont csúcs) a két legkisebb, nem az M!</li>
+        <li><b>Ellenőrzés:</b> a gyakoriságok összege 300 (= a szöveg hossza ezerben), és a fa gyökerében is 300 áll. A kódszavak prefixmentesek (mind levél), ezért a c) dekódolása egyértelmű, és a végén nem maradhat ki bit.</li>
+        <li>A b) kérdésre a kódfát és a kódtáblát nem számoljuk bele (csak a kódolt szöveg hossza a kérdés).</li>
       </ul>
-      <div class="sgrow">
-<pre class="sg-src">
-@LZWcompress(In : Σ⟨⟩ ; Out : ℕ⟨⟩)
-D : Item{}   // szótár, kezdetben üres
-loop i := 1 to |Σ|
-  x : Item(⟨Σ_i⟩, i) ; D := D ∪ {x}
-code := |Σ| + 1 ; Out := ⟨⟩ ; s : Σ⟨In_1⟩
-loop i := 2 to |In|
-  c : Σ := In_i
-  if dictionaryContainsString(D, s + c)
-    s := s + c
-  else
-    Out := Out + code(D, s)
-    if code ≤ MAXCODE
-      x : Item(s + c, code++) ; D := D ∪ {x}
-    s := ⟨c⟩
-Out := Out + code(D, s)
-</pre>
-<pre class="sg-src">
-@LZWdecompress(In : ℕ⟨⟩ ; Out : Σ⟨⟩)
-D : Item{}
-loop i := 1 to |Σ|
-  x : Item(⟨Σ_i⟩, i) ; D := D ∪ {x}
-code := |Σ| + 1   // az első szabad kód
-Out := s := string(D, In_1)
-loop i := 2 to |In|
-  k := In_i
-  if k < code   // D tartalmazza k-t
-    t := string(D, k)
-    Out := Out + t
-    x : Item(s + t_1, code) ; D := D ∪ {x}
-  else
-    t := s + s_1
-    Out := Out + t
-    x : Item(t, k) ; D := D ∪ {x}   // k = code
-  s := t ; code++
-</pre>
-      </div>
-    </div>
-  </article>
-
-  <article class="task">
-    <div class="task-head"><span class="no">Szemléltetés</span><span class="kind">LZW</span></div>
-    <div class="stmt"><p>Kódoljuk LZW-vel az <code>S = ABABABAACAACCBBAAAAAAAAA</code> szöveget (kezdeti tábla: A → 1, B → 2, C → 3), majd dekódoljuk!</p></div>
-    <details><summary>Megoldás</summary><div class="sol">
-      <p>Soronként: a kiírt kód, a megtalált (leghosszabb ismert) szó, a következő karakter, és a második+harmadik oszlop összefűzésének új kódja.</p>
-      <div class="tbl" style="max-width:480px"><table class="num">
-        <tr><th>kód</th><th>szó</th><th>köv. kar.</th><th>új kód</th></tr>
-        <tr><td>1</td><td>A</td><td>B</td><td>4 = AB</td></tr>
-        <tr><td>2</td><td>B</td><td>A</td><td>5 = BA</td></tr>
-        <tr><td>4</td><td>AB</td><td>A</td><td>6 = ABA</td></tr>
-        <tr><td>6</td><td>ABA</td><td>A</td><td>7 = ABAA</td></tr>
-        <tr><td>1</td><td>A</td><td>C</td><td>8 = AC</td></tr>
-        <tr><td>3</td><td>C</td><td>A</td><td>9 = CA</td></tr>
-        <tr><td>1</td><td>A</td><td>A</td><td>10 = AA</td></tr>
-        <tr><td>8</td><td>AC</td><td>C</td><td>11 = ACC</td></tr>
-        <tr><td>3</td><td>C</td><td>B</td><td>12 = CB</td></tr>
-        <tr><td>2</td><td>B</td><td>B</td><td>13 = BB</td></tr>
-        <tr><td>5</td><td>BA</td><td>A</td><td>14 = BAA</td></tr>
-        <tr><td>10</td><td>AA</td><td>A</td><td>15 = AAA</td></tr>
-        <tr><td>15</td><td>AAA</td><td>A</td><td>16 = AAAA</td></tr>
-        <tr><td>15</td><td>AAA</td><td>–</td><td>–</td></tr>
-      </table></div>
-      <p>A kódolt üzenet: <span class="ans">[1, 2, 4, 6, 1, 3, 1, 8, 3, 2, 5, 10, 15, 15]</span> (24 karakter helyett 14 kód).</p>
-      <p><b>Dekódolás:</b> ugyanez a táblázat töltődik ki soronként. Az első és az utolsó oszlop azonnal ismert; egy sor „következő karaktere” mindig a <i>következő</i> sor szavának első betűje. A 3. sorban a 4-es kódot olvassuk, ami már ismert (AB). A 4. sorban a 6-os kód jön, ami <b>épp most születik</b> (ABA): a szavát még nem ismerjük, de csak az első betűjére van szükség, az pedig az előző szó (AB) első betűje, A – így 6 = AB + A = ABA.</p>
     </div></details>
   </article>
 
+  <div class="sub-head" id="minta-f2">2. feladat · AVL-fa építése · 10 pont</div>
   <article class="task">
-    <div class="task-head"><span class="no">3. feladatsor</span><span class="kind">LZW</span></div>
+    <div class="task-head"><span class="no">2. feladat</span><span class="kind">10 pont</span></div>
+    <div class="stmt"><p>Építsen AVL-fát a következő adatokból: <b>115, 93, 66, 81, 37, 52, 122, 85, 110, 70, 83</b>! Ha elromlott a fa kiegyensúlyozása, lássa el címkékkel a csúcsokat és állítsa helyre az AVL-tulajdonságot a megfelelő forgatással!</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p>Három forgatás kell: a 66, az 52 és a 83 beszúrásakor.</p>
+      <p><b>66 beszúrása:</b> 93 → <code>-</code>, 115 → <code>--</code>, bal gyereke (93) <code>-</code> ⇒ <span class="ans">(−−,−)</span> a 115-nél.</p>
+      <div class="figs">
+        <figure class="fig"><div data-avl="{[(66*) 93-] 115--!}"></div></figure>
+        <span class="arrow-next">⇒</span>
+        <figure class="fig"><div data-avl="{[66] 93= [115]}"></div></figure>
+      </div>
+      <p><b>81, 37</b> forgatás nélkül:</p>
+      <div class="figs">
+        <figure class="fig"><div data-avl="{[66+ (81*)] 93- [115]}"></div><figcaption>81</figcaption></figure>
+        <figure class="fig"><div data-avl="{[(37*) 66= (81)] 93- [115]}"></div><figcaption>37: a 66 = lesz, megállunk</figcaption></figure>
+      </div>
+      <p><b>52 beszúrása:</b> a 37 jobb gyereke; 37 → <code>+</code>, 66 → <code>-</code>, 93 → <code>--</code>, bal gyereke (66) <code>-</code> ⇒ <span class="ans">(−−,−)</span> a gyökérnél.</p>
+      <div class="figs">
+        <figure class="fig"><div data-avl="{[(37+ {52*}) 66- (81)] 93--! [115]}"></div></figure>
+        <span class="arrow-next">⇒</span>
+        <figure class="fig"><div data-avl="{[37+ (52)] 66= [(81) 93= (115)]}"></div></figure>
+      </div>
+      <p><b>122, 85, 110, 70</b> forgatás nélkül:</p>
+      <div class="figs">
+        <figure class="fig"><div data-avl="{[37+ (52)] 66+ [(81) 93+ (115+ {122*})]}"></div><figcaption>122</figcaption></figure>
+        <figure class="fig"><div data-avl="{[37+ (52)] 66+ [(81+ {85*}) 93= (115+ {122})]}"></div><figcaption>85: a 93 = lesz</figcaption></figure>
+        <figure class="fig"><div data-avl="{[37+ (52)] 66+ [(81+ {85}) 93= ({110*} 115= {122})]}"></div><figcaption>110: a 115 = lesz</figcaption></figure>
+        <figure class="fig"><div data-avl="{[37+ (52)] 66+ [({70*} 81= {85}) 93= ({110} 115= {122})]}"></div><figcaption>70: a 81 = lesz</figcaption></figure>
+      </div>
+      <p><b>83 beszúrása:</b> a 85 bal gyereke; 85 → <code>-</code>, 81 → <code>+</code>, 93 → <code>-</code>, 66 → <code>++</code>, jobb gyereke (93) <code>-</code> ⇒ <span class="ans">(++,−)</span> dupla forgatás: x = 66, y = 93, z = 81.</p>
+      <div class="figs">
+        <figure class="fig"><div data-avl="{[37+ (52)] 66++! [({70} 81+ {[83*] 85-}) 93- ({110} 115= {122})]}"></div></figure>
+        <span class="arrow-next">⇒</span>
+        <figure class="fig"><div data-avl="{[(37+ {52}) 66- (70)] 81= [({83} 85-) 93= ({110} 115= {122})]}"></div><figcaption><b>végeredmény</b></figcaption></figure>
+      </div>
+    </div></details>
+    <details><summary>Részletes magyarázat</summary><div class="sol">
+      <ul>
+        <li><b>Hol állunk meg?</b> A beszúrt csúcs szülőjétől felfelé javítjuk a jelzőket. Ha egy jelző <code>=</code> lett, a részfa nem nőtt, feljebb semmi sem változik (pl. a 37 beszúrásánál a 66). Ha <code>++</code> / <code>--</code> lett, forgatunk, és beszúrásnál utána is kész vagyunk, mert a részfa visszakapja a régi magasságát.</li>
+        <li><b>Melyik forgatás?</b> A <code>++</code> csúcs <i>jobb</i> gyerekének (a <code>--</code> csúcs <i>bal</i> gyerekének) jelzője dönt: ugyanaz az előjel → szimpla forgatás, ellentétes → dupla.</li>
+        <li><b>A dupla forgatás jelzői:</b> z (81) régi jelzője <code>+</code> volt (az új elem a z jobb oldalára került), ezért x (66) új jelzője <code>-</code>, y (93) új jelzője <code>=</code>, z mindig <code>=</code>. Ellenőrzés a végeredményen: a 66 bal részfája (37–52) 2 magas, a jobb (70) 1 → <code>-</code>. ✓</li>
+        <li>A ZH-n minden forgatás előtti fát érdemes felrajzolni a címkékkel (a <code>++</code> csúccsal együtt), mert a feladat ezt kéri; a köztes, forgatás nélküli lépéseket elég összevonni.</li>
+        <li>Zárójeles alakban a végeredmény: <code>{ [ ( 37+ {52} ) 66- (70) ] 81= [ ( {83} 85- ) 93= ( {110} 115= {122} ) ] }</code>.</li>
+      </ul>
+    </div></details>
+  </article>
+
+  <div class="sub-head" id="minta-f3">3. feladat · AVL-fa rajzolása és törlés · 6 pont</div>
+  <article class="task">
+    <div class="task-head"><span class="no">3. feladat</span><span class="kind">6 pont</span></div>
     <div class="stmt">
-      <ol>
-        <li>Szemléltessük az <code>ABCABCABCAAABBCCAABABA</code> kódolását!</li>
-        <li>Dekódoljuk az <code>1, 3, 4, 5, 6</code> üzenetet, ha a kezdeti tábla A → 1 és B → 2!</li>
-        <li>Adjunk meg olyan 20 hosszú, három karaktert (mindegyiket legalább egyszer) tartalmazó szöveget, amelynek LZW-kódja pontosan 13 hosszú!</li>
-        <li>Keressünk olyan szöveget, amelynek LZW-kódolása rövidebb a Huffman-kódolásnál!</li>
+      <p>Adott egy AVL fa zárójelezett alakban a címkék megadása nélkül: <code>{ [ 66 ( 70 ) ] 82 [ ( {83} 85 ) 95 ( {110} 115 {120} ) ] }</code></p>
+      <ol type="a">
+        <li>Rajzolja fel az AVL fának megfelelő gráfot és lássa el címkékkel a csúcsokat! (2 pont)</li>
+        <li>Törölje a 66-os elemet úgy, hogy a fa AVL fa maradjon! (4 pont)</li>
       </ol>
     </div>
     <details><summary>Megoldás</summary><div class="sol">
-      <div class="own"><b>Saját megoldás (a lapon nincs)</b>Kezdeti tábla mindenhol A → 1, B → 2, C → 3; az eredményeket programmal ellenőriztem.</div>
-      <p><b>1.</b></p>
-      <div class="tbl" style="max-width:480px"><table class="num">
-        <tr><th>kód</th><th>szó</th><th>köv. kar.</th><th>új kód</th></tr>
-        <tr><td>1</td><td>A</td><td>B</td><td>4 = AB</td></tr>
-        <tr><td>2</td><td>B</td><td>C</td><td>5 = BC</td></tr>
-        <tr><td>3</td><td>C</td><td>A</td><td>6 = CA</td></tr>
-        <tr><td>4</td><td>AB</td><td>C</td><td>7 = ABC</td></tr>
-        <tr><td>6</td><td>CA</td><td>B</td><td>8 = CAB</td></tr>
-        <tr><td>5</td><td>BC</td><td>A</td><td>9 = BCA</td></tr>
-        <tr><td>1</td><td>A</td><td>A</td><td>10 = AA</td></tr>
-        <tr><td>10</td><td>AA</td><td>B</td><td>11 = AAB</td></tr>
-        <tr><td>2</td><td>B</td><td>B</td><td>12 = BB</td></tr>
-        <tr><td>5</td><td>BC</td><td>C</td><td>13 = BCC</td></tr>
-        <tr><td>6</td><td>CA</td><td>A</td><td>14 = CAA</td></tr>
-        <tr><td>4</td><td>AB</td><td>A</td><td>15 = ABA</td></tr>
-        <tr><td>15</td><td>ABA</td><td>–</td><td>–</td></tr>
-      </table></div>
-      <p>Kód: <span class="ans">[1, 2, 3, 4, 6, 5, 1, 10, 2, 5, 6, 4, 15]</span> (22 karakter → 13 kód).</p>
-      <p><b>2.</b> Az 1 = A, ez az első szó. A 3-as kód még nincs a táblában (épp ez a következő szabad kód), ezért a szava s + s₁ = A + A = AA, és 3 = AA. Ugyanígy minden további kód az épp születő kód: 4 = AAA, 5 = AAAA, 6 = AAAAA. A kimenet A · AA · AAA · AAAA · AAAAA = <span class="ans">15 darab A</span>.</p>
-      <div class="tbl" style="max-width:420px"><table class="num">
-        <tr><th>beolvasott</th><th>ismert?</th><th>kiírt szó</th><th>új kód</th></tr>
-        <tr><td>1</td><td>igen</td><td>A</td><td>–</td></tr>
-        <tr><td>3</td><td>nem (= code)</td><td>AA</td><td>3 = AA</td></tr>
-        <tr><td>4</td><td>nem</td><td>AAA</td><td>4 = AAA</td></tr>
-        <tr><td>5</td><td>nem</td><td>AAAA</td><td>5 = AAAA</td></tr>
-        <tr><td>6</td><td>nem</td><td>AAAAA</td><td>6 = AAAAA</td></tr>
-      </table></div>
-      <p><b>3.</b> Például <code>AABBCCAABBCCAABBCCAA</code>: kódja <span class="ans">[1, 1, 2, 2, 3, 3, 4, 6, 8, 10, 7, 9, 1]</span>, pontosan 13 hosszú (szavak: A A B B C C AA BB CC AAB BC CA A). Egy másik: az 1. feladat szövegének első 20 betűje, <code>ABCABCABCAAABBCCAABA</code>.</p>
-      <p><b>4.</b> Például <code>ABC</code> húszszor ismételve (60 karakter): az LZW 18 kódot ad, a legnagyobb kód 20 alatti, így kódonként 5 bit: <span class="ans">90 bit</span>. A Huffman (A, B, C egyformán 20-szor: kódjaik 0, 10, 11) 20·1 + 40·2 = <span class="ans">100 bit</span>. Minél hosszabb és ismétlődőbb a szöveg, annál nagyobb az LZW előnye (pl. 1000 karakternyi <code>ABAB…</code>: LZW 63 kód · 7 bit = 441 bit, Huffman 1000 bit).</p>
+      <p><b>a)</b> <code>[ 66 ( 70 ) ]</code>: a 66-nak csak jobb gyereke van (70). <code>( {83} 85 )</code>: a 85-nek csak bal gyereke (83). Egyensúlyok alulról: 66 <code>+</code>, 85 <code>-</code>, 115 <code>=</code>, 95 <code>=</code> (mindkét részfája 1 magas), 82 <code>+</code> (bal 1, jobb 2 magas).</p>
+      <div class="figs"><figure class="fig"><div data-avl="{[66+ (70)] 82+ [({83} 85-) 95= ({110} 115= {120})]}"></div></figure></div>
+      <p><b>b)</b> A 66-nak egy gyereke van: a helyére a jobb részfája (70) kerül. A 82 bal részfája rövidült: <code>+</code> → <code>++</code>. A jobb gyereke (95) <code>=</code> ⇒ <span class="ans">(++,=) forgatás</span>: 95 lesz a gyökér, 82 a bal gyereke, és a 95 bal részfája (85) a 82 jobb oldalára kerül.</p>
+      <div class="figs">
+        <figure class="fig"><div data-avl="{[70*] 82++! [({83} 85-) 95= ({110} 115= {120})]}"></div><figcaption>66 törölve, a 70 a helyén</figcaption></figure>
+        <span class="arrow-next">⇒</span>
+        <figure class="fig"><div data-avl="{[(70) 82+ ({83} 85-)] 95- [(110) 115= (120)]}"></div><figcaption><b>végeredmény</b></figcaption></figure>
+      </div>
+    </div></details>
+    <details><summary>Részletes magyarázat</summary><div class="sol">
+      <ul>
+        <li><b>Zárójelek olvasása:</b> egy csúcs egy zárójelpár; benne balra a bal részfa, középen a kulcs, jobbra a jobb részfa. Ha a kulcs előtt nincs zárójel (<code>[ 66 ( 70 ) ]</code>), nincs bal részfa; ha utána nincs (<code>( {83} 85 )</code>), nincs jobb részfa.</li>
+        <li><b>A (++,=) séma csak törlésnél fordul elő</b> (beszúrásnál a <code>++</code> csúcs jobb gyereke sosem <code>=</code>). Az új egyensúlyok: a régi gyökér (82) <code>+</code>, az új gyökér (95) <code>-</code>. Ellenőrzés: a 82 bal részfája (70) 0, jobb részfája (85–83) 1 magas → <code>+</code>; a 95 bal részfája 2, jobb részfája 1 magas → <code>-</code>. ✓</li>
+        <li><b>Megállás:</b> a (++,=) forgatás nem csökkenti a részfa magasságát (előtte és utána is 3), ezért feljebb nem kellene folytatni; itt amúgy is a gyökérnél vagyunk.</li>
+        <li>Zárójeles alakban: <code>{ [ (70) 82+ ( {83} 85- ) ] 95- [ (110) 115= (120) ] }</code>.</li>
+      </ul>
+    </div></details>
+  </article>
+
+  <div class="sub-head" id="minta-f4">4. feladat · B+ fa: beszúrás és törlés · 12 pont</div>
+  <article class="task">
+    <div class="task-head"><span class="no">4. feladat</span><span class="kind">12 pont</span></div>
+    <div class="stmt">
+      <p>Rajzolja le a következő B+ fát a hagyományos módon (d = 4)! (2 pont)<br><code>{ [ (10, 12, 20) 24 (24, 27) ] 30 [ (30, 33, 35) 40 (44, 46, 48) 50 (51, 52, 53) 55 (55, 62) ] }</code></p>
+      <ol type="a">
+        <li>Csúcshasítással szúrja be az <b>50</b>-es értéket! (5 pont)</li>
+        <li>Törölje ki az <b>eredeti</b> fából a <b>27</b>-es értéket! (5 pont)</li>
+      </ol>
+    </div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <div class="figs"><figure class="fig"><div data-bp="{ [ (10, 12, 20) 24 (24, 27) ] 30 [ (30, 33, 35) 40 (44, 46, 48) 50 (51, 52, 53) 55 (55, 62) ] }"></div><figcaption>az eredeti fa</figcaption></figure></div>
+      <p><b>a) 50 beszúrása.</b> A gyökérben 50 ≥ 30 → jobbra; a [40 50 55] csúcsban 50 ≤ 50 &lt; 55 → a (51, 52, 53) levél. Az 50 nincs benne, de a levél tele van: <b>szétvágjuk</b> (50, 51 | 52, 53), a második levél minimumának (52) másolata megy a szülőbe. A szülő is betelne (40 50 52 55, öt gyerek), ezért azt is kettévágjuk: (40 50) és (55), a <b>középső 52 felmegy</b> a gyökérbe, ahol van hely: (30 52).</p>
+      <div class="figs"><figure class="fig"><div data-bp="{ [ (10, 12, 20) 24 (24, 27) ] 30 [ (30, 33, 35) 40 (44, 46, 48) 50 (50*, 51)* ]* 52* [ (52, 53)* 55 (55, 62) ]* }*"></div><figcaption><b>a) eredménye</b></figcaption></figure></div>
+      <p><b>b) 27 törlése (az eredeti fából).</b> A (24, 27) levélben a 24 egyedül maradna (minimum ⌊4/2⌋ = 2 kulcs). Ennek a levélnek csak bal testvére van, a (10, 12, 20), és annak egy kulccsal több van a minimumnál: <b>egyenlően elosztjuk</b> a 4 kulcsot, (10, 12) és (20, 24), a szülőben a hasító kulcs a második levél minimuma, <b>20</b> lesz.</p>
+      <div class="figs"><figure class="fig"><div data-bp="{ [ (10, 12)* 20* (20, 24)* ]* 30 [ (30, 33, 35) 40 (44, 46, 48) 50 (51, 52, 53) 55 (55, 62) ] }"></div><figcaption><b>b) eredménye</b></figcaption></figure></div>
+    </div></details>
+    <details><summary>Részletes magyarázat</summary><div class="sol">
+      <ul>
+        <li><b>Melyik levélbe kerül az 50?</b> A belső csúcs i-edik gyerekében \(kulcs[i-1] \le r &lt; kulcs[i]\). Az 50 egyenlő a hasító kulccsal, ezért a hasító kulcstól <i>jobbra</i> lévő levélbe kerül, nem a (44, 46, 48)-ba. Ugyanez az oka, hogy egy hasító kulcs (itt az 50) nem okvetlenül van benne a levelekben.</li>
+        <li><b>Levél vs. belső csúcs vágása:</b> levélnél a felvitt kulcs <i>másolat</i> (az 52 a levélben is marad), belső csúcsnál a középső kulcs <i>felmegy</i>, és onnan eltűnik (az 52 nincs már a [40 50] és [55] csúcsokban). d = 4-nél a 4 hasító kulcsból 2 marad balra, 1 felmegy, 1 jobbra kerül; a gyerekek 3 + 2 arányban oszlanak meg.</li>
+        <li>Ha a gyökér is betelt volna, azt is kettévágnánk, és új gyökér jönne létre (a fa magassága nőne). Itt a gyökérben volt hely, a magasság nem változik.</li>
+        <li><b>Törlésnél először kölcsönzünk:</b> összevonni csak akkor kell, ha a szomszédos testvér (közös szülővel!) is a minimumon van. A (24, 27) levélnek nincs jobb testvére ugyanabban a szülőben (a (30, 33, 35) már a másik részfában van), ezért a bal testvérétől kér. Az elosztás után a szülőbeli hasító kulcsot mindig a jobb oldali levél minimumára írjuk át.</li>
+        <li>A b) feladat az <b>eredeti</b> fára vonatkozik, nem az a) eredményére (a jobb részfa változatlan).</li>
+      </ul>
+    </div></details>
+  </article>
+
+  <div class="sub-head" id="minta-f5">5. feladat · Általános fa: negatív kulcsú levelek · 10 pont</div>
+  <article class="task">
+    <div class="task-head"><span class="no">5. feladat</span><span class="kind">10 pont</span></div>
+    <div class="stmt"><p>Adott egy egész számokat tartalmazó általános fa, láncoltan ábrázolt bináris fával reprezentálva. Írjon <b>rekurzív</b> algoritmust, amely megszámolja, hogy hány negatív számot tartalmazó levele van az általános fának! (Megadandó a használt típusok és változók leírása, valamint az algoritmus struktogramja.)</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p><b>Típusok, változók.</b> <code>Node</code> = { key : ℤ ; child1, sibling : Node* } – <code>child1</code> az első gyerekre, <code>sibling</code> a következő testvérre mutat (ez a „bináris fás” ábrázolás: bal pointer = első gyerek, jobb pointer = testvér). Bemenet: <code>t : Node*</code>, a fa gyökere (üres fánál ⊘). Kimenet: a negatív kulcsú levelek száma, ℕ. Segédváltozó: <code>db : ℕ</code>.</p>
+      <div class="sgrow">
+<pre class="sg-src">
+@NegLevelek(t : Node*) : ℕ
+if t = ⊘
+  return 0
+else
+  db := NegLevelek(t→child1) + NegLevelek(t→sibling)
+  if t→child1 = ⊘ ∧ t→key < 0
+    db := db + 1
+  return db
+</pre>
+<pre class="sg-src">
+@NegLevelek(t : Node*) : ℕ
+db := 0
+loop t ≠ ⊘
+  if t→child1 = ⊘
+    if t→key < 0
+      db := db + 1
+  else
+    db := db + NegLevelek(t→child1)
+  t := t→sibling
+return db
+</pre>
+      </div>
+      <p>Az első a teljesen rekurzív, a második a testvérek felé ciklust használó (a gyerekek felé szintén rekurzív) változat; bármelyik jó megoldás. Mindkettő minden csúcsot egyszer érint: \(\Theta(n)\).</p>
+      <div class="figs">
+        <figure class="fig"><div data-gt="(5 (−3!) (2 (−7!) (4)) (−1 (−2!)))"></div><figcaption>példa: a negatív levelek pirossal → <b>3</b></figcaption></figure>
+        <figure class="fig"><div data-lcrs="(5 (−3!) (2 (−7!) (4)) (−1 (−2!)))"></div><figcaption>ugyanez láncolt bináris fával</figcaption></figure>
+      </div>
+    </div></details>
+    <details><summary>Részletes magyarázat</summary><div class="sol">
+      <ul>
+        <li><b>Mi a levél ebben az ábrázolásban?</b> Az általános fa levele az a csúcs, amelynek nincs gyereke, vagyis <code>child1 = ⊘</code>. A <code>sibling</code> pointere ettől még lehet nem üres! A leggyakoribb hiba a bináris fáknál megszokott <code>left = ⊘ ∧ right = ⊘</code> feltétel: az a példában csak a −2-t és a 4-et találná meg levélnek, a −3-at és a −7-et nem (azoknak van testvérük).</li>
+        <li>A −1 nem levél (van gyereke, a −2), ezért nem számít, pedig negatív.</li>
+        <li>A teljesen rekurzív változatban a <code>child1</code> és a <code>sibling</code> irányt is rekurzióval járjuk be, mint egy bináris fát; ez rövid, de a testvérek száma szerinti mélységű rekurziót is okozhat. A ciklusos változat a gyakorlaton tanult szokás: testvéreken ciklus, gyerekek felé rekurzió.</li>
+        <li>Pontozásnál a típus- és változóleírás is kell: írd le, mit jelent a két pointer, mi a paraméter és mit ad vissza a függvény.</li>
+      </ul>
+    </div></details>
+  </article>
+
+  <div class="sub-head" id="minta-f6">6. feladat · Gráf: közös ismerősök mátrixa · 12 pont</div>
+  <article class="task">
+    <div class="task-head"><span class="no">6. feladat</span><span class="kind">12 pont</span></div>
+    <div class="stmt"><p>Adott egy n csúcspontú irányítatlan gráf, amely n ember ismeretségi kapcsolatait jelöli (senki nem ismerőse saját magának). A gráf csúcsmátrixosan van reprezentálva. Adjon olyan algoritmust, amely előállít egy olyan mátrixot, amely megadja, hogy tetszőleges két embernek hány közös ismerőse van! (Megadandó a használt típusok és változók leírása, valamint az algoritmus struktogramja.)</p></div>
+    <details><summary>Megoldás</summary><div class="sol">
+      <p><b>Típusok, változók.</b> Az emberek az 1..n sorszámok. <code>A/1 : bit[n,n]</code> a csúcsmátrix: \(A[i,j] = 1\), ha i és j ismerősök; irányítatlan gráf, ezért szimmetrikus, és a főátlója 0 (nincs hurokél). Eredmény: <code>K/1 : ℕ[n,n]</code>, \(K[i,j]\) = i és j közös ismerőseinek száma. Segédváltozók: <code>i, j, k : ℕ</code> ciklusváltozók, <code>db : ℕ</code> számláló.</p>
+      <p>k pontosan akkor közös ismerőse i-nek és j-nek, ha \(A[i,k] = 1 \wedge A[k,j] = 1\). Tehát \(K[i,j] = \sum_{k=1}^{n} A[i,k] \cdot A[k,j]\), ami éppen az \(A^2\) mátrixszorzat (a kettő hosszú utak száma i és j között).</p>
+<pre class="sg-src">
+@KözösIsmerősök(A/1 : bit[n,n] ; K/1 : ℕ[n,n])
+loop i := 1 to n
+  K[i,i] := 0   // önmagával nem kérdés
+  loop j := i + 1 to n
+    db := 0
+    loop k := 1 to n
+      if A[i,k] = 1 ∧ A[k,j] = 1
+        db := db + 1
+    K[i,j] := db ; K[j,i] := db   // szimmetrikus
+</pre>
+      <p><b>Műveletigény:</b> három egymásba ágyazott, legfeljebb n lépéses ciklus: \(\Theta(n^3)\) (a szimmetria miatt a párok felét számoljuk, kb. \(n^3/2\) lépés). Segédmemória az eredménymátrixon kívül \(\Theta(1)\).</p>
+      <div class="figs">
+        <figure class="fig"><div data-g='{"v":{"1":[25,22],"2":[140,22],"3":[82,90],"4":[200,90]},"e":[[1,2],[1,3],[2,3],[3,4]]}'></div><figcaption>példa: 4 ember</figcaption></figure>
+        <figure class="fig"><div class="tbl"><table class="num"><tr><th>A</th><th>1</th><th>2</th><th>3</th><th>4</th></tr><tr><th>1</th><td>0</td><td>1</td><td>1</td><td>0</td></tr><tr><th>2</th><td>1</td><td>0</td><td>1</td><td>0</td></tr><tr><th>3</th><td>1</td><td>1</td><td>0</td><td>1</td></tr><tr><th>4</th><td>0</td><td>0</td><td>1</td><td>0</td></tr></table></div><figcaption>csúcsmátrix</figcaption></figure>
+        <figure class="fig"><div class="tbl"><table class="num"><tr><th>K</th><th>1</th><th>2</th><th>3</th><th>4</th></tr><tr><th>1</th><td>0</td><td>1</td><td>1</td><td>1</td></tr><tr><th>2</th><td>1</td><td>0</td><td>1</td><td>1</td></tr><tr><th>3</th><td>1</td><td>1</td><td>0</td><td>0</td></tr><tr><th>4</th><td>1</td><td>1</td><td>0</td><td>0</td></tr></table></div><figcaption>eredmény: pl. 1 és 4 közös ismerőse a 3</figcaption></figure>
+      </div>
+    </div></details>
+    <details><summary>Részletes magyarázat</summary><div class="sol">
+      <ul>
+        <li><b>A főátló:</b> \(\sum_k A[i,k] \cdot A[k,i]\) i ismerőseinek száma (fokszáma) lenne. A feladat két emberről szól, ezért 0-t írtam; ha a teljes \(A^2\)-et kérnék, a ciklus j := 1-től menne, és az átlóban a fokszám állna. Érdemes a megoldásban megindokolni, melyiket választod.</li>
+        <li><b>Miért elég j &gt; i?</b> A gráf irányítatlan, \(A\) szimmetrikus, így \(K[i,j] = K[j,i]\): egyszer számoljuk ki, és mindkét helyre beírjuk.</li>
+        <li><b>Hurokél nincs</b>, ezért k = i vagy k = j esetén \(A[i,i] = 0\), illetve \(A[j,j] = 0\) miatt a feltétel magától hamis; nem kell külön kizárni.</li>
+        <li>Ez a kettő hosszú utak keresése: nem azt kérdezzük, <i>van-e</i> ilyen út, hanem <i>hány</i> van, ezért nem állhatunk meg az első közös ismerősnél.</li>
+      </ul>
     </div></details>
   </article>
 
   </div>
 </section>
 
-<footer>Források: a Gyakorlat mappa PDF-jei (AVL_fa, AVL_fa_folytatas, AVL_beszur_2025, AVL_minkivesz, AVL_mintöröl_2025, AVL_torol, AVL_töröl_2025, AltalanosFak_gyak, B+ fa, B+ fa műveletei, Grafok_abrazolasa_gyak, Szelessegi_gyakorlati_anyag_2024, ad2Tomorites, LZW_algoritmus). A „saját” jelölésű megoldások nem az óráról származnak.</footer>
+<footer>Források: a Gyakorlat mappa PDF-jei (ad2Tomorites, LZW_algoritmus, AVL_fa, AVL_fa_folytatas, AVL_beszur_2025, AVL_minkivesz, AVL_mintöröl_2025, AVL_torol, AVL_töröl_2025, B+ fa, B+ fa műveletei, AltalanosFak_gyak, Grafok_abrazolasa_gyak, Szelessegi_gyakorlati_anyag_2024) és a <a href="../MintaZH_1_2024.pdf" target="_blank" rel="noopener">MintaZH_1_2024.pdf</a>. A „saját” jelölésű megoldások nem az óráról származnak. A 2. ZH anyaga: <a href="zh2_felkeszito.html">2. ZH felkészítő</a>.</footer>
 </div>
 
 <script>

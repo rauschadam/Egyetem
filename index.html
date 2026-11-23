@@ -377,8 +377,8 @@ a.item:hover .open, a.item:focus-visible .open { color: var(--hue); }
         {
           title: 'Kidolgozások',
           items: [
-            { kind: 'html', featured: true, icon: 'GYAK', title: 'Gyakorlati feladatok kidolgozva', desc: 'AVL fák, általános fák, B+ fák, gráfábrázolás, szélességi bejárás, Huffman és LZW: elmélet röviden, a feladatok lenyitható megoldással, minden fa-lépés megrajzolva, a struktogramok újrarajzolva.', href: 'ALGO II/Kidolgozások/gyakorlatok.html', tags: ['6 témakör', '42 feladat', '46 struktogram'] },
-            { kind: 'html', featured: true, icon: 'ZH', title: 'Minta ZH kidolgozva', desc: 'A 2024-es minta 1. ZH mind a 6 feladata: Huffman, AVL-építés és -törlés, B+ fa, két struktogramos feladat; lenyitható megoldással, részletes magyarázattal.', href: 'ALGO II/Kidolgozások/minta_zh1.html', tags: ['1. ZH', '60 pont'] }
+            { kind: 'html', featured: true, icon: 'ZH1', title: '1. ZH felkészítő', desc: 'Tömörítés, AVL fák, B+ fák, általános fák, gráfábrázolás, szélességi bejárás a tematika sorrendjében: elmélet röviden, a feladatok lenyitható megoldással, minden fa-lépés megrajzolva; a végén a 2024-es minta ZH kidolgozva.', href: 'ALGO II/Kidolgozások/zh1_felkeszito.html', tags: ['1. ZH', '6 témakör', '48 feladat', 'minta ZH'] },
+            { kind: 'html', featured: true, icon: 'ZH2', title: '2. ZH felkészítő', desc: 'DFS, minimális feszítőfák (piros–kék, Kruskal, Prim), Dijkstra, DAG, sor alapú Bellman–Ford, Floyd–Warshall és Warshall, mintaillesztés: a lejátszások a füzet formájában, struktogramok, és egy 50 pontos gyakorló ZH.', href: 'ALGO II/Kidolgozások/zh2_felkeszito.html', tags: ['2. ZH', '7 témakör', '38 feladat', 'gyakorló ZH'] }
           ]
         },
         {
@@ -407,13 +407,28 @@ a.item:hover .open, a.item:focus-visible .open { color: var(--hue); }
             { title: 'Tömörítés', items: [
               { kind: 'pdf', n: '7', title: 'Tömörítés', desc: 'Naiv módszer, Huffman-kódolás, LZW (Nagy Ádám segédlete)', href: 'ALGO II/Gyakorlat/ad2Tomorites.pdf', tags: ['van kidolgozás'] },
               { kind: 'pdf', icon: 'STRUKT', title: 'LZW algoritmus', desc: 'LZWcompress és LZWdecompress struktogramja', href: 'ALGO II/Gyakorlat/LZW_algoritmus.pdf' }
+            ]},
+            { title: 'Mélységi bejárás', items: [
+              { kind: 'pdf', icon: 'STRUKT', title: 'DFS struktogram', desc: 'DFS és DFSvisit, elérési és befejezési idők', href: 'ALGO II/Gyakorlat/DFS_stuki.pdf', tags: ['van kidolgozás'] }
+            ]},
+            { title: 'Minimális feszítőfák', items: [
+              { kind: 'pdf', icon: 'STRUKT', title: 'Kruskal', desc: 'Kruskal algoritmus struktogramja (makeSet, findSet, union)', href: 'ALGO II/Gyakorlat/Kruskal.pdf', tags: ['van kidolgozás'] },
+              { kind: 'pdf', icon: 'STRUKT', title: 'Prim', desc: 'Prim algoritmus struktogramja (előadás változat)', href: 'ALGO II/Gyakorlat/Prim.pdf' },
+              { kind: 'pdf', title: 'Prim példa', desc: 'Gyakorlati struktogram és c / p táblázat, 6 csúcsú gráf', href: 'ALGO II/Gyakorlat/Prim_példa.pdf', tags: ['van kidolgozás'] }
+            ]},
+            { title: 'Legrövidebb utak', items: [
+              { kind: 'pdf', title: 'Dijkstra példa', desc: 'Struktogram és d / π táblázat, 1-es startcsúcs', href: 'ALGO II/Gyakorlat/dijkstra_példa.pdf', tags: ['van kidolgozás'] },
+              { kind: 'pdf', title: 'DAG példa', desc: 'Topologikus rendezés mélységi bejárással, d / π táblázat', href: 'ALGO II/Gyakorlat/DAG_példa.pdf', tags: ['van kidolgozás'] },
+              { kind: 'pdf', title: 'Sor alapú Bellman–Ford', desc: 'Struktogram és lejátszás d;e, sor, π, menet oszlopokkal', href: 'ALGO II/Gyakorlat/Sor alapú Bellman.pdf', tags: ['van kidolgozás'] },
+              { kind: 'pdf', icon: 'JEGYZ', title: 'Legrövidebb utak egy forrásból', desc: 'Vadász Péter jegyzete: Dijkstra, DAG, sor alapú Bellman–Ford 8 példával', href: 'ALGO II/Gyakorlat/LegrövidebbUtak.pdf', tags: ['van kidolgozás'] }
             ]}
           ]
         },
         {
           title: 'Zárthelyi',
           items: [
-            { kind: 'pdf', icon: 'ZH', title: 'Minta 1. ZH (2024)', desc: 'Huffman, AVL, B+ fa, általános fa és gráf feladatok, 60 pont', href: 'ALGO II/MintaZH_1_2024.pdf', tags: ['van kidolgozás'] }
+            { kind: 'pdf', icon: 'ZH', title: 'Minta 1. ZH (2024)', desc: 'Huffman, AVL, B+ fa, általános fa és gráf feladatok, 60 pont', href: 'ALGO II/MintaZH_1_2024.pdf', tags: ['van kidolgozás'] },
+            { kind: 'pdf', icon: 'TEMA', title: 'Tematika (2026/27 ősz)', desc: 'Heti témák, ZH-időpontok (8. és 15. hét), pontozás és ponthatárok', href: 'ALGO II/Gyakorlat/Tematika_2026_nappali.pdf' }
           ]
         }
       ]
