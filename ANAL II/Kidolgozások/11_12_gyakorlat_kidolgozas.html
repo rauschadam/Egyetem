@@ -191,13 +191,25 @@ svg .cv3 { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: .4; }
 /* area problems: third curve colour and labels inside the plot */
 svg .cv4 { fill: none; stroke: var(--mark); stroke-width: 2.2; stroke-linejoin: round; }
 .lg.c4::before { border-top: 2.2px solid var(--mark); }
+
+/* links to the shared ZH trick pages */
+.hero-links { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.tricks { display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; border: 1.5px dashed var(--accent); border-radius: 8px; color: var(--accent); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 0.98rem; line-height: 1; white-space: nowrap; }
+.tricks:hover, .tricks:focus-visible { background: var(--accent-soft); outline: none; }
+nav.bar a.nav-tricks { border-style: dashed; border-color: var(--accent); color: var(--accent); }
+.src-link { text-decoration: none; color: var(--accent); }
+.src-link:hover { text-decoration: underline; }
+h3.sub-head { font-family: var(--f-label); font-size: 0.78rem; font-weight: 500; letter-spacing: 0.09em; text-transform: uppercase; color: var(--mark); margin-top: 6px; }
 </style>
 </head>
 <body>
 <div class="wrap">
 
 <header class="hero">
-  <a class="back" href="../../index.html#/anal2"><span class="arr" aria-hidden="true">←</span>Vissza: Analízis II.</a>
+  <div class="hero-links">
+    <a class="back" href="../../index.html#/anal2"><span class="arr" aria-hidden="true">←</span>Vissza: Analízis II.</a>
+    <a class="tricks" href="zh2_trukkok.html">Trükkök a 2. ZH-hoz →</a>
+  </div>
   <span class="label">Analízis II. · 11–12. gyakorlat · A határozott integrál és alkalmazásai</span>
   <h1>A 11–12. gyakorlat kidolgozva</h1>
   <p class="sub">A Newton–Leibniz-formula használata (helyettesítéssel, parciális integrálással, parciális törtekkel), síkidomok területe, forgástest térfogata, görbe ívhossza és összeg határértéke integrálközelítő összeggel. Az órai feladatok a gyakorlati anyag megoldását követik, a házi feladatok (az összevont anyagból) saját megoldások. Az órán kérdezett röpZH-tételek: <a href="ropzh_kidolgozas.html#rz11">11. röpZH</a>, <a href="ropzh_kidolgozas.html#rz12">12. röpZH</a>. Előbb próbáld meg magad, és csak utána nyisd le a megoldást.</p>
@@ -211,77 +223,13 @@ svg .cv4 { fill: none; stroke: var(--mark); stroke-width: 2.2; stroke-linejoin: 
 <nav class="bar" aria-label="Fejezetek">
   <ul>
     <li><a class="nav-back" href="../../index.html#/anal2" aria-label="Vissza: Analízis II.">← ANAL II</a></li>
-    <li><a href="#emlekezteto">Emlékeztető</a></li>
     <li><a href="#orai">Órai feladatok</a></li>
     <li><a href="#hazi">Házi feladatok</a></li>
-    <li><a href="#hibak">Gyakori hibák</a></li>
+    <li><a class="nav-tricks" href="zh2_trukkok.html">Trükkök (2. ZH) →</a></li>
     <li><a href="ropzh_kidolgozas.html#rz11">11. röpZH ↗</a></li>
     <li><a href="ropzh_kidolgozas.html#rz12">12. röpZH ↗</a></li>
   </ul>
 </nav>
-
-<!-- ================= EMLÉKEZTETŐ ================= -->
-<section id="emlekezteto">
-  <div class="section-head">
-    <span class="label">Ami kell hozzá</span>
-    <h2>Emlékeztető</h2>
-    <p>Minden alkalmazás ugyanoda vezet: egy határozott integrált kell kiszámolni, és ehhez a Newton–Leibniz-formulát használjuk. A primitív függvényt a 6–9. gyakorlat módszereivel keressük meg.</p>
-  </div>
-  <div class="sheet">
-    <div class="rule-card">
-      <h3>Primitív függvény \([a,b]\)-n</h3>
-      <p>\(F : [a,b] \to \R\) az \(f\) primitív függvénye \([a,b]\)-n, ha</p>
-      \[F \in C[a,b],\quad F \in D(a,b),\quad F'(x) = f(x)\ \ \big(x \in (a,b)\big).\]
-      <p class="note">A végpontokban csak folytonosság kell, deriválhatóság nem.</p>
-    </div>
-    <div class="rule-card">
-      <h3>Newton–Leibniz-tétel</h3>
-      <p>Ha \(f \in R[a,b]\), és \(f\)-nek van primitív függvénye \([a,b]\)-n, akkor</p>
-      \[\int_a^b f(x)\,dx = F(b) - F(a) =: \big[F(x)\big]_a^b,\]
-      <p>ahol \(F\) az \(f\) tetszőleges primitív függvénye.</p>
-      <p class="note">Ha \(f \in C[a,b]\), akkor \(f \in R[a,b]\), és van primitív függvénye is, tehát a folytonosság elég a tétel feltételeihez.</p>
-    </div>
-    <div class="rule-card">
-      <h3>Számolási menet</h3>
-      <ol>
-        <li>Ellenőrizzük, hogy az integrandus folytonos \([a,b]\)-n.</li>
-        <li>Meghatározzuk a primitív függvényt (helyettesítés, parciális integrálás, parciális törtek, linearizáló formulák).</li>
-        <li>Behelyettesítjük a határokat: \(F(b) - F(a)\).</li>
-      </ol>
-      <p class="note">Kiegészítés (nincs a lapon): helyettesítésnél a határok is átírhatók, \(\int_a^b f(g(t))g'(t)\,dt = \int_{g(a)}^{g(b)} f(x)\,dx\); parciálisan \(\int_a^b f'g = [fg]_a^b - \int_a^b fg'\).</p>
-    </div>
-    <div class="rule-card">
-      <h3>Síkidom területe</h3>
-      <p>Ha \(0 \le f \in R[a,b]\), a grafikon alatti \(A_f = \{(x,y) : a \le x \le b,\ 0 \le y \le f(x)\}\) területe</p>
-      \[t(A_f) = \int_a^b f(x)\,dx.\]
-      <p>Két görbe között, ha \(f \le g\) az \([a,b]\)-n és \(f, g \in R[a,b]\):</p>
-      \[t(A) = \int_a^b \big(g(x) - f(x)\big)\,dx.\]
-      <p class="note">Ha az alsó vagy felső határoló görbe menet közben vált, a tartományt fel kell bontani részekre.</p>
-    </div>
-    <div class="rule-card">
-      <h3>Görbe ívhossza</h3>
-      <p>Ha \(f : [a,b] \to \R\) folytonosan differenciálható, akkor a \(\Gamma_f = \{(x, f(x)) : x \in [a,b]\}\) grafikon hossza</p>
-      \[\ell(\Gamma_f) = \int_a^b \sqrt{1 + [f'(x)]^2}\,dx \lt +\infty.\]
-    </div>
-    <div class="rule-card">
-      <h3>Forgástest térfogata</h3>
-      <p>Ha \(0 \le f \in R[a,b]\), a grafikon \(x\)-tengely körüli megforgatásával kapott \(H_f = \{(x,y,z) : a \le x \le b,\ y^2 + z^2 \le f^2(x)\}\) test térfogata</p>
-      \[V = \pi\int_a^b f^2(x)\,dx.\]
-      <p class="note">Az \(x\) helyen a keresztmetszet egy \(f(x)\) sugarú körlap, területe \(\pi f^2(x)\).</p>
-    </div>
-    <div class="rule-card">
-      <h3>Forgásfelület felszíne</h3>
-      <p>Ha \(0 \le f \in C^1[a,b]\), a megforgatással kapott felület felszíne</p>
-      \[A = 2\pi\int_a^b f(x)\sqrt{1 + [f'(x)]^2}\,dx.\]
-    </div>
-    <div class="rule-card wide">
-      <h3>Összeg határértéke integrállal</h3>
-      <p><b>Tétel.</b> Ha \(f \in R[0,1]\), akkor</p>
-      \[\lim_{n\to+\infty}\frac1n\sum_{k=1}^{n} f\Big(\frac kn\Big) = \int_0^1 f(x)\,dx.\]
-      <p>Az \(\frac1n\sum_{k=1}^n f\big(\frac kn\big)\) összeg az \(f\) Riemann-féle közelítő összege a \(\tau_n = \big\{\frac kn : k = 0, 1, \dots, n\big\}\) egyenletes felosztáshoz és a \(\xi_n = \big(\frac1n, \frac2n, \dots, \frac nn\big)\) közbülső helyekhez (a részintervallumok jobb végpontjai). A feladat tehát: az összeget \(\frac1n\sum f\big(\frac kn\big)\) alakra hozni, és felismerni \(f\)-et.</p>
-    </div>
-  </div>
-</section>
 
 <!-- ================= ÓRAI FELADATOK ================= -->
 <section id="orai">
@@ -693,22 +641,6 @@ svg .cv4 { fill: none; stroke: var(--mark); stroke-width: 2.2; stroke-linejoin: 
     </details>
   </article>
 
-  </div>
-</section>
-
-<!-- ================= GYAKORI HIBÁK ================= -->
-<section id="hibak">
-  <div class="section-head">
-    <span class="label">Mire figyelj</span>
-    <h2>Gyakori hibák</h2>
-  </div>
-  <div class="mistakes">
-    <div class="mistake"><span class="x">✕</span><p><b>Helyettesítés után a régi határok maradnak.</b> Ha az új változóval számolsz határozott integrált, a határokat is át kell írni (\(x = 10 \mapsto t = 2\), \(x = 66 \mapsto t = 4\), órai 1(a)). Ha nem írod át, előbb vissza kell helyettesíteni \(x\)-re.</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>Terület előjeles integrállal.</b> \(\int_a^b(g - f)\) csak akkor terület, ha \(f \le g\) az egész \([a,b]\)-n. Ha a felső vagy alsó görbe vált, szét kell vágni a tartományt (órai 2., házi 2.); különben részek kiejthetik egymást.</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>A parabola alsó ágának elfelejtése.</b> \(y^2 = 2x + 6\)-ból \(y = \pm\sqrt{2x+6}\): a \([-3,-1]\) szakaszon a síkidom mindkét ág között van (órai 2.).</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>Térfogatnál \(f\) négyzete nélkül.</b> \(V = \pi\int_a^b f^2\), nem \(\pi\int_a^b f\) és nem \(\int_a^b f^2\). A keresztmetszet egy \(f(x)\) sugarú kör, területe \(\pi f^2(x)\) (órai 4., házi 3.).</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>Ívhossznál \(\sqrt{1 + f'}\) vagy \(\sqrt{1 + f^2}\).</b> A helyes integrandus \(\sqrt{1 + [f'(x)]^2}\): a derivált négyzete kell (órai 5.).</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>Rossz \(f\) az összeg határértékénél.</b> Előbb \(\frac1n\)-et kell kiemelni, és ami marad, az csak \(\frac kn\)-től függhet. Az \(\frac{1}{n+k}\) tagból \(f(x) = \frac{1}{1+x}\) lesz \([0,1]\)-en, nem \(\frac1x\) (órai 6.).</p></div>
   </div>
 </section>
 

@@ -188,13 +188,25 @@ svg .bd { fill: var(--accent-soft); opacity: .8; }
 /* primitive-function families and vertical asymptotes */
 svg .cv3 { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: .4; }
 .lg.fam::before { opacity: .45; border-top-width: 1.5px; }
+
+/* links to the shared ZH trick pages */
+.hero-links { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.tricks { display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; border: 1.5px dashed var(--accent); border-radius: 8px; color: var(--accent); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 0.98rem; line-height: 1; white-space: nowrap; }
+.tricks:hover, .tricks:focus-visible { background: var(--accent-soft); outline: none; }
+nav.bar a.nav-tricks { border-style: dashed; border-color: var(--accent); color: var(--accent); }
+.src-link { text-decoration: none; color: var(--accent); }
+.src-link:hover { text-decoration: underline; }
+h3.sub-head { font-family: var(--f-label); font-size: 0.78rem; font-weight: 500; letter-spacing: 0.09em; text-transform: uppercase; color: var(--mark); margin-top: 6px; }
 </style>
 </head>
 <body>
 <div class="wrap">
 
 <header class="hero">
-  <a class="back" href="../../index.html#/anal2"><span class="arr" aria-hidden="true">←</span>Vissza: Analízis II.</a>
+  <div class="hero-links">
+    <a class="back" href="../../index.html#/anal2"><span class="arr" aria-hidden="true">←</span>Vissza: Analízis II.</a>
+    <a class="tricks" href="zh2_trukkok.html">Trükkök a 2. ZH-hoz →</a>
+  </div>
   <span class="label">Analízis II. · 8. gyakorlat · Primitív függvény, határozatlan integrál 2.</span>
   <h1>A 8. gyakorlat kidolgozva</h1>
   <p class="sub">Racionális törtfüggvények integrálása: elemi törtek (alaptípusok), maradékos osztás, a nevező szorzattá alakítása és a parciális törtekre bontás. Az órai feladatok a gyakorlati anyag megoldását követik, a házi feladatok (az összevont anyagból) saját megoldások. Az órán kérdezett röpZH-tételek: <a href="ropzh_kidolgozas.html#rz8">8. röpZH</a>. Előbb próbáld meg magad, és csak utána nyisd le a megoldást.</p>
@@ -208,64 +220,12 @@ svg .cv3 { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: .4; }
 <nav class="bar" aria-label="Fejezetek">
   <ul>
     <li><a class="nav-back" href="../../index.html#/anal2" aria-label="Vissza: Analízis II.">← ANAL II</a></li>
-    <li><a href="#emlekezteto">Emlékeztető</a></li>
     <li><a href="#orai">Órai feladatok</a></li>
     <li><a href="#hazi">Házi feladatok</a></li>
-    <li><a href="#hibak">Gyakori hibák</a></li>
+    <li><a class="nav-tricks" href="zh2_trukkok.html">Trükkök (2. ZH) →</a></li>
     <li><a href="ropzh_kidolgozas.html#rz8">8. röpZH ↗</a></li>
   </ul>
 </nav>
-
-<!-- ================= EMLÉKEZTETŐ ================= -->
-<section id="emlekezteto">
-  <div class="section-head">
-    <span class="label">Ami kell hozzá</span>
-    <h2>Emlékeztető</h2>
-    <p>Racionális törtfüggvény: \(\frac{P}{Q}\), ahol \(P\), \(Q \not\equiv 0\) polinomok. Folytonos, így minden olyan nyílt intervallumon van primitív függvénye, ahol \(Q\)-nak nincs zérushelye.</p>
-  </div>
-  <div class="sheet">
-    <div class="rule-card">
-      <h3>1. alaptípus: \(\frac{1}{(ax+b)^n}\)</h3>
-      \[\int\frac{dx}{ax+b} = \frac{\ln|ax+b|}{a} + c,\]
-      \[\int\frac{dx}{(ax+b)^n} = \frac{(ax+b)^{1-n}}{a(1-n)} + c \quad (n \ge 2).\]
-      <p class="note">Az abszolút értéket az intervallum alapján „feloldjuk”: pl. \(x \lt \frac73\)-ra \(\ln|3x - 7| = \ln(7 - 3x)\).</p>
-    </div>
-    <div class="rule-card">
-      <h3>2. alaptípus: \(\frac{2ax+b}{ax^2+bx+c}\)</h3>
-      <p>A számláló a nevező deriváltja (\(\frac{f'}{f}\) típus):</p>
-      \[\int\frac{2ax+b}{ax^2+bx+c}\,dx = \ln|ax^2+bx+c| + C.\]
-    </div>
-    <div class="rule-card">
-      <h3>3. alaptípus: \(\frac{1}{ax^2+bx+c}\), \(b^2 - 4ac \lt 0\)</h3>
-      <p>Teljes négyzetté alakítás: \(ax^2 + bx + c = a(x+\alpha)^2 + \beta\) (\(\beta \gt 0\)), majd lineáris helyettesítés az</p>
-      \[\int\frac{dx}{1 + x^2} = \arctg x + c\]
-      <p>alapintegrálba. Hasznos: \(\displaystyle\int\frac{dx}{(x+\alpha)^2 + k^2} = \frac1k\arctg\frac{x+\alpha}{k} + c\).</p>
-    </div>
-    <div class="rule-card">
-      <h3>4. alaptípus: \(\frac{Ax+B}{ax^2+bx+c}\), \(b^2 - 4ac \lt 0\)</h3>
-      <p>A számlálót \(Ax + B = \gamma(2ax + b) + \delta\) alakba írjuk. Így a 2. és a 3. alaptípus lineáris kombinációját kapjuk.</p>
-      <p class="note">5. alaptípus: \(\frac{Ax+B}{(ax^2+bx+c)^n}\), \(n \ge 2\): rekurziós formulával, ilyet nem oldunk meg.</p>
-    </div>
-    <div class="rule-card wide">
-      <h3>Az általános eljárás</h3>
-      <ol>
-        <li><b>Maradékos osztás</b>, ha \(\deg P \ge \deg Q\): \(\frac PQ = T + \frac RQ\), ahol \(\deg R \lt \deg Q\) vagy \(R \equiv 0\).</li>
-        <li><b>A nevező szorzattá alakítása</b> valós első- és gyök nélküli másodfokú tényezők (hatványainak) szorzatára.</li>
-        <li><b>Parciális törtekre bontás</b> határozatlan együtthatókkal: elsőfokú tényezőhöz konstans, másodfokúhoz elsőfokú számláló, és a magasabb kitevőknél minden alacsonyabb kitevő is bekerül.</li>
-      </ol>
-      \[\frac{x+1}{(x-2)^3} = \frac{A_1}{x-2} + \frac{A_2}{(x-2)^2} + \frac{A_3}{(x-2)^3}, \qquad \frac{x^2+3}{(x-1)(x^2+x+1)} = \frac{A_1}{x-1} + \frac{B_1x + C_1}{x^2+x+1}.\]
-    </div>
-    <div class="rule-card wide">
-      <h3>Az együtthatók meghatározása</h3>
-      <p>Közös nevezőre hozás után a két számláló minden \(x \in \R\)-re egyenlő (a nevező zérushelyeiben is, mert polinomok folytonosak). Két út:</p>
-      <ul>
-        <li><b>(a) Együttható-összehasonlítás:</b> \(x\) hatványai szerint rendezünk, és a megfelelő együtthatók egyenlőségéből lineáris egyenletrendszert kapunk.</li>
-        <li><b>(b) Behelyettesítés:</b> alkalmas \(x\)-eket (főleg a nevező valós gyökeit) írunk be, így egyszerű egyenleteket kapunk.</li>
-      </ul>
-      <p class="note">A kettő keverhető: a gyököket behelyettesítjük, a maradék együtthatókat pl. a főegyütthatóból vagy \(x = 0\)-ból kapjuk.</p>
-    </div>
-  </div>
-</section>
 
 <!-- ================= ÓRAI FELADATOK ================= -->
 <section id="orai">
@@ -598,22 +558,6 @@ svg .cv3 { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: .4; }
     </details>
   </article>
 
-  </div>
-</section>
-
-<!-- ================= GYAKORI HIBÁK ================= -->
-<section id="hibak">
-  <div class="section-head">
-    <span class="label">Mire figyelj</span>
-    <h2>Gyakori hibák</h2>
-  </div>
-  <div class="mistakes">
-    <div class="mistake"><span class="x">✕</span><p><b>Kimaradt maradékos osztás.</b> Ha \(\deg P \ge \deg Q\), a parciális törtekre bontás nem működik közvetlenül: előbb le kell választani a polinomiális részt (órai 2(c), házi 1(c)).</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>Hiányzó alacsonyabb kitevő.</b> \((x+1)^2\) a nevezőben: \(\frac{A}{x+1} + \frac{B}{(x+1)^2}\) kell, nem csak a második tag (órai 2(b)).</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>Konstans számláló a másodfokú tényező fölött.</b> Gyök nélküli másodfokú tényezőhöz \(Bx + C\) tartozik, nem \(B\) (órai 2(d)).</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>Abszolút érték az intervallum figyelembe vétele nélkül.</b> \(\int\frac{dx}{x-1} = \ln|x-1|\), és ha \(x \lt 1\), akkor ez \(\ln(1-x)\), nem \(\ln(x-1)\) (ez ott nem is értelmes).</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>Hibás arctg-szorzó.</b> \(\int\frac{dx}{(x+\alpha)^2 + k^2} = \frac1k\arctg\frac{x+\alpha}{k}\). A \(\frac1k\) és a \(\frac{1}{k^2}\) gyakran összekeveredik.</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>Szorzattá alakítás valós gyökkel rendelkező másodfokú tényezővel.</b> Ha \(b^2 - 4ac \ge 0\), a másodfokú tényezőt tovább kell bontani elsőfokúakra (pl. \(x^2 - 6x + 8 = (x-2)(x-4)\)).</p></div>
   </div>
 </section>
 

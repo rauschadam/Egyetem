@@ -191,7 +191,7 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
   <a class="back" href="../../index.html#/anal2"><span class="arr" aria-hidden="true">←</span>Vissza: Analízis II.</a>
   <span class="label">Analízis II. · 1. ZH · bizonyítással kért tételek</span>
   <h1>Az 1. ZH bizonyításai</h1>
-  <p class="sub">A megajánlott vizsgajegyhez az 1. ZH-n bizonyítással kért 12 tétel, az előadásdiák (1–5. előadás) alapján. Minden kérdésnél előbb próbáld fejből kimondani a tételt, utána nyisd le, majd ugyanígy a bizonyítást. A diákon kihagyott lépéseket kiegészítettem, ezek jelölve vannak.</p>
+  <p class="sub">A megajánlott vizsgajegyhez az 1. ZH-n bizonyítással kért 12 tétel (1–5. előadás).</p>
   <div class="facts">
     <div class="fact"><span class="label">Tétel</span><b>12</b></div>
     <div class="fact"><span class="label">Forrás</span><b>1–5. előadás</b></div>
@@ -217,7 +217,7 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
   <div class="taskgroup">
 
   <article class="task" id="t1">
-    <div class="task-head"><span class="no">1.</span><span class="src">1. előadás · Lineáris közelítés</span></div>
+    <div class="task-head"><span class="no">1.</span></div>
     <p class="stmt"><b>A deriválhatóság ekvivalens átfogalmazása lineáris közelítéssel.</b></p>
     <details>
       <summary>Tétel</summary>
@@ -230,7 +230,6 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
     <details>
       <summary>Bizonyítás</summary>
       <div class="sol">
-        <div class="tip"><b>Kulcsötlet:</b> \(\varepsilon\) = a különbségi hányados és a derivált eltérése.</div>
         <p><b>\(\Longrightarrow\)</b> \(f \in D\{a\}\), tehát</p>
         \[\lim_{x\to a}\frac{f(x) - f(a)}{x - a} = f'(a) \in \R \iff \lim_{x\to a}\left(\frac{f(x)-f(a)}{x-a} - f'(a)\right) = 0.\]
         <p>Ha</p>
@@ -248,7 +247,7 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
   </article>
 
   <article class="task" id="t2">
-    <div class="task-head"><span class="no">2.</span><span class="src">1. előadás · Deriválási szabályok, 3°</span></div>
+    <div class="task-head"><span class="no">2.</span></div>
     <p class="stmt"><b>A szorzatfüggvény deriválása.</b></p>
     <details>
       <summary>Tétel</summary>
@@ -260,20 +259,18 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
     <details>
       <summary>Bizonyítás</summary>
       <div class="sol">
-        <div class="tip"><b>Kulcsötlet:</b> az \(\frac{f(x)-f(a)}{x-a}\) és \(\frac{g(x)-g(a)}{x-a}\) hányadosok „kialakítása”: a számlálóban \(f(a)g(x)\)-et kivonunk és hozzáadunk.</div>
         <p>Világos, hogy \(a \in \operatorname{int}\mathcal{D}_{f\cdot g}\). Az \(f\cdot g\) függvény különbségihányados-függvénye az \(a\) pontban:</p>
         \[\frac{(fg)(x) - (fg)(a)}{x-a} = \frac{f(x)g(x) - f(a)g(a)}{x-a} = \frac{f(x)g(x) - f(a)g(x) + f(a)g(x) - f(a)g(a)}{x-a} =\]
         \[= \frac{f(x) - f(a)}{x-a}\cdot g(x) + f(a)\cdot\frac{g(x) - g(a)}{x-a} \qquad \big(x \in \mathcal{D}_{f\cdot g}\setminus\{a\}\big).\]
         <p>Mivel \(g \in D\{a\}\), ezért \(g \in C\{a\}\), tehát \(\lim_{x\to a} g(x) = g(a)\). Így</p>
         \[\lim_{x\to a}\frac{(fg)(x) - (fg)(a)}{x-a} = \lim_{x\to a}\frac{f(x)-f(a)}{x-a}\cdot\lim_{x\to a} g(x) + f(a)\cdot\lim_{x\to a}\frac{g(x)-g(a)}{x-a} = f'(a)\,g(a) + f(a)\,g'(a).\]
         <p>Ez azt jelenti, hogy \(f\cdot g \in D\{a\}\) és \((f\cdot g)'(a) = f'(a)\,g(a) + f(a)\,g'(a)\). \(\blacksquare\)</p>
-        <div class="note"><b>Felhasznált tétel</b> (1. előadás): ha \(f \in D\{a\}\), akkor \(f \in C\{a\}\), mert \(\lim_{x\to a}\big(f(x) - f(a)\big) = \lim_{x\to a}\frac{f(x)-f(a)}{x-a}\cdot(x-a) = f'(a)\cdot 0 = 0\).</div>
       </div>
     </details>
   </article>
 
   <article class="task" id="t3">
-    <div class="task-head"><span class="no">3.</span><span class="src">1. előadás · Deriválási szabályok, 4°</span></div>
+    <div class="task-head"><span class="no">3.</span></div>
     <p class="stmt"><b>A hányadosfüggvény deriválása.</b></p>
     <details>
       <summary>Tétel</summary>
@@ -285,14 +282,11 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
     <details>
       <summary>Bizonyítás</summary>
       <div class="sol">
-        <div class="tip"><b>Kulcsötlet:</b> előbb belátjuk, hogy \(a\) belső pontja \(\mathcal{D}_{f/g}\)-nek; utána közös nevező, és a számlálóban \(f(a)g(a)\)-t kivonunk és hozzáadunk.</div>
         <p><b>Először azt igazoljuk, hogy \(a \in \operatorname{int}\mathcal{D}_{f/g}\).</b> Valóban: \(g \in D\{a\} \Rightarrow g \in C\{a\}\). Tehát \(g(a) \ne 0\) miatt</p>
         \[\exists K(a) \subset \mathcal{D}_g : \ g(x) \ne 0 \ \ (\forall x \in K(a)) \implies a \in \operatorname{int}\mathcal{D}_{f/g}.\]
-        <p>(A folytonosság miatt \(g\) egy környezetben megtartja \(g(a)\) előjelét.)</p>
         <p><b>A különbségi hányados</b> az \(a\) pontban:</p>
         \[\frac{\left(\frac fg\right)(x) - \left(\frac fg\right)(a)}{x-a} = \frac{\frac{f(x)}{g(x)} - \frac{f(a)}{g(a)}}{x-a} = \frac{1}{g(a)g(x)}\cdot\frac{f(x)g(a) - f(a)g(x)}{x-a} =\]
         \[= \frac{1}{g(a)g(x)}\left(\frac{f(x)-f(a)}{x-a}\cdot g(a) - f(a)\cdot\frac{g(x)-g(a)}{x-a}\right).\]
-        <p>(A számlálóban \(-f(a)g(a) + f(a)g(a)\)-t írtunk be: \(f(x)g(a) - f(a)g(a) - \big(f(a)g(x) - f(a)g(a)\big)\).)</p>
         <p>Mivel \(g \in C\{a\} \Rightarrow \lim_{x\to a} g(x) = g(a) \ne 0\), ezért</p>
         \[\lim_{x\to a}\frac{\left(\frac fg\right)(x) - \left(\frac fg\right)(a)}{x-a} = \frac{1}{g(a)\lim_{x\to a}g(x)}\left(\lim_{x\to a}\frac{f(x)-f(a)}{x-a}\cdot g(a) - f(a)\cdot\lim_{x\to a}\frac{g(x)-g(a)}{x-a}\right) = \frac{f'(a)g(a) - f(a)g'(a)}{g^2(a)}.\]
         <p>Ez azt jelenti, hogy \(\frac fg \in D\{a\}\) és \(\left(\frac fg\right)'(a) = \frac{f'(a)g(a) - f(a)g'(a)}{g^2(a)}\). \(\blacksquare\)</p>
@@ -308,12 +302,11 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
   <div class="section-head">
     <span class="label">2. előadás · Differenciálszámítás 2.</span>
     <h2>Szélsőérték és középértéktételek</h2>
-    <p>Egymásra épülnek: a szükséges feltételből jön a Rolle-tétel, abból a Lagrange- és a Cauchy-tétel.</p>
   </div>
   <div class="taskgroup">
 
   <article class="task" id="t4">
-    <div class="task-head"><span class="no">4.</span><span class="src">2. előadás · Lokális szélsőértékek</span></div>
+    <div class="task-head"><span class="no">4.</span></div>
     <p class="stmt"><b>A lokális szélsőértékre vonatkozó elsőrendű szükséges feltétel.</b></p>
     <details>
       <summary>Tétel</summary>
@@ -326,7 +319,6 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
     <details>
       <summary>Bizonyítás</summary>
       <div class="sol">
-        <div class="tip"><b>Kulcsötlet:</b> a különbségi hányados előjele \(a\) jobb oldalán \(\le 0\), bal oldalán \(\ge 0\), így a két egyoldali derivált előjele ellentétes; mivel egyenlők, csak 0 lehet.</div>
         <p>Tegyük fel, hogy \(f\)-nek \(a\)-ban <b>lokális maximuma</b> van, azaz \(\exists r \gt 0\):</p>
         \[\forall x \in (a - r, a + r) : f(x) \le f(a) \implies f(x) - f(a) \le 0.\]
         <p>Tekintsük az \(f\) függvény \(a\)-hoz tartozó különbségihányados-függvényét: \(\frac{f(x)-f(a)}{x-a}\) \((x \in \mathcal{D}_f\setminus\{a\})\).</p>
@@ -337,13 +329,12 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
         <p>Mivel \(f \in D\{a\}\), ezért</p>
         \[\underbrace{f'_-(a)}_{\ge 0} = \underbrace{f'_+(a)}_{\le 0} = f'(a) = 0.\]
         <p>A bizonyítás hasonló akkor is, ha \(f\)-nek \(a\)-ban lokális minimuma van. \(\blacksquare\)</p>
-        <div class="warn">A feltétel csak <b>szükséges</b>: \(f(x) = x^3\)-ra \(f'(0) = 0\), de 0-ban nincs lokális szélsőérték.</div>
       </div>
     </details>
   </article>
 
   <article class="task" id="t5">
-    <div class="task-head"><span class="no">5.</span><span class="src">2. előadás · Középértéktételek</span></div>
+    <div class="task-head"><span class="no">5.</span></div>
     <p class="stmt"><b>A Rolle-féle középértéktétel.</b></p>
     <details>
       <summary>Tétel</summary>
@@ -355,18 +346,16 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
     <details>
       <summary>Bizonyítás</summary>
       <div class="sol">
-        <div class="tip"><b>Kulcsötlet:</b> Weierstrass-tétel → van abszolút szélsőérték; ha \(f\) nem konstans, az egyik a nyílt intervallum belsejébe esik → ott \(f' = 0\) (4. tétel).</div>
         <p>\(f \in C[a,b] \implies\) (Weierstrass-tétel) \(\exists\,\alpha, \beta \in [a,b]\):</p>
         \[f(\alpha) = \min_{[a,b]} f =: m \quad\text{és}\quad f(\beta) = \max_{[a,b]} f =: M.\]
         <p><b>1. eset: \(m = M\).</b> Ekkor \(f\) állandó, így \(\forall\,\xi \in (a,b)\): \(f'(\xi) = 0\).</p>
         <p><b>2. eset: \(m \ne M\).</b> Mivel \(f(a) = f(b)\), ezért \(\alpha\) és \(\beta\) közül legalább az egyik (pl. \(\alpha\)) \((a,b)\)-be esik. (Ha mindkettő végpont lenne, akkor \(m = f(\alpha) = f(\beta) = M\) lenne, hiszen a végpontokban \(f\) értéke ugyanaz.) Ekkor \(\xi := \alpha \in \operatorname{int}\mathcal{D}_f = (a,b)\), és \(f\)-nek \(\xi\)-ben lokális minimuma van. Mivel \(f \in D\{\xi\}\), az elsőrendű szükséges feltétel szerint \(f'(\xi) = 0\). \(\blacksquare\)</p>
-        <div class="note"><b>Szemléletesen:</b> ha a görbe két végpontja egy magasságban van, akkor van vízszintes érintője.</div>
       </div>
     </details>
   </article>
 
   <article class="task" id="t6">
-    <div class="task-head"><span class="no">6.</span><span class="src">2. előadás · Középértéktételek</span></div>
+    <div class="task-head"><span class="no">6.</span></div>
     <p class="stmt"><b>A Lagrange-féle középértéktétel.</b></p>
     <details>
       <summary>Tétel</summary>
@@ -378,7 +367,6 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
     <details>
       <summary>Bizonyítás</summary>
       <div class="sol">
-        <div class="tip"><b>Kulcsötlet:</b> \(f\)-ből levonjuk a végpontokon átmenő szelőt; a különbség a végpontokban 0, így Rolle-tétel.</div>
         <p>Az \(\big(a, f(a)\big)\) és a \(\big(b, f(b)\big)\) pontokon átmenő szelő egyenesének az egyenlete:</p>
         \[y = h_{a,b}(x) = \frac{f(b) - f(a)}{b - a}(x - a) + f(a).\]
         <p>Igazoljuk, hogy az</p>
@@ -389,13 +377,12 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
         <p>tehát \(F(a) = F(b)\) is teljesül. A Rolle-tétel alapján tehát van olyan \(\xi \in (a,b)\) pont, amelyre</p>
         \[F'(\xi) = f'(\xi) - h'_{a,b}(\xi) = f'(\xi) - \frac{f(b) - f(a)}{b - a} = 0,\]
         <p>következésképpen \(f'(\xi) = \frac{f(b) - f(a)}{b - a}\). \(\blacksquare\)</p>
-        <div class="note"><b>Szemléletesen:</b> van olyan pont, ahol az érintő párhuzamos a végpontokat összekötő szelővel.</div>
       </div>
     </details>
   </article>
 
   <article class="task" id="t7">
-    <div class="task-head"><span class="no">7.</span><span class="src">2. előadás · Középértéktételek</span></div>
+    <div class="task-head"><span class="no">7.</span></div>
     <p class="stmt"><b>A Cauchy-féle középértéktétel.</b></p>
     <details>
       <summary>Tétel</summary>
@@ -407,7 +394,6 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
     <details>
       <summary>Bizonyítás</summary>
       <div class="sol">
-        <div class="tip"><b>Kulcsötlet:</b> ugyanaz, mint Lagrange-nál, csak \(x\) helyett \(g(x)\) áll: \(F = f - f(a) - \frac{f(b)-f(a)}{g(b)-g(a)}\big(g - g(a)\big)\), és Rolle-tétel.</div>
         <p>A Rolle-tételből következik, hogy \(g(a) \ne g(b)\). Valóban, \(g(a) = g(b)\)-ből az következne, hogy \(g\) deriváltja nulla az \((a,b)\) intervallum legalább egy pontjában, amit kizártunk. (Tehát a jobb oldali tört értelmes.)</p>
         <p>Legyen</p>
         \[F(x) := f(x) - f(a) - \frac{f(b) - f(a)}{g(b) - g(a)}\big(g(x) - g(a)\big) \quad \big(x \in [a,b]\big).\]
@@ -415,7 +401,6 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
         \[0 = F'(\xi) = f'(\xi) - \frac{f(b) - f(a)}{g(b) - g(a)}\,g'(\xi).\]
         <p>Mivel a feltételeink szerint \(g'(\xi) \ne 0\), ezért azt kapjuk, hogy</p>
         \[\frac{f'(\xi)}{g'(\xi)} = \frac{f(b) - f(a)}{g(b) - g(a)}. \quad \blacksquare\]
-        <div class="note">\(g(x) = x\) választással visszakapjuk a Lagrange-tételt.</div>
       </div>
     </details>
   </article>
@@ -428,12 +413,11 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
   <div class="section-head">
     <span class="label">2–3. előadás · Differenciálszámítás 2–3.</span>
     <h2>Monotonitás, szélsőérték, konvexitás</h2>
-    <p>Mindhárom a Lagrange-féle középértéktételre épül.</p>
   </div>
   <div class="taskgroup">
 
   <article class="task" id="t8">
-    <div class="task-head"><span class="no">8.</span><span class="src">2. előadás · Monotonitás</span></div>
+    <div class="task-head"><span class="no">8.</span></div>
     <p class="stmt"><b>Nyílt intervallumon értelmezett deriválható függvények esetében a monotonitás és a derivált kapcsolata.</b></p>
     <details>
       <summary>Tétel</summary>
@@ -441,13 +425,12 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
         <p>Legyen \((a,b) \subset \R\) egy <b>nyílt intervallum</b>. Tegyük fel, hogy \(f \in D(a,b)\). Ekkor</p>
         <p><b>1°</b> \(f \nearrow\ [\searrow]\ (a,b)\)-n \(\iff f' \ge 0\ [f' \le 0]\ (a,b)\)-n;</p>
         <p><b>2°</b> ha \(f' \gt 0\ [f' \lt 0]\ (a,b)\)-n \(\implies f \uparrow\ [\downarrow]\ (a,b)\)-n.</p>
-        <p class="note">\(\nearrow\): monoton növő, \(\uparrow\): szigorúan monoton növő.</p>
+        <p>\(\nearrow\): monoton növő, \(\uparrow\): szigorúan monoton növő.</p>
       </div>
     </details>
     <details>
       <summary>Bizonyítás</summary>
       <div class="sol">
-        <div class="tip"><b>Kulcsötlet:</b> \(\Rightarrow\): a különbségi hányados \(\ge 0\), határértéke is. \(\Leftarrow\): Lagrange-tétel két tetszőleges pont között.</div>
         <p><b>1° \(\Longrightarrow\)</b> Ha \(f \nearrow (a,b)\)-n és \(t \in (a,b)\) egy tetszőleges pont, akkor</p>
         \[\frac{f(x) - f(t)}{x - t} \ge 0 \quad (t \lt x \lt b),\]
         <p>hiszen \(x - t \gt 0\) és a monotonitás miatt \(f(x) - f(t) \ge 0\). Mivel \(f \in D\{t\}\), így</p>
@@ -456,13 +439,12 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
         \[\exists\,\xi \in (x,y) : \frac{f(y) - f(x)}{y - x} = f'(\xi) \ge 0 \implies f(x) \le f(y).\]
         <p>Ezért \(f \nearrow (a,b)\)-n. Az állítás hasonlóan igazolható monoton csökkenő függvények esetében is.</p>
         <p><b>2°</b> Alkalmazzunk „éles” egyenlőtlenségeket 1°-ben a \(\Longleftarrow\) irányban: ha \(f' \gt 0\), akkor \(\frac{f(y)-f(x)}{y-x} = f'(\xi) \gt 0\), és mivel \(y - x \gt 0\), \(f(x) \lt f(y)\). Tehát \(f \uparrow (a,b)\)-n. \(\blacksquare\)</p>
-        <div class="warn"><b>Lényeges, hogy intervallumon értelmezett a függvény.</b> \(f(x) := \frac1x\) \((x \ne 0)\)-ra \(f'(x) = -\frac{1}{x^2} \lt 0\), de \(f\) nem szigorúan csökkenő az \(\R\setminus\{0\}\) halmazon (ami nem intervallum). 2° megfordítása sem igaz: \(x^3\) szigorúan nő, de \(f'(0) = 0\).</div>
       </div>
     </details>
   </article>
 
   <article class="task" id="t9">
-    <div class="task-head"><span class="no">9.</span><span class="src">3. előadás · Szélsőértékek</span></div>
+    <div class="task-head"><span class="no">9.</span></div>
     <p class="stmt"><b>A lokális szélsőértékre vonatkozó elsőrendű elégséges feltétel.</b></p>
     <details>
       <summary>Tétel</summary>
@@ -481,17 +463,15 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
     <details>
       <summary>Bizonyítás</summary>
       <div class="sol">
-        <div class="tip"><b>Kulcsötlet:</b> a 8. tétel 2° pontja a \(c\) bal és jobb oldalán.</div>
         <p>Az állítás azonnal következik a monotonitás és a derivált kapcsolatáról szóló tételből, hiszen ha az \(f'\) függvénynek \(c\)-ben \((-,+)\) előjelváltása van, akkor \(\exists\,\delta \gt 0\) úgy, hogy \(f' \lt 0\) \((c - \delta, c)\)-n és \(f' \gt 0\) \((c, c + \delta)\)-n.</p>
         <p>Ezért \(f \downarrow (c - \delta, c]\)-n és \(f \uparrow [c, c + \delta)\)-n. Emiatt \(\forall x \in (c - \delta, c + \delta)\setminus\{c\}\): \(f(x) \gt f(c)\), tehát \(c\) az \(f\) függvénynek szigorú lokális minimumhelye.</p>
         <p>Az állítás hasonlóan igazolható \((+,-)\) előjelváltás esetén. \(\blacksquare\)</p>
-        <div class="note"><b>Kiegészítés</b> (a diákon nincs részletezve): a zárt végpont, \(c\) azért vehető hozzá, mert \(f\) folytonos \(c\)-ben (deriválható). Pl. \(x \in (c-\delta, c)\)-re a Lagrange-tétel az \([x, c]\) intervallumon: \(f(c) - f(x) = f'(\xi)(c - x) \lt 0\), tehát \(f(x) \gt f(c)\).</div>
       </div>
     </details>
   </article>
 
   <article class="task" id="t10">
-    <div class="task-head"><span class="no">10.</span><span class="src">3. előadás · Konvex és konkáv függvények</span></div>
+    <div class="task-head"><span class="no">10.</span></div>
     <p class="stmt"><b>A konvexitás jellemzése a deriváltfüggvénnyel.</b></p>
     <details>
       <summary>Tétel</summary>
@@ -500,19 +480,17 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
         \[f(x) \le \frac{f(v) - f(u)}{v - u}(x - u) + f(u) \quad \big(\forall x \in (u,v)\big).\]
         <p><b>Tétel.</b> Tegyük fel, hogy \(I \subset \R\) nyílt intervallum és \(f \in D(I)\). Ekkor</p>
         \[f \text{ konvex } I\text{-n} \iff f' \nearrow I\text{-n}.\]
-        <p class="note"><b>Megjegyzés.</b> „\(\nearrow\)” helyett szigorúan konvex esetben „\(\uparrow\)”, konkáv esetben „\(\searrow\)” és szigorúan konkáv esetben pedig „\(\downarrow\)” áll.</p>
+        <p><b>Megjegyzés.</b> „\(\nearrow\)” helyett szigorúan konvex esetben „\(\uparrow\)”, konkáv esetben „\(\searrow\)” és szigorúan konkáv esetben pedig „\(\downarrow\)” áll.</p>
         <p><b>Következmény</b> (a 8. tételt \(f'\)-re alkalmazva). Ha \(f \in D^2(I)\), akkor \(f\) konvex \(I\)-n \(\iff f'' \ge 0\) \(I\)-n; ha \(f'' \gt 0\) \(I\)-n, akkor \(f\) szigorúan konvex \(I\)-n.</p>
       </div>
     </details>
     <details>
       <summary>Bizonyítás</summary>
       <div class="sol">
-        <div class="tip"><b>Kulcsötlet:</b> konvexitás \(\iff\) „a szelők meredeksége balról jobbra nő”: \(\frac{f(x)-f(u)}{x-u} \le \frac{f(v)-f(u)}{v-u} \le \frac{f(x)-f(v)}{x-v}\). \(\Rightarrow\): határátmenet. \(\Leftarrow\): Lagrange-tétel.</div>
         <p><b>\(\Longrightarrow\)</b> Legyen \(u, v \in I\), \(u \lt v\) tetszőleges és \(x \in (u,v)\) is tetszőleges. Tegyük fel, hogy \(f\) konvex \(I\)-n. Ekkor (a szelő egyenletét egyszer az \(u\), egyszer a \(v\) pontból felírva)</p>
         \[f(x) \le \frac{f(v) - f(u)}{v - u}(x - u) + f(u) \quad\text{és}\quad f(x) \le \frac{f(v) - f(u)}{v - u}(x - v) + f(v).\]
         <p>Egyszerű átrendezésekkel azt kapjuk, hogy</p>
         \[\frac{f(x) - f(u)}{x - u} \le \frac{f(v) - f(u)}{v - u} \le \frac{f(x) - f(v)}{x - v}.\]
-        <p class="note"><b>Az átrendezés</b> (a diákon kihagyva): az első egyenlőtlenségből \(f(u)\)-t kivonva és \(x - u \gt 0\)-val osztva jön a bal oldali egyenlőtlenség; a másodikból \(f(v)\)-t kivonva és \(x - v \lt 0\)-val osztva (az egyenlőtlenség megfordul) a jobb oldali.</p>
         <p>Vegyük itt az \(x \to u\), ill. az \(x \to v\) határátmenetet (\(f\) deriválható \(u\)-ban és \(v\)-ben):</p>
         \[f'(u) \le \frac{f(v) - f(u)}{v - u} \le f'(v).\]
         <p>Tehát \(f'\) monoton növekedő \(I\)-n.</p>
@@ -522,7 +500,6 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
         \[\frac{f(x) - f(u)}{x - u} \le \frac{f(v) - f(x)}{v - x}.\]
         <p>Ezt átrendezve azt kapjuk, hogy</p>
         \[f(x) \le \frac{f(v) - f(u)}{v - u}(x - u) + f(u).\]
-        <p class="note"><b>Az átrendezés</b> (a diákon kihagyva): legyen \(s := \frac{f(x)-f(u)}{x-u}\). Ekkor \(f(v) - f(x) \ge s\,(v - x)\), így \(f(v) - f(u) = \big(f(v) - f(x)\big) + \big(f(x) - f(u)\big) \ge s(v - x) + s(x - u) = s(v - u)\). Tehát \(s \le \frac{f(v)-f(u)}{v-u}\), és \((x-u)\)-val szorozva, \(f(u)\)-t hozzáadva kapjuk a fenti egyenlőtlenséget.</p>
         <p>Ez azt jelenti, hogy az \(f\) függvény konvex \(I\)-n. \(\blacksquare\)</p>
       </div>
     </details>
@@ -536,12 +513,11 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
   <div class="section-head">
     <span class="label">4–5. előadás · Differenciálszámítás 4–5.</span>
     <h2>L'Hospital-szabály, Taylor-formula</h2>
-    <p>Mindkettő a Cauchy-féle középértéktételre épül.</p>
   </div>
   <div class="taskgroup">
 
   <article class="task" id="t11">
-    <div class="task-head"><span class="no">11.</span><span class="src">4. előadás · L'Hospital-szabályok</span></div>
+    <div class="task-head"><span class="no">11.</span></div>
     <p class="stmt"><b>A véges pontbeli \(\frac00\) határérték esetre vonatkozó L'Hospital-szabály.</b></p>
     <details>
       <summary>Tétel</summary>
@@ -554,13 +530,11 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
         </ul>
         <p>Ekkor</p>
         \[\exists \lim_{a+0}\frac fg \in \overline{\R} \quad\text{és}\quad \lim_{a+0}\frac fg = \lim_{a+0}\frac{f'}{g'} \in \overline{\R}.\]
-        <p class="note">A ZH-n a <b>véges</b> \(a\) esetét kell bizonyítani (1. eset); az \(a = -\infty\) esetet az előadás sem bizonyítja.</p>
       </div>
     </details>
     <details>
       <summary>Bizonyítás</summary>
       <div class="sol">
-        <div class="tip"><b>Kulcsötlet:</b> \(f(a) := g(a) := 0\) kiterjesztés, utána Cauchy-tétel az \([a, x]\) intervallumon: \(\frac{f(x)}{g(x)} = \frac{f'(\xi_x)}{g'(\xi_x)}\), ahol \(\xi_x \in (a,x)\).</div>
         <p><b>1. eset: \(a \gt -\infty\) (véges).</b> Legyen \(A := \lim_{a+0}\frac{f'}{g'} \in \overline{\R}\), azaz</p>
         \[\forall \varepsilon \gt 0\text{-hoz } \exists\,\delta \gt 0 : \ \forall y \in (a, a+\delta) \subset (a,b) : \ \frac{f'(y)}{g'(y)} \in K_\varepsilon(A).\]
         <p>Azt kell igazolni, hogy</p>
@@ -572,13 +546,12 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
         \[\frac{f(x)}{g(x)} = \frac{f(x) - f(a)}{g(x) - g(a)} = \frac{f'(\xi_x)}{g'(\xi_x)} \in K_\varepsilon(A),\]
         <p>hiszen \(\xi_x \in (a,x) \subset (a, a+\delta)\). Ez azt jelenti, hogy a \(\lim_{a+0}\frac fg\) határérték létezik, és \(\lim_{a+0}\frac fg = A\).</p>
         <p><b>2. eset: \(a = -\infty\).</b> Nem bizonyítjuk. \(\blacksquare\)</p>
-        <div class="note">\(K_\varepsilon(A)\) az \(A\) pont \(\varepsilon\) sugarú környezete; \(A = \pm\infty\) esetén is értelmes (pl. \(K_\varepsilon(+\infty) = (1/\varepsilon, +\infty)\)), ezért működik a bizonyítás \(\overline{\R}\)-beli határértékre is.</div>
       </div>
     </details>
   </article>
 
   <article class="task" id="t12">
-    <div class="task-head"><span class="no">12.</span><span class="src">5. előadás · Taylor-polinomok</span></div>
+    <div class="task-head"><span class="no">12.</span></div>
     <p class="stmt"><b>A Taylor-formula a Lagrange-féle maradéktaggal.</b></p>
     <details>
       <summary>Tétel</summary>
@@ -591,7 +564,6 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
     <details>
       <summary>Bizonyítás</summary>
       <div class="sol">
-        <div class="tip"><b>Kulcsötlet:</b> \(F := f - T_{a,n}f\) és \(G := (x-a)^{n+1}\) mindketten \(n\)-szeres zérushellyel bírnak \(a\)-ban; a Cauchy-tételt \((n+1)\)-szer egymás után alkalmazzuk \(F, G\), majd \(F', G'\), …, \(F^{(n)}, G^{(n)}\)-re.</div>
         <p>A Cauchy-féle középértéktételt fogjuk felhasználni. Legyen</p>
         \[F(x) := f(x) - T_{a,n}f(x) \quad \big(x \in K(a)\big).\]
         <p>A \(T_{a,n}f\) polinom definíciójából következik, hogy</p>
@@ -609,7 +581,6 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
         <p>Az \(n\) számú lépés során kapott egyenlőségeket egybevetve azt kapjuk, hogy</p>
         \[\frac{f(x) - T_{a,n}f(x)}{(x - a)^{n+1}} = \frac{F(x)}{G(x)} = \frac{F'(\xi_1)}{G'(\xi_1)} = \dots = \frac{F^{(n)}(\xi_n)}{G^{(n)}(\xi_n)} = \frac{F^{(n+1)}(\xi_{n+1})}{G^{(n+1)}(\xi_{n+1})} = \frac{f^{(n+1)}(\xi_{n+1})}{(n+1)!},\]
         <p>hiszen minden \(x \in K(a)\) esetén \(F^{(n+1)}(x) = f^{(n+1)}(x)\) és \(G^{(n+1)}(x) = (n+1)!\). A konstrukcióból látható, hogy \(\xi_{n+1}\) az \(a\) pont és \(x\) között van, ezért a \(\xi := \xi_{n+1}\) választással a bizonyítandó állítást kapjuk. \(\blacksquare\)</p>
-        <div class="note"><b>Miért alkalmazható a Cauchy-tétel?</b> \(G^{(k)}(t) = \frac{(n+1)!}{(n+1-k)!}(t-a)^{n+1-k} \ne 0\), ha \(t \ne a\) és \(k \le n\), tehát a nevező deriváltja nem nulla a nyílt intervallumon; \(F^{(k)}, G^{(k)}\) pedig deriválhatók (\(f \in D^{n+1}\)).</div>
       </div>
     </details>
   </article>
@@ -617,7 +588,6 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
   </div>
 </section>
 
-<footer>Forrás: <a href="../1_zh_tetelek_An_II_A_B.pdf" target="_blank" rel="noopener">Bizonyítással kért tételek, 1. ZH (PDF)</a>; az 1–5. előadás diái (<a href="../El%C5%91ad%C3%A1s%20anyagok/01_ea_An_II_A_B.pdf" target="_blank" rel="noopener">1.</a>, <a href="../El%C5%91ad%C3%A1s%20anyagok/02_ea_An_II_A_B.pdf" target="_blank" rel="noopener">2.</a>, <a href="../El%C5%91ad%C3%A1s%20anyagok/03_ea_An_II_A_B.pdf" target="_blank" rel="noopener">3.</a>, <a href="../El%C5%91ad%C3%A1s%20anyagok/04_ea_An_II_A_B.pdf" target="_blank" rel="noopener">4.</a>, <a href="../El%C5%91ad%C3%A1s%20anyagok/05_ea_An_II_A_B.pdf" target="_blank" rel="noopener">5.</a>). A „Kulcsötlet” és a „Kiegészítés” dobozok saját magyarázatok, a tételek és bizonyítások az előadás megfogalmazását követik.</footer>
 </div>
 
 <!-- Fejezetsáv: az éppen olvasott szakasz gombja kiemelve -->

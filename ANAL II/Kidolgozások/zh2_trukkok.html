@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="hu" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Analízis II · Trükkök a 2. ZH-hoz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['\\(', '\\)']],
+      displayMath: [['\\[', '\\]']],
+      macros: {
+        arcsin: '\\operatorname{arc\\,sin}', arccos: '\\operatorname{arc\\,cos}',
+        arctg: '\\operatorname{arc\\,tg}', arcctg: '\\operatorname{arc\\,ctg}',
+        tg: '\\operatorname{tg}', ctg: '\\operatorname{ctg}', R: '\\mathbb{R}'
+      }
+    },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js" async></script>
+<style>
+/* Layout: same exam-paper look as the DIMAT prep, in the Analysis orange; every task = statement + folded solution + folded walkthrough */
+:root {
+  --paper: #f5f7fa;
+  --grid: rgba(180, 80, 11, 0.06);
+  --card: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6574;
+  --rule: #d7dde6;
+  --accent: #b4500b;
+  --accent-soft: #fcefe4;
+  --mark: #b8352a;
+  --mark-soft: #fbe9e6;
+  --ok: #2c7a4b;
+  --ok-soft: #e3f3e9;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-label: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f141b; --grid: rgba(242, 162, 94, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+    --rule: #2a3442; --accent: #f2a25e; --accent-soft: #33241a; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+    --ok: #74d39c; --ok-soft: #173225; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f141b; --grid: rgba(242, 162, 94, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+  --rule: #2a3442; --accent: #f2a25e; --accent-soft: #33241a; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+  --ok: #74d39c; --ok-soft: #173225; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background-color: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 1.06rem;
+  line-height: 1.6;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 80px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2rem, 6vw, 3.1rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.65rem; font-weight: 700; letter-spacing: -0.01em; }
+h3 { font-size: 1.1rem; font-weight: 600; }
+p { margin: 0; }
+a { color: var(--accent); }
+.label { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding: 2px 0; margin: 6px 0 !important; min-width: 0; max-width: 100%; }
+/* grid children must be allowed to shrink, otherwise wide formulas push the page sideways */
+.task, .sol, .step, .rule-card, .sheet > * { grid-template-columns: minmax(0, 1fr); min-width: 0; }
+.rule-card li, .rule-card p, .sol p, .sol li, .step p, .stmt, .tip, .warn, .mistake p, td { overflow-x: auto; overflow-y: hidden; }
+
+/* back to subject page */
+.back { justify-self: start; display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px 9px 12px; border: 1.5px solid var(--accent); border-radius: 8px; background: var(--accent-soft); color: var(--ink); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 1.02rem; line-height: 1; white-space: nowrap; transition: background .15s, color .15s; }
+.back .arr { color: var(--accent); font-size: 1.25rem; transition: transform .15s, color .15s; }
+.back:hover, .back:focus-visible { background: var(--accent); color: var(--paper); outline: none; }
+.back:hover .arr, .back:focus-visible .arr { color: var(--paper); transform: translateX(-3px); }
+
+/* header */
+header.hero { display: grid; gap: 14px; padding-block: 0 26px; border-bottom: 2px solid var(--accent); }
+.hero .sub { color: var(--muted); max-width: 62ch; }
+.facts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.fact { display: flex; flex-direction: column; gap: 2px; padding: 8px 14px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; min-width: 120px; }
+.fact b { font-family: var(--f-display); font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+
+nav.bar { position: sticky; top: 0; z-index: 5; background: var(--paper); border-bottom: 1px solid var(--rule); margin-inline: -16px; padding-inline: 16px; }
+nav.bar ul { list-style: none; margin: 0; padding: 10px 0; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin; }
+nav.bar a { display: block; white-space: nowrap; text-decoration: none; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.04em; color: var(--ink); padding: 6px 10px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); }
+nav.bar a:hover, nav.bar a:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+nav.bar a.nav-back { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+
+section { padding-top: 44px; display: grid; gap: 18px; scroll-margin-top: 56px; }
+.section-head { display: grid; gap: 6px; }
+.section-head p { color: var(--muted); max-width: 64ch; }
+
+/* reminder cards */
+.sheet { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; }
+.rule-card { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 14px 16px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.rule-card h3 { font-size: 1rem; }
+.rule-card p, .rule-card li { font-size: 0.95rem; }
+.rule-card ul, .rule-card ol { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.rule-card.wide { grid-column: 1 / -1; }
+
+/* tables (sign charts, value tables) */
+.tbl { overflow-x: auto; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--rule); vertical-align: middle; }
+th { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+tr:last-child td, tr:last-child th { border-bottom: 0; }
+table.sgn { width: auto; min-width: 100%; }
+table.sgn th, table.sgn td { text-align: center; white-space: nowrap; border-left: 1px solid var(--rule); }
+table.sgn th:first-child { border-left: 0; text-transform: none; letter-spacing: 0; font-family: var(--f-body); font-size: 1rem; color: var(--ink); background: var(--accent-soft); }
+table.sgn td.pt { background: color-mix(in srgb, var(--accent-soft) 55%, transparent); }
+.p { color: var(--ok); font-weight: 600; }
+.n { color: var(--mark); font-weight: 600; }
+.note { font-size: 0.82rem; color: var(--muted); }
+.tag { font-family: var(--f-label); font-size: 0.72rem; color: var(--accent); }
+
+/* exercises */
+.task { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 18px; display: grid; gap: 10px; min-width: 0; scroll-margin-top: 60px; }
+.task-head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.task-head .no { font-family: var(--f-display); font-weight: 700; font-size: 1.05rem; }
+.task-head .src { font-family: var(--f-label); font-size: 0.72rem; color: var(--muted); }
+.task-head .kind { margin-left: auto; font-family: var(--f-label); font-size: 0.75rem; color: var(--accent); }
+.stmt { max-width: 70ch; }
+details { border-top: 1px dashed var(--rule); padding-top: 8px; min-width: 0; }
+summary { cursor: pointer; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); list-style: none; display: inline-flex; gap: 8px; align-items: center; padding: 4px 0; }
+summary::-webkit-details-marker { display: none; }
+summary::before { content: "+"; display: inline-grid; place-items: center; width: 18px; height: 18px; border: 1px solid currentColor; border-radius: 3px; font-size: 0.8rem; }
+details[open] > summary::before { content: "−"; }
+summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sol { display: grid; gap: 10px; padding-top: 6px; max-width: 74ch; min-width: 0; }
+.sol ol, .sol ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.step { display: grid; gap: 8px; min-width: 0; }
+.step > b:first-child { font-family: var(--f-display); font-weight: 600; }
+.ans { display: inline-block; background: var(--ok-soft); color: var(--ok); font-weight: 600; padding: 2px 9px; border-radius: 4px; }
+.warn { background: var(--mark-soft); border-left: 3px solid var(--mark); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 0.95rem; }
+.tip { background: var(--accent-soft); border-left: 3px solid var(--accent); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 0.95rem; }
+.taskgroup { display: grid; gap: 12px; }
+
+/* graphs */
+figure.graph { margin: 0; background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 8px 8px 6px; display: grid; gap: 6px; }
+figure.graph > div > svg { width: 100%; height: auto; display: block; }
+figure.graph figcaption { display: flex; flex-wrap: wrap; gap: 4px 16px; font-family: var(--f-label); font-size: 0.72rem; color: var(--muted); padding: 0 4px; }
+.lg::before { content: ""; display: inline-block; width: 16px; height: 0; vertical-align: middle; margin-right: 6px; border-top: 2.5px solid var(--accent); }
+.lg.asy::before { border-top: 1.5px dashed var(--muted); }
+.lg.ext::before { width: 9px; height: 9px; border: 0; border-radius: 50%; background: var(--ok); }
+.lg.inf::before { width: 9px; height: 9px; border: 2px solid var(--mark); border-radius: 50%; box-sizing: border-box; }
+svg .gl { stroke: var(--rule); stroke-width: 1; opacity: .55; }
+svg .ax { stroke: var(--muted); stroke-width: 1.3; }
+svg .tk { fill: var(--muted); font-family: var(--f-label); font-size: 11px; }
+svg .cv { fill: none; stroke: var(--accent); stroke-width: 2.6; stroke-linejoin: round; stroke-linecap: round; }
+svg .as { stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 6 5; fill: none; }
+svg .pe { fill: var(--ok); stroke: var(--paper); stroke-width: 1.5; }
+svg .pi { fill: var(--paper); stroke: var(--mark); stroke-width: 2.2; }
+svg .pz { fill: var(--ink); }
+svg .po { fill: var(--paper); stroke: var(--accent); stroke-width: 2; }
+svg .pl { fill: var(--ink); font-family: var(--f-label); font-size: 12px; paint-order: stroke; stroke: var(--paper); stroke-width: 4px; stroke-linejoin: round; }
+
+/* mistakes */
+.mistakes { display: grid; gap: 10px; }
+.mistake { display: grid; grid-template-columns: auto 1fr; gap: 12px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 12px 14px; }
+.mistake .x { font-family: var(--f-display); font-weight: 700; color: var(--mark); font-size: 1.2rem; line-height: 1.3; }
+
+footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.88rem; }
+
+@media (max-width: 520px) {
+  body { font-size: 1rem; }
+  .task { padding: 14px; }
+  th, td { padding: 6px 8px; }
+}
+
+/* Taylor graphs: second curve dashed, highlighted x-band */
+svg .cv2 { fill: none; stroke: var(--ok); stroke-width: 2.2; stroke-dasharray: 7 5; }
+svg .bd { fill: var(--accent-soft); opacity: .8; }
+.lg.tay::before { border-top: 2.2px dashed var(--ok); }
+.lg.band::before { height: 10px; border: 0; background: var(--accent-soft); }
+/* primitive-function families and vertical asymptotes */
+svg .cv3 { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: .4; }
+.lg.fam::before { opacity: .45; border-top-width: 1.5px; }
+
+/* links to the shared ZH trick pages */
+.hero-links { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.tricks { display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; border: 1.5px dashed var(--accent); border-radius: 8px; color: var(--accent); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 0.98rem; line-height: 1; white-space: nowrap; }
+.tricks:hover, .tricks:focus-visible { background: var(--accent-soft); outline: none; }
+nav.bar a.nav-tricks { border-style: dashed; border-color: var(--accent); color: var(--accent); }
+.src-link { text-decoration: none; color: var(--accent); }
+.src-link:hover { text-decoration: underline; }
+h3.sub-head { font-family: var(--f-label); font-size: 0.78rem; font-weight: 500; letter-spacing: 0.09em; text-transform: uppercase; color: var(--mark); margin-top: 6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <a class="back" href="../../index.html#/anal2"><span class="arr" aria-hidden="true">←</span>Vissza: Analízis II.</a>
+  <span class="label">Analízis II. · 2. ZH · 7–12. gyakorlat</span>
+  <h1>Trükkök a 2. ZH-hoz</h1>
+  <p class="sub">Határozatlan és határozott integrál: a feladatokban használt fogások és a tipikus csapdák egy helyen. Az alapintegrálok külön oldalon: <a href="alapintegralok_kidolgozas.html">Alapintegrálok</a>.</p>
+</header>
+
+<nav class="bar" aria-label="Fejezetek">
+  <ul>
+    <li><a class="nav-back" href="../../index.html#/anal2" aria-label="Vissza: Analízis II.">← ANAL II</a></li>
+    <li><a href="#elso">1. helyettesítés, parciális</a></li>
+    <li><a href="#racionalis">Racionális törtek</a></li>
+    <li><a href="#masodik">2. helyettesítés</a></li>
+    <li><a href="#trig">Trigonometrikus</a></li>
+    <li><a href="#hatarozott">Határozott integrál</a></li>
+  </ul>
+</nav>
+
+<!-- ================= 1. HELYETTESÍTÉS, PARCIÁLIS ================= -->
+<section id="elso">
+  <div class="section-head">
+    <a class="label src-link" href="07_gyakorlat_kidolgozas.html">7. gyakorlat →</a>
+    <h2>Első helyettesítés, parciális integrálás</h2>
+  </div>
+  <div class="sheet">
+    <div class="rule-card wide">
+      <h3>Az első helyettesítés speciális esetei</h3>
+      <ul>
+        <li>\(\displaystyle\int\frac{f'}{f} = \ln f + c\) \((f \gt 0)\); ha \(f \lt 0\), akkor \(\ln(-f) + c\).</li>
+        <li>\(\displaystyle\int f^\alpha f' = \frac{f^{\alpha+1}}{\alpha+1} + c\) \((\alpha \ne -1)\).</li>
+        <li>\(\displaystyle\int f(ax+b)\,dx = \frac{F(ax+b)}{a} + c\): a \(\frac1a\) szorzó nem maradhat el (\(\int\cos 2x = \frac{\sin 2x}{2}\)).</li>
+        <li>\(\displaystyle\int\frac{f'}{1+f^2} = \arctg f + c\), pl. \(\int\frac{e^x}{1+e^{2x}} = \arctg e^x + c\).</li>
+      </ul>
+      <p>Mindig keresd, hogy az egyik tényező a másik belső függvényének deriváltja-e: ha igen, az első helyettesítés elég.</p>
+    </div>
+    <div class="rule-card">
+      <h3>Parciális integrálás: szereposztás</h3>
+      \[\int fg' = fg - \int f'g.\]
+      <ul>
+        <li>\(P(x)\cdot\{e^{ax}, \sin, \cos\}\): \(f = P\) (a polinom fogy).</li>
+        <li>\(P(x)\cdot\{\ln, \arctg, \arcsin\dots\}\): \(g' = P\).</li>
+        <li>\(\int\ln x\), \(\int\arctg x\): \(g' = 1\).</li>
+      </ul>
+      <p>Jó a szereposztás, ha \(\int f'g\) egyszerűbb, mint az eredeti.</p>
+    </div>
+    <div class="rule-card">
+      <h3>Visszatérő integrál</h3>
+      <p>\(\int e^{\alpha x}\sin x\): kétszer parciálisan, <b>mindkétszer ugyanazt</b> a tényezőt véve \(g'\)-nek; az eredeti integrál visszajön, és egyenletként kifejezhető.</p>
+      \[\int e^{\alpha x}\sin ax\,dx = \frac{e^{\alpha x}(\alpha\sin ax - a\cos ax)}{\alpha^2 + a^2} + c.\]
+    </div>
+    <div class="rule-card">
+      <h3>Határozatlan együtthatók</h3>
+      <p>\(\int P(x)e^{ax}\) primitív függvénye \(Q(x)e^{ax}\) alakú, \(\deg Q = \deg P\). Deriváld \(Q(x)e^{ax}\)-et, és vesd össze az együtthatókat: gyorsabb, mint többször parciálisan integrálni.</p>
+    </div>
+    <div class="rule-card">
+      <h3>Linearizálás</h3>
+      <p>\(\sin^2 x = \frac{1-\cos 2x}{2}\), \(\cos^2 x = \frac{1+\cos 2x}{2}\). Páratlan kitevőnél: \(\sin^3 x = (1-\cos^2 x)\sin x\), és \(f^\alpha f'\) tagok jönnek.</p>
+    </div>
+    <div class="rule-card">
+      <h3>Konstans és ellenőrzés</h3>
+      <p>Elég egyetlen \(+c\) a végén. Ellenőrzés mindig deriválással: \(F' = f\)? Mindig írd ki az intervallumot.</p>
+    </div>
+  </div>
+  <h3 class="sub-head">Csapdák</h3>
+  <div class="mistakes">
+    <div class="mistake"><span class="x">✕</span><p><b>\(\int fg = \int f\cdot\int g\).</b> Szorzatra nincs ilyen szabály: első helyettesítés vagy parciális integrálás kell.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>\(\int\sin^2 x = \frac{\sin^3 x}{3}\).</b> Az \(f^\alpha f'\) típushoz kell az \(f'\) szorzó is; páros kitevőnél linearizálunk.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Szerepcsere a visszatérő integrálnál.</b> Ha a második lépésben a másik tényező lesz \(g'\), \(I = I\) jön ki.</p></div>
+  </div>
+</section>
+
+<!-- ================= RACIONÁLIS TÖRTEK ================= -->
+<section id="racionalis">
+  <div class="section-head">
+    <a class="label src-link" href="08_gyakorlat_kidolgozas.html">8. gyakorlat →</a>
+    <h2>Racionális törtfüggvények</h2>
+  </div>
+  <div class="sheet">
+    <div class="rule-card wide">
+      <h3>Az eljárás</h3>
+      <ol>
+        <li><b>Maradékos osztás</b>, ha \(\deg P \ge \deg Q\).</li>
+        <li>A nevező szorzattá alakítása; valós gyökkel rendelkező másodfokú tényezőt tovább bontunk (\(x^2 - 6x + 8 = (x-2)(x-4)\)).</li>
+        <li>Parciális törtek: elsőfokú tényezőhöz konstans, gyök nélküli másodfokúhoz \(Bx + C\), magasabb kitevőnél minden alacsonyabb kitevő is.</li>
+      </ol>
+      \[\frac{x+1}{(x-2)^3} = \frac{A_1}{x-2} + \frac{A_2}{(x-2)^2} + \frac{A_3}{(x-2)^3}, \qquad \frac{x^2+3}{(x-1)(x^2+x+1)} = \frac{A}{x-1} + \frac{Bx + C}{x^2+x+1}.\]
+    </div>
+    <div class="rule-card">
+      <h3>Együtthatók gyorsan</h3>
+      <p>Közös nevező után a számlálók minden \(x\)-re egyenlők. Írd be a nevező valós gyökeit (egy-egy együttható azonnal kijön), a maradékot a főegyütthatóból vagy \(x = 0\)-ból kapod.</p>
+    </div>
+    <div class="rule-card">
+      <h3>Elsőfokú nevező</h3>
+      \[\int\frac{dx}{ax+b} = \frac{\ln|ax+b|}{a}, \qquad \int\frac{dx}{(ax+b)^n} = \frac{(ax+b)^{1-n}}{a(1-n)}.\]
+      <p>Az abszolút értéket az intervallum oldja fel: \(x \lt \frac73\)-ra \(\ln|3x-7| = \ln(7-3x)\).</p>
+    </div>
+    <div class="rule-card">
+      <h3>Gyök nélküli másodfokú nevező</h3>
+      <p>Számláló: \(Ax + B = \gamma(2ax+b) + \delta\), így \(\gamma\ln(ax^2+bx+c)\) + arctg-os rész. A nevezőt teljes négyzetté alakítjuk:</p>
+      \[\int\frac{dx}{(x+\alpha)^2 + k^2} = \frac1k\arctg\frac{x+\alpha}{k} + c.\]
+    </div>
+    <div class="rule-card">
+      <h3>Konstans beolvad</h3>
+      <p>\(\frac32\ln(2x+6) = \frac32\ln 2 + \frac32\ln(x+3)\): mindkét alak helyes, a \(\frac32\ln 2\) a konstansba megy.</p>
+    </div>
+  </div>
+  <h3 class="sub-head">Csapdák</h3>
+  <div class="mistakes">
+    <div class="mistake"><span class="x">✕</span><p><b>Kimaradt maradékos osztás.</b> \(\deg P \ge \deg Q\) esetén a bontás közvetlenül nem működik.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Hiányzó alacsonyabb kitevő.</b> \((x+1)^2\)-hez \(\frac{A}{x+1} + \frac{B}{(x+1)^2}\) kell.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Konstans számláló a másodfokú tényező fölött.</b> \(Bx + C\) kell, nem \(B\).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>\(\frac1k\) helyett \(\frac1{k^2}\)</b> az arctg előtt.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Abszolút érték az intervallum nélkül.</b> \(x \lt 1\)-re \(\int\frac{dx}{x-1} = \ln(1-x)\), nem \(\ln(x-1)\).</p></div>
+  </div>
+</section>
+
+<!-- ================= 2. HELYETTESÍTÉS ================= -->
+<section id="masodik">
+  <div class="section-head">
+    <a class="label src-link" href="09_gyakorlat_kidolgozas.html">9. gyakorlat →</a>
+    <h2>Második helyettesítés</h2>
+  </div>
+  <div class="sheet">
+    <div class="rule-card wide">
+      <h3>A recept</h3>
+      \[\int f(x)\,dx = \int f(g(t))\,g'(t)\,dt\;\Big|_{t = g^{-1}(x)}\]
+      <ol>
+        <li>\(t = g^{-1}(x)\), kifejezve \(x = g(t)\); \(J\)-t úgy választjuk, hogy \(g : J \to I\) bijekció és \(g' \ne 0\) legyen.</li>
+        <li>\(dx\) helyére \(g'(t)\,dt\).</li>
+        <li>Racionális tört \(t\)-ben: maradékos osztás, parciális törtek.</li>
+        <li>Visszahelyettesítés \(t = g^{-1}(x)\).</li>
+      </ol>
+    </div>
+    <div class="rule-card">
+      <h3>\(\int S(e^x)\,dx\)</h3>
+      <p>\(t = e^x\), \(x = \ln t\), \(dx = \frac1t\,dt\); \(e^{2x} = t^2\), \(e^{-x} = \frac1t\). Ha már ott van az \((e^x)'\) szorzó, az első helyettesítés is elég.</p>
+    </div>
+    <div class="rule-card">
+      <h3>Gyökös kifejezés</h3>
+      <p>\(t = \sqrt[n]{\frac{ax+b}{cx+d}}\), \(x = \frac{b - dt^n}{ct^n - a}\). Speciálisan \(t = \sqrt[n]{ax+b}\), \(x = \frac{t^n - b}{a}\).</p>
+      <p>Lineáris gyök alatt helyettesítés nélkül is: \(x\sqrt{5x+3} = \frac15(5x+3)^{3/2} - \frac35(5x+3)^{1/2}\).</p>
+    </div>
+    <div class="rule-card">
+      <h3>Több különböző gyök</h3>
+      <p>\(\sqrt[m]{x}\) és \(\sqrt[k]{x}\) mellett \(x = t^N\), \(N\) a legkisebb közös többszörös: \(\sqrt x\), \(\sqrt[3]x\) → \(x = t^6\), \(\sqrt x = t^3\), \(\sqrt[3]x = t^2\).</p>
+    </div>
+    <div class="rule-card">
+      <h3>\(\sqrt{1-x^2}\)</h3>
+      <p>\(x = \cos t\), \(t \in (0,\pi)\) vagy \(x = \sin t\), \(t \in \big(-\frac\pi2, \frac\pi2\big)\). \(\sqrt{1-\cos^2 t} = |\sin t| = \sin t\), mert \((0,\pi)\)-n \(\sin t \gt 0\). \(\sqrt{1+x^2}\)-hez \(x = \operatorname{sh} t\).</p>
+    </div>
+    <div class="rule-card">
+      <h3>Más alak, ugyanaz az eredmény</h3>
+      <p>Két primitív függvény konstansban eltérhet: \(\arcsin x = \frac\pi2 - \arccos x\). Ellenőrzés deriválással, vagy egy pontban számold ki a különbséget.</p>
+    </div>
+  </div>
+  <h3 class="sub-head">Csapdák</h3>
+  <div class="mistakes">
+    <div class="mistake"><span class="x">✕</span><p><b>Elmarad a \(g'(t)\) szorzó.</b> \(t = e^x\)-nél \(\frac1t\), \(x = t^6\)-nál \(6t^5\).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Nincs (jó) visszahelyettesítés.</b> A végeredmény \(x\) függvénye.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Rossz \(J\).</b> \(x = t^2\) az egész \(\R\)-en nem injektív; \(J\)-t \(I\)-hez kell igazítani.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>\(\sqrt{a^2} = a\).</b> \(\sqrt{a^2} = |a|\): \(\sqrt{t^6} = |t|^3\); az előjelet \(J\) dönti el, a \(\ln\)-ek abszolút értékét is.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Gyenge helyettesítés több gyöknél.</b> \(\sqrt x\), \(\sqrt[3]x\) mellett \(x = t^2\) vagy \(t^3\) után gyök marad.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Kimaradt maradékos osztás a helyettesítés után.</b> \(\frac{t^2}{t+2}\), \(\frac{t^3}{t+1}\): előbb osztani kell.</p></div>
+  </div>
+</section>
+
+<!-- ================= TRIGONOMETRIKUS ================= -->
+<section id="trig">
+  <div class="section-head">
+    <a class="label src-link" href="10_gyakorlat_kidolgozas.html">10. gyakorlat →</a>
+    <h2>Trigonometrikus integrálok</h2>
+  </div>
+  <div class="sheet">
+    <div class="rule-card">
+      <h3>\(t = \tg\frac x2\)</h3>
+      \[\sin x = \frac{2t}{1+t^2}, \quad \cos x = \frac{1-t^2}{1+t^2}, \quad dx = \frac{2}{1+t^2}\,dt.\]
+      <p>\(R(\sin x, \cos x)\) racionális tört lesz \(t\)-ben. Csak \(x \ne \pi + 2k\pi\) mellett értelmes.</p>
+    </div>
+    <div class="rule-card">
+      <h3>Intervallumpárok</h3>
+      <ul>
+        <li>\(x \in (-\pi, \pi) \leftrightarrow t \in \R\),</li>
+        <li>\(x \in (0, \pi) \leftrightarrow t \in (0, +\infty)\),</li>
+        <li>\(x \in \big(-\frac\pi2, \frac\pi2\big) \leftrightarrow t \in (-1, 1)\).</li>
+      </ul>
+      <p>Ebből látszik \(t\) előjele a \(\ln|\dots|\) feloldásához.</p>
+    </div>
+    <div class="rule-card">
+      <h3>Egyszerűbb helyettesítés szimmetriából</h3>
+      <ul>
+        <li>\(t = \tg x\), ha \(R(-u,-v) = R(u,v)\);</li>
+        <li>\(t = \sin x\), ha \(R(u,-v) = -R(u,v)\);</li>
+        <li>\(t = \cos x\), ha \(R(-u,v) = -R(u,v)\).</li>
+      </ul>
+      <p>Pl. \(\frac{1}{\cos x} = \frac{\cos x}{1-\sin^2 x}\), és \(t = \sin x\).</p>
+    </div>
+    <div class="rule-card">
+      <h3>\(\int\sin^n x\cos^m x\)</h3>
+      <ul>
+        <li><b>Páratlan kitevő</b> (pl. \(m\)): egy \(\cos x\)-et leválasztunk, a többit \(\cos^2 = 1 - \sin^2\)-tel írjuk át → \(f^\alpha f'\) tagok.</li>
+        <li><b>Mindkettő páros:</b> linearizálás, a kitevő feleződik.</li>
+      </ul>
+    </div>
+    <div class="rule-card">
+      <h3>Félszög- és linearizáló formulák</h3>
+      \[1 - \cos x = 2\sin^2\tfrac x2, \qquad 1 + \cos x = 2\cos^2\tfrac x2,\]
+      \[\int\sin^2 x\,dx = \frac x2 - \frac{\sin 2x}{4} + c.\]
+    </div>
+    <div class="rule-card">
+      <h3>Rekurziós formulák</h3>
+      \[\int\cos^n x = \frac1n\sin x\cos^{n-1}x + \frac{n-1}{n}\int\cos^{n-2}x,\]
+      \[\int\sin^n x = -\frac1n\sin^{n-1}x\cos x + \frac{n-1}{n}\int\sin^{n-2}x.\]
+    </div>
+  </div>
+  <h3 class="sub-head">Csapdák</h3>
+  <div class="mistakes">
+    <div class="mistake"><span class="x">✕</span><p><b>Elmarad a \(\frac{2}{1+t^2}\) szorzó.</b></p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>\((0, 2\pi)\)-n vagy \(\R\)-en a \(t = \tg\frac x2\) közvetlenül.</b> \(2\arctg t\) csak \((-\pi, \pi)\)-be képez.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>\(t\) tartománya a logaritmusnál.</b> \(t \in (-1,1)\)-re \(\int\frac{dt}{1-t} = -\ln(1-t)\), nem \(\ln(t-1)\).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Lineáris szorzó linearizálás után.</b> \(\int\sin^2 2x\,dx = \frac x2 - \frac{\sin 4x}{8}\), nem \(\frac{\sin 4x}{4}\).</p></div>
+  </div>
+</section>
+
+<!-- ================= HATÁROZOTT INTEGRÁL ================= -->
+<section id="hatarozott">
+  <div class="section-head">
+    <a class="label src-link" href="11_12_gyakorlat_kidolgozas.html">11–12. gyakorlat →</a>
+    <h2>Határozott integrál és alkalmazásai</h2>
+  </div>
+  <div class="sheet">
+    <div class="rule-card">
+      <h3>Newton–Leibniz menete</h3>
+      <ol>
+        <li>Az integrandus folytonos \([a,b]\)-n? (Ekkor integrálható és van primitív függvénye.)</li>
+        <li>Primitív függvény.</li>
+        <li>\(\big[F(x)\big]_a^b = F(b) - F(a)\).</li>
+      </ol>
+    </div>
+    <div class="rule-card">
+      <h3>Helyettesítés és parciális határokkal</h3>
+      \[\int_a^b f(g(t))g'(t)\,dt = \int_{g(a)}^{g(b)} f(x)\,dx, \qquad \int_a^b f'g = \big[fg\big]_a^b - \int_a^b fg'.\]
+      <p>Ha az új változóval számolsz, a határokat is írd át; így nem kell visszahelyettesíteni.</p>
+    </div>
+    <div class="rule-card">
+      <h3>Terület</h3>
+      <p>\(t = \int_a^b (g - f)\), ha \(f \le g\) az egész \([a,b]\)-n. Metszéspontok → ahol a felső vagy alsó görbe vált, ott szét kell vágni. \(y^2 = 2x + 6\)-nál mindkét ág kell: \(y = \pm\sqrt{2x+6}\).</p>
+    </div>
+    <div class="rule-card">
+      <h3>Ívhossz, térfogat, felszín</h3>
+      \[\ell = \int_a^b\sqrt{1 + f'^2}, \quad V = \pi\int_a^b f^2, \quad A = 2\pi\int_a^b f\sqrt{1 + f'^2}.\]
+      <p>A térfogatnál a keresztmetszet \(f(x)\) sugarú körlap, területe \(\pi f^2(x)\).</p>
+    </div>
+    <div class="rule-card wide">
+      <h3>Összeg határértéke integrállal</h3>
+      \[\lim_{n\to+\infty}\frac1n\sum_{k=1}^n f\Big(\frac kn\Big) = \int_0^1 f(x)\,dx.\]
+      <p>Emeld ki \(\frac1n\)-et; ami marad, csak \(\frac kn\)-től függhet, abból olvasd le \(f\)-et. Pl. \(\sum_{k=1}^n\frac{1}{n+k} = \frac1n\sum\frac{1}{1 + \frac kn}\) → \(f(x) = \frac{1}{1+x}\), az eredmény \(\ln 2\).</p>
+    </div>
+  </div>
+  <h3 class="sub-head">Csapdák</h3>
+  <div class="mistakes">
+    <div class="mistake"><span class="x">✕</span><p><b>Helyettesítés után a régi határok maradnak.</b></p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Terület előjeles integrállal.</b> Ha a görbék sorrendje vált, a részek kiejthetik egymást.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>\(V = \pi\int f\) vagy \(\int f^2\).</b> Helyesen \(\pi\int f^2\).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>\(\sqrt{1 + f'}\) vagy \(\sqrt{1 + f^2}\)</b> az ívhossznál. Helyesen \(\sqrt{1 + [f']^2}\).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Rossz \(f\) az összegnél.</b> \(\frac{1}{n+k}\)-ból \(\frac{1}{1+x}\) lesz, nem \(\frac1x\).</p></div>
+  </div>
+</section>
+
+</div>
+
+<!-- Fejezetsáv: az éppen olvasott szakasz gombja kiemelve -->
+<style>
+nav.bar a.active, nav.bar a.active:hover, nav.bar a.active:focus-visible { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+</style>
+<script>
+(function () {
+  var nav = document.querySelector('nav.bar');
+  if (!nav) return;
+  var links = Array.prototype.filter.call(nav.querySelectorAll('a[href^="#"]'), function (a) {
+    return a.getAttribute('href').length > 1 && document.getElementById(a.getAttribute('href').slice(1));
+  });
+  var current = null, ticking = false;
+  function sectionOf(a) { return document.getElementById(a.getAttribute('href').slice(1)); }
+  function update() {
+    ticking = false;
+    var line = nav.getBoundingClientRect().bottom + 12, active = null;
+    var visible = links.filter(function (a) { return sectionOf(a).offsetParent !== null; });
+    visible.forEach(function (a) { if (sectionOf(a).getBoundingClientRect().top <= line) active = a; });
+    // a lap alján az utolsó szakasz az aktuális akkor is, ha rövid
+    if (visible.length && window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) active = visible[visible.length - 1];
+    if (active === current) return;
+    if (current) { current.classList.remove('active'); current.removeAttribute('aria-current'); }
+    current = active;
+    if (!active) return;
+    active.classList.add('active');
+    active.setAttribute('aria-current', 'location');
+    var ul = active.closest('ul'), ur = ul.getBoundingClientRect(), ar = active.getBoundingClientRect();
+    var left = ar.left - ur.left + ul.scrollLeft, right = left + ar.width;
+    if (left < ul.scrollLeft || right > ul.scrollLeft + ul.clientWidth) ul.scrollTo({ left: Math.max(0, left - 16), behavior: 'smooth' });
+  }
+  function schedule() { if (!ticking) { ticking = true; setTimeout(update, 40); } }
+  window.addEventListener('scroll', schedule, { passive: true });
+  window.addEventListener('resize', schedule);
+  document.addEventListener('input', schedule);   // a keresés elrejthet szakaszokat
+  document.addEventListener('toggle', schedule, true);
+  update();
+})();
+</script>
+</body>
+</html>

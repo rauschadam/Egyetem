@@ -188,13 +188,25 @@ svg .bd { fill: var(--accent-soft); opacity: .8; }
 /* primitive-function families and vertical asymptotes */
 svg .cv3 { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: .4; }
 .lg.fam::before { opacity: .45; border-top-width: 1.5px; }
+
+/* links to the shared ZH trick pages */
+.hero-links { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.tricks { display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; border: 1.5px dashed var(--accent); border-radius: 8px; color: var(--accent); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 0.98rem; line-height: 1; white-space: nowrap; }
+.tricks:hover, .tricks:focus-visible { background: var(--accent-soft); outline: none; }
+nav.bar a.nav-tricks { border-style: dashed; border-color: var(--accent); color: var(--accent); }
+.src-link { text-decoration: none; color: var(--accent); }
+.src-link:hover { text-decoration: underline; }
+h3.sub-head { font-family: var(--f-label); font-size: 0.78rem; font-weight: 500; letter-spacing: 0.09em; text-transform: uppercase; color: var(--mark); margin-top: 6px; }
 </style>
 </head>
 <body>
 <div class="wrap">
 
 <header class="hero">
-  <a class="back" href="../../index.html#/anal2"><span class="arr" aria-hidden="true">←</span>Vissza: Analízis II.</a>
+  <div class="hero-links">
+    <a class="back" href="../../index.html#/anal2"><span class="arr" aria-hidden="true">←</span>Vissza: Analízis II.</a>
+    <a class="tricks" href="zh2_trukkok.html">Trükkök a 2. ZH-hoz →</a>
+  </div>
   <span class="label">Analízis II. · 7. gyakorlat · Primitív függvény, határozatlan integrál 1.</span>
   <h1>A 7. gyakorlat kidolgozva</h1>
   <p class="sub">Alapintegrálok, linearitás, az első helyettesítési szabály speciális esetei és a parciális integrálás. Az órai feladatok a gyakorlati anyag megoldását követik, a házi feladatok (az összevont anyagból) saját megoldások. Az órán kérdezett röpZH-tételek: <a href="ropzh_kidolgozas.html#rz7">7. röpZH</a>. Előbb próbáld meg magad, és csak utána nyisd le a megoldást.</p>
@@ -208,76 +220,12 @@ svg .cv3 { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: .4; }
 <nav class="bar" aria-label="Fejezetek">
   <ul>
     <li><a class="nav-back" href="../../index.html#/anal2" aria-label="Vissza: Analízis II.">← ANAL II</a></li>
-    <li><a href="#emlekezteto">Emlékeztető</a></li>
     <li><a href="#orai">Órai feladatok</a></li>
     <li><a href="#hazi">Házi feladatok</a></li>
-    <li><a href="#hibak">Gyakori hibák</a></li>
+    <li><a class="nav-tricks" href="zh2_trukkok.html">Trükkök (2. ZH) →</a></li>
     <li><a href="ropzh_kidolgozas.html#rz7">7. röpZH ↗</a></li>
   </ul>
 </nav>
-
-<!-- ================= EMLÉKEZTETŐ ================= -->
-<section id="emlekezteto">
-  <div class="section-head">
-    <span class="label">Ami kell hozzá</span>
-    <h2>Emlékeztető</h2>
-    <p>A 7. gyakorlat elméleti összefoglalója röviden. A feladatokban végig ezekre hivatkozunk.</p>
-  </div>
-  <div class="sheet">
-    <div class="rule-card">
-      <h3>Primitív függvény, határozatlan integrál</h3>
-      <p>Legyen \(I \subset \R\) nyílt intervallum, \(f : I \to \R\). Az \(F : I \to \R\) az \(f\) primitív függvénye, ha \(F \in D(I)\) és \(F'(x) = f(x)\) \((x \in I)\).</p>
-      <p>Intervallumon bármely két primitív függvény csak konstansban tér el, ezért</p>
-      \[\int f(x)\,dx = F(x) + c \quad (x \in I).\]
-      <p class="note">Az intervallumot mindig fel kell tüntetni. Ellenőrzés: \(F' = f\)?</p>
-    </div>
-    <div class="rule-card">
-      <h3>Linearitás</h3>
-      <p>Ha \(f\)-nek és \(g\)-nek van primitív függvénye \(I\)-n, akkor minden \(\alpha, \beta \in \R\)-re</p>
-      \[\int (\alpha f + \beta g) = \alpha\int f + \beta\int g.\]
-      <p class="note">Szorzatra és hányadosra <b>nincs</b> ilyen szabály: \(\int fg \ne \int f \cdot \int g\).</p>
-    </div>
-    <div class="rule-card wide">
-      <h3>Alapintegrálok</h3>
-      <div class="tbl"><table>
-        <thead><tr><th>\(f(x)\)</th><th>\(\int f(x)\,dx\)</th><th>\(f(x)\)</th><th>\(\int f(x)\,dx\)</th></tr></thead>
-        <tbody>
-          <tr><td>\(x^\alpha\) \((\alpha \ne -1)\)</td><td>\(\dfrac{x^{\alpha+1}}{\alpha+1}\)</td><td>\(\dfrac{1}{\cos^2 x}\)</td><td>\(\tg x\)</td></tr>
-          <tr><td>\(\dfrac1x\) \((x \gt 0)\)</td><td>\(\ln x\)</td><td>\(\dfrac{1}{\sin^2 x}\)</td><td>\(-\ctg x\)</td></tr>
-          <tr><td>\(e^x\)</td><td>\(e^x\)</td><td>\(\dfrac{1}{1+x^2}\)</td><td>\(\arctg x\)</td></tr>
-          <tr><td>\(a^x\) \((a \gt 0, a \ne 1)\)</td><td>\(\dfrac{a^x}{\ln a}\)</td><td>\(\dfrac{1}{\sqrt{1-x^2}}\) \((|x| \lt 1)\)</td><td>\(\arcsin x\)</td></tr>
-          <tr><td>\(\sin x\)</td><td>\(-\cos x\)</td><td>\(\operatorname{sh} x\)</td><td>\(\operatorname{ch} x\)</td></tr>
-          <tr><td>\(\cos x\)</td><td>\(\sin x\)</td><td>\(\operatorname{ch} x\)</td><td>\(\operatorname{sh} x\)</td></tr>
-        </tbody>
-      </table></div>
-    </div>
-    <div class="rule-card wide">
-      <h3>Első helyettesítési szabály és speciális esetei</h3>
-      <p>Ha \(g \in D(I)\), \(\mathcal R_g \subset J\) és \(F\) az \(f : J \to \R\) primitív függvénye, akkor</p>
-      \[\int f\big(g(x)\big)\,g'(x)\,dx = F\big(g(x)\big) + c \quad (x \in I).\]
-      <ul>
-        <li><b>\(\frac{f'}{f}\) típus</b> (\(f \gt 0\)): \(\displaystyle\int \frac{f'(x)}{f(x)}\,dx = \ln f(x) + c\). Ha \(f \lt 0\), akkor \(\ln(-f(x)) + c\).</li>
-        <li><b>\(f^\alpha f'\) típus</b> (\(f \gt 0\), \(\alpha \ne -1\)): \(\displaystyle\int f^\alpha(x)\,f'(x)\,dx = \frac{f^{\alpha+1}(x)}{\alpha+1} + c\). Ha \(\alpha \in \mathbb N\), az \(f \gt 0\) feltétel nem kell.</li>
-        <li><b>Lineáris helyettesítés</b> (\(a \ne 0\)): \(\displaystyle\int f(ax+b)\,dx = \frac{F(ax+b)}{a} + c\).</li>
-      </ul>
-    </div>
-    <div class="rule-card">
-      <h3>Parciális integrálás</h3>
-      <p>Ha \(f, g \in D(I)\) és \(f'g\)-nek van primitív függvénye, akkor</p>
-      \[\int f g' = f g - \int f' g.\]
-      <p class="note">Szereposztás: \(P(x)\cdot\{e^{ax}, \sin, \cos\}\): \(f = P\). \(P(x)\cdot\{\ln, \operatorname{arc}\dots\}\): \(g' = P\). \(\int \ln x\), \(\int \arctg x\): \(g' = 1\).</p>
-    </div>
-    <div class="rule-card">
-      <h3>Hasznos trigonometrikus azonosságok</h3>
-      <ul>
-        <li>\(\sin^2 x = \dfrac{1 - \cos 2x}{2}\), \(\cos^2 x = \dfrac{1 + \cos 2x}{2}\)</li>
-        <li>\(1 + \cos 2x = 2\cos^2 x\)</li>
-        <li>\(\sin^2 x + \cos^2 x = 1\), tehát \(\sin^3 x = (1 - \cos^2 x)\sin x\)</li>
-        <li>\((\tg x)' = \dfrac{1}{\cos^2 x}\)</li>
-      </ul>
-    </div>
-  </div>
-</section>
 
 <!-- ================= ÓRAI FELADATOK ================= -->
 <section id="orai">
@@ -720,22 +668,6 @@ svg .cv3 { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: .4; }
     </details>
   </article>
 
-  </div>
-</section>
-
-<!-- ================= GYAKORI HIBÁK ================= -->
-<section id="hibak">
-  <div class="section-head">
-    <span class="label">Mire figyelj</span>
-    <h2>Gyakori hibák</h2>
-  </div>
-  <div class="mistakes">
-    <div class="mistake"><span class="x">✕</span><p><b>\(\int f g = \int f\cdot\int g\).</b> Szorzatra nincs ilyen szabály. Szorzatnál az első helyettesítési szabály (ha az egyik tényező a másik belső függvényének deriváltja) vagy a parciális integrálás segít.</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>Hiányzó \(\frac1a\) a lineáris helyettesítésnél.</b> \(\int\cos 2x\,dx = \frac{\sin 2x}{2}\), nem \(\sin 2x\). Deriválással azonnal kiderül.</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>\(\int\sin^2 x\,dx = \frac{\sin^3 x}{3}\).</b> Az \(f^\alpha f'\) típushoz kell az \(f'\) szorzó is. Páros kitevőjű \(\sin\), \(\cos\) esetén linearizálunk (órai 2(e)).</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>Elfelejtett intervallum vagy előjel a logaritmusban.</b> \(\int\frac{f'}{f} = \ln f\) csak \(f \gt 0\)-n; ha \(f \lt 0\), akkor \(\ln(-f)\) (órai 2(c) megjegyzése). Mindig nézd meg, hol dolgozol.</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>Rossz szereposztás a parciális integrálásnál.</b> \(\int x^2\ln x\)-nél ha \(g' = \ln x\) lenne, egyre bonyolultabb integrált kapnál. Az a jó szereposztás, ahol \(\int f'g\) egyszerűbb, mint az eredeti.</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>Szerepcsere a „visszatérő” integráloknál.</b> Az \(\int e^{\alpha x}\sin x\) típusnál a második parciális integrálásban is ugyanazt a tényezőt kell \(g'\)-nek venni, különben \(I = I\) jön ki (órai 3(b)).</p></div>
   </div>
 </section>
 

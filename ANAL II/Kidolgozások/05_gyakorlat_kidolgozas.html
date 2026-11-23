@@ -179,13 +179,25 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
   .task { padding: 14px; }
   th, td { padding: 6px 8px; }
 }
+
+/* links to the shared ZH trick pages */
+.hero-links { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.tricks { display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; border: 1.5px dashed var(--accent); border-radius: 8px; color: var(--accent); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 0.98rem; line-height: 1; white-space: nowrap; }
+.tricks:hover, .tricks:focus-visible { background: var(--accent-soft); outline: none; }
+nav.bar a.nav-tricks { border-style: dashed; border-color: var(--accent); color: var(--accent); }
+.src-link { text-decoration: none; color: var(--accent); }
+.src-link:hover { text-decoration: underline; }
+h3.sub-head { font-family: var(--f-label); font-size: 0.78rem; font-weight: 500; letter-spacing: 0.09em; text-transform: uppercase; color: var(--mark); margin-top: 6px; }
 </style>
 </head>
 <body>
 <div class="wrap">
 
 <header class="hero">
-  <a class="back" href="../../index.html#/anal2"><span class="arr" aria-hidden="true">←</span>Vissza: Analízis II.</a>
+  <div class="hero-links">
+    <a class="back" href="../../index.html#/anal2"><span class="arr" aria-hidden="true">←</span>Vissza: Analízis II.</a>
+    <a class="tricks" href="zh1_trukkok.html">Trükkök az 1. ZH-hoz →</a>
+  </div>
   <span class="label">Analízis II. · 5. gyakorlat · Differenciálszámítás 4.</span>
   <h1>Az 5. gyakorlat kidolgozva</h1>
   <p class="sub">Inverz trigonometrikus függvények és teljes függvényvizsgálat. Előbb próbáld meg magad megoldani a feladatot, és csak utána nyisd le a megoldást. A „Részletes magyarázat” a számolási lépéseket és a buktatókat is végigveszi.</p>
@@ -199,74 +211,11 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
 <nav class="bar" aria-label="Fejezetek">
   <ul>
     <li><a class="nav-back" href="../../index.html#/anal2" aria-label="Vissza: Analízis II.">← ANAL II</a></li>
-    <li><a href="#emlekezteto">Emlékeztető</a></li>
     <li><a href="#orai">Órai feladatok</a></li>
     <li><a href="#hazi">Házi feladatok</a></li>
-    <li><a href="#hibak">Gyakori hibák</a></li>
+    <li><a class="nav-tricks" href="zh1_trukkok.html">Trükkök (1. ZH) →</a></li>
   </ul>
 </nav>
-
-<!-- ================= EMLÉKEZTETŐ ================= -->
-<section id="emlekezteto">
-  <div class="section-head">
-    <span class="label">Ami kell hozzá</span>
-    <h2>Emlékeztető</h2>
-    <p>Az 5. gyakorlat elméleti összefoglalója röviden. A feladatokban végig ezekre hivatkozunk.</p>
-  </div>
-  <div class="sheet">
-    <div class="rule-card">
-      <h3>Inverz trigonometrikus függvények</h3>
-      <ul>
-        <li>\(\arcsin := \big(\sin|_{[-\pi/2,\,\pi/2]}\big)^{-1}\), értékei \(\left[-\frac{\pi}{2}, \frac{\pi}{2}\right]\)-ben</li>
-        <li>\(\arccos := \big(\cos|_{[0,\,\pi]}\big)^{-1}\), értékei \([0, \pi]\)-ben</li>
-        <li>\(\arctg := \big(\tg|_{(-\pi/2,\,\pi/2)}\big)^{-1}\), értékei \(\left(-\frac{\pi}{2}, \frac{\pi}{2}\right)\)-ben</li>
-        <li>\(\arcctg := \big(\ctg|_{(0,\,\pi)}\big)^{-1}\), értékei \((0, \pi)\)-ben</li>
-      </ul>
-      <p>Például \(\arcsin x = y \iff \sin y = x\) <b>és</b> \(y \in \left[-\frac{\pi}{2}, \frac{\pi}{2}\right]\).</p>
-    </div>
-    <div class="rule-card">
-      <h3>Nevezetes értékek</h3>
-      <div class="tbl"><table class="sgn">
-        <tr><th>\(y\)</th><td>\(0\)</td><td>\(\frac{\pi}{6}\)</td><td>\(\frac{\pi}{4}\)</td><td>\(\frac{\pi}{3}\)</td><td>\(\frac{\pi}{2}\)</td></tr>
-        <tr><th>\(\sin y\)</th><td>\(0\)</td><td>\(\frac12\)</td><td>\(\frac{\sqrt2}{2}\)</td><td>\(\frac{\sqrt3}{2}\)</td><td>\(1\)</td></tr>
-        <tr><th>\(\cos y\)</th><td>\(1\)</td><td>\(\frac{\sqrt3}{2}\)</td><td>\(\frac{\sqrt2}{2}\)</td><td>\(\frac12\)</td><td>\(0\)</td></tr>
-        <tr><th>\(\tg y\)</th><td>\(0\)</td><td>\(\frac{1}{\sqrt3}\)</td><td>\(1\)</td><td>\(\sqrt3\)</td><td>–</td></tr>
-      </table></div>
-      <p class="note">\(\ctg y = 1/\tg y\). Páratlan: \(\arcsin(-x) = -\arcsin x\), \(\arctg(-x) = -\arctg x\). Viszont \(\arccos(-x) = \pi - \arccos x\).</p>
-    </div>
-    <div class="rule-card">
-      <h3>Teljes függvényvizsgálat menete</h3>
-      <ol>
-        <li><b>Kezdeti vizsgálatok:</b> értelmezési tartomány, előjel, paritás, periodicitás, folytonosság, deriválhatóság.</li>
-        <li><b>Monotonitás:</b> \(f'\) zérushelyei és előjele → lokális szélsőértékek.</li>
-        <li><b>Konvexitás:</b> \(f''\) zérushelyei és előjele → inflexiós pontok.</li>
-        <li><b>Határértékek</b> a \(D_f\) „szélein”: \(\pm\infty\)-ben és a kimaradó pontokban.</li>
-        <li><b>Aszimptoták</b> \(\pm\infty\)-ben.</li>
-        <li><b>Grafikon</b> vázolása.</li>
-      </ol>
-    </div>
-    <div class="rule-card">
-      <h3>Előjelekből következtetés</h3>
-      <ul>
-        <li>\(f' > 0\) egy intervallumon → ott \(f\) szigorúan nő (↗); \(f' \lt 0\) → csökken (↘).</li>
-        <li>\(f'(x_0)=0\) <b>és</b> \(f'\) előjelet vált \(x_0\)-ban → lokális szélsőérték. Az \(f'(x_0)=0\) önmagában csak szükséges feltétel.</li>
-        <li>\(f'' > 0\) → konvex (⌣), \(f'' \lt 0\) → konkáv (⌢). Ahol \(f''\) előjelet vált, ott inflexió van.</li>
-      </ul>
-    </div>
-    <div class="rule-card">
-      <h3>Aszimptota \(\pm\infty\)-ben</h3>
-      <p>Az \(y = Ax + B\) egyenes aszimptota \(+\infty\)-ben, ha mindkét határérték létezik és véges:</p>
-      \[A = \lim_{x\to+\infty} \frac{f(x)}{x}, \qquad B = \lim_{x\to+\infty} \big(f(x) - Ax\big).\]
-      <p>\(-\infty\)-ben külön kell kiszámolni, mert ott más is lehet.</p>
-    </div>
-    <div class="rule-card">
-      <h3>L'Hospital-szabály</h3>
-      <p>Ha \(\frac{0}{0}\) vagy \(\frac{\pm\infty}{\pm\infty}\) típusú a határérték, és \(\lim \frac{f'}{g'}\) létezik, akkor</p>
-      \[\lim \frac{f}{g} = \lim \frac{f'}{g'}.\]
-      <p>A \(0\cdot\infty\) típust előbb törtté kell alakítani, pl. \(x\cdot g(x) = \dfrac{g(x)}{1/x}\).</p>
-    </div>
-  </div>
-</section>
 
 <!-- ================= ÓRAI FELADATOK ================= -->
 <section id="orai">
@@ -706,23 +655,6 @@ footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule);
     </details>
   </article>
 
-  </div>
-</section>
-
-<!-- ================= GYAKORI HIBÁK ================= -->
-<section id="hibak">
-  <div class="section-head">
-    <span class="label">Mire figyelj</span>
-    <h2>Gyakori hibák</h2>
-  </div>
-  <div class="mistakes">
-    <div class="mistake"><span class="x">✕</span><p><b>Az \(\arccos\) vagy \(\arcctg\) értéke negatív.</b> Mindkettő értékei \([0,\pi]\)-ben, illetve \((0,\pi)\)-ben vannak. Negatív argumentumnál \(\arccos(-x) = \pi - \arccos x\).</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>Minden stacionárius pont szélsőérték.</b> Az \(f'(x_0) = 0\) csak szükséges feltétel. Kell az előjelváltás is (órai 2. feladat, \(x=0\)).</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>Szélsőérték vagy inflexió olyan pontban, ami nincs \(D_f\)-ben.</b> Ha \(f'\) a \(-1\)-ben vált előjelet, de \(-1 \notin D_f\), ott nincs szélsőérték (órai 3., házi 2.).</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>Intervallumok összevonása a kimaradó ponton át.</b> „\(f\) konvex \(\R\setminus\{-1\}\)-en” helyett: konvex a \((-\infty,-1)\) és a \((-1, 2)\) intervallumon.</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>Az aszimptotát csak az egyik végtelenben számolod.</b> \(+\infty\)-ben és \(-\infty\)-ben külön kell (házi 3.: \(y = x \mp \frac\pi2\); házi 4.: \(y=1\) és \(y=0\)).</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>L'Hospital \(0\cdot\infty\) típusra közvetlenül.</b> Előbb törtté kell alakítani (\(\frac00\) vagy \(\frac\infty\infty\)), és minden lépés előtt újra ellenőrizni a típust (órai 4.).</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>Egyszerűsítés nélküli előjelvizsgálat.</b> Racionális törtnél előbb hozd szorzat alakra és egyszerűsíts, utána a páros kitevős tényezők előjele már nem számít.</p></div>
   </div>
 </section>
 

@@ -185,13 +185,25 @@ svg .cv2 { fill: none; stroke: var(--ok); stroke-width: 2.2; stroke-dasharray: 7
 svg .bd { fill: var(--accent-soft); opacity: .8; }
 .lg.tay::before { border-top: 2.2px dashed var(--ok); }
 .lg.band::before { height: 10px; border: 0; background: var(--accent-soft); }
+
+/* links to the shared ZH trick pages */
+.hero-links { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.tricks { display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; border: 1.5px dashed var(--accent); border-radius: 8px; color: var(--accent); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 0.98rem; line-height: 1; white-space: nowrap; }
+.tricks:hover, .tricks:focus-visible { background: var(--accent-soft); outline: none; }
+nav.bar a.nav-tricks { border-style: dashed; border-color: var(--accent); color: var(--accent); }
+.src-link { text-decoration: none; color: var(--accent); }
+.src-link:hover { text-decoration: underline; }
+h3.sub-head { font-family: var(--f-label); font-size: 0.78rem; font-weight: 500; letter-spacing: 0.09em; text-transform: uppercase; color: var(--mark); margin-top: 6px; }
 </style>
 </head>
 <body>
 <div class="wrap">
 
 <header class="hero">
-  <a class="back" href="../../index.html#/anal2"><span class="arr" aria-hidden="true">←</span>Vissza: Analízis II.</a>
+  <div class="hero-links">
+    <a class="back" href="../../index.html#/anal2"><span class="arr" aria-hidden="true">←</span>Vissza: Analízis II.</a>
+    <a class="tricks" href="zh1_trukkok.html">Trükkök az 1. ZH-hoz →</a>
+  </div>
   <span class="label">Analízis II. · 6. gyakorlat · Differenciálszámítás 5.</span>
   <h1>A 6. gyakorlat kidolgozva</h1>
   <p class="sub">L'Hospital-szabály és Taylor-polinomok. Az órai feladatok a gyakorlati anyag megoldását követik, a házi feladatok (az összevont anyagból) saját megoldások. Előbb próbáld meg magad, és csak utána nyisd le a megoldást.</p>
@@ -205,67 +217,11 @@ svg .bd { fill: var(--accent-soft); opacity: .8; }
 <nav class="bar" aria-label="Fejezetek">
   <ul>
     <li><a class="nav-back" href="../../index.html#/anal2" aria-label="Vissza: Analízis II.">← ANAL II</a></li>
-    <li><a href="#emlekezteto">Emlékeztető</a></li>
     <li><a href="#orai">Órai feladatok</a></li>
     <li><a href="#hazi">Házi feladatok</a></li>
-    <li><a href="#hibak">Gyakori hibák</a></li>
+    <li><a class="nav-tricks" href="zh1_trukkok.html">Trükkök (1. ZH) →</a></li>
   </ul>
 </nav>
-
-<!-- ================= EMLÉKEZTETŐ ================= -->
-<section id="emlekezteto">
-  <div class="section-head">
-    <span class="label">Ami kell hozzá</span>
-    <h2>Emlékeztető</h2>
-    <p>A 6. gyakorlat elméleti összefoglalója röviden. A feladatokban végig ezekre hivatkozunk.</p>
-  </div>
-  <div class="sheet">
-    <div class="rule-card">
-      <h3>L'Hospital-szabály</h3>
-      <p>Legyen \(-\infty \le a \lt b \lt +\infty\), \(f, g \in D(a,b)\), \(g'(x) \ne 0\) \((x \in (a,b))\), és</p>
-      <ul>
-        <li>\(\lim_{a+0} f = \lim_{a+0} g = 0\), vagy \(\lim_{a+0} f = \lim_{a+0} g = +\infty\),</li>
-        <li>\(\exists \lim_{a+0} \frac{f'}{g'} \in \overline{\R}\).</li>
-      </ul>
-      <p>Ekkor \(\exists \lim_{a+0} \frac{f}{g}\) és \(\lim_{a+0} \frac{f}{g} = \lim_{a+0} \frac{f'}{g'}\). Ugyanígy bal oldali, kétoldali és \(\pm\infty\)-beli határértékre.</p>
-    </div>
-    <div class="rule-card">
-      <h3>A többi kritikus típus visszavezetése</h3>
-      <ul>
-        <li>\(0 \cdot (\pm\infty)\): \(f g = \dfrac{f}{1/g}\) vagy \(\dfrac{g}{1/f}\) → \(\frac00\) vagy \(\frac{\infty}{\infty}\).</li>
-        <li>\((+\infty) - (+\infty)\): közös nevező vagy kiemelés → szorzat vagy tört.</li>
-        <li>\(1^{\infty}\), \(0^0\), \(\infty^0\): \(f^g = e^{\,g \ln f}\), és mivel \(\exp\) folytonos, elég a kitevő határértéke.</li>
-      </ul>
-      <p class="note">Minden L'Hospital-lépés előtt újra ellenőrizd a típust!</p>
-    </div>
-    <div class="rule-card">
-      <h3>Taylor-polinom</h3>
-      <p>Ha \(f \in D^n\{a\}\), az \(a\) ponthoz tartozó \(n\)-edik Taylor-polinom:</p>
-      \[T_{a,n}(f,x) = \sum_{k=0}^{n} \frac{f^{(k)}(a)}{k!}(x-a)^k.\]
-      <p>A Taylor-sor ugyanez \(n \to \infty\)-re. \(\exp\), \(\sin\), \(\cos\), \(\operatorname{sh}\), \(\operatorname{ch}\) Taylor-sora (\(a = 0\)) az egész \(\R\)-en előállítja a függvényt.</p>
-    </div>
-    <div class="rule-card">
-      <h3>Lagrange-féle maradéktag</h3>
-      <p>Ha \(f \in D^{n+1}(K(a))\), akkor minden \(x \in K(a)\setminus\{a\}\)-hoz van \(\xi\) az \(a\) és \(x\) között, hogy</p>
-      \[f(x) - T_{a,n}(f,x) = \frac{f^{(n+1)}(\xi)}{(n+1)!}(x-a)^{n+1}.\]
-      <p><b>Hibabecslés:</b> \(|f^{(n+1)}|\)-et felülről becsüljük az \(a\) és \(x\) közötti szakaszon.</p>
-    </div>
-    <div class="rule-card">
-      <h3>\((1+x)^\alpha\) deriváltjai</h3>
-      <p>\(f(x) = (1+x)^\alpha\) esetén</p>
-      \[f^{(k)}(x) = \alpha(\alpha-1)\cdots(\alpha-k+1)\,(1+x)^{\alpha-k},\]
-      <p>így \(f^{(k)}(0) = \alpha(\alpha-1)\cdots(\alpha-k+1)\). Ez kell a 3. órai és a 2. házi feladathoz (\(\alpha = -\frac13\), ill. \(\alpha = \frac13\)).</p>
-    </div>
-    <div class="rule-card">
-      <h3>Hasznos határértékek</h3>
-      <ul>
-        <li>\(\lim_{x\to0} \frac{\sin x}{x} = 1\), \(\lim_{x\to0}\frac{e^x - 1}{x} = 1\), \(\lim_{x\to0}\frac{\ln(1+x)}{x} = 1\)</li>
-        <li>\(\lim_{x\to0+0} x^\alpha \ln x = 0\) \((\alpha \gt 0)\)</li>
-        <li>\(\lim_{x\to+\infty} \frac{\ln x}{x^\alpha} = 0\), \(\lim_{x\to+\infty} \frac{x^n}{e^x} = 0\)</li>
-      </ul>
-    </div>
-  </div>
-</section>
 
 <!-- ================= ÓRAI FELADATOK ================= -->
 <section id="orai">
@@ -583,22 +539,6 @@ svg .bd { fill: var(--accent-soft); opacity: .8; }
     </details>
   </article>
 
-  </div>
-</section>
-
-<!-- ================= GYAKORI HIBÁK ================= -->
-<section id="hibak">
-  <div class="section-head">
-    <span class="label">Mire figyelj</span>
-    <h2>Gyakori hibák</h2>
-  </div>
-  <div class="mistakes">
-    <div class="mistake"><span class="x">✕</span><p><b>L'Hospital nem kritikus típusra.</b> Csak \(\frac00\) és \(\frac{\infty}{\infty}\) esetén szabad. Pl. \(\lim_{x\to0}\frac{\cos x}{x+1} = 1\), de „L'Hospitallal” \(\frac{-\sin 0}{1} = 0\) jönne ki. Minden lépés előtt ellenőrizd a típust.</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>A törtet hányadosszabállyal deriválod.</b> A L'Hospital-szabálynál a számlálót és a nevezőt <b>külön</b> kell deriválni: \(\frac{f'}{g'}\), nem \(\left(\frac fg\right)'\).</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>\(1^\infty\) = 1.</b> Az \(1^{\infty}\), \(0^0\), \(\infty^0\) kritikus típusok. Írd át \(e^{g\ln f}\) alakra (órai 1(e), házi 1(d)).</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>Elfelejtett faktoriális.</b> A Taylor-polinomban \(\frac{f^{(k)}(a)}{k!}\) az együttható, nem \(f^{(k)}(a)\). Az órai 3-ban \(\frac{4/9}{2} = \frac29\) és \(\frac{28/27}{6} = \frac{14}{81}\).</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>Rossz derivált a maradéktagban.</b> Az \(n\)-edik Taylor-polinom hibájához az \((n+1)\)-edik derivált kell, \((n+1)!\)-sal és \((x-a)^{n+1}\)-gyel.</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>A \(\xi\)-t konkrét számnak veszed.</b> A \(\xi\) ismeretlen, csak annyit tudunk, hogy \(a\) és \(x\) között van. A hibabecsléshez \(|f^{(n+1)}(\xi)|\)-t a teljes szakaszon felülről kell becsülni.</p></div>
   </div>
 </section>
 

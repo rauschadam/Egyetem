@@ -188,13 +188,25 @@ svg .bd { fill: var(--accent-soft); opacity: .8; }
 /* primitive-function families and vertical asymptotes */
 svg .cv3 { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: .4; }
 .lg.fam::before { opacity: .45; border-top-width: 1.5px; }
+
+/* links to the shared ZH trick pages */
+.hero-links { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.tricks { display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; border: 1.5px dashed var(--accent); border-radius: 8px; color: var(--accent); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 0.98rem; line-height: 1; white-space: nowrap; }
+.tricks:hover, .tricks:focus-visible { background: var(--accent-soft); outline: none; }
+nav.bar a.nav-tricks { border-style: dashed; border-color: var(--accent); color: var(--accent); }
+.src-link { text-decoration: none; color: var(--accent); }
+.src-link:hover { text-decoration: underline; }
+h3.sub-head { font-family: var(--f-label); font-size: 0.78rem; font-weight: 500; letter-spacing: 0.09em; text-transform: uppercase; color: var(--mark); margin-top: 6px; }
 </style>
 </head>
 <body>
 <div class="wrap">
 
 <header class="hero">
-  <a class="back" href="../../index.html#/anal2"><span class="arr" aria-hidden="true">←</span>Vissza: Analízis II.</a>
+  <div class="hero-links">
+    <a class="back" href="../../index.html#/anal2"><span class="arr" aria-hidden="true">←</span>Vissza: Analízis II.</a>
+    <a class="tricks" href="zh2_trukkok.html">Trükkök a 2. ZH-hoz →</a>
+  </div>
   <span class="label">Analízis II. · 10. gyakorlat · Primitív függvény, határozatlan integrál 4.</span>
   <h1>A 10. gyakorlat kidolgozva</h1>
   <p class="sub">A \(\sin\) és \(\cos\) racionális kifejezéseinek integrálása: a \(t = \tg\frac x2\) helyettesítés (második helyettesítési szabály), áttérés félszögekre, valamint \(\sin^n x\cdot\cos^m x\) típusú integrálok (páratlan kitevő, linearizálás, rekurziós formula). Az órai feladatok a gyakorlati anyag megoldását követik, a házi feladatok (az összevont anyagból) saját megoldások. Az órán kérdezett röpZH-tételek: <a href="ropzh_kidolgozas.html#rz10">10. röpZH</a>. Előbb próbáld meg magad, és csak utána nyisd le a megoldást.</p>
@@ -208,81 +220,12 @@ svg .cv3 { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: .4; }
 <nav class="bar" aria-label="Fejezetek">
   <ul>
     <li><a class="nav-back" href="../../index.html#/anal2" aria-label="Vissza: Analízis II.">← ANAL II</a></li>
-    <li><a href="#emlekezteto">Emlékeztető</a></li>
     <li><a href="#orai">Órai feladatok</a></li>
     <li><a href="#hazi">Házi feladatok</a></li>
-    <li><a href="#hibak">Gyakori hibák</a></li>
+    <li><a class="nav-tricks" href="zh2_trukkok.html">Trükkök (2. ZH) →</a></li>
     <li><a href="ropzh_kidolgozas.html#rz10">10. röpZH ↗</a></li>
   </ul>
 </nav>
-
-<!-- ================= EMLÉKEZTETŐ ================= -->
-<section id="emlekezteto">
-  <div class="section-head">
-    <span class="label">Ami kell hozzá</span>
-    <h2>Emlékeztető</h2>
-    <p>\(\int R(\sin x, \cos x)\,dx\) alakú integrálok, ahol \(R(u, v)\) két kétváltozós polinom hányadosa. A fő eszköz a második helyettesítési szabály, amellyel az ilyen integrál racionális törtfüggvény integráljára vezethető vissza (8. gyakorlat).</p>
-  </div>
-  <div class="sheet">
-    <div class="rule-card wide">
-      <h3>A második helyettesítési szabály</h3>
-      <p>Legyenek \(I, J \subset \R\) nyílt intervallumok, \(f : I \to \R\), \(g : J \to I\) <b>bijekció</b>, \(g \in D(J)\) és \(g'(t) \ne 0\) minden \(t \in J\)-re, és tegyük fel, hogy \((f \circ g)\cdot g'\)-nek van primitív függvénye. Ekkor \(f\)-nek is van, és</p>
-      \[\int f(x)\,dx = \int f\big(g(t)\big)\cdot g'(t)\,dt\;\Big|_{t = g^{-1}(x)} \qquad (x \in I).\]
-      <p class="note">A végén mindig vissza kell helyettesíteni: \(t = g^{-1}(x)\). Ezért kell, hogy \(g\) invertálható legyen a választott \(J\)-n.</p>
-    </div>
-    <div class="rule-card">
-      <h3>A \(t = \tg\frac x2\) helyettesítés</h3>
-      <p>\(x = g(t) = 2\arctg t\), \(\quad g'(t) = \dfrac{2}{1+t^2} \ne 0\), és</p>
-      \[\sin x = \frac{2t}{1+t^2}, \qquad \cos x = \frac{1-t^2}{1+t^2}.\]
-      <p>Így \(R(\sin x, \cos x)\cdot g'\) racionális törtfüggvény lesz \(t\)-ben.</p>
-      <p class="note">Csak ott értelmes, ahol \(\cos\frac x2 \ne 0\), azaz \(x \ne \pi + 2k\pi\).</p>
-    </div>
-    <div class="rule-card">
-      <h3>Intervallumok párosítása</h3>
-      <p>Mivel \(\arctg : \R \to (-\frac\pi2, \frac\pi2)\) szigorúan nő, \(g(t) = 2\arctg t\) bijekció az alábbi párok között:</p>
-      <ul>
-        <li>\(x \in (-\pi, \pi)\ \leftrightarrow\ t \in \R\),</li>
-        <li>\(x \in (0, \pi)\ \leftrightarrow\ t \in (0, +\infty)\),</li>
-        <li>\(x \in (-\frac\pi2, \frac\pi2)\ \leftrightarrow\ t \in (-1, 1)\).</li>
-      </ul>
-      <p class="note">Ebből látszik a \(t\) előjele, ami a \(\ln|\dots|\) feloldásához kell.</p>
-    </div>
-    <div class="rule-card">
-      <h3>Honnan jönnek a formulák?</h3>
-      <p>Félszögekre térünk át, és \(\cos^2\frac x2\)-vel osztunk (\(\sin^2 + \cos^2 = 1\)):</p>
-      \[\sin x = \frac{2\sin\frac x2\cos\frac x2}{\cos^2\frac x2 + \sin^2\frac x2} = \frac{2\tg\frac x2}{1 + \tg^2\frac x2},\]
-      \[\cos x = \frac{\cos^2\frac x2 - \sin^2\frac x2}{\cos^2\frac x2 + \sin^2\frac x2} = \frac{1 - \tg^2\frac x2}{1 + \tg^2\frac x2}.\]
-    </div>
-    <div class="rule-card">
-      <h3>Félszög- és linearizáló formulák</h3>
-      \[1 - \cos x = 2\sin^2\tfrac x2, \qquad 1 + \cos x = 2\cos^2\tfrac x2,\]
-      \[\sin^2 x = \frac{1 - \cos 2x}{2}, \qquad \cos^2 x = \frac{1 + \cos 2x}{2}.\]
-      <p>Például \(\displaystyle\int\sin^2 x\,dx = \frac x2 - \frac{\sin 2x}{4} + c\).</p>
-    </div>
-    <div class="rule-card">
-      <h3>\(\int\sin^n x\cos^m x\,dx\)</h3>
-      <ul>
-        <li><b>Valamelyik kitevő páratlan</b> (pl. \(m\)): egy \(\cos x\)-et leválasztunk, a többit \(\cos^2 = 1 - \sin^2\)-tel \(\sin\)-re írjuk, és \(f^\alpha\cdot f'\) típusú tagokat kapunk.</li>
-        <li><b>Mindkettő páros:</b> linearizáló formulák (a kitevő feleződik), vagy rekurziós formula.</li>
-      </ul>
-    </div>
-    <div class="rule-card">
-      <h3>Rekurziós formulák (\(n \ge 2\))</h3>
-      \[\int\cos^n x\,dx = \frac1n\sin x\cos^{n-1}x + \frac{n-1}{n}\int\cos^{n-2}x\,dx,\]
-      \[\int\sin^n x\,dx = -\frac1n\sin^{n-1}x\cos x + \frac{n-1}{n}\int\sin^{n-2}x\,dx.\]
-      <p class="note">Parciális integrálással és \(\sin^2 = 1 - \cos^2\)-tel kapjuk (3. (b), második megoldás).</p>
-    </div>
-    <div class="rule-card">
-      <h3>Más helyettesítések (kitekintés)</h3>
-      <p>Az összevont anyag „További feladatai” szerint \(R\) szimmetriájától függően egyszerűbb helyettesítés is célhoz vezet:</p>
-      <ul>
-        <li>\(t = \tg x\), ha \(R(-u, -v) = R(u, v)\);</li>
-        <li>\(t = \sin x\), ha \(R(u, -v) = -R(u, v)\);</li>
-        <li>\(t = \cos x\), ha \(R(-u, v) = -R(u, v)\).</li>
-      </ul>
-    </div>
-  </div>
-</section>
 
 <!-- ================= ÓRAI FELADATOK ================= -->
 <section id="orai">
@@ -618,22 +561,6 @@ svg .cv3 { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: .4; }
     </details>
   </article>
 
-  </div>
-</section>
-
-<!-- ================= GYAKORI HIBÁK ================= -->
-<section id="hibak">
-  <div class="section-head">
-    <span class="label">Mire figyelj</span>
-    <h2>Gyakori hibák</h2>
-  </div>
-  <div class="mistakes">
-    <div class="mistake"><span class="x">✕</span><p><b>Elmarad a \(g'(t)\) szorzó.</b> A \(t = \tg\frac x2\) helyettesítésnél \(dx = \frac{2}{1+t^2}\,dt\); ha ez kimarad, rossz racionális törtet integrálunk (órai 1. (a), (b)).</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>Nincs megnézve, hogy \(g\) bijekció-e.</b> \(x = 2\arctg t\) csak \((-\pi, \pi)\)-be képez; \(x = \pi + 2k\pi\)-ben \(\tg\frac x2\) nem értelmes. \((0, 2\pi)\)-n vagy \(\R\)-en ez a helyettesítés közvetlenül nem alkalmazható (órai 2. (b), 3.).</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>A \(t\) tartomány figyelmen kívül hagyása a logaritmusnál.</b> \((0, \pi)\)-n \(t \gt 0\), de \((-\frac\pi2, \frac\pi2)\)-n \(t \in (-1, 1)\), így pl. \(\int\frac{dt}{1-t} = -\ln(1-t)\), nem \(\ln(t-1)\) (házi 1. (a)).</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>Elmaradt visszahelyettesítés.</b> A végeredmény \(x\) függvénye: a \(t\)-s primitív függvénybe \(t = \tg\frac x2\)-t kell írni.</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>„Más jött ki, tehát rossz.”</b> Különböző módszerekkel kapott primitív függvények konstansban eltérhetnek (2. feladat: \(\ln 2\)). Deriválással vagy egy pontbeli különbséggel ellenőrizd.</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>Páros-páros kitevőnél a páratlan trükk erőltetése, és hibás lineáris szorzók.</b> \(\sin^2 x\cos^4 x\)-nél linearizálni kell; ilyenkor \(\int\sin^2(2x)\,dx = \frac x2 - \frac{\sin 4x}{8}\), nem \(\frac x2 - \frac{\sin 4x}{4}\) (órai 3. (b)).</p></div>
   </div>
 </section>
 

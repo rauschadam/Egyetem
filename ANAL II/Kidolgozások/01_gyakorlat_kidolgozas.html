@@ -188,13 +188,25 @@ svg .bd { fill: var(--accent-soft); opacity: .8; }
 /* primitive-function families and vertical asymptotes */
 svg .cv3 { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: .4; }
 .lg.fam::before { opacity: .45; border-top-width: 1.5px; }
+
+/* links to the shared ZH trick pages */
+.hero-links { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.tricks { display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; border: 1.5px dashed var(--accent); border-radius: 8px; color: var(--accent); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 0.98rem; line-height: 1; white-space: nowrap; }
+.tricks:hover, .tricks:focus-visible { background: var(--accent-soft); outline: none; }
+nav.bar a.nav-tricks { border-style: dashed; border-color: var(--accent); color: var(--accent); }
+.src-link { text-decoration: none; color: var(--accent); }
+.src-link:hover { text-decoration: underline; }
+h3.sub-head { font-family: var(--f-label); font-size: 0.78rem; font-weight: 500; letter-spacing: 0.09em; text-transform: uppercase; color: var(--mark); margin-top: 6px; }
 </style>
 </head>
 <body>
 <div class="wrap">
 
 <header class="hero">
-  <a class="back" href="../../index.html#/anal2"><span class="arr" aria-hidden="true">←</span>Vissza: Analízis II.</a>
+  <div class="hero-links">
+    <a class="back" href="../../index.html#/anal2"><span class="arr" aria-hidden="true">←</span>Vissza: Analízis II.</a>
+    <a class="tricks" href="zh1_trukkok.html">Trükkök az 1. ZH-hoz →</a>
+  </div>
   <span class="label">Analízis II. · 1. gyakorlat · Függvény határértéke</span>
   <h1>Az 1. gyakorlat kidolgozva</h1>
   <p class="sub">A határérték egységes definíciója, kritikus határértékek, nevezetes határértékek és a hatványsor összegfüggvényének határértéke. A 2. feladat különbségi hányadosai már a deriválást készítik elő. Az órai feladatok a gyakorlati anyag megoldását követik, a házi feladatok (az összevont anyagból) saját megoldások. Előbb próbáld meg magad, és csak utána nyisd le a megoldást.</p>
@@ -208,86 +220,11 @@ svg .cv3 { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: .4; }
 <nav class="bar" aria-label="Fejezetek">
   <ul>
     <li><a class="nav-back" href="../../index.html#/anal2" aria-label="Vissza: Analízis II.">← ANAL II</a></li>
-    <li><a href="#emlekezteto">Emlékeztető</a></li>
     <li><a href="#orai">Órai feladatok</a></li>
     <li><a href="#hazi">Házi feladatok</a></li>
-    <li><a href="#hibak">Gyakori hibák</a></li>
+    <li><a class="nav-tricks" href="zh1_trukkok.html">Trükkök (1. ZH) →</a></li>
   </ul>
 </nav>
-
-<!-- ================= EMLÉKEZTETŐ ================= -->
-<section id="emlekezteto">
-  <div class="section-head">
-    <span class="label">Ami kell hozzá</span>
-    <h2>Emlékeztető</h2>
-    <p>Az 1. gyakorlat elméleti összefoglalója röviden. A feladatokban végig ezekre hivatkozunk.</p>
-  </div>
-  <div class="sheet">
-    <div class="rule-card wide">
-      <h3>A határérték egységes definíciója</h3>
-      <p>Az \(f \in \R \to \R\) függvénynek az \(a \in \mathcal D_f'\) (torlódási) pontban van határértéke, ha</p>
-      \[\exists\, A \in \overline{\R},\ \forall \varepsilon \gt 0\text{-hoz } \exists\, \delta \gt 0,\ \forall x \in \big(K_\delta(a) \setminus \{a\}\big) \cap \mathcal D_f :\ f(x) \in K_\varepsilon(A).\]
-      <p>Ekkor \(A\) egyértelmű, ez az \(f\) függvény \(a\)-beli határértéke: \(\lim_a f = A\), \(\lim_{x \to a} f(x) = A\) vagy \(f(x) \to A\), ha \(x \to a\).</p>
-      <p class="note">Az \(a\) pontban \(f\)-nek nem kell értelmezve lennie, és ha értelmezve van, \(f(a)\) értéke nem számít: csak az \(a\) körüli, \(a\)-tól különböző pontokat nézzük.</p>
-    </div>
-    <div class="rule-card">
-      <h3>Speciális esetek</h3>
-      <ul>
-        <li><b>Végesben vett véges:</b> \(a \in \R\), \(A \in \R\).</li>
-        <li><b>Végesben vett végtelen:</b> \(a \in \R\), \(A = \pm\infty\).</li>
-        <li><b>Végtelenben vett véges:</b> \(a = \pm\infty\), \(A \in \R\).</li>
-        <li><b>Végtelenben vett végtelen:</b> \(a = \pm\infty\), \(A = \pm\infty\).</li>
-      </ul>
-    </div>
-    <div class="rule-card">
-      <h3>Határérték és műveletek</h3>
-      <p>Ha \(a \in (\mathcal D_f \cap \mathcal D_g)'\), \(\lim_a f = A \in \overline{\R}\), \(\lim_a g = B \in \overline{\R}\), akkor</p>
-      <ul>
-        <li>\(\lim_a (f + g) = A + B\),</li>
-        <li>\(\lim_a (f \cdot g) = A \cdot B\),</li>
-        <li>\(\lim_a \frac fg = \frac AB\),</li>
-      </ul>
-      <p class="note">feltéve, hogy a jobb oldali művelet \(\overline{\R}\)-ben értelmezve van.</p>
-    </div>
-    <div class="rule-card">
-      <h3>Kritikus határértékek</h3>
-      <p>Ha a fenti műveletek valamelyike nincs értelmezve, a határértékről általában semmit sem tudunk:</p>
-      \[(+\infty) - (+\infty),\quad 0 \cdot (\pm\infty),\quad \frac{\pm\infty}{\pm\infty},\quad \frac00,\quad \frac10.\]
-      <p class="note">Módszer (mint sorozatoknál): azonosságokkal nem kritikus alakra hozzuk (gyöktelenítés, szorzattá alakítás, egyszerűsítés, nevezetes határérték).</p>
-    </div>
-    <div class="rule-card">
-      <h3>Nevezetes határértékek</h3>
-      <ul>
-        <li>\(\lim_{x \to a} x^n = a^n\) \((a \in \R,\ n \in \mathbb N^+)\);</li>
-        <li>\(\lim_{x \to +\infty} x^n = +\infty\); \(\lim_{x \to -\infty} x^n = +\infty\), ha \(n\) páros, és \(-\infty\), ha \(n\) páratlan;</li>
-        <li>\(\lim_{x \to a} \frac{1}{x^n} = \frac{1}{a^n}\) \((a \ne 0)\); \(\lim_{x \to \pm\infty} \frac{1}{x^n} = 0\);</li>
-        <li>\(\lim_{x \to 0} \frac{1}{x^n}\): \(\nexists\), ha \(n\) páratlan; \(+\infty\), ha \(n\) páros;</li>
-        <li>\(\lim_{x \to a} \sqrt x = \sqrt a\) \((a \gt 0)\);</li>
-        <li>\(\displaystyle\lim_{x \to 0} \frac{\sin x}{x} = 1\).</li>
-      </ul>
-    </div>
-    <div class="rule-card wide">
-      <h3>Az exp, a sin és a cos mint hatványsor</h3>
-      \[e^x = \sum_{n=0}^{+\infty} \frac{x^n}{n!} = 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \cdots \quad (x \in \R)\]
-      \[\sin x = \sum_{n=0}^{+\infty} (-1)^n \frac{x^{2n+1}}{(2n+1)!} = x - \frac{x^3}{3!} + \frac{x^5}{5!} - \cdots \quad (x \in \R)\]
-      \[\cos x = \sum_{n=0}^{+\infty} (-1)^n \frac{x^{2n}}{(2n)!} = 1 - \frac{x^2}{2!} + \frac{x^4}{4!} - \cdots \quad (x \in \R)\]
-    </div>
-    <div class="rule-card">
-      <h3>Hatványsor összegfüggvényének határértéke</h3>
-      <p>Ha a \(\sum \alpha_n (x - a)^n\) hatványsor \(R\) konvergenciasugara pozitív és \(f(x) := \sum_{n=0}^{+\infty} \alpha_n (x-a)^n\) \((x \in K_R(a))\), akkor minden \(b \in K_R(a)\)-ra</p>
-      \[\lim_{x \to b} f(x) = f(b) = \sum_{n=0}^{+\infty} \alpha_n (b - a)^n.\]
-      <p class="note">Röviden: a konvergenciahalmaz belsejében „szabad behelyettesíteni”.</p>
-    </div>
-    <div class="rule-card">
-      <h3>Hasznos eszközök a feladatokhoz</h3>
-      <ul>
-        <li><b>Egyoldali határérték:</b> \(\lim_{x \to a+0}\), \(\lim_{x \to a-0}\). Ha \(a\) mindkét oldalról torlódási pont, akkor \(\lim_a f\) pontosan akkor létezik, ha a két egyoldali létezik és egyenlő.</li>
-        <li><b>Korlátos · nullához tartó:</b> ha \(g\) korlátos \(a\) környezetében és \(\lim_a h = 0\), akkor \(\lim_a (g h) = 0\).</li>
-        <li><b>Eltolás:</b> \(h := x - a\) helyettesítéssel \(\displaystyle\lim_{x \to a} F(x) = \lim_{h \to 0} F(a + h)\).</li>
-      </ul>
-    </div>
-  </div>
-</section>
 
 <!-- ================= ÓRAI FELADATOK ================= -->
 <section id="orai">
@@ -772,22 +709,6 @@ svg .cv3 { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: .4; }
     </details>
   </article>
 
-  </div>
-</section>
-
-<!-- ================= GYAKORI HIBÁK ================= -->
-<section id="hibak">
-  <div class="section-head">
-    <span class="label">Mire figyelj</span>
-    <h2>Gyakori hibák</h2>
-  </div>
-  <div class="mistakes">
-    <div class="mistake"><span class="x">✕</span><p><b>„\(\frac00 = 1\)” vagy „\(\frac00 = 0\)”.</b> A \(\frac00\) nem szám, hanem kritikus határérték: bármi kijöhet (0, 1, \(-\frac{3}{32}\), \(\pm\infty\), vagy nem is létezik). Mindig át kell alakítani, mielőtt behelyettesítesz.</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>\(\frac{\sin 3x}{x} \to 1\).</b> A \(\frac{\sin u}{u} \to 1\)-ben a nevezőnek pontosan a szinusz argumentumának kell lennie: \(\frac{\sin 3x}{x} = 3 \cdot \frac{\sin 3x}{3x} \to 3\) (házi 1. (a)).</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>Nevezetes határérték rossz helyen.</b> \(\frac{e^x - 1}{x} \to 1\) és \(\frac{\sin x}{x} \to 1\) csak \(x \to 0\) esetén igaz. \(x \to +\infty\)-nél (házi 1. (b)) vagy \(x \to a \ne 0\)-nál előbb vissza kell vezetni a 0 pontra (pl. \(h := x - a\)).</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>Egyoldali határértékek kihagyása.</b> \(|x|\), \(\sqrt[3]{x}\), \(\operatorname{sgn} x\) jellegű kifejezéseknél a két oldal különbözhet (órai 2. (b), (f), házi 2. (a)). Ha az egyik oldalt nem nézed meg, könnyen hamis „határértéket” kapsz.</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>Szorzatszabály nem létező határértékkel.</b> \(\lim x^3 \sin\frac1x\)-nél nem írhatod, hogy \(\lim x^3 \cdot \lim \sin\frac1x\), mert a második nem létezik. A jó eszköz: korlátos · nullához tartó \(\to 0\) (órai 2. (j)).</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>Előjelhiba egyszerűsítésnél és addíciós tételnél.</b> \(\frac{a - x}{x - a} = -1\) (órai 2. (d)), és \(\cos(a + h) = \cos a \cos h - \sin a \sin h\) (házi 2. (b)). Egy gyors numerikus próba (pl. \(x = a + 0{,}001\)) azonnal megmutatja az előjelet.</p></div>
   </div>
 </section>
 

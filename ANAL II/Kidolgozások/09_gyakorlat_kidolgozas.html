@@ -188,13 +188,25 @@ svg .bd { fill: var(--accent-soft); opacity: .8; }
 /* primitive-function families and vertical asymptotes */
 svg .cv3 { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: .4; }
 .lg.fam::before { opacity: .45; border-top-width: 1.5px; }
+
+/* links to the shared ZH trick pages */
+.hero-links { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.tricks { display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; border: 1.5px dashed var(--accent); border-radius: 8px; color: var(--accent); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 0.98rem; line-height: 1; white-space: nowrap; }
+.tricks:hover, .tricks:focus-visible { background: var(--accent-soft); outline: none; }
+nav.bar a.nav-tricks { border-style: dashed; border-color: var(--accent); color: var(--accent); }
+.src-link { text-decoration: none; color: var(--accent); }
+.src-link:hover { text-decoration: underline; }
+h3.sub-head { font-family: var(--f-label); font-size: 0.78rem; font-weight: 500; letter-spacing: 0.09em; text-transform: uppercase; color: var(--mark); margin-top: 6px; }
 </style>
 </head>
 <body>
 <div class="wrap">
 
 <header class="hero">
-  <a class="back" href="../../index.html#/anal2"><span class="arr" aria-hidden="true">←</span>Vissza: Analízis II.</a>
+  <div class="hero-links">
+    <a class="back" href="../../index.html#/anal2"><span class="arr" aria-hidden="true">←</span>Vissza: Analízis II.</a>
+    <a class="tricks" href="zh2_trukkok.html">Trükkök a 2. ZH-hoz →</a>
+  </div>
   <span class="label">Analízis II. · 9. gyakorlat · Primitív függvény, határozatlan integrál 3.</span>
   <h1>A 9. gyakorlat kidolgozva</h1>
   <p class="sub">A második helyettesítési szabály és a tipikus helyettesítések: \(t = e^x\) az \(S(e^x)\) alakú integrálokhoz, \(t = \sqrt[n]{\frac{ax+b}{cx+d}}\) a gyökös kifejezésekhez, \(x = t^6\) több különböző gyökhöz, \(x = \cos t\) a \(\sqrt{1-x^2}\)-hez. A helyettesítés után mindig racionális törtfüggvényt kapunk, ezt a 8. gyakorlat módszereivel integráljuk. Az órai feladatok a gyakorlati anyag megoldását követik, a házi feladatok (az összevont anyagból) saját megoldások. Az órán kérdezett röpZH-tételek: <a href="ropzh_kidolgozas.html#rz9">9. röpZH</a>. Előbb próbáld meg magad, és csak utána nyisd le a megoldást.</p>
@@ -208,72 +220,12 @@ svg .cv3 { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: .4; }
 <nav class="bar" aria-label="Fejezetek">
   <ul>
     <li><a class="nav-back" href="../../index.html#/anal2" aria-label="Vissza: Analízis II.">← ANAL II</a></li>
-    <li><a href="#emlekezteto">Emlékeztető</a></li>
     <li><a href="#orai">Órai feladatok</a></li>
     <li><a href="#hazi">Házi feladatok</a></li>
-    <li><a href="#hibak">Gyakori hibák</a></li>
+    <li><a class="nav-tricks" href="zh2_trukkok.html">Trükkök (2. ZH) →</a></li>
     <li><a href="ropzh_kidolgozas.html#rz9">9. röpZH ↗</a></li>
   </ul>
 </nav>
-
-<!-- ================= EMLÉKEZTETŐ ================= -->
-<section id="emlekezteto">
-  <div class="section-head">
-    <span class="label">Ami kell hozzá</span>
-    <h2>Emlékeztető</h2>
-    <p>Az \(x\) változót egy alkalmas \(g\) függvény értékeivel helyettesítjük: \(x = g(t)\). A cél mindig az, hogy a helyettesítés után racionális törtfüggvényt kelljen integrálni.</p>
-  </div>
-  <div class="sheet">
-    <div class="rule-card wide">
-      <h3>A második helyettesítési szabály</h3>
-      <p><b>Tétel.</b> Legyenek \(I, J \subset \R\) nyílt intervallumok, \(f : I \to \R\), \(g : J \to I\) bijekció, \(g \in D(J)\) és \(g'(t) \ne 0\) \((\forall t \in J)\), továbbá az \(f \circ g \cdot g' : J \to \R\) függvénynek létezik primitív függvénye. Ekkor \(f\)-nek is van primitív függvénye, és</p>
-      \[\int f(x)\,dx = \int f(g(t))\cdot g'(t)\,dt\;\Big|_{t = g^{-1}(x)} \qquad (x \in I).\]
-      <p class="warn"><b>Megjegyzés a forráshoz.</b> A gyakorlati anyag a feltételt „\(g'(x) \ne 0\) \((\forall x \in J)\)” alakban írja (a Darboux-tételes megjegyzésben is). Mivel \(J\) az új, \(t\) változó tartománya, itt \(g'(t) \ne 0\) \((\forall t \in J)\) értendő.</p>
-    </div>
-    <div class="rule-card">
-      <h3>Miért létezik \(g^{-1}\)?</h3>
-      <p>\(g'(t) \ne 0\) a \(J\) intervallumon, így a Darboux-tétel miatt \(g'\) állandó előjelű, tehát \(g\) szigorúan monoton. Ezért \(\exists\, g^{-1} : I \to J\), és a végén a \(t = g^{-1}(x)\) visszahelyettesítés értelmes.</p>
-      <p class="note">\(g\) lehet csökkenő is (pl. \(x = \cos t\), \(x = \frac{1}{t^3-1}\)), csak a derivált ne váltson előjelet.</p>
-    </div>
-    <div class="rule-card">
-      <h3>A recept</h3>
-      <ol>
-        <li>Új változó: \(t = g^{-1}(x)\) (pl. \(t = e^x\), \(t = \sqrt{x}\)).</li>
-        <li>Kifejezzük \(x\)-et: \(x = g(t)\), és \(J\)-t úgy választjuk, hogy \(g(J) = I\).</li>
-        <li>\(g'(t) \ne 0\) ellenőrzése, \(dx\) helyére \(g'(t)\,dt\).</li>
-        <li>Integrálás \(t\) szerint (racionális tört).</li>
-        <li>Visszahelyettesítés: \(t = g^{-1}(x)\).</li>
-      </ol>
-    </div>
-    <div class="rule-card">
-      <h3>\(\int S(e^x)\,dx\) típus</h3>
-      <p>\(S\) racionális törtfüggvény. Helyettesítés: \(t = e^x\), azaz \(x = g(t) = \ln t\), \(t \in J = \exp(I)\), \(g'(t) = \frac1t \gt 0\).</p>
-      \[\int S(e^x)\,dx = \int S(t)\cdot\frac1t\,dt\;\Big|_{t = e^x}.\]
-      <p class="note">\(e^{2x} = t^2\), \(e^{3x} = t^3\), \(e^{-x} = \frac1t\) stb.</p>
-    </div>
-    <div class="rule-card">
-      <h3>\(\int R\big(x, \sqrt[n]{\tfrac{ax+b}{cx+d}}\big)\,dx\) típus</h3>
-      <p>\(R(u, v)\) kétváltozós racionális függvény. A gyököt helyettesítjük:</p>
-      \[t = \sqrt[n]{\frac{ax+b}{cx+d}} \iff x = \frac{b - dt^n}{ct^n - a} =: g(t).\]
-      <p>\(g\) és \(g'\) racionális törtfüggvény, így \(\int R(g(t), t)\,g'(t)\,dt\) racionális tört integrálja.</p>
-      <p class="note">Speciális eset (\(c = 0\), \(d = 1\)): \(t = \sqrt[n]{ax+b}\), \(x = \frac{t^n - b}{a}\).</p>
-    </div>
-    <div class="rule-card">
-      <h3>Több különböző gyök</h3>
-      <p>Ha \(\sqrt[m]{x}\) és \(\sqrt[k]{x}\) is szerepel, legyen \(x = t^N\), ahol \(N = [m, k]\) (legkisebb közös többszörös). Így minden gyök \(t\) egész kitevős hatványa lesz.</p>
-      <p class="note">Pl. \(\sqrt x\) és \(\sqrt[3]{x}\): \(x = t^6\), \(\sqrt x = t^3\), \(\sqrt[3]{x} = t^2\).</p>
-    </div>
-    <div class="rule-card">
-      <h3>\(\sqrt{1-x^2}\): trigonometrikus helyettesítés</h3>
-      <p>\(x = \cos t\), \(t \in (0, \pi)\) (vagy \(x = \sin t\), \(t \in (-\frac\pi2, \frac\pi2)\)). Ekkor \(\sqrt{1 - \cos^2 t} = |\sin t| = \sin t\), mert \((0,\pi)\)-n \(\sin t \gt 0\).</p>
-      <p class="note">\(\sqrt{1+x^2}\)-hez az \(x = \operatorname{sh} t\) helyettesítés hasonló (gyakorló feladat).</p>
-    </div>
-    <div class="rule-card">
-      <h3>Ellenőrzés</h3>
-      <p>A kapott \(F\)-et \(x\) szerint deriváljuk: \(F'(x) = f(x)\) kell az egész \(I\)-n. Különböző alakú eredmények különbsége konstans (pl. \(\arcsin x = \frac\pi2 - \arccos x\)).</p>
-    </div>
-  </div>
-</section>
 
 <!-- ================= ÓRAI FELADATOK ================= -->
 <section id="orai">
@@ -574,22 +526,6 @@ svg .cv3 { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: .4; }
     </details>
   </article>
 
-  </div>
-</section>
-
-<!-- ================= GYAKORI HIBÁK ================= -->
-<section id="hibak">
-  <div class="section-head">
-    <span class="label">Mire figyelj</span>
-    <h2>Gyakori hibák</h2>
-  </div>
-  <div class="mistakes">
-    <div class="mistake"><span class="x">✕</span><p><b>Elmarad a \(g'(t)\) szorzó.</b> Nem elég \(x\) helyére \(g(t)\)-t írni: \(dx = g'(t)\,dt\). Pl. \(t = e^x\)-nél az \(\frac1t\), \(x = t^6\)-nál a \(6t^5\) szorzó nélkül rossz eredmény jön (órai 1, 3).</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>Nincs visszahelyettesítés, vagy rossz.</b> A végeredmény \(x\) függvénye: \(t = g^{-1}(x)\)-et vissza kell írni. Pl. \(t = e^x\)-nél \(\ln t = x\), \(t^2 = e^{2x}\) (órai 1(a)).</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>Rosszul választott \(J\).</b> \(J\)-n \(g\)-nek bijekciónak kell lennie \(I\)-re, \(g' \ne 0\)-val. \(x = t^2\) az egész \(\R\)-en nem injektív; a házi 1(c)-ben \(J = (0, \sqrt2)\), nem \((0, +\infty)\).</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>\(\sqrt{a^2} = a\) gondolkodás nélkül.</b> \(\sqrt{a^2} = |a|\): \(\sqrt{1 - \cos^2 t} = |\sin t|\), \(\sqrt{t^6} = |t|^3\). Az előjelet \(J\) dönti el (példa, órai 3. megjegyzése). Ugyanígy a \(\ln\)-ek abszolút értékét is \(J\) alapján oldjuk fel.</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>Nem elég „erős” helyettesítés több gyöknél.</b> \(\sqrt x\) és \(\sqrt[3]x\) mellett \(x = t^6\) kell (\([2,3] = 6\)); \(x = t^2\) vagy \(x = t^3\) után gyök marad (órai 3).</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>Kimaradt maradékos osztás a helyettesítés után.</b> A kapott racionális törtnél gyakran \(\deg P \ge \deg Q\) (pl. \(\frac{t^2}{t+2}\), \(\frac{2t}{t+1}\), \(\frac{t^3}{t+1}\), \(\frac{2t^2}{2-t^2}\)): előbb osztani kell, csak utána bontani.</p></div>
   </div>
 </section>
 

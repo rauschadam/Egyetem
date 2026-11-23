@@ -188,13 +188,25 @@ svg .bd { fill: var(--accent-soft); opacity: .8; }
 /* primitive-function families and vertical asymptotes */
 svg .cv3 { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: .4; }
 .lg.fam::before { opacity: .45; border-top-width: 1.5px; }
+
+/* links to the shared ZH trick pages */
+.hero-links { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.tricks { display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; border: 1.5px dashed var(--accent); border-radius: 8px; color: var(--accent); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 0.98rem; line-height: 1; white-space: nowrap; }
+.tricks:hover, .tricks:focus-visible { background: var(--accent-soft); outline: none; }
+nav.bar a.nav-tricks { border-style: dashed; border-color: var(--accent); color: var(--accent); }
+.src-link { text-decoration: none; color: var(--accent); }
+.src-link:hover { text-decoration: underline; }
+h3.sub-head { font-family: var(--f-label); font-size: 0.78rem; font-weight: 500; letter-spacing: 0.09em; text-transform: uppercase; color: var(--mark); margin-top: 6px; }
 </style>
 </head>
 <body>
 <div class="wrap">
 
 <header class="hero">
-  <a class="back" href="../../index.html#/anal2"><span class="arr" aria-hidden="true">←</span>Vissza: Analízis II.</a>
+  <div class="hero-links">
+    <a class="back" href="../../index.html#/anal2"><span class="arr" aria-hidden="true">←</span>Vissza: Analízis II.</a>
+    <a class="tricks" href="zh1_trukkok.html">Trükkök az 1. ZH-hoz →</a>
+  </div>
   <span class="label">Analízis II. · 4. gyakorlat · Differenciálszámítás 3.</span>
   <h1>A 4. gyakorlat kidolgozva</h1>
   <p class="sub">Monotonitás és a derivált előjele, lokális szélsőértékek (első- és másodrendű feltételek), abszolút szélsőértékek zárt intervallumon és szöveges szélsőérték-feladatok. Az órai feladatok a gyakorlati anyag megoldását követik, a házi feladatok (az összevont anyagból) saját megoldások. Az órán kérdezett röpZH-tételek: <a href="ropzh_kidolgozas.html#rz4">4. röpZH</a>. Előbb próbáld meg magad, és csak utána nyisd le a megoldást.</p>
@@ -208,80 +220,12 @@ svg .cv3 { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: .4; }
 <nav class="bar" aria-label="Fejezetek">
   <ul>
     <li><a class="nav-back" href="../../index.html#/anal2" aria-label="Vissza: Analízis II.">← ANAL II</a></li>
-    <li><a href="#emlekezteto">Emlékeztető</a></li>
     <li><a href="#orai">Órai feladatok</a></li>
     <li><a href="#hazi">Házi feladatok</a></li>
-    <li><a href="#hibak">Gyakori hibák</a></li>
+    <li><a class="nav-tricks" href="zh1_trukkok.html">Trükkök (1. ZH) →</a></li>
     <li><a href="ropzh_kidolgozas.html#rz4">4. röpZH ↗</a></li>
   </ul>
 </nav>
-
-<!-- ================= EMLÉKEZTETŐ ================= -->
-<section id="emlekezteto">
-  <div class="section-head">
-    <span class="label">Ami kell hozzá</span>
-    <h2>Emlékeztető</h2>
-    <p>A 4. gyakorlat elméleti összefoglalója röviden. A feladatokban végig ezekre hivatkozunk. Jelölés: \(\nearrow\), \(\searrow\) monoton nő/csökken, \(\uparrow\), \(\downarrow\) szigorúan monoton nő/csökken.</p>
-  </div>
-  <div class="sheet">
-    <div class="rule-card">
-      <h3>Monotonitás és derivált</h3>
-      <p>Legyen \((a, b) \subset \R\) nyílt intervallum és \(f \in D(a, b)\). Ekkor</p>
-      <ul>
-        <li>\(f \nearrow\) [\(\searrow\)] \((a,b)\)-n \(\iff f' \ge 0\) [\(f' \le 0\)] \((a,b)\)-n;</li>
-        <li>\(f' \gt 0\) [\(f' \lt 0\)] \((a,b)\)-n \(\Longrightarrow f \uparrow\) [\(\downarrow\)] \((a,b)\)-n.</li>
-      </ul>
-      <p class="note">Lényeges, hogy <b>intervallumon</b> dolgozunk: \(f(x) = \frac1x\) esetén \(f'(x) = -\frac{1}{x^2} \lt 0\) minden \(x \ne 0\)-ra, mégsem szigorúan csökkenő \(\R\setminus\{0\}\)-n (pl. \(f(-1) \lt f(1)\)).</p>
-    </div>
-    <div class="rule-card">
-      <h3>Elsőrendű szükséges feltétel</h3>
-      <p>Ha \(f\)-nek az \(a \in \operatorname{int} D_f\) pontban lokális szélsőértéke van és \(f \in D\{a\}\), akkor</p>
-      \[f'(a) = 0.\]
-      <p class="note">Csak szükséges: \(f(x) = x^3\)-ra \(f'(0) = 0\), de \(0\) nem szélsőértékhely. Az \(f'(a) = 0\) pontok a <b>stacionárius pontok</b>, a szélsőértékhelyek csak ezek közül kerülhetnek ki.</p>
-    </div>
-    <div class="rule-card">
-      <h3>Elsőrendű elégséges feltétel</h3>
-      <p>Ha \(f \in D(a,b)\), \(c \in (a,b)\), \(f'(c) = 0\) és \(f'\) előjelet vált \(c\)-ben, akkor \(c\) lokális szélsőértékhely:</p>
-      <ul>
-        <li>\((-, +)\) előjelváltás \(\Rightarrow\) lokális <b>minimum</b>hely,</li>
-        <li>\((+, -)\) előjelváltás \(\Rightarrow\) lokális <b>maximum</b>hely.</li>
-      </ul>
-    </div>
-    <div class="rule-card">
-      <h3>Másodrendű elégséges feltétel</h3>
-      <p>Ha \(c \in \operatorname{int} D_f\), \(f \in D^2\{c\}\), \(f'(c) = 0\) és \(f''(c) \ne 0\), akkor \(c\) lokális szélsőértékhely:</p>
-      <ul>
-        <li>\(f''(c) \gt 0 \Rightarrow\) lokális minimumhely,</li>
-        <li>\(f''(c) \lt 0 \Rightarrow\) lokális maximumhely.</li>
-      </ul>
-      <p class="note">Ha \(f''(c) = 0\), ez a teszt nem dönt (pl. \(x^3\), \(x^4\) a \(0\)-ban): nézd az \(f'\) előjelét.</p>
-    </div>
-    <div class="rule-card">
-      <h3>Weierstrass-tétel</h3>
-      <p>Korlátos és zárt \([a, b]\) intervallumon folytonos \(f\)-nek léteznek abszolút szélsőértékei: \(\exists\, \alpha, \beta \in [a, b]\), hogy</p>
-      \[f(\beta) \le f(x) \le f(\alpha) \quad \forall\, x \in [a, b].\]
-      <p class="note">Nyílt vagy nem korlátos intervallumon nem alkalmazható (lásd 3. és 4. feladat).</p>
-    </div>
-    <div class="rule-card">
-      <h3>Abszolút szélsőérték keresése \([a,b]\)-n</h3>
-      <ol>
-        <li>\(f \in C[a,b]\) \(\Rightarrow\) Weierstrass miatt létezik max. és min.</li>
-        <li>Az \((a,b)\)-beli jelöltek: ahol \(f' = 0\) (ha \(f \in D(a,b)\)).</li>
-        <li>Kiszámoljuk \(f\)-et a jelöltekben <b>és a két végpontban</b>.</li>
-        <li>A legnagyobb érték az abszolút maximum, a legkisebb az abszolút minimum.</li>
-      </ol>
-    </div>
-    <div class="rule-card wide">
-      <h3>Monotonitásvizsgálat menete (előjeltáblázat)</h3>
-      <ol>
-        <li>Értelmezési tartomány, deriválhatóság; \(f'\) kiszámítása és <b>szorzattá alakítása</b>.</li>
-        <li>\(f'\) zérushelyei és a \(D_f\)-ből kimaradó pontok felosztják \(D_f\)-et részintervallumokra. Ha \(f'\) folytonos, ezeken belül nem vált előjelet, így elég egy-egy pontban kiszámolni.</li>
-        <li>Táblázat: \(f'\) előjele \(\Rightarrow\) \(f\) monotonitása; előjelváltás a stacionárius pontban \(\Rightarrow\) lokális szélsőérték.</li>
-      </ol>
-      <p class="note">Szöveges feladatnál (3–4.) nyílt vagy végtelen intervallumon dolgozunk: ha \(f\) egy \(x_0\)-ig \(\uparrow\), utána \(\downarrow\) (vagy fordítva), akkor \(x_0\) <b>abszolút</b> szélsőértékhely, Weierstrass nélkül is.</p>
-    </div>
-  </div>
-</section>
 
 <!-- ================= ÓRAI FELADATOK ================= -->
 <section id="orai">
@@ -668,22 +612,6 @@ svg .cv3 { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: .4; }
     </details>
   </article>
 
-  </div>
-</section>
-
-<!-- ================= GYAKORI HIBÁK ================= -->
-<section id="hibak">
-  <div class="section-head">
-    <span class="label">Mire figyelj</span>
-    <h2>Gyakori hibák</h2>
-  </div>
-  <div class="mistakes">
-    <div class="mistake"><span class="x">✕</span><p><b>„\(f'(a) = 0\), tehát \(a\) szélsőértékhely.”</b> Ez csak szükséges feltétel. Előjelváltás (vagy \(f''(a) \ne 0\)) is kell: \(x^3\) a \(0\)-ban, órai 2(a) és házi 1 a \(0\)-ban.</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>Monotonitás nem intervallumon.</b> Ha \(D_f\)-ből kimarad egy pont, a monotonitási intervallumokat ott szét kell vágni. „\(f \downarrow\) a \((-\infty,0)\cup(0,1]\)-en” hamis (házi 2, \(\frac1x\)).</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>Kifelejtett végpontok.</b> Zárt intervallumon az abszolút szélsőérték gyakran a végpontban van, ahol \(f' \ne 0\) (órai 2(a): max. a \(-1\)-ben; házi 3: max. a \(0\)-ban).</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>Lokális = abszolút.</b> A lokális maximum lehet kisebb egy lokális minimumnál (órai 1(b): \(-\frac12 \lt -\frac1{18}\)). Abszolút szélsőértéket csak értékek összehasonlításával vagy globális monotonitással lehet kimondani.</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>Weierstrass nyílt vagy végtelen intervallumon.</b> A \((0,5)\) vagy \((0,+\infty)\) esetén a tétel nem garantál semmit. Ilyenkor a monotonitás (\(\uparrow\) majd \(\downarrow\), vagy fordítva) bizonyítja, hogy a stacionárius pont abszolút szélsőértékhely (órai 3., 4.).</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>Nem szorzat alakú \(f'\), rossz előjel.</b> Előjelet szorzat alakból olvass le, a négyzetes nevezőt (pozitív) és az \(e^x\)-et hagyd figyelmen kívül. Az intervallumon kívüli stacionárius pontokat (házi 3: \(x = 1\)) szűrd ki.</p></div>
   </div>
 </section>
 

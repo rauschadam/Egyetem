@@ -188,13 +188,25 @@ svg .bd { fill: var(--accent-soft); opacity: .8; }
 /* primitive-function families and vertical asymptotes */
 svg .cv3 { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: .4; }
 .lg.fam::before { opacity: .45; border-top-width: 1.5px; }
+
+/* links to the shared ZH trick pages */
+.hero-links { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.tricks { display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; border: 1.5px dashed var(--accent); border-radius: 8px; color: var(--accent); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 0.98rem; line-height: 1; white-space: nowrap; }
+.tricks:hover, .tricks:focus-visible { background: var(--accent-soft); outline: none; }
+nav.bar a.nav-tricks { border-style: dashed; border-color: var(--accent); color: var(--accent); }
+.src-link { text-decoration: none; color: var(--accent); }
+.src-link:hover { text-decoration: underline; }
+h3.sub-head { font-family: var(--f-label); font-size: 0.78rem; font-weight: 500; letter-spacing: 0.09em; text-transform: uppercase; color: var(--mark); margin-top: 6px; }
 </style>
 </head>
 <body>
 <div class="wrap">
 
 <header class="hero">
-  <a class="back" href="../../index.html#/anal2"><span class="arr" aria-hidden="true">←</span>Vissza: Analízis II.</a>
+  <div class="hero-links">
+    <a class="back" href="../../index.html#/anal2"><span class="arr" aria-hidden="true">←</span>Vissza: Analízis II.</a>
+    <a class="tricks" href="zh1_trukkok.html">Trükkök az 1. ZH-hoz →</a>
+  </div>
   <span class="label">Analízis II. · 2. gyakorlat · Differenciálszámítás 1.</span>
   <h1>A 2. gyakorlat kidolgozva</h1>
   <p class="sub">A pontbeli derivált definíciója, a deriválási szabályok (összeg, szorzat, hányados, összetett függvény) és a \(g(x)^{h(x)}\) alakú függvények deriválása. Az órai feladatok a gyakorlati anyag megoldását követik, a házi feladatok (az összevont anyagból) saját megoldások. Az órán kérdezett röpZH-tételek: <a href="ropzh_kidolgozas.html#rz2">2. röpZH</a>. Előbb próbáld meg magad, és csak utána nyisd le a megoldást.</p>
@@ -208,76 +220,12 @@ svg .cv3 { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: .4; }
 <nav class="bar" aria-label="Fejezetek">
   <ul>
     <li><a class="nav-back" href="../../index.html#/anal2" aria-label="Vissza: Analízis II.">← ANAL II</a></li>
-    <li><a href="#emlekezteto">Emlékeztető</a></li>
     <li><a href="#orai">Órai feladatok</a></li>
     <li><a href="#hazi">Házi feladatok</a></li>
-    <li><a href="#hibak">Gyakori hibák</a></li>
+    <li><a class="nav-tricks" href="zh1_trukkok.html">Trükkök (1. ZH) →</a></li>
     <li><a href="ropzh_kidolgozas.html#rz2">2. röpZH ↗</a></li>
   </ul>
 </nav>
-
-<!-- ================= EMLÉKEZTETŐ ================= -->
-<section id="emlekezteto">
-  <div class="section-head">
-    <span class="label">Ami kell hozzá</span>
-    <h2>Emlékeztető</h2>
-    <p>A 2. gyakorlat elméleti összefoglalója röviden. A feladatokban végig ezekre hivatkozunk.</p>
-  </div>
-  <div class="sheet">
-    <div class="rule-card">
-      <h3>Pontbeli derivált</h3>
-      <p>Az \(f \in \R \to \R\) függvény az \(a \in \operatorname{int} D_f\) pontban <b>deriválható</b> (\(f \in D\{a\}\)), ha létezik és véges a</p>
-      \[f'(a) := \lim_{x \to a} \frac{f(x) - f(a)}{x - a} = \lim_{h \to 0} \frac{f(a+h) - f(a)}{h} \in \R\]
-      <p>határérték.</p>
-      <p class="note">Ha \(f \in C\{a\}\), ez mindig \(\frac00\)-típusú kritikus határérték, ezért kell átalakítani (gyöktelenítés, kiemelés, egyszerűsítés).</p>
-    </div>
-    <div class="rule-card">
-      <h3>Deriváltfüggvény</h3>
-      <p>Ha az \(\{x \in \operatorname{int} D_f \mid f \in D\{x\}\}\) halmaz nem üres, akkor az</p>
-      \[\{x \in \operatorname{int} D_f \mid f \in D\{x\}\} \ni x \mapsto f'(x)\]
-      <p>függvény az \(f\) <b>deriváltfüggvénye</b>, jele \(f'\).</p>
-      <p class="note">A deriváltfüggvény értelmezési tartománya kisebb lehet, mint \(D_f\): pl. \(\sqrt{x^2-1}\) az \(x = 1\)-ben nem deriválható (1. feladat).</p>
-    </div>
-    <div class="rule-card">
-      <h3>Algebrai műveletek</h3>
-      <p>Ha \(f, g \in D\{a\}\), akkor</p>
-      <ul>
-        <li>\((c f)'(a) = c\,f'(a)\) \((c \in \R)\)</li>
-        <li>\((f + g)'(a) = f'(a) + g'(a)\)</li>
-        <li>\((f g)'(a) = f'(a)\,g(a) + f(a)\,g'(a)\)</li>
-        <li>ha \(g(a) \ne 0\): \(\Big(\dfrac fg\Big)'(a) = \dfrac{f'(a)\,g(a) - f(a)\,g'(a)}{g^2(a)}\)</li>
-      </ul>
-    </div>
-    <div class="rule-card">
-      <h3>Összetett függvény (láncszabály)</h3>
-      <p>Ha \(g \in D\{a\}\) és \(f \in D\{g(a)\}\), akkor \(f \circ g \in D\{a\}\) és</p>
-      \[(f \circ g)'(a) = f'\big(g(a)\big)\cdot g'(a).\]
-      <p class="note">Többszörösen összetett függvénynél „kívülről befelé” haladva alkalmazzuk, minden lépésben egy újabb belső derivált szorzóval.</p>
-    </div>
-    <div class="rule-card wide">
-      <h3>Elemi függvények deriváltjai (1. előadás)</h3>
-      <div class="tbl"><table>
-        <thead><tr><th>\(f(x)\)</th><th>\(f'(x)\)</th><th>\(f(x)\)</th><th>\(f'(x)\)</th></tr></thead>
-        <tbody>
-          <tr><td>\(x^\alpha\)</td><td>\(\alpha x^{\alpha-1}\)</td><td>\(\tg x\)</td><td>\(\dfrac{1}{\cos^2 x}\)</td></tr>
-          <tr><td>\(e^x\)</td><td>\(e^x\)</td><td>\(\ctg x\)</td><td>\(-\dfrac{1}{\sin^2 x}\)</td></tr>
-          <tr><td>\(a^x\) \((a \gt 0)\)</td><td>\(a^x \ln a\)</td><td>\(\arcsin x\)</td><td>\(\dfrac{1}{\sqrt{1-x^2}}\)</td></tr>
-          <tr><td>\(\ln x\) \((x \gt 0)\)</td><td>\(\dfrac1x\)</td><td>\(\arccos x\)</td><td>\(-\dfrac{1}{\sqrt{1-x^2}}\)</td></tr>
-          <tr><td>\(\sin x\)</td><td>\(\cos x\)</td><td>\(\arctg x\)</td><td>\(\dfrac{1}{1+x^2}\)</td></tr>
-          <tr><td>\(\cos x\)</td><td>\(-\sin x\)</td><td>\(\operatorname{sh} x\), \(\operatorname{ch} x\)</td><td>\(\operatorname{ch} x\), \(\operatorname{sh} x\)</td></tr>
-        </tbody>
-      </table></div>
-    </div>
-    <div class="rule-card wide">
-      <h3>\(g(x)^{h(x)}\) alakú függvények, logaritmikus deriválás</h3>
-      <p>Ha az alap és a kitevő is változik (\(g(x) \gt 0\)), az \(a = e^{\ln a}\) azonossággal írjuk át:</p>
-      \[g(x)^{h(x)} = e^{h(x)\ln g(x)} = \exp\big(h(x)\cdot\ln g(x)\big),\]
-      <p>és ezt összetett függvényként deriváljuk (külső: \(\exp\), belső: \(h\cdot(\ln\circ g)\)):</p>
-      \[\Big(g^{h}\Big)'(x) = g(x)^{h(x)}\cdot\Big(h'(x)\ln g(x) + h(x)\cdot\frac{g'(x)}{g(x)}\Big).\]
-      <p class="note">Ugyanez jön ki <b>logaritmikus deriválással</b>: \((\ln f)' = \frac{f'}{f}\), így \(f' = f\cdot(\ln f)'\). Hasznos sokszoros szorzatoknál és hányadosoknál is.</p>
-    </div>
-  </div>
-</section>
 
 <!-- ================= ÓRAI FELADATOK ================= -->
 <section id="orai">
@@ -748,22 +696,6 @@ svg .cv3 { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: .4; }
     </details>
   </article>
 
-  </div>
-</section>
-
-<!-- ================= GYAKORI HIBÁK ================= -->
-<section id="hibak">
-  <div class="section-head">
-    <span class="label">Mire figyelj</span>
-    <h2>Gyakori hibák</h2>
-  </div>
-  <div class="mistakes">
-    <div class="mistake"><span class="x">✕</span><p><b>\((fg)' = f'g'\) vagy \(\big(\frac fg\big)' = \frac{f'}{g'}\).</b> Szorzatra és hányadosra nincs ilyen szabály: \((fg)' = f'g + fg'\), és a hányadosnál \(\frac{f'g - fg'}{g^2}\), a számlálóban ebben a sorrendben.</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>Elfelejtett belső derivált.</b> \(\big((5x^2+3x)^{2023}\big)' \ne 2023(5x^2+3x)^{2022}\): a láncszabályban mindig szorozni kell a belső függvény deriváltjával (órai 2(g)). Többszörös összetételnél minden réteg ad egy tényezőt (órai 2(j)).</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>\(x^a\) és \(a^x\) összekeverése.</b> \((x^a)' = ax^{a-1}\) (állandó kitevő), \((a^x)' = a^x\ln a\) (állandó alap). Ha mindkettő változik (\(g(x)^{h(x)}\)), egyik sem jó: \(e^{h\ln g}\) alakba kell írni (órai 3. feladat).</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>Definíció szerinti deriválásnál behelyettesítés.</b> A \(\frac{f(x) - f(a)}{x-a}\) határérték folytonos \(f\)-re mindig \(\frac00\)-típusú; előbb ki kell emelni és egyszerűsíteni az \(x - a\) tényezőt (gyöktelenítés, szorzattá alakítás), csak utána lehet \(x \to a\)-t venni (órai 1.).</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>A deriválhatóság pontjainak figyelmen kívül hagyása.</b> \(\sqrt t\) a 0-ban nem deriválható, \(\ln\) csak pozitív helyen értelmes, a hányadosszabályhoz \(g(a) \ne 0\) kell. Ezért fontos a megadott intervallum (pl. \(x \gt 0\), \(x \gt 1\)), és a végeredmény mellé is ki kell írni.</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>Elnézett kitevő-értelmezés.</b> \(3^{x^2} = 3^{(x^2)} \ne (3^x)^2\), \(\sin^2 u = (\sin u)^2 \ne \sin(u^2)\), és \(\frac{1}{5x^5} = \frac15 x^{-5} \ne (5x)^{-5}\). Deriválás előtt írd fel pontosan, mi minek a függvénye.</p></div>
   </div>
 </section>
 

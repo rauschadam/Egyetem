@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="hu" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Analízis II · Trükkök az 1. ZH-hoz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['\\(', '\\)']],
+      displayMath: [['\\[', '\\]']],
+      macros: {
+        arcsin: '\\operatorname{arc\\,sin}', arccos: '\\operatorname{arc\\,cos}',
+        arctg: '\\operatorname{arc\\,tg}', arcctg: '\\operatorname{arc\\,ctg}',
+        tg: '\\operatorname{tg}', ctg: '\\operatorname{ctg}', R: '\\mathbb{R}'
+      }
+    },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js" async></script>
+<style>
+/* Layout: same exam-paper look as the DIMAT prep, in the Analysis orange; every task = statement + folded solution + folded walkthrough */
+:root {
+  --paper: #f5f7fa;
+  --grid: rgba(180, 80, 11, 0.06);
+  --card: #ffffff;
+  --ink: #1b2430;
+  --muted: #5a6574;
+  --rule: #d7dde6;
+  --accent: #b4500b;
+  --accent-soft: #fcefe4;
+  --mark: #b8352a;
+  --mark-soft: #fbe9e6;
+  --ok: #2c7a4b;
+  --ok-soft: #e3f3e9;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-label: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f141b; --grid: rgba(242, 162, 94, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+    --rule: #2a3442; --accent: #f2a25e; --accent-soft: #33241a; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+    --ok: #74d39c; --ok-soft: #173225; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f141b; --grid: rgba(242, 162, 94, 0.05); --card: #161c25; --ink: #e5e9f0; --muted: #9aa5b5;
+  --rule: #2a3442; --accent: #f2a25e; --accent-soft: #33241a; --mark: #ff8b7b; --mark-soft: #3a1f1c;
+  --ok: #74d39c; --ok-soft: #173225; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background-color: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 1.06rem;
+  line-height: 1.6;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 80px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2rem, 6vw, 3.1rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.65rem; font-weight: 700; letter-spacing: -0.01em; }
+h3 { font-size: 1.1rem; font-weight: 600; }
+p { margin: 0; }
+a { color: var(--accent); }
+.label { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding: 2px 0; margin: 6px 0 !important; min-width: 0; max-width: 100%; }
+/* grid children must be allowed to shrink, otherwise wide formulas push the page sideways */
+.task, .sol, .step, .rule-card, .sheet > * { grid-template-columns: minmax(0, 1fr); min-width: 0; }
+.rule-card li, .rule-card p, .sol p, .sol li, .step p, .stmt, .tip, .warn, .mistake p, td { overflow-x: auto; overflow-y: hidden; }
+
+/* back to subject page */
+.back { justify-self: start; display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px 9px 12px; border: 1.5px solid var(--accent); border-radius: 8px; background: var(--accent-soft); color: var(--ink); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 1.02rem; line-height: 1; white-space: nowrap; transition: background .15s, color .15s; }
+.back .arr { color: var(--accent); font-size: 1.25rem; transition: transform .15s, color .15s; }
+.back:hover, .back:focus-visible { background: var(--accent); color: var(--paper); outline: none; }
+.back:hover .arr, .back:focus-visible .arr { color: var(--paper); transform: translateX(-3px); }
+
+/* header */
+header.hero { display: grid; gap: 14px; padding-block: 0 26px; border-bottom: 2px solid var(--accent); }
+.hero .sub { color: var(--muted); max-width: 62ch; }
+.facts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.fact { display: flex; flex-direction: column; gap: 2px; padding: 8px 14px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; min-width: 120px; }
+.fact b { font-family: var(--f-display); font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+
+nav.bar { position: sticky; top: 0; z-index: 5; background: var(--paper); border-bottom: 1px solid var(--rule); margin-inline: -16px; padding-inline: 16px; }
+nav.bar ul { list-style: none; margin: 0; padding: 10px 0; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin; }
+nav.bar a { display: block; white-space: nowrap; text-decoration: none; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.04em; color: var(--ink); padding: 6px 10px; border-radius: 4px; border: 1px solid var(--rule); background: var(--card); }
+nav.bar a:hover, nav.bar a:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+nav.bar a.nav-back { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+
+section { padding-top: 44px; display: grid; gap: 18px; scroll-margin-top: 56px; }
+.section-head { display: grid; gap: 6px; }
+.section-head p { color: var(--muted); max-width: 64ch; }
+
+/* reminder cards */
+.sheet { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; }
+.rule-card { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 14px 16px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.rule-card h3 { font-size: 1rem; }
+.rule-card p, .rule-card li { font-size: 0.95rem; }
+.rule-card ul, .rule-card ol { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.rule-card.wide { grid-column: 1 / -1; }
+
+/* tables (sign charts, value tables) */
+.tbl { overflow-x: auto; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--rule); vertical-align: middle; }
+th { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+tr:last-child td, tr:last-child th { border-bottom: 0; }
+table.sgn { width: auto; min-width: 100%; }
+table.sgn th, table.sgn td { text-align: center; white-space: nowrap; border-left: 1px solid var(--rule); }
+table.sgn th:first-child { border-left: 0; text-transform: none; letter-spacing: 0; font-family: var(--f-body); font-size: 1rem; color: var(--ink); background: var(--accent-soft); }
+table.sgn td.pt { background: color-mix(in srgb, var(--accent-soft) 55%, transparent); }
+.p { color: var(--ok); font-weight: 600; }
+.n { color: var(--mark); font-weight: 600; }
+.note { font-size: 0.82rem; color: var(--muted); }
+.tag { font-family: var(--f-label); font-size: 0.72rem; color: var(--accent); }
+
+/* exercises */
+.task { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 18px; display: grid; gap: 10px; min-width: 0; scroll-margin-top: 60px; }
+.task-head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.task-head .no { font-family: var(--f-display); font-weight: 700; font-size: 1.05rem; }
+.task-head .src { font-family: var(--f-label); font-size: 0.72rem; color: var(--muted); }
+.task-head .kind { margin-left: auto; font-family: var(--f-label); font-size: 0.75rem; color: var(--accent); }
+.stmt { max-width: 70ch; }
+details { border-top: 1px dashed var(--rule); padding-top: 8px; min-width: 0; }
+summary { cursor: pointer; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); list-style: none; display: inline-flex; gap: 8px; align-items: center; padding: 4px 0; }
+summary::-webkit-details-marker { display: none; }
+summary::before { content: "+"; display: inline-grid; place-items: center; width: 18px; height: 18px; border: 1px solid currentColor; border-radius: 3px; font-size: 0.8rem; }
+details[open] > summary::before { content: "−"; }
+summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sol { display: grid; gap: 10px; padding-top: 6px; max-width: 74ch; min-width: 0; }
+.sol ol, .sol ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.step { display: grid; gap: 8px; min-width: 0; }
+.step > b:first-child { font-family: var(--f-display); font-weight: 600; }
+.ans { display: inline-block; background: var(--ok-soft); color: var(--ok); font-weight: 600; padding: 2px 9px; border-radius: 4px; }
+.warn { background: var(--mark-soft); border-left: 3px solid var(--mark); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 0.95rem; }
+.tip { background: var(--accent-soft); border-left: 3px solid var(--accent); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 0.95rem; }
+.taskgroup { display: grid; gap: 12px; }
+
+/* graphs */
+figure.graph { margin: 0; background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 8px 8px 6px; display: grid; gap: 6px; }
+figure.graph > div > svg { width: 100%; height: auto; display: block; }
+figure.graph figcaption { display: flex; flex-wrap: wrap; gap: 4px 16px; font-family: var(--f-label); font-size: 0.72rem; color: var(--muted); padding: 0 4px; }
+.lg::before { content: ""; display: inline-block; width: 16px; height: 0; vertical-align: middle; margin-right: 6px; border-top: 2.5px solid var(--accent); }
+.lg.asy::before { border-top: 1.5px dashed var(--muted); }
+.lg.ext::before { width: 9px; height: 9px; border: 0; border-radius: 50%; background: var(--ok); }
+.lg.inf::before { width: 9px; height: 9px; border: 2px solid var(--mark); border-radius: 50%; box-sizing: border-box; }
+svg .gl { stroke: var(--rule); stroke-width: 1; opacity: .55; }
+svg .ax { stroke: var(--muted); stroke-width: 1.3; }
+svg .tk { fill: var(--muted); font-family: var(--f-label); font-size: 11px; }
+svg .cv { fill: none; stroke: var(--accent); stroke-width: 2.6; stroke-linejoin: round; stroke-linecap: round; }
+svg .as { stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 6 5; fill: none; }
+svg .pe { fill: var(--ok); stroke: var(--paper); stroke-width: 1.5; }
+svg .pi { fill: var(--paper); stroke: var(--mark); stroke-width: 2.2; }
+svg .pz { fill: var(--ink); }
+svg .po { fill: var(--paper); stroke: var(--accent); stroke-width: 2; }
+svg .pl { fill: var(--ink); font-family: var(--f-label); font-size: 12px; paint-order: stroke; stroke: var(--paper); stroke-width: 4px; stroke-linejoin: round; }
+
+/* mistakes */
+.mistakes { display: grid; gap: 10px; }
+.mistake { display: grid; grid-template-columns: auto 1fr; gap: 12px; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 12px 14px; }
+.mistake .x { font-family: var(--f-display); font-weight: 700; color: var(--mark); font-size: 1.2rem; line-height: 1.3; }
+
+footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.88rem; }
+
+@media (max-width: 520px) {
+  body { font-size: 1rem; }
+  .task { padding: 14px; }
+  th, td { padding: 6px 8px; }
+}
+
+/* Taylor graphs: second curve dashed, highlighted x-band */
+svg .cv2 { fill: none; stroke: var(--ok); stroke-width: 2.2; stroke-dasharray: 7 5; }
+svg .bd { fill: var(--accent-soft); opacity: .8; }
+.lg.tay::before { border-top: 2.2px dashed var(--ok); }
+.lg.band::before { height: 10px; border: 0; background: var(--accent-soft); }
+/* primitive-function families and vertical asymptotes */
+svg .cv3 { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: .4; }
+.lg.fam::before { opacity: .45; border-top-width: 1.5px; }
+
+/* links to the shared ZH trick pages */
+.hero-links { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.tricks { display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; border: 1.5px dashed var(--accent); border-radius: 8px; color: var(--accent); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 0.98rem; line-height: 1; white-space: nowrap; }
+.tricks:hover, .tricks:focus-visible { background: var(--accent-soft); outline: none; }
+nav.bar a.nav-tricks { border-style: dashed; border-color: var(--accent); color: var(--accent); }
+.src-link { text-decoration: none; color: var(--accent); }
+.src-link:hover { text-decoration: underline; }
+h3.sub-head { font-family: var(--f-label); font-size: 0.78rem; font-weight: 500; letter-spacing: 0.09em; text-transform: uppercase; color: var(--mark); margin-top: 6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <a class="back" href="../../index.html#/anal2"><span class="arr" aria-hidden="true">←</span>Vissza: Analízis II.</a>
+  <span class="label">Analízis II. · 1. ZH · 1–6. gyakorlat</span>
+  <h1>Trükkök az 1. ZH-hoz</h1>
+  <p class="sub">Határérték, deriválás, szélsőérték, függvényvizsgálat, L'Hospital, Taylor: a feladatokban használt fogások és a tipikus csapdák egy helyen.</p>
+</header>
+
+<nav class="bar" aria-label="Fejezetek">
+  <ul>
+    <li><a class="nav-back" href="../../index.html#/anal2" aria-label="Vissza: Analízis II.">← ANAL II</a></li>
+    <li><a href="#hatarertek">Határérték</a></li>
+    <li><a href="#derivalas">Deriválás</a></li>
+    <li><a href="#inverz">Inverz, érintő, ágak</a></li>
+    <li><a href="#szelsoertek">Szélsőérték</a></li>
+    <li><a href="#vizsgalat">Függvényvizsgálat</a></li>
+    <li><a href="#lhospital">L'Hospital, Taylor</a></li>
+  </ul>
+</nav>
+
+<!-- ================= HATÁRÉRTÉK ================= -->
+<section id="hatarertek">
+  <div class="section-head">
+    <a class="label src-link" href="01_gyakorlat_kidolgozas.html">1. gyakorlat →</a>
+    <h2>Határérték</h2>
+  </div>
+  <div class="sheet">
+    <div class="rule-card">
+      <h3>Kritikus alak → átalakítás</h3>
+      <p>\(\frac00\), \(\frac\infty\infty\), \(0\cdot\infty\), \(\infty-\infty\): soha nem helyettesítünk be. Gyöktelenítés, szorzattá alakítás, kiemelés, egyszerűsítés, amíg nem kritikus alakot kapunk.</p>
+      <p>\(\displaystyle\lim_{x\to a}\frac{x^n-a^n}{x-a} = n a^{n-1}\) (az \(x-a\) tényező kiemelhető).</p>
+    </div>
+    <div class="rule-card">
+      <h3>Nevezetes határértékek (\(x \to 0\))</h3>
+      \[\frac{\sin x}{x}\to 1,\quad \frac{e^x-1}{x}\to 1,\quad \frac{\ln(1+x)}{x}\to 1,\quad \frac{1-\cos x}{x^2}\to\frac12.\]
+      <p>A nevezőben pontosan a belső kifejezésnek kell állnia: \(\frac{\sin 3x}{x} = 3\cdot\frac{\sin 3x}{3x} \to 3\).</p>
+    </div>
+    <div class="rule-card">
+      <h3>Eltolás a 0-ba</h3>
+      <p>\(h := x - a\): \(\displaystyle\lim_{x\to a}F(x) = \lim_{h\to 0}F(a+h)\). Így \(x \to a \ne 0\) esetén is használhatók a 0-beli nevezetes határértékek.</p>
+    </div>
+    <div class="rule-card">
+      <h3>Hatványsorral</h3>
+      \[e^x = 1 + x + \tfrac{x^2}{2!} + \cdots,\quad \sin x = x - \tfrac{x^3}{3!} + \cdots,\quad \cos x = 1 - \tfrac{x^2}{2!} + \tfrac{x^4}{4!} - \cdots\]
+      <p>Írd be a sort, egyszerűsíts \(x\) hatványával, és a konvergenciahalmaz belsejében „szabad behelyettesíteni”.</p>
+    </div>
+    <div class="rule-card">
+      <h3>Korlátos · nullához tartó</h3>
+      <p>Ha \(g\) korlátos \(a\) körül és \(h \to 0\), akkor \(g h \to 0\). Pl. \(x^3\sin\frac1x \to 0\): itt a szorzatszabály nem használható, mert \(\lim\sin\frac1x\) nem létezik.</p>
+    </div>
+    <div class="rule-card">
+      <h3>Egyoldali határértékek</h3>
+      <p>\(|x|\), \(\sqrt[3]{x}\), \(\operatorname{sgn}\), \(e^{1/x}\) esetén bontsd két oldalra: \(\lim_a f\) pontosan akkor létezik, ha a két egyoldali létezik és egyenlő. \(\lim_{x\to0-0}e^{1/x} = 0\), \(\lim_{x\to0+0}e^{1/x} = +\infty\).</p>
+    </div>
+    <div class="rule-card">
+      <h3>Előjel-próba</h3>
+      <p>Egy numerikus próba (pl. \(x = a + 0{,}001\)) azonnal megmutatja, ha előjelet tévesztettél: \(\frac{a-x}{x-a} = -1\), \(\cos(a+h) = \cos a\cos h - \sin a\sin h\).</p>
+    </div>
+  </div>
+  <h3 class="sub-head">Csapdák</h3>
+  <div class="mistakes">
+    <div class="mistake"><span class="x">✕</span><p><b>„\(\frac00 = 1\)” vagy „\(\frac00 = 0\)”.</b> A \(\frac00\) nem szám: bármi kijöhet (0, 1, \(\pm\infty\), vagy nem is létezik). Mindig át kell alakítani.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Nevezetes határérték rossz helyen.</b> \(\frac{e^x-1}{x}\to1\) és \(\frac{\sin x}{x}\to1\) csak \(x\to0\)-ra igaz; \(x\to+\infty\) vagy \(x\to a\ne0\) esetén előbb vissza kell vezetni a 0-ra.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Szorzatszabály nem létező határértékkel.</b> \(\lim x^3\sin\frac1x \ne \lim x^3\cdot\lim\sin\frac1x\); a korlátos · nullához tartó kell.</p></div>
+  </div>
+</section>
+
+<!-- ================= DERIVÁLÁS ================= -->
+<section id="derivalas">
+  <div class="section-head">
+    <a class="label src-link" href="02_gyakorlat_kidolgozas.html">2. gyakorlat →</a>
+    <h2>Deriválás</h2>
+  </div>
+  <div class="sheet">
+    <div class="rule-card wide">
+      <h3>Elemi függvények deriváltjai</h3>
+      <div class="tbl"><table>
+        <thead><tr><th>\(f(x)\)</th><th>\(f'(x)\)</th><th>\(f(x)\)</th><th>\(f'(x)\)</th></tr></thead>
+        <tbody>
+          <tr><td>\(x^\alpha\)</td><td>\(\alpha x^{\alpha-1}\)</td><td>\(\tg x\)</td><td>\(\dfrac{1}{\cos^2 x}\)</td></tr>
+          <tr><td>\(e^x\)</td><td>\(e^x\)</td><td>\(\ctg x\)</td><td>\(-\dfrac{1}{\sin^2 x}\)</td></tr>
+          <tr><td>\(a^x\) \((a \gt 0)\)</td><td>\(a^x \ln a\)</td><td>\(\arcsin x\)</td><td>\(\dfrac{1}{\sqrt{1-x^2}}\)</td></tr>
+          <tr><td>\(\ln x\) \((x \gt 0)\)</td><td>\(\dfrac1x\)</td><td>\(\arccos x\)</td><td>\(-\dfrac{1}{\sqrt{1-x^2}}\)</td></tr>
+          <tr><td>\(\sin x\)</td><td>\(\cos x\)</td><td>\(\arctg x\)</td><td>\(\dfrac{1}{1+x^2}\)</td></tr>
+          <tr><td>\(\cos x\)</td><td>\(-\sin x\)</td><td>\(\operatorname{sh} x\), \(\operatorname{ch} x\)</td><td>\(\operatorname{ch} x\), \(\operatorname{sh} x\)</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div class="rule-card">
+      <h3>Láncszabály kívülről befelé</h3>
+      <p>\((f\circ g)'(x) = f'(g(x))\cdot g'(x)\). Többszörös összetételnél minden réteg ad egy újabb belső derivált szorzót.</p>
+    </div>
+    <div class="rule-card">
+      <h3>\(g(x)^{h(x)}\) alak</h3>
+      <p>Írd át: \(g^h = e^{h\ln g}\), és deriváld összetett függvényként:</p>
+      \[\big(g^h\big)' = g^h\Big(h'\ln g + h\frac{g'}{g}\Big).\]
+    </div>
+    <div class="rule-card">
+      <h3>Logaritmikus deriválás</h3>
+      <p>\(f' = f\cdot(\ln f)'\). Sokszoros szorzatnál, hányadosnál, gyökös kifejezésnél előbb a logaritmust bontsd szét: \(\ln\frac{2x^2-1}{x\sqrt{1+x^2}} = \ln(2x^2-1) - \ln x - \tfrac12\ln(1+x^2)\).</p>
+    </div>
+    <div class="rule-card">
+      <h3>Egyszerűsíts deriválás előtt</h3>
+      <p>\(\ln\sqrt{1+\cos^2 x} = \frac12\ln(1+\cos^2 x)\), \(\frac{1}{5x^5} = \frac15 x^{-5}\): kevesebb lépés, kevesebb hiba.</p>
+    </div>
+    <div class="rule-card">
+      <h3>Definíció szerinti deriválás</h3>
+      <p>\(\frac{f(x)-f(a)}{x-a}\) folytonos \(f\)-re mindig \(\frac00\): az \(x-a\) tényezőt kell kiemelni (gyöktelenítés, szorzattá alakítás), és csak utána \(x\to a\).</p>
+    </div>
+  </div>
+  <h3 class="sub-head">Csapdák</h3>
+  <div class="mistakes">
+    <div class="mistake"><span class="x">✕</span><p><b>\((fg)' = f'g'\) vagy \(\big(\frac fg\big)' = \frac{f'}{g'}\).</b> Helyesen \((fg)' = f'g + fg'\) és \(\big(\frac fg\big)' = \frac{f'g - fg'}{g^2}\), a számlálóban ebben a sorrendben.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Elfelejtett belső derivált.</b> \(\big((5x^2+3x)^{2023}\big)' = 2023(5x^2+3x)^{2022}\cdot(10x+3)\).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>\(x^a\) és \(a^x\) összekeverése.</b> \((x^a)' = ax^{a-1}\), \((a^x)' = a^x\ln a\); ha mindkettő változik, egyik sem jó, \(e^{h\ln g}\) kell.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Kitevő-értelmezés.</b> \(3^{x^2} \ne (3^x)^2\), \(\sin^2 u = (\sin u)^2 \ne \sin(u^2)\).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>A deriválhatóság pontjai.</b> \(\sqrt t\) a 0-ban nem deriválható, \(\ln\) csak pozitív helyen értelmes, a hányadosszabályhoz \(g(a) \ne 0\) kell: a végeredmény mellé írd ki, hol érvényes.</p></div>
+  </div>
+</section>
+
+<!-- ================= INVERZ, ÉRINTŐ, ÁGAK ================= -->
+<section id="inverz">
+  <div class="section-head">
+    <a class="label src-link" href="03_gyakorlat_kidolgozas.html">3. gyakorlat →</a>
+    <h2>Inverz függvény, érintő, esetszétválasztás</h2>
+  </div>
+  <div class="sheet">
+    <div class="rule-card">
+      <h3>Inverz deriváltja</h3>
+      \[\big(f^{-1}\big)'(b) = \frac{1}{f'(a)}, \quad\text{ahol } f(a) = b.\]
+      <p>Előbb oldd meg az \(f(a) = b\) egyenletet, és \(f'\)-t az \(a\)-ban vedd, ne \(b\)-ben. Feltétel: \(f\) szigorúan monoton, folytonos, \(f'(a) \ne 0\).</p>
+    </div>
+    <div class="rule-card">
+      <h3>Érintő</h3>
+      \[y = f'(a)(x-a) + f(a).\]
+      <p>Két szám kell: \(f(a)\) és \(f'(a)\). Ellenőrzés: \(x = a\)-ra \(y = f(a)\) jön-e ki?</p>
+    </div>
+    <div class="rule-card wide">
+      <h3>Recept: esetszétválasztással megadott függvény</h3>
+      <ol>
+        <li>Az ágak belsejében a deriválási szabályokkal deriválunk.</li>
+        <li>A ragasztási pontban <b>először a folytonosság</b>: ha \(f \notin C\{a\}\), akkor \(f \notin D\{a\}\), és kész.</li>
+        <li>Ha folytonos, \(f'_-(a)\) és \(f'_+(a)\) a különbségi hányados egyoldali határértékeiből. Ha az ág egy \(a\)-ban is deriválható \(g\) megszorítása és \(g(a) = f(a)\), akkor az onnan vett egyoldali derivált egyszerűen \(g'(a)\).</li>
+        <li>\(f \in D\{a\} \iff f'_-(a) = f'_+(a)\).</li>
+      </ol>
+      <p>Külön definiált pontban (pl. \(f(0) := 0\)) a különbségi hányados határértékét kell számolni; az \(a \ne 0\)-ra kapott \(f'\) képletbe nem lehet 0-t írni.</p>
+    </div>
+  </div>
+  <h3 class="sub-head">Csapdák</h3>
+  <div class="mistakes">
+    <div class="mistake"><span class="x">✕</span><p><b>\(\big(f^{-1}\big)'(b) = \frac{1}{f'(b)}\).</b> Helyesen \(\frac{1}{f'(a)}\), ahol \(f(a) = b\).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>A ragasztási pontban csak az ágak deriváltjait vetjük össze.</b> Folytonosság nélkül hibás: ha \(f\) ugrik, a két ág deriváltja egyezhet, mégsem deriválható.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Az érintőbe \(f'(x)\) kerül \(f'(a)\) helyett, vagy elmarad az \(f(a)\) tag.</b> Az érintő egyenes, mindkét együtthatója szám.</p></div>
+  </div>
+</section>
+
+<!-- ================= SZÉLSŐÉRTÉK ================= -->
+<section id="szelsoertek">
+  <div class="section-head">
+    <a class="label src-link" href="04_gyakorlat_kidolgozas.html">4. gyakorlat →</a>
+    <h2>Monotonitás, szélsőérték</h2>
+  </div>
+  <div class="sheet">
+    <div class="rule-card wide">
+      <h3>Előjeltáblázat</h3>
+      <ol>
+        <li>\(\mathcal D_f\), majd \(f'\) <b>szorzat alakban</b> (közös nevező, kiemelés, egyszerűsítés).</li>
+        <li>\(f'\) zérushelyei és a \(\mathcal D_f\)-ből kimaradó pontok részintervallumokra bontanak; folytonos \(f'\) ezeken belül nem vált előjelet, elég egy pontban kiszámolni.</li>
+        <li>A mindig pozitív tényezőket (négyzetes nevező, \(e^x\), páros kitevő) hagyd el az előjelnél.</li>
+        <li>\(f'\) előjele → monotonitás; előjelváltás a stacionárius pontban → lokális szélsőérték: \((-,+)\) minimum, \((+,-)\) maximum.</li>
+      </ol>
+      <p>Ahol \(f\) folytonos, a határoló pont mindkét szomszédos monotonitási intervallumhoz hozzávehető (zárt intervallumok).</p>
+    </div>
+    <div class="rule-card">
+      <h3>Másodrendű teszt</h3>
+      <p>\(f'(c) = 0\), \(f''(c) \gt 0\) → minimum, \(f''(c) \lt 0\) → maximum. Ha \(f''(c) = 0\), nem dönt (\(x^3\), \(x^4\)): nézd \(f'\) előjelét.</p>
+    </div>
+    <div class="rule-card">
+      <h3>Abszolút szélsőérték \([a,b]\)-n</h3>
+      <p>Weierstrass miatt létezik. Jelöltek: \(f' = 0\) pontjai \((a,b)\)-ben <b>és a két végpont</b>. Számold ki \(f\)-et mindegyikben, a legnagyobb a max., a legkisebb a min. Az intervallumon kívüli stacionárius pontokat szűrd ki.</p>
+    </div>
+    <div class="rule-card">
+      <h3>Nyílt vagy végtelen intervallumon</h3>
+      <p>Weierstrass nem alkalmazható. Ha \(f\) egy \(x_0\)-ig \(\uparrow\), utána \(\downarrow\) (vagy fordítva), akkor \(x_0\) <b>abszolút</b> szélsőértékhely. Szöveges feladatoknál ez a bizonyítás.</p>
+    </div>
+  </div>
+  <h3 class="sub-head">Csapdák</h3>
+  <div class="mistakes">
+    <div class="mistake"><span class="x">✕</span><p><b>„\(f'(a) = 0\), tehát szélsőértékhely.”</b> Csak szükséges feltétel; előjelváltás vagy \(f''(a) \ne 0\) is kell (\(x^3\) a 0-ban).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Monotonitás nem intervallumon.</b> Ha \(\mathcal D_f\)-ből kimarad egy pont, ott szét kell vágni: „\(\frac1x\) csökken \(\R\setminus\{0\}\)-n” hamis.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Kifelejtett végpontok.</b> Zárt intervallumon az abszolút szélsőérték gyakran a végpontban van, ahol \(f' \ne 0\).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Lokális = abszolút.</b> Egy lokális maximum lehet kisebb egy lokális minimumnál; abszolútat csak értékek összehasonlításával vagy globális monotonitással lehet kimondani.</p></div>
+  </div>
+</section>
+
+<!-- ================= FÜGGVÉNYVIZSGÁLAT ================= -->
+<section id="vizsgalat">
+  <div class="section-head">
+    <a class="label src-link" href="05_gyakorlat_kidolgozas.html">5. gyakorlat →</a>
+    <h2>Teljes függvényvizsgálat</h2>
+  </div>
+  <div class="sheet">
+    <div class="rule-card">
+      <h3>A menet</h3>
+      <ol>
+        <li>\(\mathcal D_f\), előjel, paritás, periodicitás, folytonosság.</li>
+        <li>\(f'\) → monotonitás, lokális szélsőértékek.</li>
+        <li>\(f''\) → konvexitás (\(f'' \gt 0\) konvex), inflexió ahol előjelet vált.</li>
+        <li>Határértékek \(\pm\infty\)-ben és a kimaradó pontokban.</li>
+        <li>Aszimptoták, grafikon.</li>
+      </ol>
+    </div>
+    <div class="rule-card">
+      <h3>Aszimptota</h3>
+      \[A = \lim_{x\to\pm\infty}\frac{f(x)}{x}, \qquad B = \lim_{x\to\pm\infty}\big(f(x) - Ax\big).\]
+      <p>\(+\infty\)-ben és \(-\infty\)-ben külön kell számolni. Hogy honnan közelít: oldd meg \(f(x) = Ax + B\)-t, és nézd a különbség előjelét. A grafikon metszheti az aszimptotát.</p>
+    </div>
+    <div class="rule-card">
+      <h3>Arkusz-függvények</h3>
+      <p>\(\arcsin\): \(\big[-\frac\pi2, \frac\pi2\big]\), \(\arctg\): \(\big(-\frac\pi2, \frac\pi2\big)\), \(\arccos\): \([0, \pi]\), \(\arcctg\): \((0, \pi)\).</p>
+      <p>\(\arcsin\), \(\arctg\) páratlan; \(\arccos(-x) = \pi - \arccos x\).</p>
+    </div>
+    <div class="rule-card">
+      <h3>Nevezetes értékek</h3>
+      <div class="tbl"><table class="sgn">
+        <tr><th>\(y\)</th><td>\(0\)</td><td>\(\frac{\pi}{6}\)</td><td>\(\frac{\pi}{4}\)</td><td>\(\frac{\pi}{3}\)</td><td>\(\frac{\pi}{2}\)</td></tr>
+        <tr><th>\(\sin y\)</th><td>\(0\)</td><td>\(\frac12\)</td><td>\(\frac{\sqrt2}{2}\)</td><td>\(\frac{\sqrt3}{2}\)</td><td>\(1\)</td></tr>
+        <tr><th>\(\cos y\)</th><td>\(1\)</td><td>\(\frac{\sqrt3}{2}\)</td><td>\(\frac{\sqrt2}{2}\)</td><td>\(\frac12\)</td><td>\(0\)</td></tr>
+        <tr><th>\(\tg y\)</th><td>\(0\)</td><td>\(\frac{1}{\sqrt3}\)</td><td>\(1\)</td><td>\(\sqrt3\)</td><td>–</td></tr>
+      </table></div>
+    </div>
+    <div class="rule-card">
+      <h3>Logaritmus a 0-ban</h3>
+      <p>\(\lim_{x\to0+0}x^\alpha\ln^k x = 0\) \((\alpha \gt 0)\): a hatvány „erősebb”. Pl. \(\sin x\ln x = \frac{\sin x}{x}\cdot x\ln x \to 1\cdot 0 = 0\).</p>
+    </div>
+    <div class="rule-card">
+      <h3>Racionális tört előjele</h3>
+      <p>Előbb szorzat alak és egyszerűsítés; a páros kitevős tényezők előjele nem számít.</p>
+    </div>
+  </div>
+  <h3 class="sub-head">Csapdák</h3>
+  <div class="mistakes">
+    <div class="mistake"><span class="x">✕</span><p><b>Negatív \(\arccos\) vagy \(\arcctg\).</b> Értékeik \([0,\pi]\)-ben, ill. \((0,\pi)\)-ben vannak.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Szélsőérték vagy inflexió olyan pontban, ami nincs \(\mathcal D_f\)-ben.</b> Ha \(f'\) a \(-1\)-ben vált előjelet, de \(-1 \notin \mathcal D_f\), ott nincs szélsőérték.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Összevonás a kimaradó ponton át.</b> „Konvex \(\R\setminus\{-1\}\)-en” helyett: konvex a \((-\infty,-1)\) és a \((-1,2)\) intervallumon.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Aszimptota csak az egyik végtelenben.</b> \(\pm\infty\)-ben más lehet (pl. \(y = x \mp \frac\pi2\)).</p></div>
+  </div>
+</section>
+
+<!-- ================= L'HOSPITAL, TAYLOR ================= -->
+<section id="lhospital">
+  <div class="section-head">
+    <a class="label src-link" href="06_gyakorlat_kidolgozas.html">6. gyakorlat →</a>
+    <h2>L'Hospital-szabály, Taylor-polinom</h2>
+  </div>
+  <div class="sheet">
+    <div class="rule-card">
+      <h3>L'Hospital</h3>
+      <p>Csak \(\frac00\) vagy \(\frac{\pm\infty}{\pm\infty}\) esetén: \(\lim\frac fg = \lim\frac{f'}{g'}\), ha a jobb oldal létezik. Számlálót és nevezőt <b>külön</b> deriváljuk. Minden lépés előtt ellenőrizd újra a típust.</p>
+    </div>
+    <div class="rule-card">
+      <h3>Visszavezetés</h3>
+      <ul>
+        <li>\(0\cdot\infty\): \(fg = \dfrac{f}{1/g}\) vagy \(\dfrac{g}{1/f}\).</li>
+        <li>\(\infty - \infty\): közös nevező vagy kiemelés.</li>
+        <li>\(1^\infty\), \(0^0\), \(\infty^0\): \(f^g = e^{g\ln f}\), és elég a kitevő határértéke (\(\exp\) folytonos).</li>
+      </ul>
+    </div>
+    <div class="rule-card">
+      <h3>Hasznos határértékek</h3>
+      <p>\(\lim_{x\to+\infty}\frac{\ln x}{x^\alpha} = 0\), \(\lim_{x\to+\infty}\frac{x^n}{e^x} = 0\), \(\lim_{x\to0+0}x^\alpha\ln x = 0\) \((\alpha \gt 0)\).</p>
+    </div>
+    <div class="rule-card">
+      <h3>L'Hospital helyett Taylor</h3>
+      <p>\(e^x - 1 - x \approx \frac{x^2}{2}\), \(x(e^x - 1) \approx x^2\), így \(\frac{e^x - 1 - x}{x(e^x-1)} \to \frac12\). Sokszor gyorsabb, mint kétszer deriválni.</p>
+    </div>
+    <div class="rule-card">
+      <h3>Taylor-polinom</h3>
+      \[T_{a,n}(f,x) = \sum_{k=0}^n\frac{f^{(k)}(a)}{k!}(x-a)^k.\]
+      <p>\((1+x)^\alpha\)-ra: \(f^{(k)}(0) = \alpha(\alpha-1)\cdots(\alpha-k+1)\).</p>
+    </div>
+    <div class="rule-card">
+      <h3>Hibabecslés</h3>
+      \[\big|f(x) - T_{a,n}(f,x)\big| = \frac{|f^{(n+1)}(\xi)|}{(n+1)!}|x-a|^{n+1}.\]
+      <p>\(\xi\) ismeretlen, csak annyit tudunk, hogy \(a\) és \(x\) között van: \(|f^{(n+1)}|\)-et a teljes szakaszon felülről becsüljük.</p>
+    </div>
+  </div>
+  <h3 class="sub-head">Csapdák</h3>
+  <div class="mistakes">
+    <div class="mistake"><span class="x">✕</span><p><b>L'Hospital nem kritikus típusra.</b> \(\lim_{x\to0}\frac{\cos x}{x+1} = 1\), de „L'Hospitallal” 0 jönne ki.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>A törtet hányadosszabállyal deriválod.</b> \(\frac{f'}{g'}\) kell, nem \(\big(\frac fg\big)'\).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>\(1^\infty = 1\).</b> Kritikus típus: \(e^{g\ln f}\) alakra kell írni.</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Elfelejtett faktoriális.</b> Az együttható \(\frac{f^{(k)}(a)}{k!}\), nem \(f^{(k)}(a)\).</p></div>
+    <div class="mistake"><span class="x">✕</span><p><b>Rossz derivált a maradéktagban.</b> Az \(n\)-edik Taylor-polinom hibájához az \((n+1)\)-edik derivált kell, \((n+1)!\)-sal és \((x-a)^{n+1}\)-gyel.</p></div>
+  </div>
+</section>
+
+</div>
+
+<!-- Fejezetsáv: az éppen olvasott szakasz gombja kiemelve -->
+<style>
+nav.bar a.active, nav.bar a.active:hover, nav.bar a.active:focus-visible { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+</style>
+<script>
+(function () {
+  var nav = document.querySelector('nav.bar');
+  if (!nav) return;
+  var links = Array.prototype.filter.call(nav.querySelectorAll('a[href^="#"]'), function (a) {
+    return a.getAttribute('href').length > 1 && document.getElementById(a.getAttribute('href').slice(1));
+  });
+  var current = null, ticking = false;
+  function sectionOf(a) { return document.getElementById(a.getAttribute('href').slice(1)); }
+  function update() {
+    ticking = false;
+    var line = nav.getBoundingClientRect().bottom + 12, active = null;
+    var visible = links.filter(function (a) { return sectionOf(a).offsetParent !== null; });
+    visible.forEach(function (a) { if (sectionOf(a).getBoundingClientRect().top <= line) active = a; });
+    // a lap alján az utolsó szakasz az aktuális akkor is, ha rövid
+    if (visible.length && window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) active = visible[visible.length - 1];
+    if (active === current) return;
+    if (current) { current.classList.remove('active'); current.removeAttribute('aria-current'); }
+    current = active;
+    if (!active) return;
+    active.classList.add('active');
+    active.setAttribute('aria-current', 'location');
+    var ul = active.closest('ul'), ur = ul.getBoundingClientRect(), ar = active.getBoundingClientRect();
+    var left = ar.left - ur.left + ul.scrollLeft, right = left + ar.width;
+    if (left < ul.scrollLeft || right > ul.scrollLeft + ul.clientWidth) ul.scrollTo({ left: Math.max(0, left - 16), behavior: 'smooth' });
+  }
+  function schedule() { if (!ticking) { ticking = true; setTimeout(update, 40); } }
+  window.addEventListener('scroll', schedule, { passive: true });
+  window.addEventListener('resize', schedule);
+  document.addEventListener('input', schedule);   // a keresés elrejthet szakaszokat
+  document.addEventListener('toggle', schedule, true);
+  update();
+})();
+</script>
+</body>
+</html>

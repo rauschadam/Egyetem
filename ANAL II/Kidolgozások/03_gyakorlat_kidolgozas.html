@@ -188,13 +188,25 @@ svg .bd { fill: var(--accent-soft); opacity: .8; }
 /* primitive-function families and vertical asymptotes */
 svg .cv3 { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: .4; }
 .lg.fam::before { opacity: .45; border-top-width: 1.5px; }
+
+/* links to the shared ZH trick pages */
+.hero-links { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.tricks { display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; border: 1.5px dashed var(--accent); border-radius: 8px; color: var(--accent); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 0.98rem; line-height: 1; white-space: nowrap; }
+.tricks:hover, .tricks:focus-visible { background: var(--accent-soft); outline: none; }
+nav.bar a.nav-tricks { border-style: dashed; border-color: var(--accent); color: var(--accent); }
+.src-link { text-decoration: none; color: var(--accent); }
+.src-link:hover { text-decoration: underline; }
+h3.sub-head { font-family: var(--f-label); font-size: 0.78rem; font-weight: 500; letter-spacing: 0.09em; text-transform: uppercase; color: var(--mark); margin-top: 6px; }
 </style>
 </head>
 <body>
 <div class="wrap">
 
 <header class="hero">
-  <a class="back" href="../../index.html#/anal2"><span class="arr" aria-hidden="true">←</span>Vissza: Analízis II.</a>
+  <div class="hero-links">
+    <a class="back" href="../../index.html#/anal2"><span class="arr" aria-hidden="true">←</span>Vissza: Analízis II.</a>
+    <a class="tricks" href="zh1_trukkok.html">Trükkök az 1. ZH-hoz →</a>
+  </div>
   <span class="label">Analízis II. · 3. gyakorlat · Differenciálszámítás 2.</span>
   <h1>A 3. gyakorlat kidolgozva</h1>
   <p class="sub">Az inverz függvény deriválása, lineáris közelítés és érintő, egyoldali deriváltak, esetszétválasztással megadott függvények deriválhatósága. Az órai feladatok a gyakorlati anyag megoldását követik, a házi feladatok (az összevont anyagból) saját megoldások. Az órán kérdezett röpZH-tételek: <a href="ropzh_kidolgozas.html#rz3">3. röpZH</a>. Előbb próbáld meg magad, és csak utána nyisd le a megoldást.</p>
@@ -208,74 +220,12 @@ svg .cv3 { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: .4; }
 <nav class="bar" aria-label="Fejezetek">
   <ul>
     <li><a class="nav-back" href="../../index.html#/anal2" aria-label="Vissza: Analízis II.">← ANAL II</a></li>
-    <li><a href="#emlekezteto">Emlékeztető</a></li>
     <li><a href="#orai">Órai feladatok</a></li>
     <li><a href="#hazi">Házi feladatok</a></li>
-    <li><a href="#hibak">Gyakori hibák</a></li>
+    <li><a class="nav-tricks" href="zh1_trukkok.html">Trükkök (1. ZH) →</a></li>
     <li><a href="ropzh_kidolgozas.html#rz3">3. röpZH ↗</a></li>
   </ul>
 </nav>
-
-<!-- ================= EMLÉKEZTETŐ ================= -->
-<section id="emlekezteto">
-  <div class="section-head">
-    <span class="label">Ami kell hozzá</span>
-    <h2>Emlékeztető</h2>
-    <p>A 3. gyakorlat elméleti összefoglalója röviden. A feladatokban végig ezekre hivatkozunk.</p>
-  </div>
-  <div class="sheet">
-    <div class="rule-card wide">
-      <h3>Az inverz függvény deriválási szabálya</h3>
-      <p>Legyen \(I \subset \R\) nyílt intervallum és \(f : I \to \R\). Tegyük fel, hogy</p>
-      <ol>
-        <li>\(f\) szigorúan monoton és folytonos \(I\)-n,</li>
-        <li>egy \(a \in I\) pontban \(f \in D\{a\}\) és \(f'(a) \ne 0\).</li>
-      </ol>
-      <p>Ekkor az \(f^{-1}\) inverz függvény deriválható a \(b := f(a)\) pontban, és</p>
-      \[\big(f^{-1}\big)'(b) = \frac{1}{f'(a)} = \frac{1}{f'\big(f^{-1}(b)\big)}.\]
-      <p class="note">A nevezőben az \(f'\)-t az \(a = f^{-1}(b)\) pontban kell venni, nem \(b\)-ben. Az \(a\)-t az \(f(a) = b\) egyenletből kapjuk.</p>
-    </div>
-    <div class="rule-card">
-      <h3>Folytonosság és monotonitás deriválttal</h3>
-      <p>A deriválhatóságból következik a folytonosság: \(f \in D\{a\} \Longrightarrow f \in C\{a\}\).</p>
-      <p>Ha \(f \in D(a, b)\), akkor</p>
-      <ul>
-        <li>\(f' \gt 0\) \((a,b)\)-n \(\Longrightarrow f \uparrow\) (szigorúan nő),</li>
-        <li>\(f' \lt 0\) \((a,b)\)-n \(\Longrightarrow f \downarrow\) (szigorúan csökken).</li>
-      </ul>
-      <p class="note">A megfordítás nem igaz: \(x^3\) szigorúan nő, de \(f'(0) = 0\).</p>
-    </div>
-    <div class="rule-card">
-      <h3>Lineáris közelítés</h3>
-      <p>Legyen \(f \in \R \to \R\) és \(a \in \operatorname{int} \mathcal D_f\). Ekkor \(f \in D\{a\}\) pontosan akkor, ha \(\exists A \in \R\) és \(\exists\, \varepsilon : \mathcal D_f \to \R\), \(\lim_a \varepsilon = 0\), hogy</p>
-      \[f(x) - f(a) = A\,(x - a) + \varepsilon(x)(x - a) \quad (x \in \mathcal D_f).\]
-      <p>Ekkor \(A = f'(a)\), vagyis \(f(x) - f(a) \approx f'(a)(x - a)\), ha \(x \approx a\).</p>
-    </div>
-    <div class="rule-card">
-      <h3>Az érintő</h3>
-      <p>Az \(f\) grafikonjának az \(\big(a, f(a)\big)\) pontban van érintője, ha \(f \in D\{a\}\). Az érintő egyenlete:</p>
-      \[y = f'(a)\,(x - a) + f(a).\]
-      <p class="note">Két szám kell hozzá: \(f(a)\) és \(f'(a)\). A meredekség szám, nem függvény.</p>
-    </div>
-    <div class="rule-card">
-      <h3>Egyoldali deriváltak</h3>
-      <p>Ha \(\exists\,\delta \gt 0 : [a, a + \delta) \subset \mathcal D_f\), akkor a jobb oldali derivált</p>
-      \[f'_+(a) := \lim_{x \to a+0} \frac{f(x) - f(a)}{x - a},\]
-      <p>ha a határérték létezik és véges. Hasonlóan \(f'_-(a)\), \(x \to a - 0\) mellett.</p>
-      \[f \in D\{a\} \iff \exists f'_+(a),\ \exists f'_-(a) \text{ és } f'_+(a) = f'_-(a)\ (= f'(a)).\]
-    </div>
-    <div class="rule-card wide">
-      <h3>Recept: esetszétválasztással megadott függvény</h3>
-      <ol>
-        <li><b>Az ágak belsejében</b> (nyílt intervallumokon) a deriválási szabályok működnek: ott tagonként deriválunk.</li>
-        <li><b>A határpontban</b> \((a)\) a definícióhoz nyúlunk. Először a <b>folytonosság</b>: ha \(f \notin C\{a\}\), akkor \(f \notin D\{a\}\), és kész.</li>
-        <li>Ha \(f\) folytonos \(a\)-ban, kiszámoljuk \(f'_-(a)\)-t és \(f'_+(a)\)-t (a különbségi hányados egyoldali határértékeivel). Ha az \(a\)-t tartalmazó ág egy \(a\)-ban is deriválható \(g\) függvény megszorítása, és \(g(a) = f(a)\), akkor az arról az oldalról vett egyoldali derivált egyszerűen \(g'(a)\).</li>
-        <li>\(f \in D\{a\} \iff f'_-(a) = f'_+(a)\).</li>
-      </ol>
-      <p class="note">Hasznos határértékek: \(\lim_{x \to 0-0} e^{1/x} = 0\), \(\lim_{x \to 0+0} e^{1/x} = +\infty\), \(\lim_{t \to 0} \frac{e^t - 1}{t} = 1\).</p>
-    </div>
-  </div>
-</section>
 
 <!-- ================= ÓRAI FELADATOK ================= -->
 <section id="orai">
@@ -573,22 +523,6 @@ svg .cv3 { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: .4; }
     </details>
   </article>
 
-  </div>
-</section>
-
-<!-- ================= GYAKORI HIBÁK ================= -->
-<section id="hibak">
-  <div class="section-head">
-    <span class="label">Mire figyelj</span>
-    <h2>Gyakori hibák</h2>
-  </div>
-  <div class="mistakes">
-    <div class="mistake"><span class="x">✕</span><p><b>\(\big(f^{-1}\big)'(b) = \frac{1}{f'(b)}\).</b> A helyes képlet \(\frac{1}{f'(a)}\), ahol \(f(a) = b\). Az órai 1. feladatban \(f'(\sqrt2) \ne f'(\frac12)\); előbb az \(f(a) = \sqrt2\) egyenletet kell megoldani.</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>A tétel feltételeinek kihagyása.</b> Az inverz deriválásához kell: szigorú monotonitás (pl. \(f' \gt 0\) egy intervallumon), folytonosság és \(f'(a) \ne 0\). Ha \(f'(a) = 0\), az inverz nem deriválható \(b\)-ben (pl. \(\sqrt[3]{y}\) a \(0\)-ban).</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>A ragasztási pontban csak az ágak deriváltjait vetjük össze.</b> Ez folytonosság nélkül hibás: az órai 4. feladatban \(c = 2\), \(b = 1\) esetén a két ág deriváltja \(0\)-ban egyezik, mégis \(f \notin D\{0\}\), mert \(f\) ugrik. Először mindig a folytonosság!</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>Az \(a \ne 0\)-ra kapott \(f'(a)\) képletbe \(0\)-t helyettesíteni.</b> A külön definiált pontban a különbségi hányados határértékét kell számolni (órai 3. feladat).</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>\(\lim_{x\to0} e^{1/x}\) „létezik”.</b> Nem: balról \(0\), jobbról \(+\infty\). Ilyenkor kötelező az egyoldali határértékekre bontani, és ebből jönnek az egyoldali deriváltak.</p></div>
-    <div class="mistake"><span class="x">✕</span><p><b>Az érintő egyenletébe \(f'(x)\) kerül \(f'(a)\) helyett, vagy elmarad az \(f(a)\) tag.</b> Az érintő \(y = f'(a)(x - a) + f(a)\): egyenes, mindkét együtthatója szám. Ellenőrzés: \(x = a\)-ra \(y = f(a)\) jön ki?</p></div>
   </div>
 </section>
 
